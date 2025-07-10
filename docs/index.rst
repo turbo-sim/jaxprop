@@ -1,8 +1,14 @@
 Welcome to CoolPropX's documentation!
 =====================================
 
+``CoolPropX`` is a thin wrapper around the `CoolProp <https://www.coolprop.org>`_ fluid property library that provides easy access to its low-level interface.
 
-``CoolPropX`` is a thin wrapper around the `CoolProp <https://www.coolprop.org>`_ fluid property library that provides easy access to its low-level interface, along with several convenient utilities to:
+.. note::
+
+   This project is developed independently and is not affiliated with or endorsed by the CoolProp project.
+
+Key features
+------------
 
 - Compute and plot phase envelopes and spinodal lines for pure fluids.
 - Evaluate thermodynamic properties from the Helmholtz energy equation of state, including metastable states inside the two-phase region.
@@ -11,10 +17,8 @@ Welcome to CoolPropX's documentation!
 - Evaluate properties over arrays of input conditions for efficient parametric studies and plotting.
 
 
-
-.. note::
-
-   This project is developed independently and is not affiliated with or endorsed by the CoolProp project.
+Contents
+------------
 
 
 Use the panel to the left or the table of contents below to navigate the documentation.

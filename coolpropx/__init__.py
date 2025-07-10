@@ -17,9 +17,10 @@ from .graphics import *
 
 # Package info
 __version__ = "0.1.1"
-PACKAGE_NAME = "thermopt"
-URL_GITHUB = "https://github.com/turbo-sim/coolprop-x"
-URL_DOCS = "https://turbo-sim.github.io/coolprop-x/"
+PACKAGE_NAME = "coolpropx"
+URL_GITHUB = "https://github.com/turbo-sim/coolpropx"
+URL_DOCS = "https://turbo-sim.github.io/coolpropx/"
+URL_PYPI = "https://pypi.org/project/coolpropx/"
 URL_DTU = "https://thermalpower.dtu.dk/"
 BREAKLINE = 80 * "-"
 
