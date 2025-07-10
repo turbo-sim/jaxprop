@@ -1,0 +1,1006 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>coolpropx.fluid_properties module &#8212; coolpropx v0.1.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=6f89b0bb"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'source/api/coolpropx.fluid_properties';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="coolpropx.graphics module" href="coolpropx.graphics.html" />
+    <link rel="prev" title="coolpropx.core_calculations module" href="coolpropx.core_calculations.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">coolpropx v0.1.1 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="coolpropx.html">API Reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.core_calculations.html">coolpropx.core_calculations module</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">coolpropx.fluid_properties module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.graphics.html">coolpropx.graphics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.math.html">coolpropx.math module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.utils.html">coolpropx.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/source/api/coolpropx.fluid_properties.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>coolpropx.fluid_properties module</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid"><code class="docutils literal notranslate"><span class="pre">Fluid</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.compute_properties_meanline"><code class="docutils literal notranslate"><span class="pre">Fluid.compute_properties_meanline()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.get_property"><code class="docutils literal notranslate"><span class="pre">Fluid.get_property()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.get_state"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.get_state_blending"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_blending()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.get_state_equilibrium"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_equilibrium()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.get_state_metastable"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_metastable()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.get_states"><code class="docutils literal notranslate"><span class="pre">Fluid.get_states()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.plot_phase_diagram"><code class="docutils literal notranslate"><span class="pre">Fluid.plot_phase_diagram()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState"><code class="docutils literal notranslate"><span class="pre">FluidState</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidState.fluid_name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState.get"><code class="docutils literal notranslate"><span class="pre">FluidState.get()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState.items"><code class="docutils literal notranslate"><span class="pre">FluidState.items()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState.keys"><code class="docutils literal notranslate"><span class="pre">FluidState.keys()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState.to_dict"><code class="docutils literal notranslate"><span class="pre">FluidState.to_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState.values"><code class="docutils literal notranslate"><span class="pre">FluidState.values()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_property_grid"><code class="docutils literal notranslate"><span class="pre">compute_property_grid()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_property_grid_rhoT"><code class="docutils literal notranslate"><span class="pre">compute_property_grid_rhoT()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_pseudocritical_line"><code class="docutils literal notranslate"><span class="pre">compute_pseudocritical_line()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_quality_grid"><code class="docutils literal notranslate"><span class="pre">compute_quality_grid()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_saturation_line"><code class="docutils literal notranslate"><span class="pre">compute_saturation_line()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_spinodal_line"><code class="docutils literal notranslate"><span class="pre">compute_spinodal_line()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_spinodal_point"><code class="docutils literal notranslate"><span class="pre">compute_spinodal_point()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_spinodal_point_general"><code class="docutils literal notranslate"><span class="pre">compute_spinodal_point_general()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.extract_vars"><code class="docutils literal notranslate"><span class="pre">extract_vars()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.states_to_dict"><code class="docutils literal notranslate"><span class="pre">states_to_dict()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.states_to_dict_2d"><code class="docutils literal notranslate"><span class="pre">states_to_dict_2d()</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-coolpropx.fluid_properties">
+<span id="coolpropx-fluid-properties-module"></span><h1>coolpropx.fluid_properties module<a class="headerlink" href="#module-coolpropx.fluid_properties" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.Fluid">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">coolpropx.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">Fluid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'HEOS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#Fluid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.Fluid" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a fluid with various thermodynamic properties computed via CoolProp.</p>
+<p>This class provides a convenient interface to CoolProp for various fluid property calculations.</p>
+<p>Critical and triple point properties are computed upon initialization and stored internally for convenience.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>Name of the fluid.</p>
+</dd>
+<dt><strong>backend</strong><span class="classifier">str</span></dt><dd><p>Backend used for CoolProp, default is ‘HEOS’.</p>
+</dd>
+<dt><strong>exceptions</strong><span class="classifier">bool</span></dt><dd><p>Determines if exceptions should be raised during state calculations. Default is True.</p>
+</dd>
+<dt><strong>converged_flag</strong><span class="classifier">bool</span></dt><dd><p>Flag indicating whether properties calculations converged.</p>
+</dd>
+<dt><strong>properties</strong><span class="classifier">dict</span></dt><dd><p>Dictionary of various fluid properties. Accessible directly as attributes (e.g., <cite>fluid.p</cite> for pressure).</p>
+</dd>
+<dt><strong>critical_point</strong><span class="classifier">FluidState</span></dt><dd><p>Properties at the fluid’s critical point.</p>
+</dd>
+<dt><strong>triple_point_liquid</strong><span class="classifier">FluidState</span></dt><dd><p>Properties at the fluid’s triple point in the liquid state.</p>
+</dd>
+<dt><strong>triple_point_vapor</strong><span class="classifier">FluidState</span></dt><dd><p>Properties at the fluid’s triple point in the vapor state.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<tbody>
+<tr class="row-odd"><td><p><strong>get_state(input_type, prop_1, prop_2):</strong></p></td>
+<td><p>Set the thermodynamic state of the fluid using specified property inputs.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Examples</p>
+<p>Calculating properties with Fluid.get_state()</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fluid</span> <span class="o">=</span> <span class="n">bpy</span><span class="o">.</span><span class="n">Fluid</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Water&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;HEOS&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">state</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">bpy</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="mi">101325</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Water density is </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">rho</span><span class="si">:</span><span class="s2">0.2f</span><span class="si">}</span><span class="s2"> kg/m3 at p=</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">p</span><span class="si">:</span><span class="s2">0.2f</span><span class="si">}</span><span class="s2"> Pa and T=</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="si">:</span><span class="s2">0.2f</span><span class="si">}</span><span class="s2"> K&quot;</span><span class="p">)</span>
+<span class="go">Water density is 996.56 kg/m3 at p=101325.00 Pa and T=300.00 K</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fluid</span> <span class="o">=</span> <span class="n">bpy</span><span class="o">.</span><span class="n">Fluid</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Air&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;HEOS&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">state</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">bpy</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="mi">101325</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Air heat capacity ratio is </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">gamma</span><span class="si">:</span><span class="s2">0.2f</span><span class="si">}</span><span class="s2"> at p=</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">p</span><span class="si">:</span><span class="s2">0.2f</span><span class="si">}</span><span class="s2"> Pa and T=</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="si">:</span><span class="s2">0.2f</span><span class="si">}</span><span class="s2"> K&quot;</span><span class="p">)</span>
+<span class="go">Air heat capacity ratio is 1.40 at p=101325.00 Pa and T=300.00 K</span>
+</pre></div>
+</div>
+<p>Accessing critical point properties:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">p</span>  <span class="c1"># Retrieves critical pressure</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">]</span>  <span class="c1"># Retrieves critical temperature</span>
+</pre></div>
+</div>
+<p>Accessing triple point properties:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_liquid</span><span class="o">.</span><span class="n">h</span>  <span class="c1"># Retrieves liquid enthalpy at the triple point</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_vapor</span><span class="o">.</span><span class="n">s</span>  <span class="c1"># Retrieves vapor entropy at the triple point</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.Fluid.compute_properties_meanline">
+<span class="sig-name descname"><span class="pre">compute_properties_meanline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#Fluid.compute_properties_meanline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.Fluid.compute_properties_meanline" title="Link to this definition">#</a></dt>
+<dd><p>Extract fluid properties for meanline model</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.Fluid.get_property">
+<span class="sig-name descname"><span class="pre">get_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">propname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#Fluid.get_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.Fluid.get_property" title="Link to this definition">#</a></dt>
+<dd><p>Get the value of a single property</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.Fluid.get_state">
+<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#Fluid.get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.Fluid.get_state" title="Link to this definition">#</a></dt>
+<dd><p>Set the thermodynamic state of the fluid using the CoolProp low level interface.</p>
+<p>This method updates the thermodynamic state of the fluid in the CoolProp <code class="docutils literal notranslate"><span class="pre">abstractstate</span></code> object
+using the given input properties. It then calculates either single-phase or two-phase
+properties based on the current phase of the fluid.</p>
+<p>If the calculation of properties fails, <cite>converged_flag</cite> is set to False, indicating an issue with
+the property calculation. Otherwise, it’s set to True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_type</strong><span class="classifier">int</span></dt><dd><p>The variable pair used to define the thermodynamic state. This should be one of the
+predefined input pairs in CoolProp, such as <code class="docutils literal notranslate"><span class="pre">PT_INPUTS</span></code> for pressure and temperature.</p>
+</dd>
+<dt><strong>prop_1</strong><span class="classifier">float</span></dt><dd><p>The first property value corresponding to the input type.</p>
+</dd>
+<dt><strong>prop_2</strong><span class="classifier">float</span></dt><dd><p>The second property value corresponding to the input type.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>barotropy.State</dt><dd><p>A State object containing the fluid properties</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Exception</dt><dd><p>If <cite>throw_exceptions</cite> attribute is set to True and an error occurs during property calculation,
+the original exception is re-raised.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.Fluid.get_state_blending">
+<span class="sig-name descname"><span class="pre">get_state_blending</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoT_guess_equilibrium</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoT_guess_metastable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blending_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blending_onset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blending_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_change</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hybr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_max_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_convergence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#Fluid.get_state_blending"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.Fluid.get_state_blending" title="Link to this definition">#</a></dt>
+<dd><p>Calculate fluid properties by blending equilibrium and metastable properties</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For a detailed description of input arguments and calculation methods, see the
+documentation of the function <a class="reference internal" href="coolpropx.core_calculations.html#compute-properties"><span class="std std-ref">compute_properties</span></a>.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.Fluid.get_state_equilibrium">
+<span class="sig-name descname"><span class="pre">get_state_equilibrium</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoT_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hybr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_max_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_convergence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#Fluid.get_state_equilibrium"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.Fluid.get_state_equilibrium" title="Link to this definition">#</a></dt>
+<dd><p>Calculate fluid properties according to thermodynamic equilibrium.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For a detailed description of input arguments and calculation methods, see the
+documentation of the function <a class="reference internal" href="coolpropx.core_calculations.html#compute-properties"><span class="std std-ref">compute_properties</span></a>.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.Fluid.get_state_metastable">
+<span class="sig-name descname"><span class="pre">get_state_metastable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoT_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hybr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_max_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_convergence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#Fluid.get_state_metastable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.Fluid.get_state_metastable" title="Link to this definition">#</a></dt>
+<dd><p>Calculate fluid properties assuming phase metastability</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For a detailed description of input arguments and calculation methods, see the
+documentation of the function <a class="reference internal" href="coolpropx.core_calculations.html#compute-properties"><span class="std std-ref">compute_properties</span></a>.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.Fluid.get_states">
+<span class="sig-name descname"><span class="pre">get_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#Fluid.get_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.Fluid.get_states" title="Link to this definition">#</a></dt>
+<dd><p>Vectorized version of get_state:
+- if both prop_1 and prop_2 are scalars, returns a single FluidState
+- if one is 1D array and the other scalar, returns ({prop: 1D array}, grid)
+- if both are 1D arrays, returns ({prop: 2D array}, grid1, grid2)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.Fluid.plot_phase_diagram">
+<span class="sig-name descname"><span class="pre">plot_phase_diagram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_prop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_prop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'T'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_saturation_line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_critical_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_triple_point_liquid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_triple_point_vapor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_spinodal_line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spinodal_line_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([0.5,</span> <span class="pre">0.5,</span> <span class="pre">0.5])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spinodal_line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spinodal_line_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfgs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spinodal_line_use_previous</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_quality_isolines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_two_phase_patch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_pseudocritical_line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([0.1,</span> <span class="pre">0.2,</span> <span class="pre">0.3,</span> <span class="pre">0.4,</span> <span class="pre">0.5,</span> <span class="pre">0.6,</span> <span class="pre">0.7,</span> <span class="pre">0.8,</span> <span class="pre">0.9,</span> <span class="pre">1.])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_in_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps_sat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#Fluid.plot_phase_diagram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.Fluid.plot_phase_diagram" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.FluidState">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">coolpropx.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">FluidState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#FluidState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.FluidState" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An immutable class representing the thermodynamic state of a fluid.</p>
+<p>This class is designed to provide a read-only representation of a fluid’s state,
+with properties accessible through both attribute-style and dictionary-style access.
+The state of a fluid is defined at initialization and cannot be altered thereafter,
+ensuring the integrity of the data.</p>
+<p>Instances of this class store fluid properties and the fluid’s name, providing
+methods to access these properties but not to modify them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>properties</strong><span class="classifier">dict</span></dt><dd><p>A dictionary where keys are property names (as strings) and values are the
+corresponding properties of the fluid. This dictionary is converted to an
+immutable internal representation.</p>
+</dd>
+<dt><strong>fluid_name</strong><span class="classifier">str</span></dt><dd><p>The name of the fluid.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>properties</strong><span class="classifier">dict</span></dt><dd><p>An internal dictionary storing the properties of the fluid state. This attribute
+is immutable and cannot be modified after the object’s initialization.</p>
+</dd>
+<dt><strong>fluid_name</strong><span class="classifier">str</span></dt><dd><p>The name of the fluid. Immutable after initialization.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<tbody>
+<tr class="row-odd"><td><p><strong>to_dict():</strong></p></td>
+<td><p>Returns a copy of the fluid properties as a dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>keys():</strong></p></td>
+<td><p>Returns the keys of the fluid properties.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>items():</strong></p></td>
+<td><p>Returns the items (key-value pairs) of the fluid properties.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.FluidState.fluid_name">
+<span class="sig-name descname"><span class="pre">fluid_name</span></span><a class="headerlink" href="#coolpropx.fluid_properties.FluidState.fluid_name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.FluidState.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#FluidState.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.FluidState.get" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.FluidState.items">
+<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#FluidState.items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.FluidState.items" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.FluidState.keys">
+<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#FluidState.keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.FluidState.keys" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.FluidState.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#FluidState.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.FluidState.to_dict" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.FluidState.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#FluidState.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.FluidState.values" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.compute_property_grid">
+<span class="sig-prename descclassname"><span class="pre">coolpropx.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">compute_property_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#compute_property_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.compute_property_grid" title="Link to this definition">#</a></dt>
+<dd><p>Compute fluid properties over a specified range and store them in a dictionary.</p>
+<p>This function creates a meshgrid of property values based on the specified ranges and input pair,
+computes the properties of the fluid at each point on the grid, and stores the results in a
+dictionary where each key corresponds to a fluid property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fluid</strong><span class="classifier">Fluid object</span></dt><dd><p>An instance of the Fluid class.</p>
+</dd>
+<dt><strong>input_pair</strong><span class="classifier">tuple</span></dt><dd><p>The input pair specifying the property type (e.g., PT_INPUTS for pressure-temperature).</p>
+</dd>
+<dt><strong>range1</strong><span class="classifier">tuple</span></dt><dd><p>The range linspace(min, max, n) for the first property of the input pair.</p>
+</dd>
+<dt><strong>range2</strong><span class="classifier">tuple</span></dt><dd><p>The range linspace(min, max, n) for the second property of the input pair.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>properties_dict</strong><span class="classifier">dict</span></dt><dd><p>A dictionary where keys are property names and values are 2D numpy arrays of computed properties.</p>
+</dd>
+<dt><strong>grid1, grid2</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>The meshgrid arrays for the first and second properties.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.compute_property_grid_rhoT">
+<span class="sig-prename descclassname"><span class="pre">coolpropx.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">compute_property_grid_rhoT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#compute_property_grid_rhoT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.compute_property_grid_rhoT" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.compute_pseudocritical_line">
+<span class="sig-prename descclassname"><span class="pre">coolpropx.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">compute_pseudocritical_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#compute_pseudocritical_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.compute_pseudocritical_line" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.compute_quality_grid">
+<span class="sig-prename descclassname"><span class="pre">coolpropx.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">compute_quality_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_levels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#compute_quality_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.compute_quality_grid" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.compute_saturation_line">
+<span class="sig-prename descclassname"><span class="pre">coolpropx.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">compute_saturation_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#compute_saturation_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.compute_saturation_line" title="Link to this definition">#</a></dt>
+<dd><p>Compute the saturation line for a given fluid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fluid</strong><span class="classifier">object</span></dt><dd><p>The fluid object containing thermodynamic properties and methods.</p>
+</dd>
+<dt><strong>N</strong><span class="classifier">int, optional</span></dt><dd><p>Number of points to compute along the saturation line. Default is 100.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>saturation_liq</strong><span class="classifier">dict of lists</span></dt><dd><p>Dictionary containing the liquid saturation properties.</p>
+</dd>
+<dt><strong>saturation_vap</strong><span class="classifier">dict of lists</span></dt><dd><p>Dictionary containing the vapor saturation properties.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.compute_spinodal_line">
+<span class="sig-prename descclassname"><span class="pre">coolpropx.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">compute_spinodal_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfgs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_previous_as_initial_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#compute_spinodal_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.compute_spinodal_line" title="Link to this definition">#</a></dt>
+<dd><p>Compute the spinodal line for a given fluid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fluid</strong><span class="classifier">object</span></dt><dd><p>The fluid object containing thermodynamic properties and methods.</p>
+</dd>
+<dt><strong>N</strong><span class="classifier">int, optional</span></dt><dd><p>Number of points to compute along the spinodal line. Default is 50.</p>
+</dd>
+<dt><strong>method</strong><span class="classifier">str, optional</span></dt><dd><p>The optimization method to solve the spinodal point problem (‘bfgs’ or ‘slsqp’). Default is ‘bfgs’.</p>
+</dd>
+<dt><strong>use_previous_as_initial_guess</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to use the previous point as the initial guess for the next point. Default is False.</p>
+</dd>
+<dt><strong>supersaturation</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to compute supersaturation properties. Default is False.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>spinodal_liq</strong><span class="classifier">dict of lists</span></dt><dd><p>Dictionary containing the liquid spinodal properties.</p>
+</dd>
+<dt><strong>spinodal_vap</strong><span class="classifier">dict of lists</span></dt><dd><p>Dictionary containing the vapor spinodal properties.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.compute_spinodal_point">
+<span class="sig-prename descclassname"><span class="pre">coolpropx.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">compute_spinodal_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temperature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_trial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfgs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_convergence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#compute_spinodal_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.compute_spinodal_point" title="Link to this definition">#</a></dt>
+<dd><p>Compute the vapor or liquid spinodal point of a fluid at a given temperature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>temperature</strong><span class="classifier">float</span></dt><dd><p>Temperature of the fluid (K).</p>
+</dd>
+<dt><strong>fluid</strong><span class="classifier">barotropy.Fluid</span></dt><dd><p>The fluid for which the spinodal point is to be calculated.</p>
+</dd>
+<dt><strong>branch</strong><span class="classifier">str</span></dt><dd><p>Branch of the spinodal line used to determine the density initial guess.
+Options: ‘liquid’ or ‘vapor’.</p>
+</dd>
+<dt><strong>rho_guess</strong><span class="classifier">float, optional</span></dt><dd><p>Initial guess for the density. If provided, this value will be used directly.
+If not provided, the density initial guess will be generated based on a number of trial points.</p>
+</dd>
+<dt><strong>N_trial</strong><span class="classifier">int, optional</span></dt><dd><p>Number of trial points to generate the density initial guess. Default is 50.</p>
+</dd>
+<dt><strong>method</strong><span class="classifier">str, optional</span></dt><dd><p>The optimization method to solve the problem (‘bfgs’ or ‘slsqp’).</p>
+</dd>
+<dt><strong>tolerance</strong><span class="classifier">float, optional</span></dt><dd><p>Tolerance for the solver termination. Defaults to 1e-6.</p>
+</dd>
+<dt><strong>print_convergence</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, displays the convergence progress. Defaults to False.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>barotropy.State</dt><dd><p>A State object containing the fluid properties</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If the input temperature is higher than the critical temperature or lower than
+the triple temperature.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>When a single-phase fluid undergoes a thermodynamic process and enters the two-phase region it
+can exist in a single-phase state that is different from the equilibrium two-phase state.
+Such states are know as metastable states and they are only possible in the thermodynamic
+region between the saturation lines and the spinodal lines. If the thermodynamic process
+continues and crosses the spinodal lines metastable states become unstable and the transition
+to two-distinct phase occurs rapidly. Therefore, the spinodal line represents the locus of points
+that separates the region where a mixture is thermodynamically unstable and prone to phase separation
+from the region where metastable states are physically possible.</p>
+<p>In mathematical terms, the spinodal line is defined as the loci of thermodynamic states in which the isothermal bulk modulus of the fluid is zero:</p>
+<div class="math notranslate nohighlight">
+\[K_T = \rho \left( \frac{\partial p}{\partial \rho} \right)_T = 0\]</div>
+<p>More precisely, a vapor spinodal point is the first local maximum of a isotherm line in a pressure-density diagram as the density increases.
+Conversely, a liquid spinodal point is the first local minimum of a isotherm line in a pressure-density diagram as the density decreases.
+The spinodal lines and phase envelope of carbon dioxide according to the HEOS developed by <span id="id1">[<a class="reference internal" href="../bibliography.html#id38" title="Roland Span and Wolfgang Wagner. A new equation of state for carbon dioxide covering the fluid region from the triple‐point temperature to 1100 K at pressures up to 800 MPa. Journal of Physical and Chemical Reference Data, 25(6):1509–1596, 1996. Publisher: American Institute of Physics. doi:10.1063/1.555991.">Span and Wagner, 1996</a>]</span> are illustrated in the figure below</p>
+<img alt="Pressure-density diagram and spinodal points for carbon dioxide." src="../../_images/spinodal_points_CO2.svg" /><p>Some equations of state are not well-posed and do not satisfy the condition <span class="math notranslate nohighlight">\(K_T=0\)</span> within the two-phase region.
+This is exemplified by the nitrogen HEOS developed by <span id="id2">[<a class="reference internal" href="../bibliography.html#id39" title="Roland Span, Eric W. Lemmon, Richard T Jacobsen, Wolfgang Wagner, and Akimichi Yokozeki. A reference equation of state for the thermodynamic properties of nitrogen for temperatures from 63.151 to 1000 K and pressures to 2200 MPa. Journal of Physical and Chemical Reference Data, 29(6):1361–1433, 2000. doi:10.1063/1.1349047.">Span <em>et al.</em>, 2000</a>]</span>.</p>
+<img alt="Pressure-density diagram and &quot;pseudo&quot; spinodal points for carbon dioxide." src="../../_images/spinodal_points_nitrogen.svg" /><p>As seen in the figure, this HEOS is not well-posed because there are isotherms that do not have a local minimum/maximum corresponding to a state with zero isothermal bulk modulus.
+In such cases, this function returns the inflection point of the isotherms (corresponding to the point closest to zero bulk modulus) as the spinodal point.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.compute_spinodal_point_general">
+<span class="sig-prename descclassname"><span class="pre">coolpropx.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">compute_spinodal_point_general</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_trial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfgs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_convergence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#compute_spinodal_point_general"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.compute_spinodal_point_general" title="Link to this definition">#</a></dt>
+<dd><p>General function to compute the spinodal point for a given property name and value.</p>
+<p>This function uses the underlying <cite>compute_spinodal_point</cite> function and iterates
+on temperature until the specified property at the spinodal point matches the given value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>prop_type</strong><span class="classifier">str</span></dt><dd><p>The type of property to match (e.g., ‘rho’, ‘p’).</p>
+</dd>
+<dt><strong>prop_value</strong><span class="classifier">float</span></dt><dd><p>The value of the property to match at the spinodal point.</p>
+</dd>
+<dt><strong>fluid</strong><span class="classifier">object</span></dt><dd><p>The fluid object containing thermodynamic properties and methods.</p>
+</dd>
+<dt><strong>branch</strong><span class="classifier">str</span></dt><dd><p>The branch of the spinodal line. Options: ‘liquid’ or ‘vapor’.</p>
+</dd>
+<dt><strong>rho_guess</strong><span class="classifier">float, optional</span></dt><dd><p>Initial guess for the density. If provided, this value will be used directly.
+If not provided, the density initial guess will be generated based on a number of trial points.</p>
+</dd>
+<dt><strong>N_trial</strong><span class="classifier">int, optional</span></dt><dd><p>Number of trial points to generate the density initial guess. Default is 100.</p>
+</dd>
+<dt><strong>method</strong><span class="classifier">str, optional</span></dt><dd><p>The optimization method to solve the problem (‘bfgs’ or ‘slsqp’). Default is ‘bfgs’.</p>
+</dd>
+<dt><strong>tolerance</strong><span class="classifier">float, optional</span></dt><dd><p>Tolerance for the solver termination. Defaults to 1e-6.</p>
+</dd>
+<dt><strong>print_convergence</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, displays the convergence progress. Defaults to False.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>barotropy.State</dt><dd><p>A State object containing the fluid properties</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If the scalar root to determine the spinodal point fails to converge.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses a root-finding algorithm to iterate on temperature until the
+property specified by <cite>prop_type</cite> at the spinodal point matches <cite>prop_value</cite>.
+The <cite>compute_spinodal_point</cite> function is called iteratively to evaluate the spinodal
+properties at different temperatures.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">state</span> <span class="o">=</span> <span class="n">compute_spinodal_point_general</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">prop_type</span><span class="o">=</span><span class="s1">&#39;density&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">prop_value</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">T_guess</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">fluid</span><span class="o">=</span><span class="n">my_fluid</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">branch</span><span class="o">=</span><span class="s1">&#39;liquid&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">rho_guess</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">N_trial</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;slsqp&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">print_convergence</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.extract_vars">
+<span class="sig-prename descclassname"><span class="pre">coolpropx.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">extract_vars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#extract_vars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.extract_vars" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.states_to_dict">
+<span class="sig-prename descclassname"><span class="pre">coolpropx.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">states_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#states_to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.states_to_dict" title="Link to this definition">#</a></dt>
+<dd><p>Convert a list of state objects into a dictionary.</p>
+<p>Each key is a field name of the state objects, and each value is a Numpy array of all the values for that field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>states_grid</strong><span class="classifier">list of FluidState</span></dt><dd><p>A 1D grid where each element is a state object with the same keys.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>A dictionary where keys are field names and values are 1D arrays of field values.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="coolpropx.fluid_properties.states_to_dict_2d">
+<span class="sig-prename descclassname"><span class="pre">coolpropx.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">states_to_dict_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/fluid_properties.html#states_to_dict_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.fluid_properties.states_to_dict_2d" title="Link to this definition">#</a></dt>
+<dd><p>Convert a 2D list (grid) of state objects into a dictionary.</p>
+<p>Each key is a field name of the state objects, and each value is a 2D Numpy array of all the values for that field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>states_grid</strong><span class="classifier">list of lists of FluidState</span></dt><dd><p>A 2D grid where each element is a state object with the same keys.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>A dictionary where keys are field names and values are 2D arrays of field values.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="coolpropx.core_calculations.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">coolpropx.core_calculations module</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="coolpropx.graphics.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">coolpropx.graphics module</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid"><code class="docutils literal notranslate"><span class="pre">Fluid</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.compute_properties_meanline"><code class="docutils literal notranslate"><span class="pre">Fluid.compute_properties_meanline()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.get_property"><code class="docutils literal notranslate"><span class="pre">Fluid.get_property()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.get_state"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.get_state_blending"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_blending()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.get_state_equilibrium"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_equilibrium()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.get_state_metastable"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_metastable()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.get_states"><code class="docutils literal notranslate"><span class="pre">Fluid.get_states()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.Fluid.plot_phase_diagram"><code class="docutils literal notranslate"><span class="pre">Fluid.plot_phase_diagram()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState"><code class="docutils literal notranslate"><span class="pre">FluidState</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidState.fluid_name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState.get"><code class="docutils literal notranslate"><span class="pre">FluidState.get()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState.items"><code class="docutils literal notranslate"><span class="pre">FluidState.items()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState.keys"><code class="docutils literal notranslate"><span class="pre">FluidState.keys()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState.to_dict"><code class="docutils literal notranslate"><span class="pre">FluidState.to_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.FluidState.values"><code class="docutils literal notranslate"><span class="pre">FluidState.values()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_property_grid"><code class="docutils literal notranslate"><span class="pre">compute_property_grid()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_property_grid_rhoT"><code class="docutils literal notranslate"><span class="pre">compute_property_grid_rhoT()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_pseudocritical_line"><code class="docutils literal notranslate"><span class="pre">compute_pseudocritical_line()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_quality_grid"><code class="docutils literal notranslate"><span class="pre">compute_quality_grid()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_saturation_line"><code class="docutils literal notranslate"><span class="pre">compute_saturation_line()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_spinodal_line"><code class="docutils literal notranslate"><span class="pre">compute_spinodal_line()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_spinodal_point"><code class="docutils literal notranslate"><span class="pre">compute_spinodal_point()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.compute_spinodal_point_general"><code class="docutils literal notranslate"><span class="pre">compute_spinodal_point_general()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.extract_vars"><code class="docutils literal notranslate"><span class="pre">extract_vars()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.states_to_dict"><code class="docutils literal notranslate"><span class="pre">states_to_dict()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.fluid_properties.states_to_dict_2d"><code class="docutils literal notranslate"><span class="pre">states_to_dict_2d()</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Roberto Agromayor.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
