@@ -16,7 +16,7 @@ from .fluid_properties import *
 from .graphics import *
 
 # Package info
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 PACKAGE_NAME = "thermopt"
 URL_GITHUB = "https://github.com/turbo-sim/coolprop-x"
 URL_DOCS = "https://turbo-sim.github.io/coolprop-x/"
