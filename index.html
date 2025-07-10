@@ -296,7 +296,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -312,6 +314,15 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-features">Key features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contents">Contents</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -323,7 +334,13 @@ document.write(`
                   
   <section id="welcome-to-coolpropx-s-documentation">
 <h1>Welcome to CoolPropX’s documentation!<a class="headerlink" href="#welcome-to-coolpropx-s-documentation" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">CoolPropX</span></code> is a thin wrapper around the <a class="reference external" href="https://www.coolprop.org">CoolProp</a> fluid property library that provides easy access to its low-level interface, along with several convenient utilities to:</p>
+<p><code class="docutils literal notranslate"><span class="pre">CoolPropX</span></code> is a thin wrapper around the <a class="reference external" href="https://www.coolprop.org">CoolProp</a> fluid property library that provides easy access to its low-level interface.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This project is developed independently and is not affiliated with or endorsed by the CoolProp project.</p>
+</div>
+<section id="key-features">
+<h2>Key features<a class="headerlink" href="#key-features" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Compute and plot phase envelopes and spinodal lines for pure fluids.</p></li>
 <li><p>Evaluate thermodynamic properties from the Helmholtz energy equation of state, including metastable states inside the two-phase region.</p></li>
@@ -331,10 +348,9 @@ document.write(`
 <li><p>Access structured property dictionaries and immutable <code class="docutils literal notranslate"><span class="pre">FluidState</span></code> objects.</p></li>
 <li><p>Evaluate properties over arrays of input conditions for efficient parametric studies and plotting.</p></li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This project is developed independently and is not affiliated with or endorsed by the CoolProp project.</p>
-</div>
+</section>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">#</a></h2>
 <p>Use the panel to the left or the table of contents below to navigate the documentation.</p>
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
@@ -344,6 +360,7 @@ document.write(`
 <li class="toctree-l1"><a class="reference internal" href="source/api/coolpropx.html">API Reference</a></li>
 </ul>
 </div>
+</section>
 </section>
 
 
@@ -372,6 +389,22 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-features">Key features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contents">Contents</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
