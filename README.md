@@ -9,7 +9,7 @@
 - Accessing structured property dictionaries and immutable `FluidState` objects
 - Evaluate properties over arrays of input conditions for efficient parametric studies and plotting.
 
-> **Note**: This project is developed independently and is not affiliated with or endorsed by the CoolProp project.
+**Note**: This project is developed independently and is not affiliated with or endorsed by the CoolProp project.
 
 
 
