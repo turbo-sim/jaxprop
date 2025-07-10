@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "coolpropx"
+version = "0.0.1"
+description = "A lightweight wrapper to CoolProp's low-level interface."
+authors = ["Roberto Agromayor"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/turbo-sim/coolpropx"
+documentation = "https://github.com/turbo-sim/coolpropx"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.14"
+numpy = "^2.2.4"
+scipy = "^1.15.2"
+matplotlib = "^3.10.1"
+CoolProp = "^6.6.0"
+pysolver_view = "^0.6.2"
+#pysolver_view = { path = "../pysolver_view/", develop = true }
+
+[tool.poetry.group.dev.dependencies]
+ipython = ">=8.13,<8.17"
+toml = "^0.10.2"
+black = "^25.1.0"
+pytest = "^8.3.5"
+pyzotero = "^1.5.19"
+numpydoc = "^1.7.0"
+sphinx = "^7.3.7"
+sphinx-tabs = "^3.4.5"
+sphinx-book-theme = "^1.1.2"
+sphinx-rtd-theme = "^2.0.0"
+sphinxcontrib-bibtex = "^2.6.2"
+sphinxawesome-theme = "^5.1.5"
+sphinx-design = "^0.6.0"
+sphinx-togglebutton = "^0.3.2"
+bump2version = "^1.0.1"
+pydantic = "^2.7.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+# Rememeber to add --tags when publishing a new version
+# git push origin main --tags
