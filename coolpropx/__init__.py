@@ -1,4 +1,3 @@
-
 # Highlight exception messages
 # https://stackoverflow.com/questions/25109105/how-to-colorize-the-output-of-python-errors-in-the-gnome-terminal/52797444#52797444
 try:
