@@ -1368,6 +1368,6 @@ def calculate_mixture_properties(props_1, props_2, y_1, y_2):
 
     # Add properties as aliases (if property exists)
     for key, value in PROPERTY_ALIAS.items():
-        props[key] = props.get(value, np.NaN)
+        props[key] = props.get(value, np.nan)
 
     return props

@@ -240,6 +240,7 @@ class Fluid:
         self.name = name
         self.backend = backend
         self._AS = CP.AbstractState(backend, name)
+        self.abstract_state = self._AS
         self.exceptions = exceptions
         self.converged_flag = False
         self._properties = {}
