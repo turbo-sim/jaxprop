@@ -382,7 +382,7 @@ class Fluid:
 
         # Both properties are 1D arrays
         # meshgrid with indexing='xy' yields shape (len(p2),len(p1))
-        grid_1, grid_2 = np.meshgrid(p1, p2, indexing='ij')
+        grid_1, grid_2 = np.meshgrid(p1, p2, indexing='xy')
         states_2d = []
         for i in range(grid_1.shape[0]):
             row = []
@@ -592,7 +592,7 @@ class Fluid:
         plot_spinodal_line=False,
         spinodal_line_color=0.5 * np.array([1, 1, 1]),
         spinodal_line_width=1.25,
-        spinodal_line_method="bfgs",  # Alternative is slsqp
+        spinodal_line_method="slsqp",  # Alternative is slsqp
         spinodal_line_use_previous=False,  # True is not as robust
         plot_quality_isolines=False,
         plot_two_phase_patch=False,
@@ -1066,7 +1066,7 @@ def compute_saturation_line(fluid, N=100, eps=1e-4):
 def compute_spinodal_line(
     fluid,
     N=50,
-    method="bfgs",
+    method="slsqp",
     use_previous_as_initial_guess=False,
     supersaturation=False,
 ):
@@ -1095,8 +1095,8 @@ def compute_spinodal_line(
     """
 
     # Temperature array with refinement close to the critical point
-    alpha = 0.00
-    T_max = fluid.critical_point.T - 0.5
+    alpha = 0.01
+    T_max = fluid.critical_point.T - 0.25
     T_min = alpha * T_max + (1 - alpha) * fluid.triple_point_liquid.T
     ratio = 1 - T_min / T_max
     t1 = np.logspace(np.log10(1 - 0.9999), np.log10(ratio / 10), int(np.ceil(N / 2)))
@@ -1105,6 +1105,8 @@ def compute_spinodal_line(
 
     # Get limits of entropy to prevent points where EoS breaks down
     s_min, s_max = fluid.triple_point_liquid["s"], fluid.triple_point_vapor["s"]
+    delta = (s_max - s_min)/100
+    s_min, s_max = s_min + delta, s_max - delta
 
     # Initialize dictionaries for storing properties
     spinodal_liq = {}
@@ -1245,7 +1247,7 @@ def compute_property_grid(
 
     # Initialize dictionary to store properties and pre-allocate storage
     properties_dict = {}
-    m, n = len(range_1), len(range_2)
+    n, m = len(range_1), len(range_2)
 
     # Compute properties at each point
     for i in range(m):
@@ -1300,7 +1302,6 @@ def compute_property_grid_rhoT(
 
 from scipy.optimize import root_scalar
 
-
 def compute_spinodal_point_general(
     prop_type,
     prop_value,
@@ -1308,8 +1309,8 @@ def compute_spinodal_point_general(
     branch,
     rho_guess=None,
     N_trial=100,
-    method="bfgs",
-    tolerance=1e-6,
+    method="slsqp",
+    tolerance=1e-8,
     print_convergence=False,
     supersaturation=False,
 ):
@@ -1404,7 +1405,7 @@ def compute_spinodal_point_general(
 
     # Manually check the residual at the solution
     final_residual = residual(result.root)
-    if abs(final_residual) > 1e-6:
+    if abs(final_residual) > 5*tolerance:
         raise ValueError(
             f"The solution converged but the residual {final_residual:.2e} is not within the tolerance.\n"
             f"Check the value of {prop_type}={prop_value:.2e} and branch={branch} to ensure there is a matching spinodal point."
@@ -1432,8 +1433,8 @@ def compute_spinodal_point(
     branch,
     rho_guess=None,
     N_trial=100,
-    method="bfgs",
-    tolerance=1e-6,
+    method="slsqp",
+    tolerance=1e-8,
     supersaturation=False,
     print_convergence=False,
 ):
@@ -1525,11 +1526,12 @@ def compute_spinodal_point(
     # Create spinodal point optimization problem
     problem = _SpinodalPointProblem(temperature, fluid, branch, supersaturation)
 
-    # Check solver method
-    if method == "slsqp":
+    # Check solver method (deprecated)
+    if method == "bfgs":
+        # problem.get_bounds = lambda: ([-np.inf], [np.inf])
         pass
-    elif method == "bfgs":
-        problem.get_bounds = lambda: None
+    elif method == "slsqp":
+        pass
     else:
         raise ValueError(
             f"Solver method {method} is not valid. Valid options are 'slsqp' and 'bfgs'"
@@ -1539,9 +1541,10 @@ def compute_spinodal_point(
     solver = psv.OptimizationSolver(
         problem=problem,
         library="scipy",
-        method=method,  # "l-bfgs-b", "slsqp" "bfgs"
+        method=method,  # "l-bfgs-b", "slsqp" "slsqp"
         tolerance=tolerance,
         print_convergence=print_convergence,
+        problem_scale=50,
     )
 
     # Generate initial guess if not provided
@@ -1566,6 +1569,15 @@ def compute_spinodal_point(
     #  2. Generating an initial guess for each point with the initial guess strategy
     # Option 2. seems the most reliable, and even if the computational cost can be a bit hight
     # it seems to be the most effective way to get accurate spinodal lines.
+    # 
+    # 11.07.2025
+    # I improved the code with 2 modifications:
+    # 
+    #  1. Use logspace instead of linspace to generate initial guess
+    #  2. Apply problem scaling to SLSQP computation
+    # 
+    # With this enhancements, SLSQP produces good spinodal line results
+    # 
 
     return state
 
@@ -1594,9 +1606,11 @@ class _SpinodalPointProblem(psv.OptimizationProblem):
 
         # Generate candidate densities between saturation and the critical value
         if self.branch == "liquid":
-            rho_array = np.linspace(self.rho_liq, self.rho_vap, N)
+            # rho_array = np.linspace(self.rho_liq, self.rho_vap, N)
+            rho_array = np.logspace(np.log10(self.rho_liq), np.log10(self.rho_vap), N)
         elif self.branch == "vapor":
-            rho_array = np.linspace(self.rho_vap, self.rho_liq, N)
+            # rho_array = np.linspace(self.rho_vap, self.rho_liq, N)
+            rho_array = np.logspace(np.log10(self.rho_vap), np.log10(self.rho_liq), N)
         else:
             msg = f"Invalid value for parameter branch={self.branch}. Options: 'liquid' or 'vapor'"
             raise ValueError(msg)

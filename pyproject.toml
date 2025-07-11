@@ -15,7 +15,7 @@ numpy = "^2.2.4"
 scipy = "^1.15.2"
 matplotlib = "^3.10.1"
 CoolProp = "^6.6.0"
-pysolver_view = "^0.6.2"
+pysolver_view = "^0.6.8"
 #pysolver_view = { path = "../pysolver_view/", develop = true }
 
 [tool.poetry.group.dev.dependencies]

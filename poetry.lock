@@ -1777,14 +1777,14 @@ diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
 name = "pysolver-view"
-version = "0.6.2"
+version = "0.6.8"
 description = "Visualization of solver convergence evolution"
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["main"]
 files = [
-    {file = "pysolver_view-0.6.2-py3-none-any.whl", hash = "sha256:2ff82bee943b207626355ca8f40ee871ecba1c963f2f799ce42c254f6d70e957"},
-    {file = "pysolver_view-0.6.2.tar.gz", hash = "sha256:07831dcdd2817594b45aedefe9d3b480683accd029a1ad1b6e5af1186fce1e2a"},
+    {file = "pysolver_view-0.6.8-py3-none-any.whl", hash = "sha256:0a2178299d2010326c0323c90f6fe7c4f35c732bd4e39ec943d9ea75badc355c"},
+    {file = "pysolver_view-0.6.8.tar.gz", hash = "sha256:3ba36c44428d4179e3af88539fc8289618931409aba43aa0abd381573a827380"},
 ]
 
 [package.dependencies]
@@ -1796,6 +1796,9 @@ pandas = ">=2.2.3,<3.0.0"
 PyYAML = ">=6.0.2,<7.0.0"
 scipy = ">=1.15.2,<2.0.0"
 toml = ">=0.10.2,<0.11.0"
+
+[package.extras]
+jax = ["jax (>=0.5.3,<0.6.0)"]
 
 [[package]]
 name = "pytest"

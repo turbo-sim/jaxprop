@@ -921,8 +921,11 @@ def blend_properties(
     for key in props_equilibrium.keys():
         prop_equilibrium = props_equilibrium.get(key, np.nan)
         prop_metastable = props_metastable.get(key, np.nan)
-        props_blended[key] = prop_equilibrium * (1 - sigma) + prop_metastable * sigma
-
+        if utils.is_numeric(prop_equilibrium) and utils.is_numeric(prop_metastable):
+            props_blended[key] = prop_equilibrium * (1 - sigma) + prop_metastable * sigma
+        else:
+            props_blended[key] = None
+            
     # Add additional properties
     props_blended["x"] = x
     props_blended["sigma"] = sigma
