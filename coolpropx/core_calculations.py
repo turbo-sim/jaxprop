@@ -6,6 +6,8 @@ from . import math
 from . import utils
 # from .. import pysolver_view as psv
 
+# Universal molar gas constant
+GAS_CONSTANT = 8.3144598
 
 # Define property aliases
 PROPERTY_ALIAS = {
@@ -34,6 +36,22 @@ PHASE_CHANGE_ALIASES = {
     "cavitation": "evaporation",
 }
 
+# Define NaN fallbacks for viscosity and thermal conductivity
+def get_conductivity(AS):
+    # AS.conductivity()
+    try:
+        return AS.conductivity()
+    except ValueError:
+        return np.nan
+
+def get_viscosity(AS):
+    # AS.viscosity()
+    try:
+        return AS.viscosity()
+    except ValueError:
+        return np.nan
+
+
 # ------------------------------------------------------------------------------------ #
 # Equilibrium property calculations in the single-phase region
 # ------------------------------------------------------------------------------------ #
@@ -55,11 +73,14 @@ def compute_properties_1phase(
     props["umass"] = AS.umass()
     props["hmass"] = AS.hmass()
     props["smass"] = AS.smass()
-    props["gibbsmass"] = AS.gibbsmass()
+    # props["gibbsmass"] = AS.gibbsmass()
     props["cvmass"] = AS.cvmass()
     props["cpmass"] = AS.cpmass()
     props["gamma"] = props["cpmass"] / props["cvmass"]
-    props["compressibility_factor"] = AS.compressibility_factor()
+    # props["compressibility_factor"] = AS.compressibility_factor()
+    M = AS.molar_mass()
+    Z = props["p"] / (props["rhomass"] * (GAS_CONSTANT / M) * props["T"])
+    props["compressibility_factor"] = Z
     props["speed_sound"] = AS.speed_sound()
     props["isentropic_bulk_modulus"] = props["rhomass"] * props["speed_sound"] ** 2
     props["isentropic_compressibility"] = 1 / props["isentropic_bulk_modulus"]
@@ -67,19 +88,16 @@ def compute_properties_1phase(
     props["isothermal_compressibility"] = AS.isothermal_compressibility()
     isobaric_expansion_coefficient = AS.isobaric_expansion_coefficient()
     props["isobaric_expansion_coefficient"] = isobaric_expansion_coefficient
-    props["viscosity"] = AS.viscosity()
-    props["conductivity"] = AS.conductivity()
+    props["viscosity"] = get_viscosity(AS)
+    props["conductivity"] = get_conductivity(AS)
 
     # Generalized quality outside the two-phase region
     if generalize_quality:
         props["Q"] = calculate_generalized_quality(AS)
         props["quality_mass"] = props["Q"]
-        props["quality_volume"] = 1.00 if props["Q"] >= 1 else 0.00
+        props["quality_volume"] = np.nan
     else:
-        _AS = CP.AbstractState(AS.backend_name(), AS.name())
-        _AS.update(CP.DmassT_INPUTS, _AS.rhomass_critical(), _AS.T_critical())
-        s_crit = _AS.smass()
-        props["Q"] = 1.00 if props["smass"] > s_crit else 0.00
+        props["Q"] = props["Q"]
         props["quality_mass"] = props["Q"]
         props["quality_volume"] = props["Q"]
 
@@ -99,6 +117,41 @@ def compute_properties_1phase(
 # ------------------------------------------------------------------------------------ #
 # Equilibrium property calculations in the two-phase region
 # ------------------------------------------------------------------------------------ #
+def compute_dsdp_q(AS, pressure, quality, rel_dp=1e-4):
+    """
+    Compute ds/dp|q using analytic method if available, otherwise fall back to finite difference.
+
+    Parameters:
+        AS : CoolProp.AbstractState
+            AbstractState instance (already configured with fluid and backend)
+        pressure : float
+            Pressure [Pa]
+        quality : float
+            Vapor quality. 0.0 for saturated liquid, 1.0 for saturated vapor
+        rel_dp : float
+            Relative pressure perturbation for finite difference (default: 1e-4)
+
+    Returns:
+        dsdp : float or np.nan
+            Derivative of entropy with respect to pressure at constant quality
+    """
+    try:
+        # Try analytic saturation derivative
+        AS.update(CP.PQ_INPUTS, pressure, quality)
+        dsdp = AS.first_saturation_deriv(CP.iSmass, CP.iP)
+        return dsdp
+    except ValueError:
+        try:
+            # Fallback: finite difference
+            dp = rel_dp * pressure
+            AS.update(CP.PQ_INPUTS, pressure, quality)
+            s0 = AS.smass()
+            AS.update(CP.PQ_INPUTS, pressure + dp, quality)
+            s1 = AS.smass()
+            return (s1 - s0) / dp
+        except Exception:
+            return np.nan
+
 
 
 def compute_properties_2phase(abstract_state, supersaturation=False):
@@ -123,27 +176,29 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
     u_mix = AS.umass()
     h_mix = AS.hmass()
     s_mix = AS.smass()
-    gibbs_mix = AS.gibbsmass()
+    # gibbs_mix = AS.gibbsmass()
 
     # Saturated liquid properties
     cloned_AS.update(CP.QT_INPUTS, 0.00, T_mix)
     rho_L = cloned_AS.rhomass()
     cp_L = cloned_AS.cpmass()
     cv_L = cloned_AS.cvmass()
-    k_L = cloned_AS.conductivity()
-    mu_L = cloned_AS.viscosity()
+    k_L = get_conductivity(cloned_AS)
+    mu_L = get_viscosity(cloned_AS)
     a_L = cloned_AS.speed_sound()
-    dsdp_L = cloned_AS.first_saturation_deriv(CP.iSmass, CP.iP)
+    # dsdp_L = cloned_AS.first_saturation_deriv(CP.iSmass, CP.iP)
+    dsdp_L = compute_dsdp_q(cloned_AS, p_mix, quality=0.0)
 
     # Saturated vapor properties
     cloned_AS.update(CP.QT_INPUTS, 1.00, T_mix)
     rho_V = cloned_AS.rhomass()
     cp_V = cloned_AS.cpmass()
     cv_V = cloned_AS.cvmass()
-    k_V = cloned_AS.conductivity()
-    mu_V = cloned_AS.viscosity()
+    k_V = get_conductivity(cloned_AS)
+    mu_V = get_viscosity(cloned_AS)
     a_V = cloned_AS.speed_sound()
-    dsdp_V = cloned_AS.first_saturation_deriv(CP.iSmass, CP.iP)
+    # dsdp_V = cloned_AS.first_saturation_deriv(CP.iSmass, CP.iP)
+    dsdp_V = compute_dsdp_q(cloned_AS, p_mix, quality=1.0)
 
     # Volume fractions of vapor and liquid
     vfrac_V = (rho_mix - rho_L) / (rho_V - rho_L)
@@ -163,8 +218,7 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
 
     # Compressibility factor of the two-phase mixture
     M = AS.molar_mass()
-    R = AS.gas_constant()
-    Z_mix = p_mix / (rho_mix * (R / M) * T_mix)
+    Z_mix = p_mix / (rho_mix * (GAS_CONSTANT / M) * T_mix)
 
     # Speed of sound of the two-phase mixture
     B1 = vfrac_L / (rho_L * a_L**2) + vfrac_V / (rho_V * a_V**2)
@@ -185,7 +239,7 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
     props["umass"] = u_mix
     props["hmass"] = h_mix
     props["smass"] = s_mix
-    props["gibbsmass"] = gibbs_mix
+    # props["gibbsmass"] = gibbs_mix
     props["cvmass"] = cv_mix
     props["cpmass"] = cp_mix
     props["gamma"] = props["cpmass"] / props["cvmass"]
@@ -310,7 +364,7 @@ def compute_properties_metastable_rhoT(
     AS.update(CP.DmassT_INPUTS, rho, T)
 
     # Get fluid constant properties
-    R = AS.gas_constant()
+    R = GAS_CONSTANT
     M = AS.molar_mass()
     T_crit = AS.T_critical()
     rho_crit = AS.rhomass_critical()
@@ -335,7 +389,7 @@ def compute_properties_metastable_rhoT(
     props["umass"] = (R / M) * T * (tau * dalpha_dTau)
     props["hmass"] = (R / M) * T * (tau * dalpha_dTau + delta * dalpha_dDelta)
     props["smass"] = (R / M) * (tau * dalpha_dTau - alpha)
-    props["gibbsmass"] = (R / M) * T * (alpha + delta * dalpha_dDelta)
+    # props["gibbsmass"] = (R / M) * T * (alpha + delta * dalpha_dDelta)
     props["cvmass"] = (R / M) * (-(tau**2) * d2alpha_dTau2)
     props["cpmass"] = (R / M) * (
         -(tau**2) * d2alpha_dTau2
@@ -371,8 +425,8 @@ def compute_properties_metastable_rhoT(
         * (delta * dalpha_dDelta - delta * tau * d2alpha_dDelta_dTau)
         / (2 * delta * dalpha_dDelta + delta**2 * d2alpha_dDelta2 + 1e-12)
     )
-    props["viscosity"] = AS.viscosity()
-    props["conductivity"] = AS.conductivity()
+    props["viscosity"] = get_viscosity(AS)
+    props["conductivity"] = get_conductivity(AS)
 
     if supersaturation:
         props = calculate_supersaturation(AS, props)
