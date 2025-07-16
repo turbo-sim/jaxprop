@@ -87,4 +87,5 @@ fig.tight_layout(pad=2)
 cpx.savefig_in_formats(fig, os.path.join(fig_dir, "generalized_subcooling"))
 
 # Show figures
-plt.show()
+if not os.environ.get("DISABLE_PLOTS"):
+    plt.show()

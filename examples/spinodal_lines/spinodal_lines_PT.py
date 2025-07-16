@@ -23,7 +23,7 @@ for fluid_name in names:
     # Create fluid
     fluid = cpx.Fluid(
         name=fluid_name,
-        backend="HEOS",
+        backend="REFPROP",
         exceptions=True,
     )
 
@@ -158,4 +158,5 @@ for fluid_name in names:
 
 
 # Show figures
-plt.show()
+if not os.environ.get("DISABLE_PLOTS"):
+    plt.show()

@@ -16,14 +16,16 @@ os.makedirs(fig_dir, exist_ok=True)
 method = "slsqp"
 # names = ["CO2", "water", "nitrogen", "ammonia", "butane", "R134a"]
 # names = ["water"]
-names = ["R1234ZE"]
+names = ["R134a"]
+# names = ["R1233ZDE"]
+# names = ["Carbon dioxide"]
 
 for fluid_name in names:
 
     # Create fluid
     fluid = cpx.Fluid(
         name=fluid_name,
-        backend="HEOS",
+        backend="REFPROP",
         exceptions=True,
     )
 
@@ -64,8 +66,8 @@ for fluid_name in names:
     )
 
     # Create entropy range
-    rho_1 = fluid.triple_point_vapor.rho
-    rho_2 = fluid.triple_point_liquid.rho
+    rho_1 = 1.00*fluid.triple_point_vapor.rho
+    rho_2 = 0.80*fluid.triple_point_liquid.rho
     rho_array = np.linspace(rho_1, rho_2, 500)
 
     # Plot metastable states
@@ -214,4 +216,5 @@ for fluid_name in names:
 
 
 # Show figures
-plt.show()
+if not os.environ.get("DISABLE_PLOTS"):
+    plt.show()

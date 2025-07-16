@@ -75,5 +75,6 @@ fig.tight_layout(pad=1)
 filename = os.path.join(outdir, "Ts_diagram_isobars")
 cpx.savefig_in_formats(fig, filename)
 
-# Show figure
-plt.show()
+# Show figures
+if not os.environ.get("DISABLE_PLOTS"):
+    plt.show()

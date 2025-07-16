@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -37,7 +38,8 @@ cbar.set_ticks(levels[::2])  # every second tick
 fluid.plot_phase_diagram(x_prop, y_prop, axes=ax_1, eps_sat=1e-2, plot_two_phase_patch=True)
 plt.tight_layout(pad=1)
 
-# Show figure
-plt.show()
+# Show figures
+if not os.environ.get("DISABLE_PLOTS"):
+    plt.show()
 
     

@@ -7,7 +7,7 @@ The computed properties are illustrated in a T-s diagram and also printed to sho
 that the results of the different methods are consistent.
 """
 
-
+import os
 import matplotlib.pyplot as plt
 
 import coolpropx as cp
@@ -87,5 +87,6 @@ props = ["p", "T", "rho", "h", "s", "cp", "speed_sound"]
 for prop in props:
     print(f"{prop:>15} {state[prop]:15.04e} {state_rhoT[prop]:15.04e} {state_pT[prop]:15.04e} {state_hs[prop]:15.04e}")
 
-# Show plots
-plt.show()
+# Show figures
+if not os.environ.get("DISABLE_PLOTS"):
+    plt.show()

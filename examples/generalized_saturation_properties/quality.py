@@ -249,4 +249,5 @@ cpx.savefig_in_formats(fig, os.path.join(fig_dir, "generalized_vapor_quality_ise
 
 
 # Show figures
-plt.show()
+if not os.environ.get("DISABLE_PLOTS"):
+    plt.show()
