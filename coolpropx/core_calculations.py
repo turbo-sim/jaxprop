@@ -15,6 +15,7 @@ PROPERTY_ALIAS = {
     "rho": "rhomass",
     "density": "rhomass",
     "d": "rhomass",
+    "dmass": "rhomass",
     "u": "umass",
     "h": "hmass",
     "s": "smass",
@@ -90,6 +91,7 @@ def compute_properties_1phase(
     props["isobaric_expansion_coefficient"] = isobaric_expansion_coefficient
     props["viscosity"] = get_viscosity(AS)
     props["conductivity"] = get_conductivity(AS)
+    props["surface_tension"] = np.nan
 
     # Generalized quality outside the two-phase region
     if generalize_quality:
@@ -97,7 +99,7 @@ def compute_properties_1phase(
         props["quality_mass"] = props["Q"]
         props["quality_volume"] = np.nan
     else:
-        props["Q"] = props["Q"]
+        props["Q"] = AS.Q()
         props["quality_mass"] = props["Q"]
         props["quality_volume"] = props["Q"]
 
@@ -167,7 +169,10 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
 
     # Instantiate new AbstractState to compute saturation properties without changing the state of the class
     AS = abstract_state
-    cloned_AS = CP.AbstractState(AS.backend_name(), AS.name())
+    fluids = AS.fluid_names()
+    if len(fluids) != 1:
+        raise ValueError(f"Expected one fluid, got {fluids}")
+    cloned_AS = CP.AbstractState(AS.backend_name(), fluids[0])
 
     # Basic properties of the two-phase mixture
     T_mix = AS.T()
@@ -176,6 +181,7 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
     u_mix = AS.umass()
     h_mix = AS.hmass()
     s_mix = AS.smass()
+    surface_tension = AS.surface_tension()
     # gibbs_mix = AS.gibbsmass()
 
     # Saturated liquid properties
@@ -255,6 +261,7 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
     props["Q"] = mfrac_V
     props["quality_mass"] = mfrac_V
     props["quality_volume"] = vfrac_V
+    props["surface_tension"] = surface_tension
 
     if supersaturation:
         props["subcooling"] = calculate_subcooling(AS)
@@ -265,7 +272,35 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
     for key, value in PROPERTY_ALIAS.items():
         props[key] = props[value]
 
+    # Add saturation properties as subdictionaries
+    props["saturation_liquid"] = {
+        "rhomass": rho_L,
+        "cpmass": cp_L,
+        "cvmass": cv_L,
+        "conductivity": k_L,
+        "viscosity": mu_L,
+        "speed_sound": a_L,
+        "dsdp": dsdp_L,
+    }
+
+    props["saturation_vapor"] = {
+        "rhomass": rho_V,
+        "cpmass": cp_V,
+        "cvmass": cv_V,
+        "conductivity": k_V,
+        "viscosity": mu_V,
+        "speed_sound": a_V,
+        "dsdp": dsdp_V,
+    }
+
+    for key, value in PROPERTY_ALIAS.items():
+        if value in props["saturation_liquid"]:
+            props["saturation_liquid"][key] = props["saturation_liquid"][value]
+        if value in props["saturation_vapor"]:
+            props["saturation_vapor"][key] = props["saturation_vapor"][value]
+            
     return props
+
 
 
 # ------------------------------------------------------------------------------------ #
@@ -360,7 +395,10 @@ def compute_properties_metastable_rhoT(
 
     # Update thermodynamic state
     AS = abstract_state
-    AS = CP.AbstractState(AS.backend_name(), AS.name())
+    if isinstance(rho, np.ndarray):
+        rho = rho.item()
+    if isinstance(T, np.ndarray):
+        T = T.item()
     AS.update(CP.DmassT_INPUTS, rho, T)
 
     # Get fluid constant properties
@@ -427,19 +465,10 @@ def compute_properties_metastable_rhoT(
     )
     props["viscosity"] = get_viscosity(AS)
     props["conductivity"] = get_conductivity(AS)
+    props["surface_tension"] = np.nan
 
     if supersaturation:
         props = calculate_supersaturation(AS, props)
-
-    # # Generalized quality outside the two-phase region
-    # if generalize_quality:
-    #     props["Q"] = calculate_generalized_quality(AS)
-    #     props["quality_mass"] = props["Q"]
-    #     props["quality_volume"] = np.nan
-    # else:
-    #     props["Q"] = np.nan
-    #     props["quality_mass"] = np.nan
-    #     props["quality_volume"] = np.nan
 
     # Generalized quality outside the two-phase region
     if generalize_quality:
@@ -447,12 +476,9 @@ def compute_properties_metastable_rhoT(
         props["quality_mass"] = props["Q"]
         props["quality_volume"] = 1.00 if props["Q"] >= 1 else 0.00
     else:
-        _AS = CP.AbstractState(AS.backend_name(), AS.name())
-        _AS.update(CP.DmassT_INPUTS, _AS.rhomass_critical(), _AS.T_critical())
-        s_crit = _AS.smass()
-        props["Q"] = 1.00 if props["smass"] > s_crit else 0.00
-        props["quality_mass"] = props["Q"]
-        props["quality_volume"] = props["Q"]
+        props["Q"] = np.nan
+        props["quality_mass"] = np.nan
+        props["quality_volume"] = np.nan
 
 
     # Add properties as aliases
@@ -1025,18 +1051,22 @@ def calculate_generalized_quality(abstract_state, alpha=10):
         The calculated quality of the fluid.
     """
     # Instantiate new abstract state to compute saturation properties without changing the state of the class
-    state_bis = CP.AbstractState(abstract_state.backend_name(), abstract_state.name())
+    AS = abstract_state
+    fluids = AS.fluid_names()  # AS.name does not work well for REFPROP backend
+    if len(fluids) != 1:
+        raise ValueError(f"Expected one fluid, got {fluids}")
+    cloned_AS = CP.AbstractState(AS.backend_name(), fluids[0])
 
     # Extend quality calculation beyond the two-phase region
     # Checking if subcritical using temperature works better than with pressure
     if abstract_state.T() < abstract_state.T_critical():
         # Saturated liquid
-        state_bis.update(CP.QT_INPUTS, 0.00, abstract_state.T())
-        rho_liq = state_bis.rhomass()
+        cloned_AS.update(CP.QT_INPUTS, 0.00, abstract_state.T())
+        rho_liq = cloned_AS.rhomass()
 
         # Saturated vapor
-        state_bis.update(CP.QT_INPUTS, 1.00, abstract_state.T())
-        rho_vap = state_bis.rhomass()
+        cloned_AS.update(CP.QT_INPUTS, 1.00, abstract_state.T())
+        rho_vap = cloned_AS.rhomass()
 
     else:
         # For states at or above the critical temperature, the concept of saturation states is not applicable
@@ -1124,42 +1154,45 @@ def calculate_superheating(abstract_state):
     """
     # Instantiate new abstract state to compute saturation properties without changing the state of the class
     AS = abstract_state
-    sat_state = CP.AbstractState(AS.backend_name(), AS.name())
+    fluids = AS.fluid_names()  # AS.name does not work well for REFPROP backend
+    if len(fluids) != 1:
+        raise ValueError(f"Expected one fluid, got {fluids}")
+    sat_AS = CP.AbstractState(AS.backend_name(), fluids[0])
 
     # Compute triple pressure
-    sat_state.update(CP.QT_INPUTS, 1.00, AS.Ttriple())
-    p_triple = sat_state.p()
+    sat_AS.update(CP.QT_INPUTS, 1.00, AS.Ttriple())
+    p_triple = sat_AS.p()
 
     # Check if the pressure is below the critical pressure of the fluid
     if AS.p() < AS.p_critical():
 
         # Compute triple pressure (needed to avoid error at low pressure)
-        sat_state.update(CP.QT_INPUTS, 1.00, AS.Ttriple())
-        p_triple = sat_state.p()
+        sat_AS.update(CP.QT_INPUTS, 1.00, AS.Ttriple())
+        p_triple = sat_AS.p()
 
         # Set the saturation state of the fluid at the given pressure
-        sat_state.update(CP.PQ_INPUTS, max(p_triple, AS.p()), 1.00)
+        sat_AS.update(CP.PQ_INPUTS, max(p_triple, AS.p()), 1.00)
 
         # Check if the fluid is in the two-phase or liquid regions
-        if AS.hmass() < sat_state.hmass():
+        if AS.hmass() < sat_AS.hmass():
             # Below the vapor saturation enthalpy, define superheating as the normalized difference in enthalpy
             # The normalization is done using the specific heat capacity at saturation (cp)
             # This provides a continuous measure of superheating, even in the two-phase region
-            superheating = (AS.hmass() - sat_state.hmass()) / sat_state.cpmass()
+            superheating = (AS.hmass() - sat_AS.hmass()) / sat_AS.cpmass()
         else:
             # Outside the two-phase region, superheating is the difference in temperature
             # from the saturation temperature at the same pressure
-            superheating = AS.T() - sat_state.T()
+            superheating = AS.T() - sat_AS.T()
     else:
         # For states at or above the critical pressure, the concept of saturation temperature is not applicable
         # Instead, use a 'pseudo-critical' state for comparison, where the density is set to the critical density
         # but the pressure is the same as the state of interest
         rho_crit = AS.rhomass_critical()
-        sat_state.update(CP.DmassP_INPUTS, rho_crit, AS.p())
+        sat_AS.update(CP.DmassP_INPUTS, rho_crit, AS.p())
 
         # Define superheating as the difference in enthalpy from this 'pseudo-critical' state
         # This approach extends the definition of superheating to conditions above the critical pressure
-        superheating = AS.T() - sat_state.T()
+        superheating = AS.T() - sat_AS.T()
 
     return superheating
 
@@ -1222,38 +1255,41 @@ def calculate_subcooling(abstract_state):
 
     # Instantiate new abstract state to compute saturation properties without changing the state of the class
     AS = abstract_state
-    sat_state = CP.AbstractState(AS.backend_name(), AS.name())
+    fluids = AS.fluid_names()  # AS.name does not work well for REFPROP backend
+    if len(fluids) != 1:
+        raise ValueError(f"Expected one fluid, got {fluids}")
+    sat_AS = CP.AbstractState(AS.backend_name(), fluids[0])
 
     # Check if the pressure is below the critical pressure of the fluid
     if AS.p() < AS.p_critical():
 
         # Compute triple pressure (needed to avoid error at low pressure)
-        sat_state.update(CP.QT_INPUTS, 0.00, AS.Ttriple())
-        p_triple = sat_state.p()
+        sat_AS.update(CP.QT_INPUTS, 0.00, AS.Ttriple())
+        p_triple = sat_AS.p()
 
         # Set the saturation state of the fluid at the given pressure
-        sat_state.update(CP.PQ_INPUTS, max(p_triple, AS.p()), 0.00)
+        sat_AS.update(CP.PQ_INPUTS, max(p_triple, AS.p()), 0.00)
 
         # Check if the fluid is in the two-phase or vapor regions
-        if AS.hmass() > sat_state.hmass():
+        if AS.hmass() > sat_AS.hmass():
             # Above the liquid saturation enthalpy, define superheating as the normalized difference in enthalpy
             # The normalization is done using the specific heat capacity at saturation (cp)
             # This provides a continuous measure of superheating, even in the two-phase region
-            subcooling = (sat_state.hmass() - AS.hmass()) / sat_state.cpmass()
+            subcooling = (sat_AS.hmass() - AS.hmass()) / sat_AS.cpmass()
         else:
             # Outside the two-phase region, superheating is the difference in temperature
             # from the saturation temperature at the same pressure
-            subcooling = sat_state.T() - AS.T()
+            subcooling = sat_AS.T() - AS.T()
     else:
         # For states at or above the critical pressure, the concept of saturation temperature is not applicable
         # Instead, use a 'pseudo-critical' state for comparison, where the density is set to the critical density
         # but the pressure is the same as the state of interest
         rho_crit = AS.rhomass_critical()
-        sat_state.update(CP.DmassP_INPUTS, rho_crit, AS.p())
+        sat_AS.update(CP.DmassP_INPUTS, rho_crit, AS.p())
 
         # Define superheating as the difference in enthalpy from this 'pseudo-critical' state
         # This approach extends the definition of superheating to conditions above the critical pressure
-        subcooling = sat_state.T() - AS.T()
+        subcooling = sat_AS.T() - AS.T()
 
     return subcooling
 
@@ -1302,7 +1338,11 @@ def calculate_supersaturation(abstract_state, props):
 
     """
     # Compute triple pressure
-    AS = CP.AbstractState(abstract_state.backend_name(), abstract_state.name())
+    AS = abstract_state
+    fluids = AS.fluid_names()  # AS.name does not work well for REFPROP backend
+    if len(fluids) != 1:
+        raise ValueError(f"Expected one fluid, got {fluids}")
+    AS = CP.AbstractState(AS.backend_name(), fluids[0])
     AS.update(CP.QT_INPUTS, 1.00, AS.Ttriple())
     p_triple = AS.p()
 

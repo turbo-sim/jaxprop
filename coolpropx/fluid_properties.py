@@ -1,3 +1,4 @@
+import difflib
 import numpy as np
 import matplotlib.pyplot as plt
 import CoolProp.CoolProp as CP
@@ -89,17 +90,10 @@ DmolarSmolar_INPUTS = CP.DmolarSmolar_INPUTS
 DmassUmass_INPUTS = CP.DmassUmass_INPUTS
 DmolarUmolar_INPUTS = CP.DmolarUmolar_INPUTS
 
-# Define dictionary with dynamically generated fields
-PHASE_INDEX = {attr: getattr(CP, attr) for attr in dir(CP) if attr.startswith("iphase")}
-INPUT_PAIRS = {attr: getattr(CP, attr) for attr in dir(CP) if attr.endswith("_INPUTS")}
-INPUT_PAIRS = sorted(INPUT_PAIRS.items(), key=lambda x: x[1])
-INPUT_TYPE_MAP = {v: k for k, v in INPUT_PAIRS}
-
 
 # Convert each input key to a tuple of FluidState variable names
 # Capitalized names that should not be lowercased
 preserve_case = {'T', 'Q'}
-
 def extract_vars(name):
     base = name.replace("_INPUTS", "")
     parts = []
@@ -113,9 +107,11 @@ def extract_vars(name):
     parts.append(current)
     return tuple(p if p in preserve_case else p.lower() for p in parts)
 
+# Define dictionary with dynamically generated fields
+PHASE_INDEX = {attr: getattr(CP, attr) for attr in dir(CP) if attr.startswith("iphase")}
+INPUT_PAIRS = {attr: getattr(CP, attr) for attr in dir(CP) if attr.endswith("_INPUTS")}
+INPUT_TYPE_MAP = {v: k for k, v in sorted(INPUT_PAIRS.items(), key=lambda x: x[1])}
 INPUT_PAIR_MAP = {k: extract_vars(v) for k, v in INPUT_TYPE_MAP.items()}
-
-
 
 def _handle_computation_exceptions(func):
     @wraps(func)
@@ -157,6 +153,8 @@ def _generate_coolprop_input_table():
         inputs_table += f"     - {value}\n"
 
     return inputs_table
+
+
 
 class Fluid:
     """
@@ -239,7 +237,8 @@ class Fluid:
     ):
         self.name = name
         self.backend = backend
-        self._AS = CP.AbstractState(backend, name)
+        # self._AS = CP.AbstractState(backend, name)
+        self._AS = try_initialize_fluid(name, backend)
         self.abstract_state = self._AS
         self.exceptions = exceptions
         self.converged_flag = False
@@ -257,19 +256,10 @@ class Fluid:
         self.graphic_elements = {}
 
         # Get critical and triple point properties
-        if self._AS.fluid_param_string("pure") == "true":
+        if is_pure_substance(self._AS):
             self.critical_point = self._compute_critical_point()
             self.triple_point_liquid = self._compute_triple_point_liquid()
             self.triple_point_vapor = self._compute_triple_point_vapor()
-
-        # # Assign critical point properties
-        # if initialize_critical:
-        #     self.critical_point = self._compute_critical_point()
-
-        # # Assign triple point properties
-        # if initialize_triple:
-        #     self.triple_point_liquid = self._compute_triple_point_liquid()
-        #     self.triple_point_vapor = self._compute_triple_point_vapor()
 
         # Pressure and temperature limits
         self.p_min = 1
@@ -371,35 +361,41 @@ class Fluid:
             states = [self.get_state(input_type, float(p1i), float(p2),
                                      generalize_quality, supersaturation)
                       for p1i in p1]
-            return states_to_dict(states), p1
+            return states_to_dict(states)
 
         # 1D array for property 2
         if p1.size == 1 and p2.size > 1:
             states = [self.get_state(input_type, float(p1), float(p2j),
                                      generalize_quality, supersaturation)
                       for p2j in p2]
-            return states_to_dict(states), p2
+            return states_to_dict(states)
 
         # Both properties are 1D arrays
         # meshgrid with indexing='xy' yields shape (len(p2),len(p1))
-        grid_1, grid_2 = np.meshgrid(p1, p2, indexing='xy')
-        states_2d = []
-        for i in range(grid_1.shape[0]):
-            row = []
-            for j in range(grid_1.shape[1]):
-                row.append(
-                    self.get_state(
-                        input_type,
-                        float(grid_1[i, j]),
-                        float(grid_2[i, j]),
-                        generalize_quality,
-                        supersaturation,
+        if p1.ndim == 1 and p2.ndim == 1 and p1.size > 1 and p2.size > 1:
+            grid_1, grid_2 = np.meshgrid(p1, p2, indexing='xy')
+            states_2d = []
+            for i in range(grid_1.shape[0]):
+                row = []
+                for j in range(grid_1.shape[1]):
+                    row.append(
+                        self.get_state(
+                            input_type,
+                            float(grid_1[i, j]),
+                            float(grid_2[i, j]),
+                            generalize_quality,
+                            supersaturation,
+                        )
                     )
-                )
-            states_2d.append(row)
+                states_2d.append(row)
 
-        return states_to_dict_2d(states_2d)
-    
+            return states_to_dict_2d(states_2d)
+
+        # Invalid combination
+        raise ValueError(
+            f"Invalid prop_1 and prop_2 shapes. Expected scalar or 1D array. "
+            f"Got prop_1.shape = {p1.shape}, prop_2.shape = {p2.shape}."
+        )        
 
     @_handle_computation_exceptions
     def get_state_equilibrium(
@@ -602,8 +598,10 @@ class Fluid:
         show_in_legend=False,
         x_scale="linear",
         y_scale="linear",
-        eps_sat=1e-4
+        eps_sat=1e-4,
+        eps_spdl=0.25,
     ):
+        
         if axes is None:
             # axes = plt.gca()
             fig, axes = plt.subplots(figsize=(6, 5))
@@ -639,6 +637,7 @@ class Fluid:
                     method=spinodal_line_method,
                     use_previous_as_initial_guess=spinodal_line_use_previous,
                     supersaturation=False,
+                    eps=eps_spdl,
                 )
             x = list(reversed(self.spdl_liq[x_prop])) + self.spdl_vap[x_prop]
             y = list(reversed(self.spdl_liq[y_prop])) + self.spdl_vap[y_prop]
@@ -684,7 +683,7 @@ class Fluid:
         # Plot quality isolines
         if plot_quality_isolines:
             if self.q_mesh is None:
-                self.q_mesh = compute_quality_grid(self, N, quality_levels)
+                self.q_mesh = compute_quality_grid(self, N, quality_levels, eps=eps_sat)
             x = self.q_mesh[x_prop]
             y = self.q_mesh[y_prop]
             _, m = np.shape(x)
@@ -911,17 +910,31 @@ class FluidState:
         )
 
     def __repr__(self):
-        # Returns a string representation of the FluidState instance, including its class name, properties, and fluid name.
-        return f"{self.__class__.__name__}({self._properties}, '{self.fluid_name}')"
+        # Returns a string representation of the FluidState instance
+        return f"FluidState(n_props={len(self._properties)}, fluid='{self.fluid_name}')"
 
     def __str__(self):
-        # Make object print()-able
-        prop_str = "\n   ".join(
-            f"{k}: {v if isinstance(v, str) else f'{v: .6e}'}"
-            for k, v in self._properties.items()
-        )
-        return f"FluidState:\n   {prop_str}"
+        # Recursive pretty-printing of nested dictionaries
+        def format_entry(key, value, indent="   "):
+            if isinstance(value, dict):
+                lines = [f"{indent}{key}:"]
+                for subkey, subval in value.items():
+                    lines.append(format_entry(subkey, subval, indent + "  "))
+                return "\n".join(lines)
+            elif isinstance(value, str):
+                return f"{indent}{key}: {value}"
+            elif isinstance(value, bool):  # Handle booleans separately
+                return f"{indent}{key}: {value}"
+            else:
+                try:
+                    return f"{indent}{key}: {value: .6e}"
+                except (TypeError, ValueError):
+                    return f"{indent}{key}: {value}"
 
+        lines = [format_entry(k, v) for k, v in self._properties.items()]
+        return "FluidState:\n" + "\n".join(lines)
+
+    
     def __iter__(self):
         # Iterate over the object like a dictionary
         return iter(self._properties)
@@ -1048,12 +1061,12 @@ def compute_saturation_line(fluid, N=100, eps=1e-4):
         state_vapor = fluid.get_state(CP.QT_INPUTS, 1.00, T)
         for name in state_liquid.keys():
             if name not in saturation_liq:
-                saturation_liq[name] = [fluid.critical_point[name]]
+                saturation_liq[name] = [fluid.critical_point.get(name, None)]
             saturation_liq[name].append(state_liquid[name])
 
         for name in state_vapor.keys():
             if name not in saturation_vap:
-                saturation_vap[name] = [fluid.critical_point[name]]
+                saturation_vap[name] = [fluid.critical_point.get(name, None)]
             saturation_vap[name].append(state_vapor[name])
 
     # # Reverse the liquid properties for easy concatenation
@@ -1069,6 +1082,7 @@ def compute_spinodal_line(
     method="slsqp",
     use_previous_as_initial_guess=False,
     supersaturation=False,
+    eps=0.25,
 ):
     """
     Compute the spinodal line for a given fluid.
@@ -1096,7 +1110,7 @@ def compute_spinodal_line(
 
     # Temperature array with refinement close to the critical point
     alpha = 0.01
-    T_max = fluid.critical_point.T - 0.25
+    T_max = fluid.critical_point.T - eps
     T_min = alpha * T_max + (1 - alpha) * fluid.triple_point_liquid.T
     ratio = 1 - T_min / T_max
     t1 = np.logspace(np.log10(1 - 0.9999), np.log10(ratio / 10), int(np.ceil(N / 2)))
@@ -1180,29 +1194,36 @@ def compute_pseudocritical_line(fluid, N_points=100):
 
     # Loop over temperatures and compute pseudocritical properties
     for T in T_range:
+        if T >= fluid.abstract_state.Tmax():
+            break
         for name in prop_names:
             state = fluid.get_state(DmassT_INPUTS, fluid.critical_point.d, T)
-            pseudocritical_line[name].append(state[name])
+            pseudocritical_line[name].append(state.get(name, None))
 
     return pseudocritical_line
 
 
-def compute_quality_grid(fluid, num_points, quality_levels):
+def compute_quality_grid(fluid, num_points, quality_levels, eps=1e-4):
     # Define temperature levels
-    t1 = np.logspace(np.log10(1 - 0.9999), np.log10(0.1), int(num_points / 2))
-    t2 = np.logspace(
-        np.log10(0.1),
-        np.log10(1 - (fluid.triple_point_liquid.T) / fluid.critical_point.T),
-        int(num_points / 2),
-    )
-    temperature_levels = (1 - np.hstack((t1, t2))) * fluid.critical_point.T
+    R = 1 - fluid.triple_point_liquid.T / fluid.critical_point.T
+    t1 = np.logspace(np.log10(eps), np.log10(R / 10), int(np.ceil(num_points / 2)))
+    t2 = np.linspace(R / 10, R, int(np.floor(num_points / 2)))
+    temperature_levels = (1 - np.concatenate([t1, t2])) * fluid.critical_point.T
+    # t2 = np.logspace(
+    #     np.log10(0.1),
+    #     np.log10(1 - (fluid.triple_point_liquid.T) / fluid.critical_point.T),
+    #     int(num_points / 2),
+    # )
+    # temperature_levels = (1 - np.hstack((t1, t2))) * fluid.critical_point.T
 
     # Calculate property grid
     quality_grid = []
     for q in quality_levels:
         row = []
+        row.append(fluid.critical_point)
         for T in temperature_levels:
             row.append(fluid.get_state(CP.QT_INPUTS, q, T))
+        
         quality_grid.append(row)
 
     return states_to_dict_2d(quality_grid)
@@ -1824,3 +1845,140 @@ class _SpinodalPointProblem(psv.OptimizationProblem):
 
 #     def get_n_ineq(self):
 #         return self.get_number_of_constraints(self.c_ineq)
+
+
+# ------------------------------------------------------------------------------------ #
+# Utility functions
+# ------------------------------------------------------------------------------------ #
+
+def safe_alias_split(raw_string):
+    """
+    Split a CoolProp alias string safely, preserving multi-part names 
+    that include commas (e.g., chemical names like '1,2-dichloroethane').
+
+    Parameters
+    ----------
+    raw_string : str
+        Comma-separated alias string from CoolProp.
+
+    Returns
+    -------
+    list of str
+        Cleaned list of alias names, with spurious splits recombined.
+    """
+    tokens = raw_string.split(",")
+    merged = []
+    buffer = ""
+
+    for token in tokens:
+        token = token.strip()
+        if not token:
+            continue
+        if token.isdigit():
+            if buffer:
+                buffer += "," + token
+            else:
+                buffer = token
+        else:
+            if buffer:
+                buffer += "," + token
+                merged.append(buffer)
+                buffer = ""
+            else:
+                merged.append(token)
+    if buffer:
+        merged.append(buffer)
+    return merged
+
+
+def print_fluid_names():
+    """
+    Print all canonical fluids and their aliases in a structured format.
+    """
+    canonical_fluids = CP.get_global_param_string("FluidsList").split(",")
+
+    for fluid in canonical_fluids:
+        raw_aliases = CP.get_fluid_param_string(fluid, "aliases")
+        aliases = safe_alias_split(raw_aliases)
+        print(f"{fluid}:")
+        for alias in aliases:
+            print(f"  - {alias}")
+        print()  # empty line between fluids
+
+
+def build_alias_map():
+    """
+    Build a mapping from alias names to canonical CoolProp fluid names.
+
+    Returns
+    -------
+    dict
+        Dictionary where keys are aliases and values are canonical fluid names.
+    """
+    alias_map = {}
+    canonical_fluids = CP.get_global_param_string("FluidsList").split(",")
+
+    for fluid in canonical_fluids:
+        raw_aliases = CP.get_fluid_param_string(fluid, "aliases")
+        aliases = safe_alias_split(raw_aliases)
+        if aliases:
+            for alias in aliases:
+                alias_map[alias] = fluid
+        # Always include canonical name as valid alias
+        alias_map[fluid] = fluid
+
+    return alias_map
+
+
+def try_initialize_fluid(name: str, backend: str = "HEOS"):
+    """
+    Attempt to initialize a CoolProp AbstractState for the given fluid name.
+    If initialization fails, raise a ValueError with close name suggestions.
+
+    Parameters
+    ----------
+    name : str
+        Fluid name or alias to initialize.
+    backend : str, optional
+        CoolProp backend to use (default is 'HEOS').
+
+    Returns
+    -------
+    CP.AbstractState
+        Initialized CoolProp AbstractState object.
+
+    Raises
+    ------
+    ValueError
+        If the fluid name is not recognized by CoolProp, with close suggestions.
+    """
+    try:
+        return CP.AbstractState(backend, name)
+    except ValueError as e:
+        alias_map = build_alias_map()
+        all_aliases = list(alias_map.keys())
+        suggestions = difflib.get_close_matches(name, all_aliases, n=3)
+
+        suggestion_msg = (
+            f" Did you mean: {', '.join(suggestions)}?" if suggestions else ""
+        )
+
+        raise ValueError(
+            f"CoolProp could not initialize fluid '{name}'.{suggestion_msg}"
+        ) from e
+    
+    
+def is_pure_substance(AS) -> bool:
+    backend = AS.backend_name()
+
+    if backend == "HelmholtzEOSBackend":  # Alias HEOS
+        return AS.fluid_param_string("pure").lower() == "true"
+
+    elif backend in ["REFPROPBackend", "BicubicBackend"]:
+        return len(AS.fluid_names()) == 1 and AS.name().lower() not in [
+            "air", "air (dry)", "r404a", "r407c", "r410a", "r507a"
+        ]
+
+    else:
+        raise NotImplementedError(f"Purity check not implemented for backend '{backend}'")
+
