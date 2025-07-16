@@ -2,14 +2,16 @@
 import pytest
 
 # Define the list of tests
-tests_list = ["test_example_cases.py", "test_default_solver.py", "test_phase_diagrams.py"]
-# tests_list = ["test_example_cases.py"]
+tests_list = [
+    # "test_example_cases.py",
+    "test_property_solvers.py",
+    # "test_helmholtz_evaluation.py",
+    # "test_phase_diagrams.py",
+]
 
-# Run pytest when the python script is executed
+# Run pytest when this python script is executed
 # pytest.main(tests_list)
 pytest.main(tests_list + ["-v"])
-# pytest.main([__file__, "-vv"])
-# pytest.main([__file__])
 
 
 
@@ -19,4 +21,3 @@ pytest.main(tests_list + ["-v"])
 
 # I have to do one function to check spinodal calculation without errors and near zero bulk modulus
 # I have to do tests for the superheating and supersaturation functions?
-
