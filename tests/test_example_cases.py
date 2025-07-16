@@ -1,6 +1,7 @@
-import subprocess
 import os
+import sys
 import pytest
+import subprocess
 from pathlib import Path
 import matplotlib.pyplot as plt
 
@@ -32,10 +33,12 @@ example_ids = [p.name for p in EXAMPLE_SCRIPTS]
 
 @pytest.mark.parametrize("script_path", EXAMPLE_SCRIPTS, ids=example_ids)
 def test_examples(script_path):
+    # Use sys.executable instead of just 'python' to run correctly in GitHub actions (Windows)
     result = subprocess.run(
-        ["python", str(script_path)],
+        [sys.executable, str(script_path)],
         capture_output=True,
         text=True,
-        env={**os.environ, "DISABLE_PLOTS": "1"}  # inject variable
+        env={**os.environ, "DISABLE_PLOTS": "1"}
     )
+
     assert result.returncode == 0, f"Failed: {script_path}\n{result.stderr}"
