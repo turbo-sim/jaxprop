@@ -24,10 +24,10 @@ jobs:
       with:
         python-version: '3.12'
 
-    - name: Install and configure Poetry
-      uses: snok/install-poetry@v1
+    - name: Install Poetry
+      uses: abatilo/actions-poetry@v3
       with:
-        version: 1.8.2
+        poetry-version: "1.8.2"
     
     - name: Install dependencies
       run: poetry install
@@ -48,10 +48,10 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install and configure Poetry
-        uses: snok/install-poetry@v1
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v3
         with:
-          version: 1.8.2
+          poetry-version: "1.8.2"
 
       - name: Install dependencies
         run: poetry install
@@ -75,10 +75,10 @@ jobs:
       with:
         python-version: '3.12'
 
-    - name: Install and configure Poetry
-      uses: snok/install-poetry@v1
+    - name: Install Poetry
+      uses: abatilo/actions-poetry@v3
       with:
-        version: 1.8.2
+        poetry-version: "1.8.2"
 
     - name: Install dependencies
       run: poetry install --only=main
