@@ -1,5 +1,16 @@
+
+import os
 import numpy as np
 import coolpropx as cpx
+
+# Detect if running in GitHub Actions
+IN_GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS", "false").lower() == "true"
+
+# Define available backends
+if IN_GITHUB_ACTIONS:
+    BACKENDS = ["HEOS"]
+else:
+    BACKENDS = ["HEOS", "REFPROP"]
 
 # Define reference states dynamically
 def get_reference_state(fluid, backend, label):
@@ -38,7 +49,6 @@ def get_reference_state(fluid, backend, label):
         return fluid.get_state(cpx.DmassT_INPUTS, state.rhomass, state.T)
 
     raise ValueError(f"Unknown state label: {label}")
-
 
 
 def assert_consistent_values(
@@ -144,108 +154,3 @@ def assert_consistent_values(
             f"(fails check: abs_err < {tolerance:.1e} or rel_err < {tolerance:.1e})"
         )
 
-
-
-
-# # Check solver consistency
-# def assert_consistent_values(
-#     v_ref,
-#     v_new,
-#     prop_name,
-#     fluid_name,
-#     backend,
-#     state_label,
-#     input_type,
-#     prop1_name,
-#     prop1,
-#     prop2_name,
-#     prop2,
-#     rtol,
-#     atol,
-#     log_list,
-#     raise_error=True,
-# ):
-#     """
-#     Compares scalar reference and new thermodynamic state values.
-
-#     Skips known nested keys (like saturation_liquid), treats both-NaN as equal,
-#     logs the dominant error (abs or rel), and optionally asserts consistency.
-#     """
-
-#     # Skip non-numeric types (e.g., strings)
-#     if (
-#         isinstance(v_ref, (bool, np.bool_))
-#         or isinstance(v_new, (bool, np.bool_))
-#         or not isinstance(v_ref, (int, float, np.number))
-#         or not isinstance(v_new, (int, float, np.number))
-#     ):
-#         return
-
-#     # Treat both-NaN as consistent
-#     if np.isnan(v_ref):
-#         return
-
-#     # Compute errors
-#     abs_err = abs(v_new - v_ref)
-#     rel_err = abs_err / abs(v_ref) if abs(v_ref) > 0 else np.inf
-#     isclose_err = abs_err / (atol + rtol * abs(v_ref))
-
-#     # Log result
-#     log_list.append(
-#         {
-#             "fluid": fluid_name,
-#             "backend": backend,
-#             "state": state_label,
-#             "property": prop_name,
-#             "input_type": input_type,
-#             "input_1": prop1,
-#             "input_2": prop2,
-#             "ref_value": v_ref,
-#             "new_value": v_new,
-#             "abs_error": abs_err,
-#             "rel_error": rel_err,
-#             "isclose_error": isclose_err,  # <= dimensionless error for ranking
-#         }
-#     )
-
-#     # Check for assertion failure
-#     if isclose_err > 1 and raise_error:
-#         raise AssertionError(
-#             f"Inconsistency in '{prop_name}' for fluid '{backend}::{fluid_name}' "
-#             f"at state '{state_label}' using input '{input_type}'\n"
-#             f"  input = ({prop1_name} = {prop1:.6g}, {prop2_name} = {prop2:.6g})\n"
-#             f"  ref = {v_ref:.6g}, new = {v_new:.6g}\n"
-#             f"  abs_err = {abs_err:.2e}, rel_err = {rel_err:.2e}, "
-#             f"isclose_error = {isclose_err:.2f} (should be ≤ 1)"
-#         )
-
-    # # Compute errors
-    # abs_err = abs(v_new - v_ref)
-    # rel_err = abs_err / abs(v_ref) if abs(v_ref) > 1e-8 else np.inf
-    # dominant_err = abs_err if abs(v_ref) < 1e-8 else rel_err
-
-    # log_list.append(
-    #     {
-    #         "fluid": fluid_name,
-    #         "backend": backend,
-    #         "state": state_label,
-    #         "property": prop_name,
-    #         "input_type": input_type,
-    #         "input_1": prop1,
-    #         "input_2": prop2,
-    #         "ref_value": v_ref,
-    #         "new_value": v_new,
-    #         "abs_error": abs_err,
-    #         "rel_error": rel_err,
-    #         "dominant_error": dominant_err,
-    #     }
-    # )
-
-    # if not np.isclose(v_ref, v_new, rtol=rtol, atol=atol, equal_nan=True) and raise_error:
-    #     raise AssertionError(
-    #         f"Inconsistency in '{prop_name}' for fluid '{backend}::{fluid_name}' and state '{state_label}' "
-    #         f"with input type '{input_type}'\n"
-    #         f"  input = ({prop1_name}={prop1:.6g}, {prop2_name}={prop2:.6g})\n"
-    #         f"  reference value: {v_ref:.6g}, new value: {v_new:.6g}, "
-    #         f"abs_err: {abs_err:.2e}, rel_err: {rel_err:.2e}"
-    #     )

@@ -17,6 +17,3 @@ tests_list = [
 pytest.main(tests_list + ["-v"])
 
 
-# TODO it would be good to use TOX or NOX to test my installation across multiple python versions.
-# Maybe it is even better to do so through github actions
-

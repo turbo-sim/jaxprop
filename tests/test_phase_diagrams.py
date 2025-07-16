@@ -9,8 +9,8 @@ matplotlib.use("Agg")
 
 cpx.set_plot_options(grid=False)
 
-# Define list of calculation backends and fluids
-BACKENDS = ["HEOS", "REFPROP"]
+# Define list of calculation backends
+from utilities import BACKENDS
 
 # Define all working fluids
 FLUID_NAMES = [

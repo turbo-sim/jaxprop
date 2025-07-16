@@ -16,10 +16,7 @@ PRINT_STATISTICS = os.environ.get("PRINT_STATISTICS") == "1"
 TOL = 1e-4
 
 # Define list of calculation backends
-BACKENDS = [
-    "HEOS",
-    "REFPROP",
-]
+from utilities import BACKENDS
 
 # Define all working fluids
 FLUID_NAMES = [
