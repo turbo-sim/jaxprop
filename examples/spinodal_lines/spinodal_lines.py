@@ -149,7 +149,7 @@ for fluid_name in names:
     ax2.legend(loc="upper right", fontsize=10)
     fig.tight_layout(pad=1)
     cpx.savefig_in_formats(
-        fig, os.path.join(out_dir, f"spinodal_points_density_pressure_{fluid.name}")
+        fig, os.path.join(outdir, f"spinodal_points_density_pressure_{fluid.name}")
     )
 
     # ---------------------------------------------------------------------------------- #
@@ -211,7 +211,7 @@ for fluid_name in names:
     ax3.legend(loc="upper left", fontsize=10)
     fig.tight_layout(pad=1)
     cpx.savefig_in_formats(
-        fig, os.path.join(out_dir, f"spinodal_points_temperature_entropy_{fluid.name}")
+        fig, os.path.join(outdir, f"spinodal_points_temperature_entropy_{fluid.name}")
     )
 
 

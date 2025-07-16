@@ -85,7 +85,7 @@ fluid.plot_phase_diagram(
 ax1.legend(loc="upper left", fontsize=10)
 ax2.legend(loc="upper left", fontsize=10)
 fig.tight_layout(pad=2)
-cpx.savefig_in_formats(fig, os.path.join(out_dir, "generalized_vapor_quality_isobars"))
+cpx.savefig_in_formats(fig, os.path.join(outdir, "generalized_vapor_quality_isobars"))
 
 # p_array1 = np.asarray(np.linspace(0.5, 0.99, 100)) * fluid.critical_point.p
 # p_array2 = np.asarray(np.linspace(1.01, 2.00, 100)) * fluid.critical_point.p
@@ -170,7 +170,7 @@ fluid.plot_phase_diagram(
 ax1.legend(loc="upper left", fontsize=10)
 ax2.legend(loc="upper left", fontsize=10)
 fig.tight_layout(pad=2)
-cpx.savefig_in_formats(fig, os.path.join(out_dir, "generalized_vapor_quality_isotherms"))
+cpx.savefig_in_formats(fig, os.path.join(outdir, "generalized_vapor_quality_isotherms"))
 
 
 # --------------------------------------------------------------------------- #
@@ -241,7 +241,7 @@ fluid.plot_phase_diagram(
 ax1.legend(loc="upper left", fontsize=10)
 ax2.legend(loc="upper left", fontsize=10)
 fig.tight_layout(pad=2)
-cpx.savefig_in_formats(fig, os.path.join(out_dir, "generalized_vapor_quality_isentropes"))
+cpx.savefig_in_formats(fig, os.path.join(outdir, "generalized_vapor_quality_isentropes"))
 
 
 # Show figures

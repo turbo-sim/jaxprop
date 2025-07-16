@@ -9,9 +9,9 @@ import coolpropx as cpx
 # Create the folder to save figures
 cpx.set_plot_options(grid=False)
 colors = cpx.COLORS_MATLAB
-fig_dir = "output"
-if not os.path.exists(fig_dir):
-    os.makedirs(fig_dir)
+out_dir = "output"
+os.makedirs(out_dir, exist_ok=True)
+
 
 # Solver to compute spinodal points
 # names = ["CO2", "water", "nitrogen", "ammonia", "butane", "R134a"]
@@ -91,7 +91,7 @@ for fluid_name in names:
     cpx.scale_graphics_x(fig, 1/fluid.critical_point[prop_x], mode="multiply")
     cpx.scale_graphics_y(fig, 1/fluid.critical_point[prop_y], mode="multiply")
     fig.tight_layout(pad=1)
-    cpx.savefig_in_formats(fig, os.path.join(fig_dir, f"metastable_liquid_{fluid.name}"))
+    cpx.savefig_in_formats(fig, os.path.join(out_dir, f"metastable_liquid_{fluid.name}"))
 
 
     # ------------------------------------------------------------- #
@@ -154,7 +154,7 @@ for fluid_name in names:
     cpx.scale_graphics_x(fig, 1/fluid.critical_point[prop_x], mode="multiply")
     cpx.scale_graphics_y(fig, 1/fluid.critical_point[prop_y], mode="multiply")
     fig.tight_layout(pad=1)
-    cpx.savefig_in_formats(fig, os.path.join(fig_dir, f"metastable_vapor_{fluid.name}"))
+    cpx.savefig_in_formats(fig, os.path.join(out_dir, f"metastable_vapor_{fluid.name}"))
 
 
 # Show figures
