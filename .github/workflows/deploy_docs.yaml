@@ -21,10 +21,10 @@ jobs:
       with:
         python-version: '3.11'  
 
-    - name: Install Poetry
-      uses: abatilo/actions-poetry@v3
+    - name: Install and configure Poetry
+      uses: snok/install-poetry@v1
       with:
-        poetry-version: "1.8.2"  # Or latest version
+        version: 1.8.2
 
     - name: Install dependencies (including dev)
       run: poetry install
