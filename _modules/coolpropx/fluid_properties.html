@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>coolpropx.fluid_properties &#8212; coolpropx v0.1.2 documentation</title>
+    <title>coolpropx.fluid_properties &#8212; coolpropx v0.2.2 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=78fd30dd"></script>
+    <script src="../../_static/documentation_options.js?v=a6e268a8"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">coolpropx v0.1.2 documentation</p>
+    <p class="title logo__title">coolpropx v0.2.2 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -271,7 +271,8 @@ document.write(`
                 <article class="bd-article">
                   
   <h1>Source code for coolpropx.fluid_properties</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">difflib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">CoolProp.CoolProp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">CP</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pysolver_view</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">psv</span>
@@ -362,17 +363,10 @@ document.write(`
 <span class="n">DmassUmass_INPUTS</span> <span class="o">=</span> <span class="n">CP</span><span class="o">.</span><span class="n">DmassUmass_INPUTS</span>
 <span class="n">DmolarUmolar_INPUTS</span> <span class="o">=</span> <span class="n">CP</span><span class="o">.</span><span class="n">DmolarUmolar_INPUTS</span>
 
-<span class="c1"># Define dictionary with dynamically generated fields</span>
-<span class="n">PHASE_INDEX</span> <span class="o">=</span> <span class="p">{</span><span class="n">attr</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">CP</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">CP</span><span class="p">)</span> <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;iphase&quot;</span><span class="p">)}</span>
-<span class="n">INPUT_PAIRS</span> <span class="o">=</span> <span class="p">{</span><span class="n">attr</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">CP</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">CP</span><span class="p">)</span> <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_INPUTS&quot;</span><span class="p">)}</span>
-<span class="n">INPUT_PAIRS</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">INPUT_PAIRS</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">INPUT_TYPE_MAP</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">INPUT_PAIRS</span><span class="p">}</span>
-
 
 <span class="c1"># Convert each input key to a tuple of FluidState variable names</span>
 <span class="c1"># Capitalized names that should not be lowercased</span>
 <span class="n">preserve_case</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">}</span>
-
 <div class="viewcode-block" id="extract_vars">
 <a class="viewcode-back" href="../../source/api/coolpropx.fluid_properties.html#coolpropx.fluid_properties.extract_vars">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_vars</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
@@ -389,9 +383,11 @@ document.write(`
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">p</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">preserve_case</span> <span class="k">else</span> <span class="n">p</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">)</span></div>
 
 
+<span class="c1"># Define dictionary with dynamically generated fields</span>
+<span class="n">PHASE_INDEX</span> <span class="o">=</span> <span class="p">{</span><span class="n">attr</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">CP</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">CP</span><span class="p">)</span> <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;iphase&quot;</span><span class="p">)}</span>
+<span class="n">INPUT_PAIRS</span> <span class="o">=</span> <span class="p">{</span><span class="n">attr</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">CP</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">CP</span><span class="p">)</span> <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_INPUTS&quot;</span><span class="p">)}</span>
+<span class="n">INPUT_TYPE_MAP</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">INPUT_PAIRS</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])}</span>
 <span class="n">INPUT_PAIR_MAP</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">extract_vars</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">INPUT_TYPE_MAP</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
-
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_handle_computation_exceptions</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -433,6 +429,8 @@ document.write(`
         <span class="n">inputs_table</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;     - </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
 
     <span class="k">return</span> <span class="n">inputs_table</span>
+
+
 
 <div class="viewcode-block" id="Fluid">
 <a class="viewcode-back" href="../../source/api/coolpropx.fluid_properties.html#coolpropx.fluid_properties.Fluid">[docs]</a>
@@ -517,7 +515,8 @@ document.write(`
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_AS</span> <span class="o">=</span> <span class="n">CP</span><span class="o">.</span><span class="n">AbstractState</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="c1"># self._AS = CP.AbstractState(backend, name)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_AS</span> <span class="o">=</span> <span class="n">try_initialize_fluid</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">abstract_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_AS</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exceptions</span> <span class="o">=</span> <span class="n">exceptions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">converged_flag</span> <span class="o">=</span> <span class="kc">False</span>
@@ -535,19 +534,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">graphic_elements</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="c1"># Get critical and triple point properties</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_AS</span><span class="o">.</span><span class="n">fluid_param_string</span><span class="p">(</span><span class="s2">&quot;pure&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">is_pure_substance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_AS</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">critical_point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_critical_point</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">triple_point_liquid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_triple_point_liquid</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">triple_point_vapor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_triple_point_vapor</span><span class="p">()</span>
-
-        <span class="c1"># # Assign critical point properties</span>
-        <span class="c1"># if initialize_critical:</span>
-        <span class="c1">#     self.critical_point = self._compute_critical_point()</span>
-
-        <span class="c1"># # Assign triple point properties</span>
-        <span class="c1"># if initialize_triple:</span>
-        <span class="c1">#     self.triple_point_liquid = self._compute_triple_point_liquid()</span>
-        <span class="c1">#     self.triple_point_vapor = self._compute_triple_point_vapor()</span>
 
         <span class="c1"># Pressure and temperature limits</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">p_min</span> <span class="o">=</span> <span class="mi">1</span>
@@ -654,36 +644,42 @@ document.write(`
             <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">input_type</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">p1i</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">p2</span><span class="p">),</span>
                                      <span class="n">generalize_quality</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">)</span>
                       <span class="k">for</span> <span class="n">p1i</span> <span class="ow">in</span> <span class="n">p1</span><span class="p">]</span>
-            <span class="k">return</span> <span class="n">states_to_dict</span><span class="p">(</span><span class="n">states</span><span class="p">),</span> <span class="n">p1</span>
+            <span class="k">return</span> <span class="n">states_to_dict</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
 
         <span class="c1"># 1D array for property 2</span>
         <span class="k">if</span> <span class="n">p1</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">p2</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">input_type</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">p1</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">p2j</span><span class="p">),</span>
                                      <span class="n">generalize_quality</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">)</span>
                       <span class="k">for</span> <span class="n">p2j</span> <span class="ow">in</span> <span class="n">p2</span><span class="p">]</span>
-            <span class="k">return</span> <span class="n">states_to_dict</span><span class="p">(</span><span class="n">states</span><span class="p">),</span> <span class="n">p2</span>
+            <span class="k">return</span> <span class="n">states_to_dict</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
 
         <span class="c1"># Both properties are 1D arrays</span>
         <span class="c1"># meshgrid with indexing=&#39;xy&#39; yields shape (len(p2),len(p1))</span>
-        <span class="n">grid_1</span><span class="p">,</span> <span class="n">grid_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
-        <span class="n">states_2d</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">grid_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">grid_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
-                        <span class="n">input_type</span><span class="p">,</span>
-                        <span class="nb">float</span><span class="p">(</span><span class="n">grid_1</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]),</span>
-                        <span class="nb">float</span><span class="p">(</span><span class="n">grid_2</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]),</span>
-                        <span class="n">generalize_quality</span><span class="p">,</span>
-                        <span class="n">supersaturation</span><span class="p">,</span>
+        <span class="k">if</span> <span class="n">p1</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">p2</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">p1</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">p2</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">grid_1</span><span class="p">,</span> <span class="n">grid_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;xy&#39;</span><span class="p">)</span>
+            <span class="n">states_2d</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">grid_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">grid_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
+                            <span class="n">input_type</span><span class="p">,</span>
+                            <span class="nb">float</span><span class="p">(</span><span class="n">grid_1</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]),</span>
+                            <span class="nb">float</span><span class="p">(</span><span class="n">grid_2</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]),</span>
+                            <span class="n">generalize_quality</span><span class="p">,</span>
+                            <span class="n">supersaturation</span><span class="p">,</span>
+                        <span class="p">)</span>
                     <span class="p">)</span>
-                <span class="p">)</span>
-            <span class="n">states_2d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+                <span class="n">states_2d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">states_to_dict_2d</span><span class="p">(</span><span class="n">states_2d</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">states_to_dict_2d</span><span class="p">(</span><span class="n">states_2d</span><span class="p">)</span>
 
-    
+        <span class="c1"># Invalid combination</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Invalid prop_1 and prop_2 shapes. Expected scalar or 1D array. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Got prop_1.shape = </span><span class="si">{</span><span class="n">p1</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, prop_2.shape = </span><span class="si">{</span><span class="n">p2</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>        </div>
+
 
 <div class="viewcode-block" id="Fluid.get_state_equilibrium">
 <a class="viewcode-back" href="../../source/api/coolpropx.fluid_properties.html#coolpropx.fluid_properties.Fluid.get_state_equilibrium">[docs]</a>
@@ -893,7 +889,7 @@ document.write(`
         <span class="n">plot_spinodal_line</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">spinodal_line_color</span><span class="o">=</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
         <span class="n">spinodal_line_width</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span>
-        <span class="n">spinodal_line_method</span><span class="o">=</span><span class="s2">&quot;bfgs&quot;</span><span class="p">,</span>  <span class="c1"># Alternative is slsqp</span>
+        <span class="n">spinodal_line_method</span><span class="o">=</span><span class="s2">&quot;slsqp&quot;</span><span class="p">,</span>  <span class="c1"># Alternative is slsqp</span>
         <span class="n">spinodal_line_use_previous</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># True is not as robust</span>
         <span class="n">plot_quality_isolines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">plot_two_phase_patch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -903,8 +899,10 @@ document.write(`
         <span class="n">show_in_legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">x_scale</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
         <span class="n">y_scale</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
-        <span class="n">eps_sat</span><span class="o">=</span><span class="mf">1e-4</span>
+        <span class="n">eps_sat</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
+        <span class="n">eps_spdl</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
     <span class="p">):</span>
+        
         <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># axes = plt.gca()</span>
             <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
@@ -940,6 +938,7 @@ document.write(`
                     <span class="n">method</span><span class="o">=</span><span class="n">spinodal_line_method</span><span class="p">,</span>
                     <span class="n">use_previous_as_initial_guess</span><span class="o">=</span><span class="n">spinodal_line_use_previous</span><span class="p">,</span>
                     <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">eps</span><span class="o">=</span><span class="n">eps_spdl</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="n">x</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spdl_liq</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spdl_vap</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]</span>
             <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spdl_liq</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spdl_vap</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]</span>
@@ -985,7 +984,7 @@ document.write(`
         <span class="c1"># Plot quality isolines</span>
         <span class="k">if</span> <span class="n">plot_quality_isolines</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_mesh</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">q_mesh</span> <span class="o">=</span> <span class="n">compute_quality_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">quality_levels</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">q_mesh</span> <span class="o">=</span> <span class="n">compute_quality_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">quality_levels</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps_sat</span><span class="p">)</span>
             <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_mesh</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]</span>
             <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_mesh</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -1216,17 +1215,31 @@ document.write(`
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Returns a string representation of the FluidState instance, including its class name, properties, and fluid name.</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="si">}</span><span class="s2">, &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
+        <span class="c1"># Returns a string representation of the FluidState instance</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;FluidState(n_props=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">)</span><span class="si">}</span><span class="s2">, fluid=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Make object print()-able</span>
-        <span class="n">prop_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="nb">str</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s1"> .6e</span><span class="si">}</span><span class="s1">&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;FluidState:</span><span class="se">\n</span><span class="s2">   </span><span class="si">{</span><span class="n">prop_str</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="c1"># Recursive pretty-printing of nested dictionaries</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">format_entry</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;   &quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">key</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">subkey</span><span class="p">,</span> <span class="n">subval</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">format_entry</span><span class="p">(</span><span class="n">subkey</span><span class="p">,</span> <span class="n">subval</span><span class="p">,</span> <span class="n">indent</span> <span class="o">+</span> <span class="s2">&quot;  &quot;</span><span class="p">))</span>
+                <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>  <span class="c1"># Handle booleans separately</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2"> .6e</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
 
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">format_entry</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="s2">&quot;FluidState:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+    
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Iterate over the object like a dictionary</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">)</span>
@@ -1377,12 +1390,12 @@ document.write(`
         <span class="n">state_vapor</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">QT_INPUTS</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">state_liquid</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">saturation_liq</span><span class="p">:</span>
-                <span class="n">saturation_liq</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span>
+                <span class="n">saturation_liq</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
             <span class="n">saturation_liq</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state_liquid</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
 
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">state_vapor</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">saturation_vap</span><span class="p">:</span>
-                <span class="n">saturation_vap</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span>
+                <span class="n">saturation_vap</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
             <span class="n">saturation_vap</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state_vapor</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
 
     <span class="c1"># # Reverse the liquid properties for easy concatenation</span>
@@ -1398,9 +1411,11 @@ document.write(`
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_spinodal_line</span><span class="p">(</span>
     <span class="n">fluid</span><span class="p">,</span>
     <span class="n">N</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bfgs&quot;</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;slsqp&quot;</span><span class="p">,</span>
     <span class="n">use_previous_as_initial_guess</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">eps</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+    <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the spinodal line for a given fluid.</span>
@@ -1427,8 +1442,8 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Temperature array with refinement close to the critical point</span>
-    <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.00</span>
-    <span class="n">T_max</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span> <span class="o">-</span> <span class="mf">0.5</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.01</span>
+    <span class="n">T_max</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span> <span class="o">-</span> <span class="n">eps</span>
     <span class="n">T_min</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">T_max</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_liquid</span><span class="o">.</span><span class="n">T</span>
     <span class="n">ratio</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">T_min</span> <span class="o">/</span> <span class="n">T_max</span>
     <span class="n">t1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mf">0.9999</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">ratio</span> <span class="o">/</span> <span class="mi">10</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">N</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)))</span>
@@ -1437,6 +1452,8 @@ document.write(`
 
     <span class="c1"># Get limits of entropy to prevent points where EoS breaks down</span>
     <span class="n">s_min</span><span class="p">,</span> <span class="n">s_max</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_liquid</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">],</span> <span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_vapor</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">]</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_max</span> <span class="o">-</span> <span class="n">s_min</span><span class="p">)</span><span class="o">/</span><span class="mi">100</span>
+    <span class="n">s_min</span><span class="p">,</span> <span class="n">s_max</span> <span class="o">=</span> <span class="n">s_min</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="n">s_max</span> <span class="o">-</span> <span class="n">delta</span>
 
     <span class="c1"># Initialize dictionaries for storing properties</span>
     <span class="n">spinodal_liq</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1459,6 +1476,7 @@ document.write(`
             <span class="n">rho_guess</span><span class="o">=</span><span class="n">rho</span><span class="p">,</span>
             <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
             <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
+            <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">s_min</span> <span class="o">&lt;</span> <span class="n">props_liq</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">s_max</span><span class="p">:</span>
@@ -1513,9 +1531,11 @@ document.write(`
 
     <span class="c1"># Loop over temperatures and compute pseudocritical properties</span>
     <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="n">T_range</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">T</span> <span class="o">&gt;=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">abstract_state</span><span class="o">.</span><span class="n">Tmax</span><span class="p">():</span>
+            <span class="k">break</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">prop_names</span><span class="p">:</span>
             <span class="n">state</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">d</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-            <span class="n">pseudocritical_line</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+            <span class="n">pseudocritical_line</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">pseudocritical_line</span></div>
 
@@ -1523,22 +1543,27 @@ document.write(`
 
 <div class="viewcode-block" id="compute_quality_grid">
 <a class="viewcode-back" href="../../source/api/coolpropx.fluid_properties.html#coolpropx.fluid_properties.compute_quality_grid">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_quality_grid</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">num_points</span><span class="p">,</span> <span class="n">quality_levels</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_quality_grid</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">num_points</span><span class="p">,</span> <span class="n">quality_levels</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
     <span class="c1"># Define temperature levels</span>
-    <span class="n">t1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mf">0.9999</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_points</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
-    <span class="n">t2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_liquid</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="nb">int</span><span class="p">(</span><span class="n">num_points</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
-    <span class="p">)</span>
-    <span class="n">temperature_levels</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">)))</span> <span class="o">*</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_liquid</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">eps</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">R</span> <span class="o">/</span> <span class="mi">10</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">num_points</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)))</span>
+    <span class="n">t2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">R</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">num_points</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)))</span>
+    <span class="n">temperature_levels</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">]))</span> <span class="o">*</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span>
+    <span class="c1"># t2 = np.logspace(</span>
+    <span class="c1">#     np.log10(0.1),</span>
+    <span class="c1">#     np.log10(1 - (fluid.triple_point_liquid.T) / fluid.critical_point.T),</span>
+    <span class="c1">#     int(num_points / 2),</span>
+    <span class="c1"># )</span>
+    <span class="c1"># temperature_levels = (1 - np.hstack((t1, t2))) * fluid.critical_point.T</span>
 
     <span class="c1"># Calculate property grid</span>
     <span class="n">quality_grid</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">quality_levels</span><span class="p">:</span>
         <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="n">temperature_levels</span><span class="p">:</span>
             <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">QT_INPUTS</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
+        
         <span class="n">quality_grid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">states_to_dict_2d</span><span class="p">(</span><span class="n">quality_grid</span><span class="p">)</span></div>
@@ -1586,7 +1611,7 @@ document.write(`
 
     <span class="c1"># Initialize dictionary to store properties and pre-allocate storage</span>
     <span class="n">properties_dict</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">range_1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">range_2</span><span class="p">)</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">range_1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">range_2</span><span class="p">)</span>
 
     <span class="c1"># Compute properties at each point</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
@@ -1645,7 +1670,6 @@ document.write(`
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">root_scalar</span>
 
-
 <div class="viewcode-block" id="compute_spinodal_point_general">
 <a class="viewcode-back" href="../../source/api/coolpropx.fluid_properties.html#coolpropx.fluid_properties.compute_spinodal_point_general">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_spinodal_point_general</span><span class="p">(</span>
@@ -1655,8 +1679,8 @@ document.write(`
     <span class="n">branch</span><span class="p">,</span>
     <span class="n">rho_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">N_trial</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bfgs&quot;</span><span class="p">,</span>
-    <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;slsqp&quot;</span><span class="p">,</span>
+    <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span>
     <span class="n">print_convergence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
@@ -1751,7 +1775,7 @@ document.write(`
 
     <span class="c1"># Manually check the residual at the solution</span>
     <span class="n">final_residual</span> <span class="o">=</span> <span class="n">residual</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">root</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">final_residual</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-6</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">final_residual</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="o">*</span><span class="n">tolerance</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;The solution converged but the residual </span><span class="si">{</span><span class="n">final_residual</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2"> is not within the tolerance.</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Check the value of </span><span class="si">{</span><span class="n">prop_type</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">prop_value</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2"> and branch=</span><span class="si">{</span><span class="n">branch</span><span class="si">}</span><span class="s2"> to ensure there is a matching spinodal point.&quot;</span>
@@ -1782,8 +1806,8 @@ document.write(`
     <span class="n">branch</span><span class="p">,</span>
     <span class="n">rho_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">N_trial</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bfgs&quot;</span><span class="p">,</span>
-    <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;slsqp&quot;</span><span class="p">,</span>
+    <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span>
     <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">print_convergence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
@@ -1875,11 +1899,12 @@ document.write(`
     <span class="c1"># Create spinodal point optimization problem</span>
     <span class="n">problem</span> <span class="o">=</span> <span class="n">_SpinodalPointProblem</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">fluid</span><span class="p">,</span> <span class="n">branch</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">)</span>
 
-    <span class="c1"># Check solver method</span>
-    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;slsqp&quot;</span><span class="p">:</span>
+    <span class="c1"># Check solver method (deprecated)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;bfgs&quot;</span><span class="p">:</span>
+        <span class="c1"># problem.get_bounds = lambda: ([-np.inf], [np.inf])</span>
         <span class="k">pass</span>
-    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;bfgs&quot;</span><span class="p">:</span>
-        <span class="n">problem</span><span class="o">.</span><span class="n">get_bounds</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;slsqp&quot;</span><span class="p">:</span>
+        <span class="k">pass</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Solver method </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> is not valid. Valid options are &#39;slsqp&#39; and &#39;bfgs&#39;&quot;</span>
@@ -1889,9 +1914,10 @@ document.write(`
     <span class="n">solver</span> <span class="o">=</span> <span class="n">psv</span><span class="o">.</span><span class="n">OptimizationSolver</span><span class="p">(</span>
         <span class="n">problem</span><span class="o">=</span><span class="n">problem</span><span class="p">,</span>
         <span class="n">library</span><span class="o">=</span><span class="s2">&quot;scipy&quot;</span><span class="p">,</span>
-        <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>  <span class="c1"># &quot;l-bfgs-b&quot;, &quot;slsqp&quot; &quot;bfgs&quot;</span>
+        <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>  <span class="c1"># &quot;l-bfgs-b&quot;, &quot;slsqp&quot; &quot;slsqp&quot;</span>
         <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span>
         <span class="n">print_convergence</span><span class="o">=</span><span class="n">print_convergence</span><span class="p">,</span>
+        <span class="n">problem_scale</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Generate initial guess if not provided</span>
@@ -1916,6 +1942,15 @@ document.write(`
     <span class="c1">#  2. Generating an initial guess for each point with the initial guess strategy</span>
     <span class="c1"># Option 2. seems the most reliable, and even if the computational cost can be a bit hight</span>
     <span class="c1"># it seems to be the most effective way to get accurate spinodal lines.</span>
+    <span class="c1"># </span>
+    <span class="c1"># 11.07.2025</span>
+    <span class="c1"># I improved the code with 2 modifications:</span>
+    <span class="c1"># </span>
+    <span class="c1">#  1. Use logspace instead of linspace to generate initial guess</span>
+    <span class="c1">#  2. Apply problem scaling to SLSQP computation</span>
+    <span class="c1"># </span>
+    <span class="c1"># With this enhancements, SLSQP produces good spinodal line results</span>
+    <span class="c1"># </span>
 
     <span class="k">return</span> <span class="n">state</span></div>
 
@@ -1945,9 +1980,11 @@ document.write(`
 
         <span class="c1"># Generate candidate densities between saturation and the critical value</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">branch</span> <span class="o">==</span> <span class="s2">&quot;liquid&quot;</span><span class="p">:</span>
-            <span class="n">rho_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho_liq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho_vap</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+            <span class="c1"># rho_array = np.linspace(self.rho_liq, self.rho_vap, N)</span>
+            <span class="n">rho_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho_liq</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho_vap</span><span class="p">),</span> <span class="n">N</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">branch</span> <span class="o">==</span> <span class="s2">&quot;vapor&quot;</span><span class="p">:</span>
-            <span class="n">rho_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho_vap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho_liq</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+            <span class="c1"># rho_array = np.linspace(self.rho_vap, self.rho_liq, N)</span>
+            <span class="n">rho_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho_vap</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho_liq</span><span class="p">),</span> <span class="n">N</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Invalid value for parameter branch=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">branch</span><span class="si">}</span><span class="s2">. Options: &#39;liquid&#39; or &#39;vapor&#39;&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -2161,6 +2198,158 @@ document.write(`
 
 <span class="c1">#     def get_n_ineq(self):</span>
 <span class="c1">#         return self.get_number_of_constraints(self.c_ineq)</span>
+
+
+<span class="c1"># ------------------------------------------------------------------------------------ #</span>
+<span class="c1"># Utility functions</span>
+<span class="c1"># ------------------------------------------------------------------------------------ #</span>
+
+<div class="viewcode-block" id="safe_alias_split">
+<a class="viewcode-back" href="../../source/api/coolpropx.fluid_properties.html#coolpropx.fluid_properties.safe_alias_split">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">safe_alias_split</span><span class="p">(</span><span class="n">raw_string</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Split a CoolProp alias string safely, preserving multi-part names </span>
+<span class="sd">    that include commas (e.g., chemical names like &#39;1,2-dichloroethane&#39;).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw_string : str</span>
+<span class="sd">        Comma-separated alias string from CoolProp.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of str</span>
+<span class="sd">        Cleaned list of alias names, with spurious splits recombined.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">raw_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="n">merged</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">buffer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+                <span class="n">buffer</span> <span class="o">+=</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="n">token</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">buffer</span> <span class="o">=</span> <span class="n">token</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+                <span class="n">buffer</span> <span class="o">+=</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="n">token</span>
+                <span class="n">merged</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+                <span class="n">buffer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">merged</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+        <span class="n">merged</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">merged</span></div>
+
+
+
+<div class="viewcode-block" id="print_fluid_names">
+<a class="viewcode-back" href="../../source/api/coolpropx.fluid_properties.html#coolpropx.fluid_properties.print_fluid_names">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_fluid_names</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print all canonical fluids and their aliases in a structured format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">canonical_fluids</span> <span class="o">=</span> <span class="n">CP</span><span class="o">.</span><span class="n">get_global_param_string</span><span class="p">(</span><span class="s2">&quot;FluidsList&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">fluid</span> <span class="ow">in</span> <span class="n">canonical_fluids</span><span class="p">:</span>
+        <span class="n">raw_aliases</span> <span class="o">=</span> <span class="n">CP</span><span class="o">.</span><span class="n">get_fluid_param_string</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="s2">&quot;aliases&quot;</span><span class="p">)</span>
+        <span class="n">aliases</span> <span class="o">=</span> <span class="n">safe_alias_split</span><span class="p">(</span><span class="n">raw_aliases</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fluid</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">aliases</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>  <span class="c1"># empty line between fluids</span></div>
+
+
+
+<div class="viewcode-block" id="build_alias_map">
+<a class="viewcode-back" href="../../source/api/coolpropx.fluid_properties.html#coolpropx.fluid_properties.build_alias_map">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_alias_map</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Build a mapping from alias names to canonical CoolProp fluid names.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Dictionary where keys are aliases and values are canonical fluid names.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">alias_map</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">canonical_fluids</span> <span class="o">=</span> <span class="n">CP</span><span class="o">.</span><span class="n">get_global_param_string</span><span class="p">(</span><span class="s2">&quot;FluidsList&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">fluid</span> <span class="ow">in</span> <span class="n">canonical_fluids</span><span class="p">:</span>
+        <span class="n">raw_aliases</span> <span class="o">=</span> <span class="n">CP</span><span class="o">.</span><span class="n">get_fluid_param_string</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="s2">&quot;aliases&quot;</span><span class="p">)</span>
+        <span class="n">aliases</span> <span class="o">=</span> <span class="n">safe_alias_split</span><span class="p">(</span><span class="n">raw_aliases</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">aliases</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">aliases</span><span class="p">:</span>
+                <span class="n">alias_map</span><span class="p">[</span><span class="n">alias</span><span class="p">]</span> <span class="o">=</span> <span class="n">fluid</span>
+        <span class="c1"># Always include canonical name as valid alias</span>
+        <span class="n">alias_map</span><span class="p">[</span><span class="n">fluid</span><span class="p">]</span> <span class="o">=</span> <span class="n">fluid</span>
+
+    <span class="k">return</span> <span class="n">alias_map</span></div>
+
+
+
+<div class="viewcode-block" id="try_initialize_fluid">
+<a class="viewcode-back" href="../../source/api/coolpropx.fluid_properties.html#coolpropx.fluid_properties.try_initialize_fluid">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">try_initialize_fluid</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;HEOS&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Attempt to initialize a CoolProp AbstractState for the given fluid name.</span>
+<span class="sd">    If initialization fails, raise a ValueError with close name suggestions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Fluid name or alias to initialize.</span>
+<span class="sd">    backend : str, optional</span>
+<span class="sd">        CoolProp backend to use (default is &#39;HEOS&#39;).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    CP.AbstractState</span>
+<span class="sd">        Initialized CoolProp AbstractState object.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the fluid name is not recognized by CoolProp, with close suggestions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CP</span><span class="o">.</span><span class="n">AbstractState</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">alias_map</span> <span class="o">=</span> <span class="n">build_alias_map</span><span class="p">()</span>
+        <span class="n">all_aliases</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">alias_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">suggestions</span> <span class="o">=</span> <span class="n">difflib</span><span class="o">.</span><span class="n">get_close_matches</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">all_aliases</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+        <span class="n">suggestion_msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot; Did you mean: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">suggestions</span><span class="p">)</span><span class="si">}</span><span class="s2">?&quot;</span> <span class="k">if</span> <span class="n">suggestions</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;CoolProp could not initialize fluid &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;.</span><span class="si">{</span><span class="n">suggestion_msg</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span></div>
+
+    
+    
+<div class="viewcode-block" id="is_pure_substance">
+<a class="viewcode-back" href="../../source/api/coolpropx.fluid_properties.html#coolpropx.fluid_properties.is_pure_substance">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_pure_substance</span><span class="p">(</span><span class="n">AS</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">backend</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">backend_name</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;HelmholtzEOSBackend&quot;</span><span class="p">:</span>  <span class="c1"># Alias HEOS</span>
+        <span class="k">return</span> <span class="n">AS</span><span class="o">.</span><span class="n">fluid_param_string</span><span class="p">(</span><span class="s2">&quot;pure&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
+
+    <span class="k">elif</span> <span class="n">backend</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;REFPROPBackend&quot;</span><span class="p">,</span> <span class="s2">&quot;BicubicBackend&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">AS</span><span class="o">.</span><span class="n">fluid_names</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">AS</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;air&quot;</span><span class="p">,</span> <span class="s2">&quot;air (dry)&quot;</span><span class="p">,</span> <span class="s2">&quot;r404a&quot;</span><span class="p">,</span> <span class="s2">&quot;r407c&quot;</span><span class="p">,</span> <span class="s2">&quot;r410a&quot;</span><span class="p">,</span> <span class="s2">&quot;r507a&quot;</span>
+        <span class="p">]</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Purity check not implemented for backend &#39;</span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
+
+
 </pre></div>
 
                 </article>

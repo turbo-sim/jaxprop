@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>API Reference &#8212; coolpropx v0.1.2 documentation</title>
+    <title>API Reference &#8212; coolpropx v0.2.2 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=78fd30dd"></script>
+    <script src="../../_static/documentation_options.js?v=a6e268a8"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -142,7 +142,7 @@
   
   
   
-    <p class="title logo__title">coolpropx v0.1.2 documentation</p>
+    <p class="title logo__title">coolpropx v0.2.2 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -343,11 +343,14 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.core_calculations.html#coolpropx.core_calculations.calculate_subcooling"><code class="docutils literal notranslate"><span class="pre">calculate_subcooling()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.core_calculations.html#coolpropx.core_calculations.calculate_superheating"><code class="docutils literal notranslate"><span class="pre">calculate_superheating()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.core_calculations.html#coolpropx.core_calculations.calculate_supersaturation"><code class="docutils literal notranslate"><span class="pre">calculate_supersaturation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.core_calculations.html#coolpropx.core_calculations.compute_dsdp_q"><code class="docutils literal notranslate"><span class="pre">compute_dsdp_q()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.core_calculations.html#coolpropx.core_calculations.compute_properties"><code class="docutils literal notranslate"><span class="pre">compute_properties()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.core_calculations.html#coolpropx.core_calculations.compute_properties_1phase"><code class="docutils literal notranslate"><span class="pre">compute_properties_1phase()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.core_calculations.html#coolpropx.core_calculations.compute_properties_2phase"><code class="docutils literal notranslate"><span class="pre">compute_properties_2phase()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.core_calculations.html#coolpropx.core_calculations.compute_properties_coolprop"><code class="docutils literal notranslate"><span class="pre">compute_properties_coolprop()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.core_calculations.html#coolpropx.core_calculations.compute_properties_metastable_rhoT"><code class="docutils literal notranslate"><span class="pre">compute_properties_metastable_rhoT()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.core_calculations.html#coolpropx.core_calculations.get_conductivity"><code class="docutils literal notranslate"><span class="pre">get_conductivity()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.core_calculations.html#coolpropx.core_calculations.get_viscosity"><code class="docutils literal notranslate"><span class="pre">get_viscosity()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="coolpropx.fluid_properties.html">coolpropx.fluid_properties module</a><ul>
@@ -371,6 +374,7 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.FluidState.values"><code class="docutils literal notranslate"><span class="pre">FluidState.values()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.build_alias_map"><code class="docutils literal notranslate"><span class="pre">build_alias_map()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.compute_property_grid"><code class="docutils literal notranslate"><span class="pre">compute_property_grid()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.compute_property_grid_rhoT"><code class="docutils literal notranslate"><span class="pre">compute_property_grid_rhoT()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.compute_pseudocritical_line"><code class="docutils literal notranslate"><span class="pre">compute_pseudocritical_line()</span></code></a></li>
@@ -380,8 +384,12 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.compute_spinodal_point"><code class="docutils literal notranslate"><span class="pre">compute_spinodal_point()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.compute_spinodal_point_general"><code class="docutils literal notranslate"><span class="pre">compute_spinodal_point_general()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.extract_vars"><code class="docutils literal notranslate"><span class="pre">extract_vars()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.is_pure_substance"><code class="docutils literal notranslate"><span class="pre">is_pure_substance()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.print_fluid_names"><code class="docutils literal notranslate"><span class="pre">print_fluid_names()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.safe_alias_split"><code class="docutils literal notranslate"><span class="pre">safe_alias_split()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.states_to_dict"><code class="docutils literal notranslate"><span class="pre">states_to_dict()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.states_to_dict_2d"><code class="docutils literal notranslate"><span class="pre">states_to_dict_2d()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.fluid_properties.html#coolpropx.fluid_properties.try_initialize_fluid"><code class="docutils literal notranslate"><span class="pre">try_initialize_fluid()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="coolpropx.graphics.html">coolpropx.graphics module</a><ul>
@@ -419,6 +427,8 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.utils.html#coolpropx.utils.check_lists_match"><code class="docutils literal notranslate"><span class="pre">check_lists_match()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.utils.html#coolpropx.utils.is_float"><code class="docutils literal notranslate"><span class="pre">is_float()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coolpropx.utils.html#coolpropx.utils.is_numeric"><code class="docutils literal notranslate"><span class="pre">is_numeric()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.utils.html#coolpropx.utils.print_dict"><code class="docutils literal notranslate"><span class="pre">print_dict()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coolpropx.utils.html#coolpropx.utils.print_object"><code class="docutils literal notranslate"><span class="pre">print_object()</span></code></a></li>
 </ul>
 </li>
 </ul>

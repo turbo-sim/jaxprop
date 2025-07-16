@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>coolpropx.utils module &#8212; coolpropx v0.1.2 documentation</title>
+    <title>coolpropx.utils module &#8212; coolpropx v0.2.2 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=78fd30dd"></script>
+    <script src="../../_static/documentation_options.js?v=a6e268a8"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">coolpropx v0.1.2 documentation</p>
+    <p class="title logo__title">coolpropx v0.2.2 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -319,6 +319,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.utils.check_lists_match"><code class="docutils literal notranslate"><span class="pre">check_lists_match()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.utils.is_float"><code class="docutils literal notranslate"><span class="pre">is_float()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.utils.is_numeric"><code class="docutils literal notranslate"><span class="pre">is_numeric()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.utils.print_dict"><code class="docutils literal notranslate"><span class="pre">print_dict()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.utils.print_object"><code class="docutils literal notranslate"><span class="pre">print_object()</span></code></a></li>
 </ul>
             </nav>
         </div>
@@ -407,6 +409,54 @@ otherwise False.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="coolpropx.utils.print_dict">
+<span class="sig-prename descclassname"><span class="pre">coolpropx.utils.</span></span><span class="sig-name descname"><span class="pre">print_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/utils.html#print_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.utils.print_dict" title="Link to this definition">#</a></dt>
+<dd><p>Recursively prints nested dictionaries with indentation or returns the formatted string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">dict</span></dt><dd><p>The dictionary to print.</p>
+</dd>
+<dt><strong>indent</strong><span class="classifier">int, optional</span></dt><dd><p>The initial level of indentation for the keys of the dictionary, by default 0.</p>
+</dd>
+<dt><strong>return_output</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, returns the formatted string instead of printing it.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>str or None</dt><dd><p>The formatted string representation of the dictionary if return_output is True, otherwise None.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="coolpropx.utils.print_object">
+<span class="sig-prename descclassname"><span class="pre">coolpropx.utils.</span></span><span class="sig-name descname"><span class="pre">print_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/utils.html#print_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.utils.print_object" title="Link to this definition">#</a></dt>
+<dd><p>Prints all attributes and methods of an object, sorted alphabetically.</p>
+<ul class="simple">
+<li><p>Methods are identified as callable and printed with the prefix ‘Method: ‘.</p></li>
+<li><p>Attributes are identified as non-callable and printed with the prefix ‘Attribute: ‘.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>obj</strong><span class="classifier">object</span></dt><dd><p>The object whose attributes and methods are to be printed.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd><p>This function does not return any value. It prints the attributes and methods of the given object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -448,6 +498,8 @@ otherwise False.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.utils.check_lists_match"><code class="docutils literal notranslate"><span class="pre">check_lists_match()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.utils.is_float"><code class="docutils literal notranslate"><span class="pre">is_float()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.utils.is_numeric"><code class="docutils literal notranslate"><span class="pre">is_numeric()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.utils.print_dict"><code class="docutils literal notranslate"><span class="pre">print_dict()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.utils.print_object"><code class="docutils literal notranslate"><span class="pre">print_object()</span></code></a></li>
 </ul>
   </nav></div>
 
