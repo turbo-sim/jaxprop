@@ -14,10 +14,7 @@ import coolpropx as cp
 cp.set_plot_options(grid=False)
 
 # Create fluid
-fluid = cp.Fluid(
-    name="CO2",
-    exceptions=True
-)
+fluid = cp.Fluid(name="CO2", exceptions=True)
 
 # Create figure
 fig, ax = plt.subplots(figsize=(6.0, 5.0))

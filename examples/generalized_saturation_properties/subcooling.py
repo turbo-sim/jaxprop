@@ -8,9 +8,8 @@ import coolpropx as cpx
 
 # Create the folder to save figures
 cpx.set_plot_options()
-fig_dir = "output"
-if not os.path.exists(fig_dir):
-    os.makedirs(fig_dir)
+outdir = "output"
+os.makedirs(outdir, exist_ok=True)
 
 # Create fluid
 fluid = cpx.Fluid(name="CO2", exceptions=True)
@@ -84,7 +83,7 @@ fluid.plot_phase_diagram(
 ax1.legend(loc="upper left", fontsize=10)
 ax2.legend(loc="lower left", fontsize=10)
 fig.tight_layout(pad=2)
-cpx.savefig_in_formats(fig, os.path.join(fig_dir, "generalized_subcooling"))
+cpx.savefig_in_formats(fig, os.path.join(out_dir, "generalized_subcooling"))
 
 # Show figures
 if not os.environ.get("DISABLE_PLOTS"):

@@ -8,8 +8,8 @@ import coolpropx as cpx
 
 # Create the folder to save figures
 cpx.set_plot_options(grid=False)
-fig_dir = "output"
-os.makedirs(fig_dir, exist_ok=True)
+outdir = "output"
+os.makedirs(outdir, exist_ok=True)
 
 # Solver to compute spinodal points
 # method = "bfgs"
@@ -149,7 +149,7 @@ for fluid_name in names:
     ax2.legend(loc="upper right", fontsize=10)
     fig.tight_layout(pad=1)
     cpx.savefig_in_formats(
-        fig, os.path.join(fig_dir, f"spinodal_points_density_pressure_{fluid.name}")
+        fig, os.path.join(out_dir, f"spinodal_points_density_pressure_{fluid.name}")
     )
 
     # ---------------------------------------------------------------------------------- #
@@ -211,7 +211,7 @@ for fluid_name in names:
     ax3.legend(loc="upper left", fontsize=10)
     fig.tight_layout(pad=1)
     cpx.savefig_in_formats(
-        fig, os.path.join(fig_dir, f"spinodal_points_temperature_entropy_{fluid.name}")
+        fig, os.path.join(out_dir, f"spinodal_points_temperature_entropy_{fluid.name}")
     )
 
 

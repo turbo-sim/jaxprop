@@ -7,9 +7,8 @@ import coolpropx as cpx
 
 cpx.set_plot_options(grid=False)
 
-outdir = "results"
-if not os.path.exists(outdir):
-    os.makedirs(outdir)
+outdir = "output"
+os.makedirs(outdir, exist_ok=True)
 
 # Define nice colormap
 colormap = mcolors.LinearSegmentedColormap.from_list(
