@@ -5,7 +5,7 @@ import numpy as np
 import coolpropx as cpx
 import pandas as pd
 
-from utilities import get_reference_state, assert_consistent_values
+from utilities import get_reference_state, assert_consistent_values, get_available_backends
 
 # Consistency statistics
 CONSISTENCY_LOG = []  
