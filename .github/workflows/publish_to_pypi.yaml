@@ -1,5 +1,4 @@
 
-
 name: Publish package to PyPI
 
 on:
@@ -10,9 +9,10 @@ on:
     branches:
       - main
 
-jobs:
-  publish_to_pypi:
 
+jobs:
+
+  test_ubuntu:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +22,60 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.11'
+        python-version: '3.12'
+
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+    
+    - name: Install dependencies
+      run: poetry install
+
+    - name: Run tests
+      run: poetry run pytest
+
+
+  test_windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: "1.8.2"
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Run tests
+        run: poetry run pytest
+
+
+  publish_to_pypi:
+
+
+    needs: [test_ubuntu, test_windows]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'
+
 
     - name: Install Poetry
       uses: abatilo/actions-poetry@v3
@@ -32,7 +85,7 @@ jobs:
     - name: Install dependencies
       run: poetry install --only=main
 
-    - name: Build and publish to PyPI
+    - name: Publish to PyPI
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
