@@ -23,7 +23,7 @@ for fluid_name in names:
     # Create fluid
     fluid = cpx.Fluid(
         name=fluid_name,
-        backend="REFPROP",
+        backend="HEOS",
         exceptions=True,
     )
 
