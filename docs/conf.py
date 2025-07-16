@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath(".."))
 project = "coolpropx"
 copyright = "2025, Roberto Agromayor"
 author = ""
-release = "v0.2.5"
+release = "v0.2.6"
 
 # Define extensions
 extensions = [
