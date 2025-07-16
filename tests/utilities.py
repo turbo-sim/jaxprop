@@ -12,10 +12,10 @@ def get_reference_state(fluid, backend, label):
     T_sat_subcritical = fluid.get_state(cpx.PQ_INPUTS, p_subcritical, 0.0).T
 
     if label == "saturated_liquid":
-        return fluid.get_state(cpx.PQ_INPUTS, p_subcritical, 0 + 1e-4)
+        return fluid.get_state(cpx.PQ_INPUTS, p_subcritical, 0 + 1e-3)
 
     elif label == "saturated_vapor":
-        return fluid.get_state(cpx.PQ_INPUTS, p_subcritical, 1 - 1e-4)
+        return fluid.get_state(cpx.PQ_INPUTS, p_subcritical, 1 - 1e-3)
 
     elif label == "two_phase":
         return fluid.get_state(cpx.PQ_INPUTS, p_subcritical, 0.5)

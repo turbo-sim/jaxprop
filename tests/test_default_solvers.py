@@ -93,14 +93,16 @@ QUALITY_NAMES = [
 @pytest.mark.parametrize("fluid_name", FLUID_NAMES)
 @pytest.mark.parametrize("backend", BACKENDS)
 @pytest.mark.parametrize("state_label", STATE_LABELS)
-def test_internal_consistency(fluid_name, backend, state_label):
+def test_default_solver_consistency(fluid_name, backend, state_label):
 
     # Compute reference state
     fluid = cpx.Fluid(fluid_name, backend)
     state_ref = get_reference_state(fluid_name, backend, state_label)
 
-    # Loop over the different CoolProp input types
+    # Choose solver types based on current state
     input_map = SOLVERS_TWO_PHASE if state_ref.is_two_phase else SOLVERS_SINGLE_PHASE
+
+    # Loop over the different CoolProp input types
     for input_type, input_idx in input_map.items():
 
         # Get the input values

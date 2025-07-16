@@ -1083,6 +1083,7 @@ def compute_spinodal_line(
     use_previous_as_initial_guess=False,
     supersaturation=False,
     eps=0.25,
+    tolerance=1e-8,
 ):
     """
     Compute the spinodal line for a given fluid.
@@ -1143,6 +1144,7 @@ def compute_spinodal_line(
             rho_guess=rho,
             method=method,
             supersaturation=supersaturation,
+            tolerance=tolerance,
         )
 
         if s_min < props_liq["s"] < s_max:

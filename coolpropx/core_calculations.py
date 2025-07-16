@@ -57,7 +57,6 @@ def get_viscosity(AS):
 # Equilibrium property calculations in the single-phase region
 # ------------------------------------------------------------------------------------ #
 
-
 def compute_properties_1phase(
     abstract_state,
     generalize_quality=False,
@@ -637,7 +636,6 @@ def compute_properties_coolprop(
 # Property calculations using custom solver
 # ------------------------------------------------------------------------------------ #
 
-
 def compute_properties(
     abstract_state,
     prop_1,
@@ -678,7 +676,7 @@ def compute_properties(
       
     
     TODO    The calculations :math:`y_1(\rho,\, T)` and
-    :math:`y_1(\rho,\, T)` are performed by [dependns on input]
+    :math:`y_2(\rho,\, T)` are performed by [dependns on input]
     
     equilibrium calculations (coolprop)
     evaluating the Helmholtz energy equation of state.
@@ -887,12 +885,16 @@ def _perform_flash_calculation(
         raise ValueError(msg)
 
     # Define the problem (find root of temperature-density residual)
+    rho_crit = abstract_state.rhomass_critical()
+    T_crit = abstract_state.T_critical()
     problem = _FlashCalculationResidual(
         prop_1=prop_1,
         prop_1_value=prop_1_value,
         prop_2=prop_2,
         prop_2_value=prop_2_value,
         function_handle=function_handle,
+        rho_scale=rho_crit,
+        T_scale=T_crit,
     )
 
     # Define root-finding solver object
@@ -906,26 +908,32 @@ def _perform_flash_calculation(
     )
 
     # Define initial guess and solve the problem
-    x0 = np.asarray([rho_guess, T_guess])
-    rho, T = solver.solve(x0)
+    # x0 = np.asarray([rho_guess, T_guess])
+    x0_reduced = np.asarray([rho_guess / rho_crit, T_guess / T_crit])
+    xf_reduced = solver.solve(x0_reduced)
+    rho, T = xf_reduced[0] * rho_crit, xf_reduced[1] * T_crit
 
     # Check if solver converged
     if not solver.success:
         msg = f"Property calculation did not converge for calculation_type={calculation_type}.\n{solver.message}"
         raise ValueError(msg)
 
-    return problem.compute_properties(rho, T)
+    props = problem.compute_properties(rho, T)
+    props["residual"]  = np.linalg.norm(problem.residual(xf_reduced))
+    return props
 
 
 class _FlashCalculationResidual(psv.NonlinearSystemProblem):
     """Class to compute the residual of property calculations"""
 
-    def __init__(self, prop_1, prop_1_value, prop_2, prop_2_value, function_handle):
+    def __init__(self, prop_1, prop_1_value, prop_2, prop_2_value, function_handle, rho_scale, T_scale):
         self.prop_1 = prop_1
         self.prop_2 = prop_2
         self.prop_1_value = prop_1_value
         self.prop_2_value = prop_2_value
         self.compute_properties = function_handle
+        self.rho_scale = rho_scale
+        self.T_scale = T_scale
 
     def residual(self, x):
         # Ensure x can be indexed and contains exactly two elements
@@ -933,13 +941,22 @@ class _FlashCalculationResidual(psv.NonlinearSystemProblem):
             msg = f"Input x={x} must be a list, tuple or numpy array containing exactly two elements: density and temperature."
             raise ValueError(msg)
 
-        # Compute properties
-        rho, T = x
+        # Unscale rho-T and compute properties
+        rho = x[0] * self.rho_scale
+        T = x[1] * self.T_scale
         props = self.compute_properties(rho, T)
 
         # Compute residual
-        res_1 = 1 - props[self.prop_1] / self.prop_1_value
-        res_2 = 1 - props[self.prop_2] / self.prop_2_value
+        def compute_residual(prop_name, target_value):
+            value = props[prop_name]
+            if prop_name == "Q":
+                return value - target_value
+            else:
+                return 1.0 - value / target_value
+
+        res_1 = compute_residual(self.prop_1, self.prop_1_value)
+        res_2 = compute_residual(self.prop_2, self.prop_2_value)
+
         return np.asarray([res_1, res_2])
 
 
