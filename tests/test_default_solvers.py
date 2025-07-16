@@ -15,8 +15,7 @@ PRINT_STATISTICS = os.environ.get("PRINT_STATISTICS") == "1"
 TOL = 1e-6
 
 # Define list of calculation backends
-from utilities import BACKENDS
-
+BACKENDS = get_available_backends()
 
 # Define all solver combinations
 SOLVERS_TWO_PHASE = [

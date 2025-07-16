@@ -5,7 +5,7 @@ import numpy as np
 import coolpropx as cpx
 import pandas as pd
 
-from utilities import get_reference_state, assert_consistent_values
+from utilities import get_available_backends
 
 # Consistency statistics
 SPINODAL_LOG = []
@@ -16,7 +16,7 @@ PRINT_STATISTICS = os.environ.get("PRINT_STATISTICS") == "1"
 TOL = 1e-4
 
 # Define list of calculation backends
-from utilities import BACKENDS
+BACKENDS = get_available_backends()
 
 # Define all working fluids
 FLUID_NAMES = [

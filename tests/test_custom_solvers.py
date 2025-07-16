@@ -5,7 +5,7 @@ import numpy as np
 import coolpropx as cpx
 import pandas as pd
 
-from utilities import get_reference_state, assert_consistent_values
+from utilities import get_reference_state, assert_consistent_values, get_available_backends
 
 # Consistency statistics
 CONSISTENCY_LOG = []
@@ -15,10 +15,7 @@ PRINT_STATISTICS = os.environ.get("PRINT_STATISTICS") == "1"
 TOL = 1e-5
 
 # Define list of calculation backends
-BACKENDS = [
-    "HEOS",
-    "REFPROP",
-]
+BACKENDS = get_available_backends()
 
 # Define all solver combinations
 SOLVERS_TWO_PHASE = [

@@ -25,10 +25,9 @@ jobs:
         python-version: '3.12'
 
     - name: Install Poetry
-      run: |
-        curl -sSL https://install.python-poetry.org | python3 -
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
-
+      uses: python-poetry/install@v1
+      with:
+        version: 1.8.2
     
     - name: Install dependencies
       run: poetry install
@@ -50,9 +49,9 @@ jobs:
           python-version: '3.12'
 
       - name: Install Poetry
-        uses: abatilo/actions-poetry@v3
+        uses: python-poetry/install@v1
         with:
-          poetry-version: "1.8.2"
+          version: 1.8.2
 
       - name: Install dependencies
         run: poetry install
@@ -76,11 +75,10 @@ jobs:
       with:
         python-version: '3.12'
 
-
     - name: Install Poetry
-      uses: abatilo/actions-poetry@v3
+      uses: python-poetry/install@v1
       with:
-        poetry-version: "1.8.2"
+        version: 1.8.2
 
     - name: Install dependencies
       run: poetry install --only=main

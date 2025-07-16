@@ -5,12 +5,15 @@ import numpy as np
 import pandas as pd
 import coolpropx as cpx
 import matplotlib
+
+from utilities import get_available_backends
+
 matplotlib.use("Agg")
 
 cpx.set_plot_options(grid=False)
 
 # Define list of calculation backends
-from utilities import BACKENDS
+BACKENDS = get_available_backends()
 
 # Define all working fluids
 FLUID_NAMES = [
