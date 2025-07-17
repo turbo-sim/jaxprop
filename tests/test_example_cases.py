@@ -39,8 +39,10 @@ example_ids = [p.name for p in EXAMPLE_SCRIPTS]
 @pytest.mark.parametrize("script_path", EXAMPLE_SCRIPTS, ids=example_ids)
 def test_examples(script_path):
     # Use sys.executable instead of just 'python' to run correctly in GitHub actions (Windows)
+    working_dir = script_path.parent
     result = subprocess.run(
         [sys.executable, str(script_path)],
+        cwd=working_dir,
         capture_output=True,
         text=True,
         env={**os.environ, "DISABLE_PLOTS": "1"}
@@ -52,6 +54,5 @@ def test_examples(script_path):
 if __name__ == "__main__":
 
     # Running pytest from this script
-    # pytest.main([__file__])
     pytest.main([__file__, "-v"])
-    # # pytest.main([__file__, "-vv"])
+
