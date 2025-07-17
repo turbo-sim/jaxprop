@@ -57,9 +57,7 @@ jobs:
       - name: Run tests
         run: poetry run pytest
 
-
   publish_to_pypi:
-
 
     needs: [test_ubuntu, test_windows]
     runs-on: ubuntu-latest
@@ -81,7 +79,7 @@ jobs:
     - name: Install dependencies
       run: poetry install --only=main
 
-    - name: Publish to PyPI
+    - name: Build and publish to PyPI
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
