@@ -1292,28 +1292,77 @@ document.write(`
 
 
 
+<span class="c1"># def states_to_dict(states):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Convert a list of state objects into a dictionary.</span>
+
+<span class="c1">#     Each key is a field name of the state objects, and each value is a Numpy array of all the values for that field.</span>
+    
+<span class="c1">#     Parameters</span>
+<span class="c1">#     ----------</span>
+<span class="c1">#     states_grid : list of FluidState</span>
+<span class="c1">#         A 1D grid where each element is a state object with the same keys.</span>
+
+<span class="c1">#     Returns</span>
+<span class="c1">#     -------</span>
+<span class="c1">#     dict</span>
+<span class="c1">#         A dictionary where keys are field names and values are 1D arrays of field values.</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     state_dict = {}</span>
+<span class="c1">#     for field in states[0].keys():</span>
+<span class="c1">#         state_dict[field] = np.array([getattr(state, field) for state in states])</span>
+<span class="c1">#     return state_dict</span>
 <div class="viewcode-block" id="states_to_dict">
 <a class="viewcode-back" href="../../source/api/coolpropx.fluid_properties.html#coolpropx.fluid_properties.states_to_dict">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">states_to_dict</span><span class="p">(</span><span class="n">states</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert a list of state objects into a dictionary.</span>
+<span class="sd">    Recursively convert a list of FluidState objects into a nested dictionary</span>
+<span class="sd">    of NumPy arrays. Handles missing keys by inserting NaNs or None.</span>
 
-<span class="sd">    Each key is a field name of the state objects, and each value is a Numpy array of all the values for that field.</span>
-<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    states_grid : list of FluidState</span>
-<span class="sd">        A 1D grid where each element is a state object with the same keys.</span>
+<span class="sd">    states : list of FluidState</span>
+<span class="sd">        A list of FluidState objects. Keys may differ between objects.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dict</span>
-<span class="sd">        A dictionary where keys are field names and values are 1D arrays of field values.</span>
+<span class="sd">        Nested dictionary where leaf nodes are 1D numpy arrays of field values.</span>
+<span class="sd">        Missing keys are filled with NaN or None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">state_dict</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">state_dict</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">state_dict</span></div>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_value</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="s2">&quot;get&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_nested</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;keys&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Collect the union of all keys across states</span>
+    <span class="n">all_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+        <span class="n">all_keys</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_keys</span><span class="p">):</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">extract_value</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="p">]</span>
+
+        <span class="c1"># Check if this field is nested (but skip None)</span>
+        <span class="n">nested_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">nested_values</span> <span class="ow">and</span> <span class="n">is_nested</span><span class="p">(</span><span class="n">nested_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">states_to_dict</span><span class="p">(</span><span class="n">nested_values</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If values are mixed (e.g., some None), fill with None or np.nan</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)))</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">):</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
 
 
 
