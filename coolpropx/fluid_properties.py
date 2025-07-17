@@ -971,26 +971,75 @@ class FluidState:
         object.__setattr__(self, "fluid_name", state["fluid_name"])
 
 
+# def states_to_dict(states):
+#     """
+#     Convert a list of state objects into a dictionary.
+
+#     Each key is a field name of the state objects, and each value is a Numpy array of all the values for that field.
+    
+#     Parameters
+#     ----------
+#     states_grid : list of FluidState
+#         A 1D grid where each element is a state object with the same keys.
+
+#     Returns
+#     -------
+#     dict
+#         A dictionary where keys are field names and values are 1D arrays of field values.
+#     """
+#     state_dict = {}
+#     for field in states[0].keys():
+#         state_dict[field] = np.array([getattr(state, field) for state in states])
+#     return state_dict
 def states_to_dict(states):
     """
-    Convert a list of state objects into a dictionary.
+    Recursively convert a list of FluidState objects into a nested dictionary
+    of NumPy arrays. Handles missing keys by inserting NaNs or None.
 
-    Each key is a field name of the state objects, and each value is a Numpy array of all the values for that field.
-    
     Parameters
     ----------
-    states_grid : list of FluidState
-        A 1D grid where each element is a state object with the same keys.
+    states : list of FluidState
+        A list of FluidState objects. Keys may differ between objects.
 
     Returns
     -------
     dict
-        A dictionary where keys are field names and values are 1D arrays of field values.
+        Nested dictionary where leaf nodes are 1D numpy arrays of field values.
+        Missing keys are filled with NaN or None.
     """
-    state_dict = {}
-    for field in states[0].keys():
-        state_dict[field] = np.array([getattr(state, field) for state in states])
-    return state_dict
+    from collections.abc import Mapping
+
+    def extract_value(state, key):
+        if hasattr(state, "get"):
+            return state.get(key, None)
+        return getattr(state, key, None)
+
+    def is_nested(value):
+        return isinstance(value, Mapping) or hasattr(value, "keys")
+
+    # Collect the union of all keys across states
+    all_keys = set()
+    for state in states:
+        all_keys.update(state.keys())
+
+    result = {}
+
+    for key in sorted(all_keys):
+        values = [extract_value(s, key) for s in states]
+
+        # Check if this field is nested (but skip None)
+        nested_values = [v for v in values if v is not None]
+        if nested_values and is_nested(nested_values[0]):
+            result[key] = states_to_dict(nested_values)
+        else:
+            # If values are mixed (e.g., some None), fill with None or np.nan
+            if all(isinstance(v, (int, float, np.number, type(None))) for v in values):
+                result[key] = np.array([np.nan if v is None else v for v in values])
+            else:
+                result[key] = np.array(values, dtype=object)
+
+    return result
+
 
 
 def states_to_dict_2d(states):
