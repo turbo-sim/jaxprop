@@ -3,12 +3,12 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-import coolpropx as cp
+import coolpropx as cpx
 
-cp.set_plot_options(grid=False)
+cpx.set_plot_options(grid=False)
 
 # Define fluid and property ranges
-fluid = cp.Fluid(name="Cyclopentane")
+fluid = cpx.Fluid(name="Cyclopentane")
 x_prop = "s"
 y_prop = "T"
 z_prop = "Z"
@@ -18,13 +18,13 @@ y_range = np.linspace(300, 600, 100)
 # Create figure
 fig_1, ax_1 = plt.subplots(figsize=(6, 5))
 ax_1.grid(False)
-ax_1.set_xlabel(cp.LABEL_MAPPING.get(x_prop, x_prop))
-ax_1.set_ylabel(cp.LABEL_MAPPING.get(y_prop, y_prop))
+ax_1.set_xlabel(cpx.LABEL_MAPPING.get(x_prop, x_prop))
+ax_1.set_ylabel(cpx.LABEL_MAPPING.get(y_prop, y_prop))
 ax_1.set_xlim([x_range.min(), x_range.max()])
 ax_1.set_ylim([y_range.min(), y_range.max()])
 
 # Compute properties and plot contour
-states = fluid.get_states(cp.SmassT_INPUTS, x_range, y_range)
+states = fluid.get_states(cpx.SmassT_INPUTS, x_range, y_range)
 levels = np.concatenate((np.linspace(0.0, 0.95, 20), [0.99]))  # 0.0 to 1.0 in 0.1 steps
 colors = plt.get_cmap("Greys")(np.linspace(1.0, 0.4, len(levels) - 1))  # custom grey scale
 cmap = mpl.colors.ListedColormap(colors)

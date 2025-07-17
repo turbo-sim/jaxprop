@@ -1034,25 +1034,98 @@ def blend_properties(
 # Additional property calculations
 # ------------------------------------------------------------------------------------ #
 
+# def calculate_generalized_quality(abstract_state, alpha=10):
+#     r"""
+#     Calculate the generalized quality of a fluid, extending the quality calculation beyond the two-phase region if necessary.
+
+#     Below the critical temperature, the quality is calculated from the specific volume of the saturated liquid and vapor states.
+#     Above the critical temperature, an artificial two-phase region is defined around the critical density line to allow for a finite-width quality computation.
+
+#     The quality, :math:`Q`, is given by:
+
+#     .. math::
+
+#         Q = \frac{v - v(T, Q=0)}{v(T, Q=1) - v(T, Q=0)}
+
+#     where :math:`v=1/\rho` is the specific volume and :math:`T` is the temperature.
+
+#     Additionally, this function applies smoothing limiters to ensure the quality is bounded between -1 and 2.
+#     These limiters prevent the quality value from taking arbitrarily large values, enhancing stability and robustness of downstream calculation.
+#     The limiters use the `logsumexp` method for smooth transitions, with a specified alpha value controlling the smoothness.
+
+#     Parameters
+#     ----------
+#     abstract_state : CoolProp.AbstractState
+#         CoolProp abstract state of the fluid.
+
+#     alpha : float
+#         Smoothing factor of the quality-calculation limiters.
+
+#     Returns
+#     -------
+#     float
+#         The calculated quality of the fluid.
+#     """
+#     # Instantiate new abstract state to compute saturation properties without changing the state of the class
+#     AS = abstract_state
+#     fluids = AS.fluid_names()  # AS.name does not work well for REFPROP backend
+#     if len(fluids) != 1:
+#         raise ValueError(f"Expected one fluid, got {fluids}")
+#     cloned_AS = CP.AbstractState(AS.backend_name(), fluids[0])
+
+#     # Extend quality calculation beyond the two-phase region
+#     # Checking if subcritical using temperature works better than with pressure
+#     if abstract_state.T() < abstract_state.T_critical():
+#         # Saturated liquid
+#         cloned_AS.update(CP.QT_INPUTS, 0.00, abstract_state.T())
+#         rho_liq = cloned_AS.rhomass()
+
+#         # Saturated vapor
+#         cloned_AS.update(CP.QT_INPUTS, 1.00, abstract_state.T())
+#         rho_vap = cloned_AS.rhomass()
+
+#     else:
+#         # For states at or above the critical temperature, the concept of saturation states is not applicable
+#         # Instead, an artificial two-phase region is created around the pseudo-critical density line (line of critical density)
+#         # The width of the artificial two-phase region is assumed to increase linearly with temperature
+
+#         # Rename properties
+#         T = abstract_state.T()
+#         T_crit = abstract_state.T_critical()
+#         rho_crit = abstract_state.rhomass_critical()
+
+#         # Define pseudocritical region
+#         T_hat = 1.5 * T_crit
+#         rho_hat_liq = 1.1 * rho_crit
+#         rho_hat_vap = 0.9 * rho_crit
+#         rho_liq = rho_crit + (rho_hat_liq - rho_crit) * (T - T_crit) / (T_hat - T_crit)
+#         rho_vap = rho_crit + (rho_hat_vap - rho_crit) * (T - T_crit) / (T_hat - T_crit)
+
+#     # Compute quality according to definition
+#     rho = abstract_state.rhomass()
+#     quality = (1 / rho - 1 / rho_liq) / (1 / rho_vap - 1 / rho_liq + 1e-6)
+
+#     # Apply smoothing limiters so that the quality is bounded between [-1, 2]
+#     # The margin is defined as delta_Q=1 to the left of Q=0 and to the right of Q=1
+#     quality = math.smooth_minimum(quality, +2, method="logsumexp", alpha=alpha)
+#     quality = math.smooth_maximum(quality, -1, method="logsumexp", alpha=alpha)
+
+#     return quality.item()
 
 def calculate_generalized_quality(abstract_state, alpha=10):
     r"""
-    Calculate the generalized quality of a fluid, extending the quality calculation beyond the two-phase region if necessary.
-
-    Below the critical temperature, the quality is calculated from the specific volume of the saturated liquid and vapor states.
-    Above the critical temperature, an artificial two-phase region is defined around the critical density line to allow for a finite-width quality computation.
+    Calculate the generalized quality of a fluid using specific entropy, extending the quality computation beyond
+    the two-phase region by extrapolating entropy values.
 
     The quality, :math:`Q`, is given by:
 
     .. math::
 
-        Q = \frac{v - v(T, Q=0)}{v(T, Q=1) - v(T, Q=0)}
+        Q = \frac{s - s(T, Q=0)}{h(T, Q=1) - s(T, Q=0)}
 
-    where :math:`v=1/\rho` is the specific volume and :math:`T` is the temperature.
+    where :math:`s` is the specific enthalpy and :math:`T` is the temperature.
 
-    Additionally, this function applies smoothing limiters to ensure the quality is bounded between -1 and 2.
-    These limiters prevent the quality value from taking arbitrarily large values, enhancing stability and robustness of downstream calculation.
-    The limiters use the `logsumexp` method for smooth transitions, with a specified alpha value controlling the smoothness.
+    Smoothing limiters keep the quality in the range [-1, 2] using a `logsumexp` formulation.
 
     Parameters
     ----------
@@ -1076,42 +1149,40 @@ def calculate_generalized_quality(abstract_state, alpha=10):
 
     # Extend quality calculation beyond the two-phase region
     # Checking if subcritical using temperature works better than with pressure
-    if abstract_state.T() < abstract_state.T_critical():
-        # Saturated liquid
-        cloned_AS.update(CP.QT_INPUTS, 0.00, abstract_state.T())
-        rho_liq = cloned_AS.rhomass()
+    if AS.T() < AS.T_critical():
+        # Subcritical: use actual saturation properties
+        cloned_AS.update(CP.QT_INPUTS, 0.0, AS.T())
+        s_liq = cloned_AS.smass()
 
-        # Saturated vapor
-        cloned_AS.update(CP.QT_INPUTS, 1.00, abstract_state.T())
-        rho_vap = cloned_AS.rhomass()
-
+        cloned_AS.update(CP.QT_INPUTS, 1.0, AS.T())
+        s_vap = cloned_AS.smass()
     else:
+        # Supercritical: extrapolate enthalpy bounds from critical point
         # For states at or above the critical temperature, the concept of saturation states is not applicable
         # Instead, an artificial two-phase region is created around the pseudo-critical density line (line of critical density)
         # The width of the artificial two-phase region is assumed to increase linearly with temperature
 
-        # Rename properties
-        T = abstract_state.T()
-        T_crit = abstract_state.T_critical()
-        rho_crit = abstract_state.rhomass_critical()
+        T = AS.T()
+        rho_crit, T_crit = AS.rhomass_critical(), AS.T_critical()
+        cloned_AS.update(CP.DmassT_INPUTS, rho_crit, T_crit)
+        s_crit = cloned_AS.smass()
 
-        # Define pseudocritical region
         T_hat = 1.5 * T_crit
-        rho_hat_liq = 1.1 * rho_crit
-        rho_hat_vap = 0.9 * rho_crit
-        rho_liq = rho_crit + (rho_hat_liq - rho_crit) * (T - T_crit) / (T_hat - T_crit)
-        rho_vap = rho_crit + (rho_hat_vap - rho_crit) * (T - T_crit) / (T_hat - T_crit)
+        s_hat_liq = 1.1 * s_crit
+        s_hat_vap = 0.9 * s_crit
+        s_liq = s_crit + (s_hat_liq - s_crit) * (T - T_crit) / (T_hat - T_crit)
+        s_vap = s_crit + (s_hat_vap - s_crit) * (T - T_crit) / (T_hat - T_crit)
 
-    # Compute quality according to definition
-    rho = abstract_state.rhomass()
-    quality = (1 / rho - 1 / rho_liq) / (1 / rho_vap - 1 / rho_liq + 1e-6)
+    # Compute quality from enthalpy
+    s = AS.smass()
+    quality = (s - s_liq) / (s_vap - s_liq + 1e-6)
 
-    # Apply smoothing limiters so that the quality is bounded between [-1, 2]
-    # The margin is defined as delta_Q=1 to the left of Q=0 and to the right of Q=1
-    quality = math.smooth_minimum(quality, +2, method="logsumexp", alpha=alpha)
+    # Apply smooth limiting between [-1, 2]
+    quality = math.smooth_minimum(quality, 2, method="logsumexp", alpha=alpha)
     quality = math.smooth_maximum(quality, -1, method="logsumexp", alpha=alpha)
 
     return quality.item()
+
 
 
 def calculate_superheating(abstract_state):

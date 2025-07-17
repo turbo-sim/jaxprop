@@ -121,7 +121,7 @@ delta_s = s2 - s1
 s_array = np.linspace(s1 + delta_s / 8, s2 + delta_s / 16, 100)
 
 # Subcritical cases
-T_array = np.asarray([0.75, 0.8, 0.85, 0.9, 0.95, 0.99]) * fluid.critical_point.T
+T_array = np.asarray([0.8, 0.85, 0.9, 0.95, 0.99]) * fluid.critical_point.T
 colormap = cm.magma(np.linspace(0.1, 0.7, len(T_array)))
 states = fluid.get_states(cpx.SmassT_INPUTS, s_array, T_array, generalize_quality=True)
 for i in range(states[prop_x].shape[0]):

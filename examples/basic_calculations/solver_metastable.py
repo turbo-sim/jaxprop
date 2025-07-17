@@ -10,11 +10,11 @@ that the results of the different methods are consistent.
 import os
 import matplotlib.pyplot as plt
 
-import coolpropx as cp
-cp.set_plot_options(grid=False)
+import coolpropx as cpx
+cpx.set_plot_options(grid=False)
 
 # Create fluid
-fluid = cp.Fluid(name="CO2", exceptions=True)
+fluid = cpx.Fluid(name="CO2", exceptions=True)
 
 # Create figure
 fig, ax = plt.subplots(figsize=(6.0, 5.0))
@@ -36,7 +36,7 @@ fluid.plot_phase_diagram(
 # Compute fluid state with a CoolProp function call
 p = fluid.critical_point.p * 0.6
 T = fluid.critical_point.T * 1.05
-state = fluid.get_state(cp.PT_INPUTS, p, T)
+state = fluid.get_state(cpx.PT_INPUTS, p, T)
 ax.plot(state[prop_x], state[prop_y], "o", markersize=12, label="CoolProp call")
 
 

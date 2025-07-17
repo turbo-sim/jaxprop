@@ -2,11 +2,11 @@
 This script shows how to do basic function calculations used the custom Flash solver
 """
 
-import coolpropx as cp
+import coolpropx as cpx
 
 # State calculation using coolprop
-fluid = cp.Fluid(name="Air", backend="HEOS")
-state = fluid.get_state(cp.PT_INPUTS, 101325, 300)
+fluid = cpx.Fluid(name="Air", backend="HEOS")
+state = fluid.get_state(cpx.PT_INPUTS, 101325, 300)
 
 # Define an initial guess
 T_guess = 25 + state.T
