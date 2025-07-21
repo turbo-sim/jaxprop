@@ -63,8 +63,7 @@ def test_phase_diagrams(fluid_name):
                 plot_spinodal_line=True,
                 plot_quality_isolines=True,
                 N=25,
-                eps_sat=1e-2,
-                eps_spdl=1.00,
+                dT_crit=2,
             )
 
             # Ensure axes start at zero, but preserve automatic upper limit

@@ -41,7 +41,7 @@ def test_spinodal_calculation(fluid_name, backend):
         N=10,
         method="slsqp",
         tolerance=1e-12,
-        eps=1.0
+        dT_crit=1.0
     )
 
     # Check both spinodal branches

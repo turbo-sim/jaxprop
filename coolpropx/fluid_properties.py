@@ -598,8 +598,7 @@ class Fluid:
         show_in_legend=False,
         x_scale="linear",
         y_scale="linear",
-        eps_sat=1e-4,
-        eps_spdl=0.25,
+        dT_crit=1.00,
     ):
         
         if axes is None:
@@ -613,7 +612,7 @@ class Fluid:
         # Saturation line
         if plot_saturation_line:
             if self.sat_liq is None or self.sat_vap is None:
-                self.sat_liq, self.sat_vap = compute_saturation_line(self, N, eps=eps_sat)
+                self.sat_liq, self.sat_vap = compute_saturation_line(self, N, dT_crit=dT_crit)
             x = list(reversed(self.sat_liq[x_prop])) + self.sat_vap[x_prop]
             y = list(reversed(self.sat_liq[y_prop])) + self.sat_vap[y_prop]
             label = self._get_label("Saturation line", show_in_legend)
@@ -637,7 +636,7 @@ class Fluid:
                     method=spinodal_line_method,
                     use_previous_as_initial_guess=spinodal_line_use_previous,
                     supersaturation=False,
-                    eps=eps_spdl,
+                    dT_crit=dT_crit,
                 )
             x = list(reversed(self.spdl_liq[x_prop])) + self.spdl_vap[x_prop]
             y = list(reversed(self.spdl_liq[y_prop])) + self.spdl_vap[y_prop]
@@ -683,7 +682,7 @@ class Fluid:
         # Plot quality isolines
         if plot_quality_isolines:
             if self.q_mesh is None:
-                self.q_mesh = compute_quality_grid(self, N, quality_levels, eps=eps_sat)
+                self.q_mesh = compute_quality_grid(self, N, quality_levels, dT_crit=dT_crit)
             x = self.q_mesh[x_prop]
             y = self.q_mesh[y_prop]
             _, m = np.shape(x)
@@ -1076,7 +1075,7 @@ def states_to_dict_2d(states):
 # ------------------------------------------------------------------------------------ #
 
 
-def compute_saturation_line(fluid, N=100, eps=1e-4):
+def compute_saturation_line(fluid, N=100, dT_crit=0.5):
     """
     Compute the saturation line for a given fluid.
 
@@ -1096,8 +1095,10 @@ def compute_saturation_line(fluid, N=100, eps=1e-4):
     """
     # Define temperature array with refinement close to the critical point
     R = 1 - fluid.triple_point_liquid.T / fluid.critical_point.T
-    t1 = np.logspace(np.log10(eps), np.log10(R / 10), int(np.ceil(N / 2)))
-    t2 = np.linspace(R / 10, R, int(np.floor(N / 2)))
+    R_crit = dT_crit / fluid.critical_point.T
+    t1 = np.logspace(np.log10(R_crit), np.log10(R / 2), int(np.ceil(N / 2)))
+    t2 = np.linspace(R / 2, R, int(np.floor(N / 2)))
+    # t2 = np.asarray([])
     T_sat = (1 - np.concatenate([t1, t2])) * fluid.critical_point.T
 
     # Initialize dictionaries for storing properties
@@ -1131,7 +1132,7 @@ def compute_spinodal_line(
     method="slsqp",
     use_previous_as_initial_guess=False,
     supersaturation=False,
-    eps=0.25,
+    dT_crit=0.25,
     tolerance=1e-8,
 ):
     """
@@ -1160,7 +1161,7 @@ def compute_spinodal_line(
 
     # Temperature array with refinement close to the critical point
     alpha = 0.01
-    T_max = fluid.critical_point.T - eps
+    T_max = fluid.critical_point.T - dT_crit
     T_min = alpha * T_max + (1 - alpha) * fluid.triple_point_liquid.T
     ratio = 1 - T_min / T_max
     t1 = np.logspace(np.log10(1 - 0.9999), np.log10(ratio / 10), int(np.ceil(N / 2)))
@@ -1254,18 +1255,13 @@ def compute_pseudocritical_line(fluid, N_points=100):
     return pseudocritical_line
 
 
-def compute_quality_grid(fluid, num_points, quality_levels, eps=1e-4):
+def compute_quality_grid(fluid, num_points, quality_levels, dT_crit=1.0):
     # Define temperature levels
     R = 1 - fluid.triple_point_liquid.T / fluid.critical_point.T
-    t1 = np.logspace(np.log10(eps), np.log10(R / 10), int(np.ceil(num_points / 2)))
-    t2 = np.linspace(R / 10, R, int(np.floor(num_points / 2)))
+    R_crit = dT_crit / fluid.critical_point.T
+    t1 = np.logspace(np.log10(R_crit), np.log10(R / 2), int(np.ceil(num_points / 2)))
+    t2 = np.linspace(R / 2, R, int(np.floor(num_points / 2)))
     temperature_levels = (1 - np.concatenate([t1, t2])) * fluid.critical_point.T
-    # t2 = np.logspace(
-    #     np.log10(0.1),
-    #     np.log10(1 - (fluid.triple_point_liquid.T) / fluid.critical_point.T),
-    #     int(num_points / 2),
-    # )
-    # temperature_levels = (1 - np.hstack((t1, t2))) * fluid.critical_point.T
 
     # Calculate property grid
     quality_grid = []
