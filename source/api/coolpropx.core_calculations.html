@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>coolpropx.core_calculations module &#8212; coolpropx v0.2.9 documentation</title>
+    <title>coolpropx.core_calculations module &#8212; coolpropx v0.2.10 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=6e25ebe1"></script>
+    <script src="../../_static/documentation_options.js?v=b5a60bb3"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -142,7 +142,7 @@
   
   
   
-    <p class="title logo__title">coolpropx v0.2.9 documentation</p>
+    <p class="title logo__title">coolpropx v0.2.10 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -378,16 +378,13 @@ document.write(`
 <dl class="py function">
 <dt class="sig sig-object py" id="coolpropx.core_calculations.calculate_generalized_quality">
 <span class="sig-prename descclassname"><span class="pre">coolpropx.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_generalized_quality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/core_calculations.html#calculate_generalized_quality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.core_calculations.calculate_generalized_quality" title="Link to this definition">#</a></dt>
-<dd><p>Calculate the generalized quality of a fluid, extending the quality calculation beyond the two-phase region if necessary.</p>
-<p>Below the critical temperature, the quality is calculated from the specific volume of the saturated liquid and vapor states.
-Above the critical temperature, an artificial two-phase region is defined around the critical density line to allow for a finite-width quality computation.</p>
+<dd><p>Calculate the generalized quality of a fluid using specific entropy, extending the quality computation beyond
+the two-phase region by extrapolating entropy values.</p>
 <p>The quality, <span class="math notranslate nohighlight">\(Q\)</span>, is given by:</p>
 <div class="math notranslate nohighlight">
-\[Q = \frac{v - v(T, Q=0)}{v(T, Q=1) - v(T, Q=0)}\]</div>
-<p>where <span class="math notranslate nohighlight">\(v=1/\rho\)</span> is the specific volume and <span class="math notranslate nohighlight">\(T\)</span> is the temperature.</p>
-<p>Additionally, this function applies smoothing limiters to ensure the quality is bounded between -1 and 2.
-These limiters prevent the quality value from taking arbitrarily large values, enhancing stability and robustness of downstream calculation.
-The limiters use the <cite>logsumexp</cite> method for smooth transitions, with a specified alpha value controlling the smoothness.</p>
+\[Q = \frac{s - s(T, Q=0)}{h(T, Q=1) - s(T, Q=0)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(s\)</span> is the specific enthalpy and <span class="math notranslate nohighlight">\(T\)</span> is the temperature.</p>
+<p>Smoothing limiters keep the quality in the range [-1, 2] using a <cite>logsumexp</cite> formulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
