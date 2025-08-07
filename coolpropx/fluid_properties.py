@@ -270,7 +270,11 @@ class Fluid:
     def _compute_critical_point(self):
         """Calculate the properties at the critical point"""
         rho_crit, T_crit = self._AS.rhomass_critical(), self._AS.T_critical()
-        return self.get_state(DmassT_INPUTS, rho_crit, T_crit)
+        try:
+            state_crit = self.get_state(DmassT_INPUTS, rho_crit, T_crit)
+        except:
+            state_crit = self.get_state(DmassT_INPUTS, rho_crit, T_crit-1e-3)
+        return state_crit
 
     def _compute_triple_point_liquid(self):
         """Calculate the properties at the triple point (liquid state)"""
