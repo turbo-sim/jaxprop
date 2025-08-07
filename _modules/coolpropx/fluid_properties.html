@@ -548,7 +548,11 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_critical_point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the properties at the critical point&quot;&quot;&quot;</span>
         <span class="n">rho_crit</span><span class="p">,</span> <span class="n">T_crit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_AS</span><span class="o">.</span><span class="n">rhomass_critical</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_AS</span><span class="o">.</span><span class="n">T_critical</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">rho_crit</span><span class="p">,</span> <span class="n">T_crit</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">state_crit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">rho_crit</span><span class="p">,</span> <span class="n">T_crit</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">state_crit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">rho_crit</span><span class="p">,</span> <span class="n">T_crit</span><span class="o">-</span><span class="mf">1e-3</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">state_crit</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_triple_point_liquid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the properties at the triple point (liquid state)&quot;&quot;&quot;</span>
