@@ -1,0 +1,795 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>coolpropx.perfect_gas.perfect_gas &#8212; coolpropx v0.2.12 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=192e09c8"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/coolpropx/perfect_gas/perfect_gas';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">coolpropx v0.2.12 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/bibliography.html">Bibliography</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/api/coolpropx.html">API Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/coolpropx.core_calculations.html">coolpropx.core_calculations module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/coolpropx.fluid_properties.html">coolpropx.fluid_properties module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/coolpropx.graphics.html">coolpropx.graphics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/coolpropx.math.html">coolpropx.math module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/coolpropx.utils.html">coolpropx.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for coolpropx.perfect_gas.perfect_gas</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This script should be used in turboflow for thermodynamic property calculations </span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..jax_import</span><span class="w"> </span><span class="kn">import</span> <span class="n">jax</span><span class="p">,</span> <span class="n">jnp</span><span class="p">,</span> <span class="n">JAX_AVAILABLE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">perfect_gas_props_functions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_dict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">JAX_AVAILABLE</span><span class="p">)</span>
+
+
+<span class="n">property_calculators</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;HmassSmass_INPUTS&quot;</span><span class="p">:</span> <span class="n">perfect_gas_props_functions</span><span class="o">.</span><span class="n">calculate_properties_hs</span><span class="p">,</span>   <span class="c1"># &quot;HmassSmass_INPUTS&quot;</span>
+    <span class="s2">&quot;PSmass_INPUTS&quot;</span><span class="p">:</span> <span class="n">perfect_gas_props_functions</span><span class="o">.</span><span class="n">calculate_properties_Ps</span><span class="p">,</span>   <span class="c1"># &quot;PSmass_INPUTS&quot;</span>
+    <span class="s2">&quot;PT_INPUTS&quot;</span><span class="p">:</span> <span class="n">perfect_gas_props_functions</span><span class="o">.</span><span class="n">calculate_properties_PT</span><span class="p">,</span>   <span class="c1"># &quot;PT_INPUTS&quot;</span>
+    <span class="s2">&quot;HmassP_INPUTS&quot;</span><span class="p">:</span> <span class="n">perfect_gas_props_functions</span><span class="o">.</span><span class="n">calculate_properties_hP</span><span class="p">,</span>   <span class="c1"># &quot;HmassP_INPUTS&quot;</span>
+    <span class="s2">&quot;DmassHmass_INPUTS&quot;</span><span class="p">:</span> <span class="n">perfect_gas_props_functions</span><span class="o">.</span><span class="n">calculate_properties_rhoh</span>  <span class="c1"># &quot;DmassHmass_INPUTS&quot;</span>
+<span class="p">}</span>
+
+<span class="c1"># # Create a lookup table to convert strings to integers</span>
+<span class="c1"># input_state_map = {</span>
+<span class="c1">#     &quot;HmassSmass_INPUTS&quot;: 0.0,</span>
+<span class="c1">#     &quot;PSmass_INPUTS&quot;: 1.0,</span>
+<span class="c1">#     &quot;PT_INPUTS&quot;: 2.0,</span>
+<span class="c1">#     &quot;HmassP_INPUTS&quot;: 3.0,</span>
+<span class="c1">#     &quot;DmassHmass_INPUTS&quot;: 4.0</span>
+<span class="c1"># }</span>
+
+<span class="c1"># Fluid Constants (Change for different fluids; values are for air)</span>
+<span class="c1"># fluid_constants = {</span>
+<span class="c1">#     &quot;R&quot;: 287.0,          # Specific gas constant for air (J/(kg*K))</span>
+<span class="c1">#     &quot;gamma&quot;: 1.41,      # Specific heat ratio for air</span>
+<span class="c1">#     &quot;T_ref&quot;: 288.15,    # Reference temperature (K)</span>
+<span class="c1">#     &quot;P_ref&quot;: 101306.33, # Reference pressure (Pa)</span>
+<span class="c1">#     &quot;s_ref&quot;: 1659.28,   # Reference entropy (J/(kg*K))</span>
+<span class="c1">#     &quot;myu_ref&quot;: 1.789e-5, # Reference dynamic viscosity (Kg/(m*s))</span>
+<span class="c1">#     &quot;S_myu&quot;: 110.56,    # Sutherland&#39;s constant for viscosity (K)</span>
+<span class="c1">#     &quot;k_ref&quot;: 0.0241,    # Reference thermal conductivity (W/(m*K))</span>
+<span class="c1">#     &quot;S_k&quot;: 194          # Sutherland&#39;s constant for thermal conductivity (K)</span>
+<span class="c1"># }</span>
+
+
+<span class="c1"># Constants</span>
+<span class="n">R</span> <span class="o">=</span> <span class="mf">287.0</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.41</span>
+<span class="n">T_ref</span> <span class="o">=</span> <span class="mf">288.15</span>
+<span class="n">P_ref</span> <span class="o">=</span> <span class="mf">101306.33</span>
+<span class="n">s_ref</span> <span class="o">=</span> <span class="mf">1659.28</span>
+<span class="n">myu_ref</span> <span class="o">=</span> <span class="mf">1.789e-5</span>
+<span class="n">S_myu</span> <span class="o">=</span> <span class="mf">110.56</span>
+<span class="n">k_ref</span> <span class="o">=</span> <span class="mf">0.0241</span>
+<span class="n">S_k</span> <span class="o">=</span> <span class="mi">194</span>
+
+<span class="n">PROPERTY_ALIAS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;speed_sound&quot;</span><span class="p">:</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+
+<span class="c1"># ----------------------------------------------------------------------------- #</span>
+<span class="c1"># Helper functions to calculate specific properties</span>
+<span class="c1"># ----------------------------------------------------------------------------- #</span>
+<div class="viewcode-block" id="specific_heat">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.specific_heat">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">specific_heat</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+    <span class="n">cp</span> <span class="o">=</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">R</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># J/(kg*K)</span>
+    <span class="n">cv</span> <span class="o">=</span> <span class="n">cp</span> <span class="o">/</span> <span class="n">gamma</span>  <span class="c1"># J/(kg*K)</span>
+    <span class="k">return</span> <span class="n">cp</span><span class="p">,</span> <span class="n">cv</span></div>
+
+
+<div class="viewcode-block" id="temperature_from_h">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.temperature_from_h">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">temperature_from_h</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+    <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">h</span> <span class="o">/</span> <span class="n">cp</span><span class="p">)</span>  <span class="c1"># Clip to avoid negative values</span></div>
+
+
+<div class="viewcode-block" id="temperature_from_Ps">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.temperature_from_Ps">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">temperature_from_Ps</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+    <span class="n">exponent</span> <span class="o">=</span> <span class="p">((</span><span class="n">s</span> <span class="o">-</span> <span class="n">s_ref</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P</span> <span class="o">/</span> <span class="n">P_ref</span><span class="p">)))</span> <span class="o">/</span> <span class="n">cp</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">T_ref</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="viscosity_from_T">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.viscosity_from_T">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">viscosity_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">myu_ref</span> <span class="o">*</span> <span class="p">((</span><span class="n">T</span> <span class="o">/</span> <span class="n">T_ref</span><span class="p">)</span> <span class="o">**</span> <span class="mf">1.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="n">T_ref</span> <span class="o">+</span> <span class="n">S_myu</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="n">S_myu</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="conductivity_from_T">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.conductivity_from_T">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">conductivity_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">k_ref</span> <span class="o">*</span> <span class="p">((</span><span class="n">T</span> <span class="o">/</span> <span class="mf">273.0</span><span class="p">)</span> <span class="o">**</span> <span class="mf">1.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="mf">273.0</span> <span class="o">+</span> <span class="n">S_k</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="n">S_k</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="speed_of_sound_from_T">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.speed_of_sound_from_T">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">speed_of_sound_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="entropy_from_PT">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.entropy_from_PT">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">entropy_from_PT</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s_ref</span> <span class="o">+</span> <span class="p">(</span><span class="n">cp</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">T</span> <span class="o">/</span> <span class="n">T_ref</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P</span> <span class="o">/</span> <span class="n">P_ref</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="entropy_from_rhoP">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.entropy_from_rhoP">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">entropy_from_rhoP</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">P</span><span class="p">):</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">P</span> <span class="o">/</span> <span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="n">R</span><span class="p">)</span>
+    <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s_ref</span> <span class="o">+</span> <span class="p">(</span><span class="n">cp</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">T</span> <span class="o">/</span> <span class="n">T_ref</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P</span> <span class="o">/</span> <span class="n">P_ref</span><span class="p">))</span></div>
+
+
+
+<span class="c1"># ----------------------------------------------------------------------------- #</span>
+<span class="c1"># Property calculation functions for main input pairs</span>
+<span class="c1"># ----------------------------------------------------------------------------- #</span>
+
+<div class="viewcode-block" id="calculate_properties_PT">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.calculate_properties_PT">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_properties_PT</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">T</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">P</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Temperature and pressure must be positive.&quot;</span><span class="p">)</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">P</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">T</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">entropy_from_PT</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calculate_properties_hs">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.calculate_properties_hs">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_properties_hs</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">temperature_from_h</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">P_ref</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(((</span><span class="n">cp</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">T</span> <span class="o">/</span> <span class="n">T_ref</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">s_ref</span><span class="p">))</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">P</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calculate_properties_hP">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.calculate_properties_hP">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_properties_hP</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">P</span><span class="p">):</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">temperature_from_h</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">P</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">entropy_from_PT</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calculate_properties_Ps">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.calculate_properties_Ps">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_properties_Ps</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">temperature_from_Ps</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">T</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">P</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calculate_properties_rhoh">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.calculate_properties_rhoh">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_properties_rhoh</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">temperature_from_h</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span> <span class="n">T</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">entropy_from_rhoP</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assemble_properties">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.assemble_properties">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="n">props</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
+        <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="n">P</span><span class="p">,</span>
+        <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="n">rho</span><span class="p">,</span>
+        <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span>
+        <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="n">s</span><span class="p">,</span>
+        <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="n">viscosity_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
+        <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="n">conductivity_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
+        <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="n">speed_of_sound_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
+        <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="n">gamma</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">alias</span><span class="p">,</span> <span class="n">original</span> <span class="ow">in</span> <span class="n">PROPERTY_ALIAS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">props</span><span class="p">[</span><span class="n">alias</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="n">original</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">props</span></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="c1"># ----------------------------------------------------------------------------- #</span>
+<span class="c1"># Main function (always available regardless of JAX configuration)</span>
+<span class="c1"># ----------------------------------------------------------------------------- #</span>
+<div class="viewcode-block" id="perfect_gas_props">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.perfect_gas_props">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">perfect_gas_props</span><span class="p">(</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">input_state</span><span class="p">,</span> <span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span><span class="p">):</span>
+
+    <span class="c1"># print(&quot;You are in in-house perfect gas equations script!!&quot;)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate properties based on the specified input state.&quot;&quot;&quot;</span>
+    
+    <span class="c1"># if isinstance(input_state, str):</span>
+    <span class="c1">#     input_state = input_state_map[input_state]</span>
+
+    <span class="c1"># Retrieve the appropriate calculation function</span>
+    <span class="n">calculate_properties</span> <span class="o">=</span> <span class="n">property_calculators</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">input_state</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">calculate_properties</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown input state: </span><span class="si">{</span><span class="n">input_state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Call the corresponding property calculation function </span>
+    <span class="n">properties</span> <span class="o">=</span> <span class="n">calculate_properties</span><span class="p">(</span><span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span><span class="p">)</span>
+
+    <span class="c1"># Check for NaN or complex values in the properties</span>
+   
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">complex</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+        <span class="c1"># Raise an error with detailed information</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;For input state &#39;</span><span class="si">{</span><span class="n">input_state</span><span class="si">}</span><span class="s2">&#39; with inputs prop1=</span><span class="si">{</span><span class="n">prop1</span><span class="si">:</span><span class="s2">0.2f</span><span class="si">}</span><span class="s2">, prop2=</span><span class="si">{</span><span class="n">prop2</span><span class="si">:</span><span class="s2">0.2f</span><span class="si">}</span><span class="s2">, some properties are NaN or complex:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">print_dict</span><span class="p">(</span><span class="n">properties</span><span class="p">,</span><span class="w"> </span><span class="n">return_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">properties</span></div>
+
+
+
+
+
+<span class="k">if</span> <span class="n">JAX_AVAILABLE</span><span class="p">:</span>
+     
+    <span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">custom_jvp</span><span class="p">,</span><span class="n">nondiff_argnums</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perfect_gas_props_custom_jvp</span><span class="p">(</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">input_state</span><span class="p">,</span> <span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span><span class="p">):</span>
+        <span class="c1"># input_state = input_state_map[input_state]</span>
+        <span class="k">return</span> <span class="n">perfect_gas_props</span><span class="p">(</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">input_state</span><span class="p">,</span> <span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span><span class="p">)</span>
+
+    <span class="c1"># Define the forward-mode JVP function for perfect_gas_props</span>
+    <span class="c1"># Define the JVP function</span>
+    <span class="nd">@perfect_gas_props_custom_jvp</span><span class="o">.</span><span class="n">defjvp</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perfect_gas_props_custom_jvp_jvp</span><span class="p">(</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">input_state</span><span class="p">,</span> <span class="n">primals</span><span class="p">,</span> <span class="n">tangents</span><span class="p">):</span>
+        <span class="c1"># input_state, prop1, prop2 = primals</span>
+        <span class="c1"># _, prop1_dot, prop2_dot = tangents  # Directional derivatives</span>
+
+        <span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span> <span class="o">=</span> <span class="n">primals</span>
+        <span class="n">prop1_dot</span><span class="p">,</span> <span class="n">prop2_dot</span> <span class="o">=</span> <span class="n">tangents</span>  <span class="c1"># Directional derivatives</span>
+        
+        <span class="c1"># input_state_dot = 0.0  # We don&#39;t calculate partial derivatives with respect to input state. This is hard-coded.</span>
+        
+        <span class="c1"># Small step for finite difference</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="o">/</span><span class="p">(</span><span class="n">prop1</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">prop2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+
+        <span class="c1"># Compute finite difference approximations for partial derivatives</span>
+        <span class="c1"># properties_dprop = perfect_gas_props(input_state, prop1 + delta*prop1_dot, prop2+delta*prop2_dot)</span>
+        <span class="c1"># properties_base = perfect_gas_props(input_state, prop1, prop2)</span>
+        <span class="c1"># properties_dprop1 = perfect_gas_props(input_state, prop1 + delta, prop2)</span>
+        <span class="c1"># properties_dprop2 = perfect_gas_props(input_state, prop1, prop2 + delta)</span>
+
+        <span class="n">properties_base</span> <span class="o">=</span> <span class="n">perfect_gas_props</span><span class="p">(</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">input_state</span><span class="p">,</span> <span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span><span class="p">)</span>
+        <span class="n">properties_dprop1</span> <span class="o">=</span> <span class="n">perfect_gas_props</span><span class="p">(</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">input_state</span><span class="p">,</span> <span class="n">prop1</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="n">prop2</span><span class="p">)</span>
+        <span class="n">properties_dprop2</span> <span class="o">=</span> <span class="n">perfect_gas_props</span><span class="p">(</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">input_state</span><span class="p">,</span> <span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span>
+
+
+        <span class="c1"># Compute partial derivatives</span>
+        <span class="n">df_dprop1</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="p">(</span><span class="n">properties_dprop1</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">properties_base</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">/</span> <span class="n">delta</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">properties_base</span>
+        <span class="p">}</span>
+        <span class="n">df_dprop2</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="p">(</span><span class="n">properties_dprop2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">properties_base</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">/</span> <span class="n">delta</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">properties_base</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Compute JVP (directional derivative)</span>
+        <span class="n">jvp</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="n">df_dprop1</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="n">prop1_dot</span> <span class="o">+</span> <span class="n">df_dprop2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="n">prop2_dot</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">properties_base</span>
+        <span class="p">}</span>
+        
+        <span class="k">return</span> <span class="n">properties_base</span><span class="p">,</span> <span class="n">jvp</span>
+
+
+
+
+<span class="c1"># ######### WORKING CODE END #########</span>
+
+<span class="c1"># fluid_name =  &#39;test&#39;</span>
+<span class="c1"># input_state_string = &quot;PT_INPUTS&quot;  # Input state as a string</span>
+<span class="c1"># prop1 = 100000.0  # Example property 1 (e.g., enthalpy in J/kg)</span>
+<span class="c1"># prop2 = 300.0   # Example property 2 (e.g., entropy in J/(kg*K))</span>
+
+<span class="c1"># grad_func = jax.jacfwd(perfect_gas_props_custom_jvp, argnums = (2,3))</span>
+<span class="c1"># gradients = grad_func(fluid_name, input_state_string, prop1, prop2)</span>
+<span class="c1"># print(gradients)</span>
+
+<span class="c1"># ###### BELOW CODES ARE FOR TESTING #######</span>
+
+<span class="c1"># # def test_custom_jvp():</span>
+<span class="c1"># #     # Example inputs</span>
+<span class="c1"># #     input_state_string = &quot;HmassSmass_INPUTS&quot;  # Input state as a string</span>
+<span class="c1"># #     prop1 = 400980.0  # Example property 1 (e.g., enthalpy in J/kg)</span>
+<span class="c1"># #     prop2 = 1991.94   # Example property 2 (e.g., entropy in J/(kg*K))</span>
+
+<span class="c1"># #     # Convert string to numeric input state</span>
+<span class="c1"># #     input_state = input_state_map[input_state_string]</span>
+
+<span class="c1"># #     # Compute JVP using JAX&#39;s `jvp()` function</span>
+<span class="c1"># #     primals = (prop1, prop2)</span>
+
+<span class="c1"># #     # Compute JVP w.r.t. prop1 (tangent (1.0, 0.0)) and prop2 (tangent (0.0, 1.0))</span>
+<span class="c1"># #     properties_base, jvp_custom_prop1 = jvp(lambda p1, p2: perfect_gas_props_custom_jvp(input_state, p1, p2), primals, (1.0, 0.0))</span>
+<span class="c1"># #     _, jvp_custom_prop2 = jvp(lambda p1, p2: perfect_gas_props_custom_jvp(input_state, p1, p2), primals, (0.0, 1.0))</span>
+
+<span class="c1"># #     print(&quot;Custom JVP (Directional Derivatives):&quot;)</span>
+<span class="c1"># #     print(&quot;∂properties/∂prop1:&quot;, jvp_custom_prop1)</span>
+<span class="c1"># #     print(&quot;∂properties/∂prop2:&quot;, jvp_custom_prop2)</span>
+
+<span class="c1"># #     # Compute Jacobian using JAX automatic differentiation</span>
+<span class="c1"># #     properties_func = partial(perfect_gas_props_custom_jvp, input_state)  # Fix: Bind input_state</span>
+<span class="c1"># #     jacobian_prop1 = jacobian(properties_func, argnums=0)(prop1, prop2)  # ∂properties/∂prop1</span>
+<span class="c1"># #     jacobian_prop2 = jacobian(properties_func, argnums=1)(prop1, prop2)  # ∂properties/∂prop2</span>
+
+<span class="c1"># #     print(&quot;\nJAX Automatic Differentiation (Jacobian):&quot;)</span>
+<span class="c1"># #     print(&quot;∂properties/∂prop1:&quot;, jacobian_prop1)</span>
+<span class="c1"># #     print(&quot;∂properties/∂prop2:&quot;, jacobian_prop2)</span>
+
+<span class="c1"># #     # Compare JVP with JAX Jacobian</span>
+<span class="c1"># #     for key in properties_base.keys():</span>
+<span class="c1"># #         jvp_val_prop1 = jvp_custom_prop1[key]</span>
+<span class="c1"># #         jvp_val_prop2 = jvp_custom_prop2[key]</span>
+<span class="c1"># #         jacobian_val_prop1 = jacobian_prop1[key]</span>
+<span class="c1"># #         jacobian_val_prop2 = jacobian_prop2[key]</span>
+
+<span class="c1"># #         print(f&quot;Property: {key}, Custom JVP ∂/∂prop1: {jvp_val_prop1}, JAX Jacobian ∂/∂prop1: {jacobian_val_prop1}&quot;)</span>
+<span class="c1"># #         print(f&quot;Property: {key}, Custom JVP ∂/∂prop2: {jvp_val_prop2}, JAX Jacobian ∂/∂prop2: {jacobian_val_prop2}&quot;)</span>
+
+<span class="c1"># #         assert jnp.allclose(jvp_val_prop1, jacobian_val_prop1, atol=1e-5), f&quot;JVP mismatch for {key} in ∂/∂prop1&quot;</span>
+<span class="c1"># #         assert jnp.allclose(jvp_val_prop2, jacobian_val_prop2, atol=1e-5), f&quot;JVP mismatch for {key} in ∂/∂prop2&quot;</span>
+
+<span class="c1"># #     print(&quot;\nCustom JVP matches JAX automatic differentiation!&quot;)</span>
+
+<span class="c1"># # # Run the test</span>
+<span class="c1"># # test_custom_jvp()    </span>
+
+<span class="c1"># # # Now, test the custom JVP with forward-mode differentiation</span>
+
+<span class="c1"># # input_state_string = &quot;HmassP_INPUTS&quot;  # Example input state</span>
+<span class="c1"># # prop1_value = jnp.array(400980.0)  # Example value for prop1</span>
+<span class="c1"># # prop2_value = jnp.array(103587.1484375)    # Example value for prop2</span>
+
+<span class="c1"># # # Convert input_state into a JAX-compatible constant (by wrapping it as a string)</span>
+<span class="c1"># # # You do not need to change input_state for differentiation since it&#39;s just a key for function lookup</span>
+<span class="c1"># # input_state = input_state_map[input_state_string]</span>
+
+<span class="c1"># # # List of input variables and their corresponding names</span>
+<span class="c1"># # input_vars = [(&quot;h&quot;, prop1_value), (&quot;p&quot;, prop2_value)]  </span>
+<span class="c1"># # values = (input_state, prop1_value, prop2_value)</span>
+
+<span class="c1"># # # Dictionary to store partial derivatives</span>
+<span class="c1"># # partial_derivatives = {}</span>
+
+<span class="c1"># # # Loop over each input variable</span>
+<span class="c1"># # for i, (var_name, var_value) in enumerate(input_vars):</span>
+<span class="c1"># #     # Create tangent vector with 1.0 for the current variable, 0.0 for others</span>
+<span class="c1"># #     tangents = [0.0] * len(input_vars)</span>
+<span class="c1"># #     tangents[i] = 1.0  # Set current variable&#39;s tangent to 1.0</span>
+    
+<span class="c1"># #     # Compute JVP to get partial derivative with respect to the current variable</span>
+<span class="c1"># #     properties_values, derivs = jax.jvp(perfect_gas_props_custom_jvp, values, (0.0, *tuple(tangents)))</span>
+    
+<span class="c1"># #     # Find the other variable name dynamically</span>
+<span class="c1"># #     other_var_name = input_vars[1 - i][0]  # Picks the other variable from input_vars list</span>
+    
+<span class="c1"># #     # Store only the partial derivatives for the current variable</span>
+<span class="c1"># #     for key in derivs:</span>
+<span class="c1"># #         partial_derivatives[f&quot;d{key}_d{var_name}_{other_var_name}&quot;] = derivs[key]</span>
+
+<span class="c1"># # print_dict(partial_derivatives)</span>
+
+<span class="c1"># # T = properties_values[&quot;T&quot;]</span>
+<span class="c1"># # P = properties_values[&quot;p&quot;]</span>
+<span class="c1"># # rho = properties_values[&quot;d&quot;]</span>
+<span class="c1"># # h = properties_values[&quot;h&quot;]</span>
+<span class="c1"># # s = properties_values[&quot;s&quot;]</span>
+<span class="c1"># # mu = properties_values[&quot;mu&quot;]</span>
+<span class="c1"># # k = properties_values[&quot;k&quot;]</span>
+<span class="c1"># # a = properties_values[&quot;a&quot;]</span>
+
+<span class="c1"># # # Define the ideal gas equation of state: p = rho * R * T</span>
+<span class="c1"># # def ideal_gas_equation(rho, T):</span>
+<span class="c1"># #     return rho * 287 * T</span>
+
+<span class="c1"># # ## Verifying the derivatives from JVP for hs case</span>
+
+<span class="c1"># # dP_dT_s = partial_derivatives[&quot;dp_dh_s&quot;] / partial_derivatives[&quot;dT_dh_s&quot;]  # Example usage</span>
+<span class="c1"># # dP_drho_h = partial_derivatives[&quot;dp_ds_h&quot;] / partial_derivatives[&quot;dd_ds_h&quot;]  # Example usage</span>
+
+<span class="c1"># # # With Inputs T and rho</span>
+<span class="c1"># # dP_drho = grad(ideal_gas_equation, argnums=0)  # Partial derivative with respect to rho</span>
+<span class="c1"># # dP_dT = grad(ideal_gas_equation, argnums=1)    # Partial derivative with respect to T</span>
+
+<span class="c1"># # dP_dT_rho = dP_dT(rho, T)</span>
+<span class="c1"># # dP_drho_T = dP_drho(rho, T)</span>
+
+<span class="c1"># # if jnp.isclose(dP_dT_s, (1.41 / (1.41 - 1)) * dP_dT_rho) and jnp.isclose(dP_drho_h, dP_drho_T):</span>
+<span class="c1"># #     print(&quot;The partial derivatives calculated from customjvp and from different forms of equation of state are matching&quot;)</span>
+<span class="c1"># # else:</span>
+<span class="c1"># #     print(&quot;The partial derivatives calculated from customjvp and from different forms of equation of state are not matching&quot;)</span>
+
+<span class="c1"># # ## Verifying the derivatives from JVP for hP case</span>
+
+<span class="c1"># # dT_drho_P = partial_derivatives[&quot;dT_dh_p&quot;] / partial_derivatives[&quot;dd_dh_p&quot;]  # Example usage</span>
+<span class="c1"># # drho_dP_T = partial_derivatives[&quot;dd_dp_h&quot;]</span>
+
+<span class="c1"># # # With Inputs T and rho</span>
+<span class="c1"># # dP_drho = grad(ideal_gas_equation, argnums=0)  # Partial derivative with respect to rho</span>
+<span class="c1"># # dP_dT = grad(ideal_gas_equation, argnums=1)    # Partial derivative with respect to T</span>
+
+<span class="c1"># # dP_dT_rho = dP_dT(rho, T)</span>
+<span class="c1"># # dP_drho_T = dP_drho(rho, T)</span>
+
+<span class="c1"># # if jnp.isclose(dP_dT_rho * dT_drho_P * drho_dP_T, -1.0):</span>
+<span class="c1"># #     print(&quot;The partial derivatives calculated from customjvp and from different forms of equation of state are matching&quot;)</span>
+<span class="c1"># # else:</span>
+<span class="c1"># #     print(&quot;The partial derivatives calculated from customjvp and from different forms of equation of state are not matching&quot;)</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Roberto Agromayor.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
