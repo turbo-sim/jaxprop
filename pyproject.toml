@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "coolpropx"
-version = "0.2.10"
+version = "0.2.11"
 description = "A lightweight wrapper to CoolProp's low-level interface."
 authors = ["Roberto Agromayor"]
 license = "MIT"
