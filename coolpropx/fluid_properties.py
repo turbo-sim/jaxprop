@@ -267,6 +267,9 @@ class Fluid:
         self.T_min = self._AS.Tmin()
         self.T_max = self._AS.Tmax()
 
+        # # Define reference state
+        # self.reference_state = self.critical_point
+
     def _compute_critical_point(self):
         """Calculate the properties at the critical point"""
         rho_crit, T_crit = self._AS.rhomass_critical(), self._AS.T_critical()
@@ -994,6 +997,8 @@ class FluidState:
 #     for field in states[0].keys():
 #         state_dict[field] = np.array([getattr(state, field) for state in states])
 #     return state_dict
+
+
 def states_to_dict(states):
     """
     Recursively convert a list of FluidState objects into a nested dictionary
@@ -1010,6 +1015,9 @@ def states_to_dict(states):
         Nested dictionary where leaf nodes are 1D numpy arrays of field values.
         Missing keys are filled with NaN or None.
     """
+    # from .jax_import import jax, jnp, JAX_AVAILABLE
+    # np = jnp
+
     from collections.abc import Mapping
 
     def extract_value(state, key):
