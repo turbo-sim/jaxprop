@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>coolpropx.fluid_properties module &#8212; coolpropx v0.2.12 documentation</title>
+    <title>coolpropx.fluid_properties module &#8212; coolpropx v0.2.13 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=192e09c8"></script>
+    <script src="../../_static/documentation_options.js?v=a2d28bd5"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -142,7 +142,7 @@
   
   
   
-    <p class="title logo__title">coolpropx v0.2.12 documentation</p>
+    <p class="title logo__title">coolpropx v0.2.13 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -776,9 +776,11 @@ from the region where metastable states are physically possible.</p>
 <p>More precisely, a vapor spinodal point is the first local maximum of a isotherm line in a pressure-density diagram as the density increases.
 Conversely, a liquid spinodal point is the first local minimum of a isotherm line in a pressure-density diagram as the density decreases.
 The spinodal lines and phase envelope of carbon dioxide according to the HEOS developed by <span id="id1">[<a class="reference internal" href="../bibliography.html#id38" title="Roland Span and Wolfgang Wagner. A new equation of state for carbon dioxide covering the fluid region from the triple‐point temperature to 1100 K at pressures up to 800 MPa. Journal of Physical and Chemical Reference Data, 25(6):1509–1596, 1996. Publisher: American Institute of Physics. doi:10.1063/1.555991.">Span and Wagner, 1996</a>]</span> are illustrated in the figure below</p>
-<img alt="Pressure-density diagram and spinodal points for carbon dioxide." src="../../_images/spinodal_points_CO2.svg" /><p>Some equations of state are not well-posed and do not satisfy the condition <span class="math notranslate nohighlight">\(K_T=0\)</span> within the two-phase region.
+<img alt="Pressure-density diagram and spinodal points for carbon dioxide." src="../../_images/spinodal_points_CO2.svg" />
+<p>Some equations of state are not well-posed and do not satisfy the condition <span class="math notranslate nohighlight">\(K_T=0\)</span> within the two-phase region.
 This is exemplified by the nitrogen HEOS developed by <span id="id2">[<a class="reference internal" href="../bibliography.html#id39" title="Roland Span, Eric W. Lemmon, Richard T Jacobsen, Wolfgang Wagner, and Akimichi Yokozeki. A reference equation of state for the thermodynamic properties of nitrogen for temperatures from 63.151 to 1000 K and pressures to 2200 MPa. Journal of Physical and Chemical Reference Data, 29(6):1361–1433, 2000. doi:10.1063/1.1349047.">Span <em>et al.</em>, 2000</a>]</span>.</p>
-<img alt="Pressure-density diagram and &quot;pseudo&quot; spinodal points for carbon dioxide." src="../../_images/spinodal_points_nitrogen.svg" /><p>As seen in the figure, this HEOS is not well-posed because there are isotherms that do not have a local minimum/maximum corresponding to a state with zero isothermal bulk modulus.
+<img alt="Pressure-density diagram and &quot;pseudo&quot; spinodal points for carbon dioxide." src="../../_images/spinodal_points_nitrogen.svg" />
+<p>As seen in the figure, this HEOS is not well-posed because there are isotherms that do not have a local minimum/maximum corresponding to a state with zero isothermal bulk modulus.
 In such cases, this function returns the inflection point of the isotherms (corresponding to the point closest to zero bulk modulus) as the spinodal point.</p>
 </dd></dl>
 

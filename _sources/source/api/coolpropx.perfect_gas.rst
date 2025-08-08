@@ -13,4 +13,3 @@ Submodules
    :maxdepth: 4
 
    coolpropx.perfect_gas.perfect_gas
-   coolpropx.perfect_gas.perfect_gas_props_functions
