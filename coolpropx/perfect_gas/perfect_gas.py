@@ -1,4 +1,3 @@
-from functools import partial
 from .. import fluid_properties as fp
 from ..jax_import import jax, jnp, JAX_AVAILABLE
 
