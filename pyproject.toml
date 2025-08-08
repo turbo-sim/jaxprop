@@ -17,6 +17,13 @@ matplotlib = "^3.10.1"
 CoolProp = "^6.6.0"
 pysolver_view = "^0.6.8"
 #pysolver_view = { path = "../pysolver_view/", develop = true }
+jax = { version = "^0.5.3", optional = true }
+jaxlib = { version = "^0.5.3", optional = true }
+
+[tool.poetry.extras]
+# install with: poetry install --extras jax
+# or: pip install coolpropx[jax]
+jax = ["jax", "jaxlib"]
 
 [tool.poetry.group.dev.dependencies]
 ipython = ">=8.13,<8.17"
