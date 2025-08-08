@@ -6,7 +6,7 @@ import pysolver_view as psv
 
 from functools import wraps
 
-from . import core_calculations as props
+from . import core_calculations as props, GAS_CONSTANT, PROPERTY_ALIAS
 
 
 MEANLINE_PROPERTIES = [

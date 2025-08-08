@@ -1,412 +1,350 @@
-# This script should be used in turboflow for thermodynamic property calculations 
-
-from ..jax_import import jax, jnp, JAX_AVAILABLE
-from . import perfect_gas_props_functions
-from ..utils import print_dict
-
 from functools import partial
-
-
-
-print(JAX_AVAILABLE)
-
-
-property_calculators = {
-    "HmassSmass_INPUTS": perfect_gas_props_functions.calculate_properties_hs,   # "HmassSmass_INPUTS"
-    "PSmass_INPUTS": perfect_gas_props_functions.calculate_properties_Ps,   # "PSmass_INPUTS"
-    "PT_INPUTS": perfect_gas_props_functions.calculate_properties_PT,   # "PT_INPUTS"
-    "HmassP_INPUTS": perfect_gas_props_functions.calculate_properties_hP,   # "HmassP_INPUTS"
-    "DmassHmass_INPUTS": perfect_gas_props_functions.calculate_properties_rhoh  # "DmassHmass_INPUTS"
-}
-
-# # Create a lookup table to convert strings to integers
-# input_state_map = {
-#     "HmassSmass_INPUTS": 0.0,
-#     "PSmass_INPUTS": 1.0,
-#     "PT_INPUTS": 2.0,
-#     "HmassP_INPUTS": 3.0,
-#     "DmassHmass_INPUTS": 4.0
-# }
-
-# Fluid Constants (Change for different fluids; values are for air)
-# fluid_constants = {
-#     "R": 287.0,          # Specific gas constant for air (J/(kg*K))
-#     "gamma": 1.41,      # Specific heat ratio for air
-#     "T_ref": 288.15,    # Reference temperature (K)
-#     "P_ref": 101306.33, # Reference pressure (Pa)
-#     "s_ref": 1659.28,   # Reference entropy (J/(kg*K))
-#     "myu_ref": 1.789e-5, # Reference dynamic viscosity (Kg/(m*s))
-#     "S_myu": 110.56,    # Sutherland's constant for viscosity (K)
-#     "k_ref": 0.0241,    # Reference thermal conductivity (W/(m*K))
-#     "S_k": 194          # Sutherland's constant for thermal conductivity (K)
-# }
-
-
-# Constants
-R = 287.0
-gamma = 1.41
-T_ref = 288.15
-P_ref = 101306.33
-s_ref = 1659.28
-myu_ref = 1.789e-5
-S_myu = 110.56
-k_ref = 0.0241
-S_k = 194
-
-PROPERTY_ALIAS = {
-    "speed_sound": "a",
-}
-
+from .. import fluid_properties as fp
+from ..jax_import import jax, jnp, JAX_AVAILABLE
 
 
 # ----------------------------------------------------------------------------- #
-# Helper functions to calculate specific properties
+# Constant generation and Sutherland estimation
 # ----------------------------------------------------------------------------- #
-def specific_heat(R, gamma):
-    cp = (gamma * R) / (gamma - 1)  # J/(kg*K)
-    cv = cp / gamma  # J/(kg*K)
+def compute_perfect_gas_constants(fluid_name, T_ref, P_ref, dT=100.0, display=False):
+    """
+    Compute perfect gas constants from a real-fluid model at a reference state,
+    and estimate Sutherland constants using offset temperatures.
+
+    Parameters
+    ----------
+    Fluid : object
+        Fluid object with a method `get_state(input_type: str, val1: float, val2: float) -> dict`
+        returning thermodynamic properties including 'R', 'cp', 'cv', 'mu', 'k', and optionally 's'.
+    fluid_name : str
+        Name of the fluid (for logging or selection).
+    T_ref : float
+        Reference temperature in kelvin [K].
+    P_ref : float
+        Reference pressure in pascal [Pa].
+    dT : float, optional
+        Temperature offset used to evaluate `mu` and `k` at T_ref ± dT for
+        Sutherland constant estimation [K]. Default is 100.0.
+
+    Returns
+    -------
+    dict
+        Dictionary containing perfect gas constants:
+        - 'R': specific gas constant [J/(kg·K)]
+        - 'gamma': specific heat ratio
+        - 'T_ref': reference temperature [K]
+        - 'P_ref': reference pressure [Pa]
+        - 's_ref': reference entropy [J/(kg·K)]
+        - 'mu_ref': dynamic viscosity at T_ref [Pa·s]
+        - 'S_mu': Sutherland constant for viscosity [K]
+        - 'k_ref': thermal conductivity at T_ref [W/(m·K)]
+        - 'S_k': Sutherland constant for thermal conductivity [K]
+
+    Raises
+    ------
+    ValueError
+        If required properties are missing or invalid.
+    ZeroDivisionError
+        If the Sutherland estimation becomes numerically unstable.
+    """
+    # Calculate fluid constants at the reference pressure and temperature
+    fluid = fp.Fluid(name=fluid_name, backend="HEOS")
+    state = fluid.get_state(fp.PT_INPUTS, P_ref, T_ref)
+    R = fp.GAS_CONSTANT/fluid.abstract_state.molar_mass()
+    cp = state["cp"]
+    cv = state["cv"]
+    gamma = cp / cv
+    s_ref = 0.0
+    mu_ref = state["mu"]
+    k_ref = state["k"]
+
+    # Estimate Sutherland constants from values at T_ref ± dT
+    T2 = T_ref + dT
+    state2 = fluid.get_state(fp.PT_INPUTS, P_ref, T2)
+    S_mu = estimate_sutherland_constant(T_ref, mu_ref, T2, state2["mu"])
+    S_k = estimate_sutherland_constant(T_ref, k_ref, T2, state2["k"])
+
+    constants = {
+        "R": R,
+        "gamma": gamma,
+        "T_ref": T_ref,
+        "P_ref": P_ref,
+        "s_ref": s_ref,
+        "k_ref": k_ref,
+        "mu_ref": mu_ref,
+        "S_k": S_k,
+        "S_mu": S_mu,
+    }
+
+    if display:
+        varname = f"GAS_CONSTANTS_{fluid_name.upper()}"
+        print()
+        print(f"# Perfect gas properties for fluid \"{fluid_name}\" at pressure = {P_ref} Pa and temperature = {T_ref} K")
+        print(f"{varname} = {{")
+        for key, value in constants.items():
+            print(f"    \"{key}\": {value:0.12e},")
+        print("}")
+
+    return constants
+
+
+def estimate_sutherland_constant(T1, mu1, T2, mu2):
+    """
+    Estimate the Sutherland constant [K] from two values of a transport property 
+    (viscosity or thermal conductivity) at two temperatures, assuming a Sutherland-like law:
+    
+        mu(T) = mu_ref * (T / T_ref)^{3/2} * (T_ref + S) / (T + S)
+
+    Parameters
+    ----------
+    T1, T2 : float
+        Temperatures in kelvin [K].
+    mu1, mu2 : float
+        Transport property values at T1 and T2 (e.g. viscosity in Pa·s or conductivity in W/m·K).
+
+    Returns
+    -------
+    float
+        Estimated Sutherland constant in kelvin [K].
+    """
+    r = (mu2 / mu1) * (T2 / T1) ** (-1.5)
+    return (r * T2 - T1) / (1 - r)
+
+
+# ----------------------------------------------------------------------------- #
+# Example constant sets (code-generated)
+# ----------------------------------------------------------------------------- #
+
+# Perfect gas properties for fluid "air" at pressure = 101325 Pa and temperature = 298.15 K
+GAS_CONSTANTS_AIR = {
+    "R": 2.870473936889e+02,
+    "gamma": 1.401766304726e+00,
+    "T_ref": 2.981500000000e+02,
+    "P_ref": 1.013250000000e+05,
+    "s_ref": 0.000000000000e+00,
+    "k_ref": 2.624693131891e-02,
+    "mu_ref": 1.844808216200e-05,
+    "S_k": 1.663154111359e+02,
+    "S_mu": 1.202103108299e+02,
+}
+
+# Perfect gas properties for fluid "water" at pressure = 1000.0 Pa and temperature = 298.15 K
+GAS_CONSTANTS_WATER = {
+    "R": 4.615229593032e+02,
+    "gamma": 1.329030966936e+00,
+    "T_ref": 2.981500000000e+02,
+    "P_ref": 1.000000000000e+03,
+    "s_ref": 0.000000000000e+00,
+    "k_ref": 1.843390523303e-02,
+    "mu_ref": 9.706485314005e-06,
+    "S_k": 9.116455179041e+02,
+    "S_mu": 4.849654253407e+02,
+}
+
+
+# ----------------------------------------------------------------------------- #
+# Helper functions to calculate individual fluid properties
+# ----------------------------------------------------------------------------- #
+
+def specific_heat(constants):
+    R = constants["R"]
+    gamma = constants["gamma"]
+    cp = (gamma * R) / (gamma - 1)
+    cv = cp / gamma
     return cp, cv
 
-def temperature_from_h(h):
-    cp, _ = specific_heat(R, gamma)
-    return jnp.maximum(1.0, h / cp)  # Clip to avoid negative values
+def temperature_from_h(h, constants):
+    cp, _ = specific_heat(constants)
+    return jnp.maximum(1.0, h / cp)
 
-def temperature_from_Ps(P, s):
-    cp, _ = specific_heat(R, gamma)
+def temperature_from_Ps(P, s, constants):
+    R = constants["R"]
+    gamma = constants["gamma"]
+    T_ref = constants["T_ref"]
+    P_ref = constants["P_ref"]
+    s_ref = constants["s_ref"]
+    cp, _ = specific_heat(constants)
     exponent = ((s - s_ref) + (R * jnp.log(P / P_ref))) / cp
     return jnp.maximum(1.0, T_ref * jnp.exp(exponent))
 
-def viscosity_from_T(T):
-    return myu_ref * ((T / T_ref) ** 1.5) * ((T_ref + S_myu) / (T + S_myu))
+def viscosity_from_T(T, constants):
+    mu_ref = constants["mu_ref"]
+    T_ref = constants["T_ref"]
+    S_mu = constants["S_mu"]
+    return mu_ref * ((T / T_ref) ** 1.5) * ((T_ref + S_mu) / (T + S_mu))
 
-def conductivity_from_T(T):
-    return k_ref * ((T / 273.0) ** 1.5) * ((273.0 + S_k) / (T + S_k))
+def conductivity_from_T(T, constants):
+    k_ref = constants["k_ref"]
+    T_ref = constants["T_ref"]
+    S_k = constants["S_k"]
+    return k_ref * ((T / T_ref) ** 1.5) * ((T_ref + S_k) / (T + S_k))
 
-def speed_of_sound_from_T(T):
+def speed_of_sound_from_T(T, constants):
+    R = constants["R"]
+    gamma = constants["gamma"]
     return jnp.sqrt(gamma * R * T)
 
-def entropy_from_PT(P, T):
-    cp, _ = specific_heat(R, gamma)
+def entropy_from_PT(P, T, constants):
+    R = constants["R"]
+    T_ref = constants["T_ref"]
+    P_ref = constants["P_ref"]
+    s_ref = constants["s_ref"]
+    cp, _ = specific_heat(constants)
     return s_ref + (cp * jnp.log(T / T_ref)) - (R * jnp.log(P / P_ref))
 
-def entropy_from_rhoP(rho, P):
+def entropy_from_rhoP(rho, P, constants):
+    R = constants["R"]
     T = P / (rho * R)
-    cp, _ = specific_heat(R, gamma)
-    return s_ref + (cp * jnp.log(T / T_ref)) - (R * jnp.log(P / P_ref))
+    return entropy_from_PT(P, T, constants)
 
 
 # ----------------------------------------------------------------------------- #
-# Property calculation functions for main input pairs
+# Helper functions to calculate full fluid states
 # ----------------------------------------------------------------------------- #
 
-def calculate_properties_PT(P, T):
+def calculate_properties_PT(P, T, constants):
     if T <= 0 or P <= 0:
         raise ValueError("Temperature and pressure must be positive.")
+    R = constants["R"]
     rho = P / (R * T)
-    cp, _ = specific_heat(R, gamma)
+    cp, _ = specific_heat(constants)
     h = cp * T
-    s = entropy_from_PT(P, T)
-    return assemble_properties(T, P, rho, h, s)
+    s = entropy_from_PT(P, T, constants)
+    return assemble_properties(T, P, rho, h, s, constants)
 
-def calculate_properties_hs(h, s):
-    cp, _ = specific_heat(R, gamma)
-    T = temperature_from_h(h)
+def calculate_properties_hs(h, s, constants):
+    cp, _ = specific_heat(constants)
+    T = temperature_from_h(h, constants)
+    R = constants["R"]
+    T_ref = constants["T_ref"]
+    P_ref = constants["P_ref"]
+    s_ref = constants["s_ref"]
     P = P_ref * jnp.exp(((cp * jnp.log(T / T_ref)) - (s - s_ref)) / R)
     rho = P / (R * T)
-    return assemble_properties(T, P, rho, h, s)
+    return assemble_properties(T, P, rho, h, s, constants)
 
-def calculate_properties_hP(h, P):
-    T = temperature_from_h(h)
+def calculate_properties_hP(h, P, constants):
+    T = temperature_from_h(h, constants)
+    R = constants["R"]
     rho = P / (R * T)
-    s = entropy_from_PT(P, T)
-    return assemble_properties(T, P, rho, h, s)
+    s = entropy_from_PT(P, T, constants)
+    return assemble_properties(T, P, rho, h, s, constants)
 
-def calculate_properties_Ps(P, s):
-    T = temperature_from_Ps(P, s)
-    cp, _ = specific_heat(R, gamma)
+def calculate_properties_Ps(P, s, constants):
+    T = temperature_from_Ps(P, s, constants)
+    R = constants["R"]
+    rho = P / (R * T)
+    cp, _ = specific_heat(constants)
     h = cp * T
-    rho = P / (R * T)
-    return assemble_properties(T, P, rho, h, s)
+    return assemble_properties(T, P, rho, h, s, constants)
 
-def calculate_properties_rhoh(rho, h):
-    T = temperature_from_h(h)
+def calculate_properties_rhoh(rho, h, constants):
+    T = temperature_from_h(h, constants)
+    R = constants["R"]
     P = rho * R * T
-    s = entropy_from_rhoP(rho, P)
-    return assemble_properties(T, P, rho, h, s)
+    s = entropy_from_rhoP(rho, P, constants)
+    return assemble_properties(T, P, rho, h, s, constants)
 
-def assemble_properties(T, P, rho, h, s):
+def assemble_properties(T, P, rho, h, s, constants):
     props = {
         "T": T,
         "p": P,
         "d": rho,
         "h": h,
         "s": s,
-        "mu": viscosity_from_T(T),
-        "k": conductivity_from_T(T),
-        "a": speed_of_sound_from_T(T),
-        "gamma": gamma,
+        "mu": viscosity_from_T(T, constants),
+        "k": conductivity_from_T(T, constants),
+        "a": speed_of_sound_from_T(T, constants),
+        "gamma": constants["gamma"],
     }
-    for alias, original in PROPERTY_ALIAS.items():
-        props[alias] = props[original]
+    # for alias, original in PROPERTY_ALIAS.items():
+    #     props[alias] = props[original]
     return props
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ----------------------------------------------------------------------------- #
-# Main function (always available regardless of JAX configuration)
+# State evaluators (public API)
 # ----------------------------------------------------------------------------- #
-def perfect_gas_props(fluid_name, input_state, prop1, prop2):
 
-    # print("You are in in-house perfect gas equations script!!")
-    """Calculate properties based on the specified input state."""
+PROPERTY_CALCULATORS = {
+    "HmassSmass_INPUTS": calculate_properties_hs,
+    "PSmass_INPUTS":     calculate_properties_Ps,
+    "PT_INPUTS":         calculate_properties_PT,
+    "HmassP_INPUTS":     calculate_properties_hP,
+    "DmassHmass_INPUTS": calculate_properties_rhoh,
+}
+
+def _all_valid(props):
+    for v in props.values():
+        arr = jnp.asarray(v)
+        if not jnp.all(jnp.isfinite(arr)) or jnp.any(jnp.iscomplex(arr)):
+            return False
+    return True
+
+def perfect_gas_props(input_pair, prop1, prop2, constants):
+    # Ensure type consistency in subsequent calculation
+    prop1 = jnp.asarray(prop1)
+    prop2 = jnp.asarray(prop2)
+
+    # Resolve the type of input pair
+    calculator = PROPERTY_CALCULATORS.get(input_pair)
+    if calculator is None:
+        valid_inputs = ", ".join(PROPERTY_CALCULATORS.keys())
+        raise ValueError(f"unknown input state: '{input_pair}'. valid options: {valid_inputs}")
     
-    # if isinstance(input_state, str):
-    #     input_state = input_state_map[input_state]
+     # Compute fluid properties
+    properties = calculator(prop1, prop2, constants)
 
-    # Retrieve the appropriate calculation function
-    calculate_properties = property_calculators.get(input_state)
-    
-    if calculate_properties is None:
-        raise ValueError(f"Unknown input state: {input_state}")
+    # Check if anything is wrong
+    if not _all_valid(properties):
+        raise ValueError(f"invalid properties from inputs prop1={prop1}, prop2={prop2}")
 
-    # Call the corresponding property calculation function 
-    properties = calculate_properties(prop1, prop2)
-
-    # Check for NaN or complex values in the properties
-   
-    if any(jnp.isnan(value) or isinstance(value, complex) for value in properties.values()):
-        # Raise an error with detailed information
-            raise ValueError(
-                f"For input state '{input_state}' with inputs prop1={prop1:0.2f}, prop2={prop2:0.2f}, some properties are NaN or complex:\n"
-                f"{print_dict(properties, return_output=True)}"
-            )
-    
     return properties
 
 
 
 
-if JAX_AVAILABLE:
-     
-    @partial(jax.custom_jvp,nondiff_argnums=(0, 1))
-    def perfect_gas_props_custom_jvp(fluid_name, input_state, prop1, prop2):
-        # input_state = input_state_map[input_state]
-        return perfect_gas_props(fluid_name, input_state, prop1, prop2)
-
-    # Define the forward-mode JVP function for perfect_gas_props
-    # Define the JVP function
-    @perfect_gas_props_custom_jvp.defjvp
-    def perfect_gas_props_custom_jvp_jvp(fluid_name, input_state, primals, tangents):
-        # input_state, prop1, prop2 = primals
-        # _, prop1_dot, prop2_dot = tangents  # Directional derivatives
-
-        prop1, prop2 = primals
-        prop1_dot, prop2_dot = tangents  # Directional derivatives
-        
-        # input_state_dot = 0.0  # We don't calculate partial derivatives with respect to input state. This is hard-coded.
-        
-        # Small step for finite difference
-        delta = 1e-3/(prop1**2+prop2**2)**0.5
-
-        # Compute finite difference approximations for partial derivatives
-        # properties_dprop = perfect_gas_props(input_state, prop1 + delta*prop1_dot, prop2+delta*prop2_dot)
-        # properties_base = perfect_gas_props(input_state, prop1, prop2)
-        # properties_dprop1 = perfect_gas_props(input_state, prop1 + delta, prop2)
-        # properties_dprop2 = perfect_gas_props(input_state, prop1, prop2 + delta)
-
-        properties_base = perfect_gas_props(fluid_name, input_state, prop1, prop2)
-        properties_dprop1 = perfect_gas_props(fluid_name, input_state, prop1 + delta, prop2)
-        properties_dprop2 = perfect_gas_props(fluid_name, input_state, prop1, prop2 + delta)
 
 
-        # Compute partial derivatives
-        df_dprop1 = {
-            key: (properties_dprop1[key] - properties_base[key]) / delta
-            for key in properties_base
-        }
-        df_dprop2 = {
-            key: (properties_dprop2[key] - properties_base[key]) / delta
-            for key in properties_base
-        }
+# ----------------------------------------------------------------------------- #
+# Gradient calculations (only used when JAX is installed)
+# ----------------------------------------------------------------------------- #
 
-        # Compute JVP (directional derivative)
-        jvp = {
-            key: df_dprop1[key] * prop1_dot + df_dprop2[key] * prop2_dot
-            for key in properties_base
-        }
-        
-        return properties_base, jvp
+def perfect_gas_gradient(input_pair, constants, x, y, method="auto", eps_rel=1e-6):
+    """
+    Return (d/dx, d/dy) dictionaries of partials for perfect_gas_props at (x, y).
 
+    method: "auto" (use JAX if available), "jax" (force JAX), or "fd" (finite diff).
+    eps_rel: relative step size for finite differences.
+    """
+    # local wrapper: f(x, y) -> dict
+    def f(a, b):
+        return perfect_gas_props(input_pair, a, b, constants)
 
+    # choose method
+    use_jax = (method == "jax") or (method == "auto" and JAX_AVAILABLE)
+    if use_jax:
+        if not JAX_AVAILABLE:
+            raise RuntimeError("JAX not available but method='jax' was requested.")
+        dfdx = jax.jacfwd(lambda a, b: f(a, b), argnums=0)(x, y)
+        dfdy = jax.jacfwd(lambda a, b: f(a, b), argnums=1)(x, y)
+        return dfdx, dfdy
 
+    # finite differences path
+    x = jnp.asarray(x); y = jnp.asarray(y)
+    sx = jnp.maximum(jnp.abs(x), 1.0)
+    sy = jnp.maximum(jnp.abs(y), 1.0)
+    dx = eps_rel * sx
+    dy = eps_rel * sy
 
-# ######### WORKING CODE END #########
+    fxp = f(x + dx, y)
+    fxm = f(x - dx, y)
+    fyp = f(x, y + dy)
+    fym = f(x, y - dy)
 
-# fluid_name =  'test'
-# input_state_string = "PT_INPUTS"  # Input state as a string
-# prop1 = 100000.0  # Example property 1 (e.g., enthalpy in J/kg)
-# prop2 = 300.0   # Example property 2 (e.g., entropy in J/(kg*K))
+    keys = fxp.keys()
+    dfdx = {k: (fxp[k] - fxm[k]) / (2.0 * dx) for k in keys}
+    dfdy = {k: (fyp[k] - fym[k]) / (2.0 * dy) for k in keys}
+    return dfdx, dfdy
 
-# grad_func = jax.jacfwd(perfect_gas_props_custom_jvp, argnums = (2,3))
-# gradients = grad_func(fluid_name, input_state_string, prop1, prop2)
-# print(gradients)
-
-# ###### BELOW CODES ARE FOR TESTING #######
-
-# # def test_custom_jvp():
-# #     # Example inputs
-# #     input_state_string = "HmassSmass_INPUTS"  # Input state as a string
-# #     prop1 = 400980.0  # Example property 1 (e.g., enthalpy in J/kg)
-# #     prop2 = 1991.94   # Example property 2 (e.g., entropy in J/(kg*K))
-
-# #     # Convert string to numeric input state
-# #     input_state = input_state_map[input_state_string]
-
-# #     # Compute JVP using JAX's `jvp()` function
-# #     primals = (prop1, prop2)
-
-# #     # Compute JVP w.r.t. prop1 (tangent (1.0, 0.0)) and prop2 (tangent (0.0, 1.0))
-# #     properties_base, jvp_custom_prop1 = jvp(lambda p1, p2: perfect_gas_props_custom_jvp(input_state, p1, p2), primals, (1.0, 0.0))
-# #     _, jvp_custom_prop2 = jvp(lambda p1, p2: perfect_gas_props_custom_jvp(input_state, p1, p2), primals, (0.0, 1.0))
-
-# #     print("Custom JVP (Directional Derivatives):")
-# #     print("∂properties/∂prop1:", jvp_custom_prop1)
-# #     print("∂properties/∂prop2:", jvp_custom_prop2)
-
-# #     # Compute Jacobian using JAX automatic differentiation
-# #     properties_func = partial(perfect_gas_props_custom_jvp, input_state)  # Fix: Bind input_state
-# #     jacobian_prop1 = jacobian(properties_func, argnums=0)(prop1, prop2)  # ∂properties/∂prop1
-# #     jacobian_prop2 = jacobian(properties_func, argnums=1)(prop1, prop2)  # ∂properties/∂prop2
-
-# #     print("\nJAX Automatic Differentiation (Jacobian):")
-# #     print("∂properties/∂prop1:", jacobian_prop1)
-# #     print("∂properties/∂prop2:", jacobian_prop2)
-
-# #     # Compare JVP with JAX Jacobian
-# #     for key in properties_base.keys():
-# #         jvp_val_prop1 = jvp_custom_prop1[key]
-# #         jvp_val_prop2 = jvp_custom_prop2[key]
-# #         jacobian_val_prop1 = jacobian_prop1[key]
-# #         jacobian_val_prop2 = jacobian_prop2[key]
-
-# #         print(f"Property: {key}, Custom JVP ∂/∂prop1: {jvp_val_prop1}, JAX Jacobian ∂/∂prop1: {jacobian_val_prop1}")
-# #         print(f"Property: {key}, Custom JVP ∂/∂prop2: {jvp_val_prop2}, JAX Jacobian ∂/∂prop2: {jacobian_val_prop2}")
-
-# #         assert jnp.allclose(jvp_val_prop1, jacobian_val_prop1, atol=1e-5), f"JVP mismatch for {key} in ∂/∂prop1"
-# #         assert jnp.allclose(jvp_val_prop2, jacobian_val_prop2, atol=1e-5), f"JVP mismatch for {key} in ∂/∂prop2"
-
-# #     print("\nCustom JVP matches JAX automatic differentiation!")
-
-# # # Run the test
-# # test_custom_jvp()    
-
-# # # Now, test the custom JVP with forward-mode differentiation
-
-# # input_state_string = "HmassP_INPUTS"  # Example input state
-# # prop1_value = jnp.array(400980.0)  # Example value for prop1
-# # prop2_value = jnp.array(103587.1484375)    # Example value for prop2
-
-# # # Convert input_state into a JAX-compatible constant (by wrapping it as a string)
-# # # You do not need to change input_state for differentiation since it's just a key for function lookup
-# # input_state = input_state_map[input_state_string]
-
-# # # List of input variables and their corresponding names
-# # input_vars = [("h", prop1_value), ("p", prop2_value)]  
-# # values = (input_state, prop1_value, prop2_value)
-
-# # # Dictionary to store partial derivatives
-# # partial_derivatives = {}
-
-# # # Loop over each input variable
-# # for i, (var_name, var_value) in enumerate(input_vars):
-# #     # Create tangent vector with 1.0 for the current variable, 0.0 for others
-# #     tangents = [0.0] * len(input_vars)
-# #     tangents[i] = 1.0  # Set current variable's tangent to 1.0
-    
-# #     # Compute JVP to get partial derivative with respect to the current variable
-# #     properties_values, derivs = jax.jvp(perfect_gas_props_custom_jvp, values, (0.0, *tuple(tangents)))
-    
-# #     # Find the other variable name dynamically
-# #     other_var_name = input_vars[1 - i][0]  # Picks the other variable from input_vars list
-    
-# #     # Store only the partial derivatives for the current variable
-# #     for key in derivs:
-# #         partial_derivatives[f"d{key}_d{var_name}_{other_var_name}"] = derivs[key]
-
-# # print_dict(partial_derivatives)
-
-# # T = properties_values["T"]
-# # P = properties_values["p"]
-# # rho = properties_values["d"]
-# # h = properties_values["h"]
-# # s = properties_values["s"]
-# # mu = properties_values["mu"]
-# # k = properties_values["k"]
-# # a = properties_values["a"]
-
-# # # Define the ideal gas equation of state: p = rho * R * T
-# # def ideal_gas_equation(rho, T):
-# #     return rho * 287 * T
-
-# # ## Verifying the derivatives from JVP for hs case
-
-# # dP_dT_s = partial_derivatives["dp_dh_s"] / partial_derivatives["dT_dh_s"]  # Example usage
-# # dP_drho_h = partial_derivatives["dp_ds_h"] / partial_derivatives["dd_ds_h"]  # Example usage
-
-# # # With Inputs T and rho
-# # dP_drho = grad(ideal_gas_equation, argnums=0)  # Partial derivative with respect to rho
-# # dP_dT = grad(ideal_gas_equation, argnums=1)    # Partial derivative with respect to T
-
-# # dP_dT_rho = dP_dT(rho, T)
-# # dP_drho_T = dP_drho(rho, T)
-
-# # if jnp.isclose(dP_dT_s, (1.41 / (1.41 - 1)) * dP_dT_rho) and jnp.isclose(dP_drho_h, dP_drho_T):
-# #     print("The partial derivatives calculated from customjvp and from different forms of equation of state are matching")
-# # else:
-# #     print("The partial derivatives calculated from customjvp and from different forms of equation of state are not matching")
-
-# # ## Verifying the derivatives from JVP for hP case
-
-# # dT_drho_P = partial_derivatives["dT_dh_p"] / partial_derivatives["dd_dh_p"]  # Example usage
-# # drho_dP_T = partial_derivatives["dd_dp_h"]
-
-# # # With Inputs T and rho
-# # dP_drho = grad(ideal_gas_equation, argnums=0)  # Partial derivative with respect to rho
-# # dP_dT = grad(ideal_gas_equation, argnums=1)    # Partial derivative with respect to T
-
-# # dP_dT_rho = dP_dT(rho, T)
-# # dP_drho_T = dP_drho(rho, T)
-
-# # if jnp.isclose(dP_dT_rho * dT_drho_P * drho_dP_T, -1.0):
-# #     print("The partial derivatives calculated from customjvp and from different forms of equation of state are matching")
-# # else:
-# #     print("The partial derivatives calculated from customjvp and from different forms of equation of state are not matching")
