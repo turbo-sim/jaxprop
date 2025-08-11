@@ -292,9 +292,7 @@ document.write(`
   </button>
 `);
 </script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</button>
+
 </div></div>
       
     </div>
@@ -310,31 +308,6 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> Contents </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.assemble_properties"><code class="docutils literal notranslate"><span class="pre">assemble_properties()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_PT"><code class="docutils literal notranslate"><span class="pre">calculate_properties_PT()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_Ps"><code class="docutils literal notranslate"><span class="pre">calculate_properties_Ps()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_hP"><code class="docutils literal notranslate"><span class="pre">calculate_properties_hP()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_hs"><code class="docutils literal notranslate"><span class="pre">calculate_properties_hs()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_rhoh"><code class="docutils literal notranslate"><span class="pre">calculate_properties_rhoh()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.compute_perfect_gas_constants"><code class="docutils literal notranslate"><span class="pre">compute_perfect_gas_constants()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.conductivity_from_T"><code class="docutils literal notranslate"><span class="pre">conductivity_from_T()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.entropy_from_PT"><code class="docutils literal notranslate"><span class="pre">entropy_from_PT()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.entropy_from_rhoP"><code class="docutils literal notranslate"><span class="pre">entropy_from_rhoP()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.estimate_sutherland_constant"><code class="docutils literal notranslate"><span class="pre">estimate_sutherland_constant()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.perfect_gas_gradient"><code class="docutils literal notranslate"><span class="pre">perfect_gas_gradient()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.perfect_gas_props"><code class="docutils literal notranslate"><span class="pre">perfect_gas_props()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.specific_heat"><code class="docutils literal notranslate"><span class="pre">specific_heat()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.speed_of_sound_from_T"><code class="docutils literal notranslate"><span class="pre">speed_of_sound_from_T()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.temperature_from_Ps"><code class="docutils literal notranslate"><span class="pre">temperature_from_Ps()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.temperature_from_h"><code class="docutils literal notranslate"><span class="pre">temperature_from_h()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.viscosity_from_T"><code class="docutils literal notranslate"><span class="pre">viscosity_from_T()</span></code></a></li>
-</ul>
-            </nav>
         </div>
     </div>
 </div>
@@ -344,165 +317,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-coolpropx.perfect_gas.perfect_gas">
-<span id="coolpropx-perfect-gas-perfect-gas-module"></span><h1>coolpropx.perfect_gas.perfect_gas module<a class="headerlink" href="#module-coolpropx.perfect_gas.perfect_gas" title="Link to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.assemble_properties">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">assemble_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#assemble_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.assemble_properties" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.calculate_properties_PT">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">calculate_properties_PT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#calculate_properties_PT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_PT" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.calculate_properties_Ps">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">calculate_properties_Ps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#calculate_properties_Ps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_Ps" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.calculate_properties_hP">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">calculate_properties_hP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#calculate_properties_hP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_hP" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.calculate_properties_hs">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">calculate_properties_hs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#calculate_properties_hs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_hs" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.calculate_properties_rhoh">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">calculate_properties_rhoh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#calculate_properties_rhoh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_rhoh" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.compute_perfect_gas_constants">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">compute_perfect_gas_constants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dT</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#compute_perfect_gas_constants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.compute_perfect_gas_constants" title="Link to this definition">#</a></dt>
-<dd><p>Compute perfect gas constants from a real-fluid model at a reference state,
-and estimate Sutherland constants using offset temperatures.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>Fluid</strong><span class="classifier">object</span></dt><dd><p>Fluid object with a method <cite>get_state(input_type: str, val1: float, val2: float) -&gt; dict</cite>
-returning thermodynamic properties including ‘R’, ‘cp’, ‘cv’, ‘mu’, ‘k’, and optionally ‘s’.</p>
-</dd>
-<dt><strong>fluid_name</strong><span class="classifier">str</span></dt><dd><p>Name of the fluid (for logging or selection).</p>
-</dd>
-<dt><strong>T_ref</strong><span class="classifier">float</span></dt><dd><p>Reference temperature in kelvin [K].</p>
-</dd>
-<dt><strong>P_ref</strong><span class="classifier">float</span></dt><dd><p>Reference pressure in pascal [Pa].</p>
-</dd>
-<dt><strong>dT</strong><span class="classifier">float, optional</span></dt><dd><p>Temperature offset used to evaluate <cite>mu</cite> and <cite>k</cite> at T_ref ± dT for
-Sutherland constant estimation [K]. Default is 100.0.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>dict</dt><dd><p>Dictionary containing perfect gas constants:
-- ‘R’: specific gas constant [J/(kg·K)]
-- ‘gamma’: specific heat ratio
-- ‘T_ref’: reference temperature [K]
-- ‘P_ref’: reference pressure [Pa]
-- ‘s_ref’: reference entropy [J/(kg·K)]
-- ‘mu_ref’: dynamic viscosity at T_ref [Pa·s]
-- ‘S_mu’: Sutherland constant for viscosity [K]
-- ‘k_ref’: thermal conductivity at T_ref [W/(m·K)]
-- ‘S_k’: Sutherland constant for thermal conductivity [K]</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt>ValueError</dt><dd><p>If required properties are missing or invalid.</p>
-</dd>
-<dt>ZeroDivisionError</dt><dd><p>If the Sutherland estimation becomes numerically unstable.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.conductivity_from_T">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">conductivity_from_T</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#conductivity_from_T"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.conductivity_from_T" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.entropy_from_PT">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">entropy_from_PT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#entropy_from_PT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.entropy_from_PT" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.entropy_from_rhoP">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">entropy_from_rhoP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#entropy_from_rhoP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.entropy_from_rhoP" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.estimate_sutherland_constant">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">estimate_sutherland_constant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#estimate_sutherland_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.estimate_sutherland_constant" title="Link to this definition">#</a></dt>
-<dd><p>Estimate the Sutherland constant [K] from two values of a transport property 
-(viscosity or thermal conductivity) at two temperatures, assuming a Sutherland-like law:</p>
-<blockquote>
-<div><p>mu(T) = mu_ref * (T / T_ref)^{3/2} * (T_ref + S) / (T + S)</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>T1, T2</strong><span class="classifier">float</span></dt><dd><p>Temperatures in kelvin [K].</p>
-</dd>
-<dt><strong>mu1, mu2</strong><span class="classifier">float</span></dt><dd><p>Transport property values at T1 and T2 (e.g. viscosity in Pa·s or conductivity in W/m·K).</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>float</dt><dd><p>Estimated Sutherland constant in kelvin [K].</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.perfect_gas_gradient">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">perfect_gas_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps_rel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#perfect_gas_gradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.perfect_gas_gradient" title="Link to this definition">#</a></dt>
-<dd><p>Return (d/dx, d/dy) dictionaries of partials for perfect_gas_props at (x, y).</p>
-<p>method: “auto” (use JAX if available), “jax” (force JAX), or “fd” (finite diff).
-eps_rel: relative step size for finite differences.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.perfect_gas_props">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">perfect_gas_props</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#perfect_gas_props"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.perfect_gas_props" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.specific_heat">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">specific_heat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#specific_heat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.specific_heat" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.speed_of_sound_from_T">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">speed_of_sound_from_T</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#speed_of_sound_from_T"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.speed_of_sound_from_T" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.temperature_from_Ps">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">temperature_from_Ps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#temperature_from_Ps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.temperature_from_Ps" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.temperature_from_h">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">temperature_from_h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#temperature_from_h"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.temperature_from_h" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="coolpropx.perfect_gas.perfect_gas.viscosity_from_T">
-<span class="sig-prename descclassname"><span class="pre">coolpropx.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">viscosity_from_T</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/coolpropx/perfect_gas/perfect_gas.html#viscosity_from_T"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#coolpropx.perfect_gas.perfect_gas.viscosity_from_T" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
+  <section id="coolpropx-perfect-gas-perfect-gas-module">
+<h1>coolpropx.perfect_gas.perfect_gas module<a class="headerlink" href="#coolpropx-perfect-gas-perfect-gas-module" title="Link to this heading">#</a></h1>
 </section>
 
 
@@ -522,38 +338,6 @@ eps_rel: relative step size for finite differences.</p>
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.assemble_properties"><code class="docutils literal notranslate"><span class="pre">assemble_properties()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_PT"><code class="docutils literal notranslate"><span class="pre">calculate_properties_PT()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_Ps"><code class="docutils literal notranslate"><span class="pre">calculate_properties_Ps()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_hP"><code class="docutils literal notranslate"><span class="pre">calculate_properties_hP()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_hs"><code class="docutils literal notranslate"><span class="pre">calculate_properties_hs()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.calculate_properties_rhoh"><code class="docutils literal notranslate"><span class="pre">calculate_properties_rhoh()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.compute_perfect_gas_constants"><code class="docutils literal notranslate"><span class="pre">compute_perfect_gas_constants()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.conductivity_from_T"><code class="docutils literal notranslate"><span class="pre">conductivity_from_T()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.entropy_from_PT"><code class="docutils literal notranslate"><span class="pre">entropy_from_PT()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.entropy_from_rhoP"><code class="docutils literal notranslate"><span class="pre">entropy_from_rhoP()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.estimate_sutherland_constant"><code class="docutils literal notranslate"><span class="pre">estimate_sutherland_constant()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.perfect_gas_gradient"><code class="docutils literal notranslate"><span class="pre">perfect_gas_gradient()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.perfect_gas_props"><code class="docutils literal notranslate"><span class="pre">perfect_gas_props()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.specific_heat"><code class="docutils literal notranslate"><span class="pre">specific_heat()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.speed_of_sound_from_T"><code class="docutils literal notranslate"><span class="pre">speed_of_sound_from_T()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.temperature_from_Ps"><code class="docutils literal notranslate"><span class="pre">temperature_from_Ps()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.temperature_from_h"><code class="docutils literal notranslate"><span class="pre">temperature_from_h()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coolpropx.perfect_gas.perfect_gas.viscosity_from_T"><code class="docutils literal notranslate"><span class="pre">viscosity_from_T()</span></code></a></li>
-</ul>
-  </nav></div>
-
-</div></div>
               
             
           </div>

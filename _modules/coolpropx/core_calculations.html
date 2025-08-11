@@ -288,6 +288,7 @@ document.write(`
     <span class="s2">&quot;rho&quot;</span><span class="p">:</span> <span class="s2">&quot;rhomass&quot;</span><span class="p">,</span>
     <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="s2">&quot;rhomass&quot;</span><span class="p">,</span>
     <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="s2">&quot;rhomass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rhomass&quot;</span><span class="p">:</span> <span class="s2">&quot;rho&quot;</span><span class="p">,</span>
     <span class="s2">&quot;dmass&quot;</span><span class="p">:</span> <span class="s2">&quot;rhomass&quot;</span><span class="p">,</span>
     <span class="s2">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;umass&quot;</span><span class="p">,</span>
     <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="s2">&quot;hmass&quot;</span><span class="p">,</span>
@@ -372,6 +373,10 @@ document.write(`
     <span class="n">props</span><span class="p">[</span><span class="s2">&quot;viscosity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_viscosity</span><span class="p">(</span><span class="n">AS</span><span class="p">)</span>
     <span class="n">props</span><span class="p">[</span><span class="s2">&quot;conductivity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_conductivity</span><span class="p">(</span><span class="n">AS</span><span class="p">)</span>
     <span class="n">props</span><span class="p">[</span><span class="s2">&quot;surface_tension&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="c1"># Compute Gruneisen parameter</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;isobaric_expansion_coefficient&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">]</span>
+    <span class="n">props</span><span class="p">[</span><span class="s2">&quot;gruneisen&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span> <span class="o">/</span> <span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;rhomass&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;cvmass&quot;</span><span class="p">])</span>
 
     <span class="c1"># Generalized quality outside the two-phase region</span>
     <span class="k">if</span> <span class="n">generalize_quality</span><span class="p">:</span>
@@ -755,6 +760,11 @@ document.write(`
     <span class="n">props</span><span class="p">[</span><span class="s2">&quot;viscosity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_viscosity</span><span class="p">(</span><span class="n">AS</span><span class="p">)</span>
     <span class="n">props</span><span class="p">[</span><span class="s2">&quot;conductivity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_conductivity</span><span class="p">(</span><span class="n">AS</span><span class="p">)</span>
     <span class="n">props</span><span class="p">[</span><span class="s2">&quot;surface_tension&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+
+    <span class="c1"># Compute Gruneisen parameter</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;isobaric_expansion_coefficient&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">]</span>
+    <span class="n">props</span><span class="p">[</span><span class="s2">&quot;gruneisen&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span> <span class="o">/</span> <span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;rhomass&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;cvmass&quot;</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">supersaturation</span><span class="p">:</span>
         <span class="n">props</span> <span class="o">=</span> <span class="n">calculate_supersaturation</span><span class="p">(</span><span class="n">AS</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
