@@ -30,7 +30,7 @@ def solve_steady_heat_collocation(
     rtol=1e-9,
     atol=1e-9,
     max_steps=200,
-    verbose=False,
+    verbose=True,
     print_final=True,
 ):
 
@@ -166,7 +166,7 @@ def solve_residual_heat_equation(
     vset = (
         frozenset({"step", "loss", "accepted", "step_size"}) if verbose else frozenset()
     )
-    solver = opx.LevenbergMarquardt(rtol=rtol, atol=atol, verbose=vset)
+    solver = opx.GaussNewton(rtol=rtol, atol=atol, verbose=vset)
 
     sol = opx.least_squares(
         residual_fun,
@@ -268,9 +268,9 @@ if __name__ == "__main__":
         "x1": 0.0,
         "x2": 5,
         "k": 5.0,
-        "q_gen": 50.0,
-        "bc_left": (1.0, 1.0, 100.0),
-        "bc_right": (0.0, 1.0, 0.0),
+        "q_gen": 100.0,
+        "bc_left": (1.0, 0.0, 100.0),
+        "bc_right": (1.0, 0.0, 0.0),
     }
 
     params = jax.tree.map(jnp.asarray, params)

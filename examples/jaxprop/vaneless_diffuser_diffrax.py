@@ -279,8 +279,8 @@ if __name__ == "__main__":
     # backend = "jaxprop"
     x_prop, y_prop = "s", "T"
     if backend == "perfect_gas":
-        from coolpropx.perfect_gas import get_props, get_perfect_gas_constants
-        fluid = get_perfect_gas_constants(fluid_name, params["T0_in"], params["p0_in"])
+        from coolpropx.perfect_gas import get_props, get_constants
+        fluid = get_constants(fluid_name, params["T0_in"], params["p0_in"])
 
     elif backend == "jaxprop":
         from coolpropx.jaxprop import get_props

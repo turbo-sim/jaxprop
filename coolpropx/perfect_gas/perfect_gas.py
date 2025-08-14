@@ -6,7 +6,7 @@ from functools import partial
 # ----------------------------------------------------------------------------- #
 # Constant generation and Sutherland estimation
 # ----------------------------------------------------------------------------- #
-def get_perfect_gas_constants(fluid_name, T_ref, P_ref, dT=100.0, display=False):
+def get_constants(fluid_name, T_ref, P_ref, dT=100.0, display=False):
     """
     Compute perfect gas constants from a real-fluid model at a reference state,
     and estimate Sutherland constants using offset temperatures.

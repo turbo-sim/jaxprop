@@ -38,7 +38,7 @@ def case(request):
     """Provides one fluid reference case at a time and its perfect-gas constants."""
     c = request.param
     # compute constants at the requested reference state
-    constants = pg.get_perfect_gas_constants(c["fluid"], c["T"], c["p"], display=False)
+    constants = pg.get_constants(c["fluid"], c["T"], c["p"], display=False)
 
     # sanity: force the baseline to exactly this PT
     ref = pg.get_props(cpx.PT_INPUTS, c["p"], c["T"], constants)

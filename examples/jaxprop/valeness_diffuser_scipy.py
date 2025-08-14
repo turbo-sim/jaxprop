@@ -259,9 +259,9 @@ if __name__ == "__main__":
     params = {k: np.array(v) for k, v in params.items()}
 
     # Define fluid
-    from coolpropx.perfect_gas import get_props, get_perfect_gas_constants
+    from coolpropx.perfect_gas import get_props, get_constants
     fluid_name = "air"
-    fluid = get_perfect_gas_constants(fluid_name, params["T0_in"], params["p0_in"])
+    fluid = get_constants(fluid_name, params["T0_in"], params["p0_in"])
 
     # Plot the pressure recovery coefficient distribution
     fig_1, ax_1 = plt.subplots(figsize=(6, 5))

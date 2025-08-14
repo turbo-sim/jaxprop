@@ -7,8 +7,10 @@ from coolpropx.perfect_gas import get_props
 
 
 def nozzle_single_phase_core(t, y, args):
+    """Wrapper that adapts from (t, y) to autonomous form."""
     Y = jnp.concatenate([jnp.atleast_1d(t), y])
     return nozzle_single_phase_autonomous(0.0, Y, args)
+
 
 def nozzle_single_phase_autonomous(tau, Y, args):
     """
@@ -19,18 +21,25 @@ def nozzle_single_phase_autonomous(tau, Y, args):
     State vector: Y = [x, v, rho, p]
     """
     x, v, d, p = Y
-    (L, eps_wall, T_ext, wall_friction, heat_transfer, fluid) = args
+
+    # --- Geometry / model parameters ---
+    fluid = args.fluid
+    L = args.length
+    eps_wall = args.roughness
+    T_ext = args.T_wall
+    wall_friction = args.wall_friction
+    heat_transfer = args.heat_transfer
 
     # --- Thermodynamic state ---
     state = get_props(cpx.DmassP_INPUTS, d, p, fluid)
-    T  = state["T"]
-    h  = state["h"]
-    s  = state["s"]
-    a  = state["a"]
+    T = state["T"]
+    h = state["h"]
+    s = state["s"]
+    a = state["a"]
     cp = state["cp"]
     mu = state["mu"]
-    G  = state["gruneisen"]
-    
+    G = state["gruneisen"]
+
     # Stagnation state
     h0 = state["h"] + 0.5 * v**2
     state0 = get_props(cpx.HmassSmass_INPUTS, h0, state["s"], fluid)
@@ -41,38 +50,29 @@ def nozzle_single_phase_autonomous(tau, Y, args):
     # --- Geometry ---
     A, dAdx, perimeter, diameter = get_nozzle_geometry(x, L)
 
-    # --- Wall friction ---
-    if wall_friction:
-        Re = v * d * diameter / jnp.maximum(mu, 1e-12)
-        f_D = get_friction_factor_haaland(Re, eps_wall, diameter)
-        tau_w = get_wall_viscous_stress(f_D, d, v)
-    else:
-        tau_w = jnp.asarray(0.0)
-        Re = jnp.asarray(0.0)
-        f_D = jnp.asarray(0.0)
+    # --- Wall heat transfer and friction ---
+    Re = v * d * diameter / jnp.maximum(mu, 1e-12)
+    f_D = get_friction_factor_haaland(Re, eps_wall, diameter)
+    tau_w = get_wall_viscous_stress(f_D, d, v)
+    htc = get_heat_transfer_coefficient(v, d, cp, f_D)
+    q_w = htc * (T_ext - T)
 
-    # --- Heat transfer ---
-    if heat_transfer:
-        Re = v * d * diameter / jnp.maximum(mu, 1e-12)
-        f_D = get_friction_factor_haaland(Re, eps_wall, diameter)
-        htc = get_heat_transfer_coefficient(v, d, cp, f_D)
-        q_w = htc * (T_ext - T)
-    else:
-        q_w = jnp.asarray(0.0)
-        htc = jnp.asarray(0.0)
+    # Mask with booleans (convert to 0.0 if disabled)
+    tau_w = wall_friction * tau_w
+    f_D = wall_friction * f_D
+    q_w = heat_transfer * q_w
+    htc = heat_transfer * htc
 
     # --- Build A matrix and b vector ---
-    A_mat = jnp.array([
-        [d,     v,      0.0],
-        [d*v,   0.0,    1.0],
-        [0.0,    -a**2,   1.0]
-    ])
+    A_mat = jnp.array([[d, v, 0.0], [d * v, 0.0, 1.0], [0.0, -(a**2), 1.0]])
 
-    b_vec = jnp.array([
-        -d * v / A * dAdx,
-        -(perimeter / A) * tau_w,
-        (perimeter / A) * (G / v) * (tau_w * v + q_w),
-    ])
+    b_vec = jnp.array(
+        [
+            -d * v / A * dAdx,
+            -(perimeter / A) * tau_w,
+            (perimeter / A) * (G / v) * (tau_w * v + q_w),
+        ]
+    )
 
     # --- Determinants ---
     D = jnp.linalg.det(A_mat)
@@ -89,21 +89,36 @@ def nozzle_single_phase_autonomous(tau, Y, args):
     dv_dtau = N[0]
     dd_dtau = N[1]
     dp_dtau = N[2]
-    rhs = jnp.array([dv_dtau/dx_dtau, dd_dtau/dx_dtau, dp_dtau/dx_dtau])
+    rhs = jnp.array([dv_dtau / dx_dtau, dd_dtau / dx_dtau, dp_dtau / dx_dtau])
     rhs_autonomous = jnp.array([dx_dtau, dv_dtau, dd_dtau, dp_dtau])
 
     # Export data
     out = {
-        "x": x, "v": v, "rho": d, "p": p, 
-        "rhs": rhs, "rhs_autonomous": rhs_autonomous,
-        "A": A, "dAdx": dAdx, "diameter": diameter, "perimeter": perimeter,
-        "h0": h0, "p0": p0, "T0": T0, "d0": d0,
-        "Ma": v / state["a"], 
-        "Re": Re, "f_D": f_D, "tau_w": tau_w,
-        "q_w": q_w, "htc": htc,
+        "x": x,
+        "v": v,
+        "rho": d,
+        "p": p,
+        "rhs": rhs,
+        "rhs_autonomous": rhs_autonomous,
+        "A": A,
+        "dAdx": dAdx,
+        "diameter": diameter,
+        "perimeter": perimeter,
+        "h0": h0,
+        "p0": p0,
+        "T0": T0,
+        "d0": d0,
+        "Ma": v / state["a"],
+        "Re": Re,
+        "f_D": f_D,
+        "tau_w": tau_w,
+        "q_w": q_w,
+        "htc": htc,
         "m_dot": d * v * A,
-        "A_mat": A_mat, "b_vec": b_vec,
-        "D": D, "N": N,
+        "A_mat": A_mat,
+        "b_vec": b_vec,
+        "D": D,
+        "N": N,
     }
 
     return {**out, **state}
@@ -116,26 +131,29 @@ def get_nozzle_area(x, L):
     """Area A(x) using physical x (m) and length L (m)."""
     # Special case of symmetric parabolic nozzle
     A_THROAT = 0.15  # m^2
-    A_INLET  = 0.30  # m^2
-    xi = x/L
+    A_INLET = 0.30  # m^2
+    xi = x / L
     return A_INLET - 4.0 * (A_INLET - A_THROAT) * xi * (1.0 - xi)
+
 
 # Take the gradient with JAX
 get_nozzle_area_gradient = jax.grad(get_nozzle_area, argnums=0)
 
+
 def get_nozzle_geometry(x, L):
     """Nozzle geometric parameters as a function of physical x (m) and total length L (m)."""
-    A = get_nozzle_area(x, L)              # m^2
+    A = get_nozzle_area(x, L)  # m^2
     dAdx = get_nozzle_area_gradient(x, L)  # m
-    radius = jnp.sqrt(A / jnp.pi)          # m
-    diameter = 2.0 * radius                # m
-    perimeter = jnp.pi * diameter          # m
+    radius = jnp.sqrt(A / jnp.pi)  # m
+    diameter = 2.0 * radius  # m
+    perimeter = jnp.pi * diameter  # m
     return A, dAdx, perimeter, diameter
 
 
 # -----------------------------------------------------------------------------
 # Functions to calculate heat transfer and friction
 # -----------------------------------------------------------------------------
+
 
 def get_friction_factor_haaland(Reynolds, roughness, diameter):
     """
@@ -166,6 +184,7 @@ def get_friction_factor_haaland(Reynolds, roughness, diameter):
     term = 6.9 / Re_safe + (roughness / diameter / 3.7) ** 1.11
     f = (-1.8 * jnp.log10(term)) ** -2
     return f
+
 
 def get_wall_viscous_stress(darcy_friction_factor, density, velocity):
     """Wall shear stress from Darcy-Weisbach friction factor.
@@ -216,4 +235,3 @@ def get_heat_transfer_coefficient(
     """
     fanning_friction_factor = darcy_friction_factor / 4
     return 0.5 * fanning_friction_factor * velocity * density * heat_capacity
-
