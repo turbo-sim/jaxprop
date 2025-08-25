@@ -12,7 +12,10 @@ from matplotlib import gridspec
 cpx.set_plot_options(grid=False)
 
 from coolpropx.perfect_gas import get_props
-from examples.jaxprop.nozzle_model_core import nozzle_single_phase_core
+from examples.jaxprop.nozzle_model_core import (
+    nozzle_single_phase_core,
+    symmetric_nozzle_geometry,
+)
 
 from examples.jaxprop.nozzle_model_solver import (
     NozzleParams,
@@ -84,8 +87,10 @@ def nozzle_single_phase(
 def eval_ode_full(t, y, _):
     return nozzle_single_phase_core(t, y, args)
 
+
 def eval_ode_rhs(t, y, _):
     return nozzle_single_phase_core(t, y, args)["rhs"]
+
 
 # Event: stop when Ma^2 - 1 < tol
 def _sonic_event_cond(t, y, args, **kwargs):
@@ -94,8 +99,6 @@ def _sonic_event_cond(t, y, args, **kwargs):
     Ma_sqr = (v / a) ** 2
     margin = 1e-5
     return Ma_sqr - (1.0 - margin)
-
-
 
 
 # -----------------------------------------------------------------------------
@@ -118,6 +121,7 @@ if __name__ == "__main__":
         heat_transfer=0.0,
         wall_friction=0.0,
         fluid=fluid,
+        geometry=symmetric_nozzle_geometry,
     )
 
     params_solver = IVPSettings(solver_name="Dopri5", rtol=1e-8, atol=1e-8)

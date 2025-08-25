@@ -2,9 +2,9 @@
 # Example goal
 # -----------------------------------------------------------------------------
 # This example demonstrates the calculation of the critical inlet condition
-# of the steady-state Euler equations in a quasi-1D converging–diverging nozzle 
+# of the steady-state Euler equations in a quasi-1D converging–diverging nozzle
 # with a collocation method
-# 
+#
 # -----------------------------------------------------------------------------
 # Approach
 # -----------------------------------------------------------------------------
@@ -41,7 +41,7 @@
 #    - Solver settings (rtol, atol, jacobian mode, etc.) are provided via a
 #      `SolverSettings` dataclass, where some parameters are marked as static
 #      for JAX compilation efficiency.
-# 
+#
 # 5. Post-processing:
 #    - The converged nodal results (pressure, Mach number, enthalpy, entropy,
 #      mass flow rate, etc.) are interpolated onto a dense grid for plotting
@@ -81,12 +81,14 @@ from examples.jaxprop.nozzle_model_solver import (
     chebyshev_lobatto_interpolate,
 )
 
+from examples.jaxprop.nozzle_model_core import symmetric_nozzle_geometry
+
+
 cpx.set_plot_options()
 
 
 # ---------- example ----------
 if __name__ == "__main__":
-
 
     # Define model parameters
     fluid_name = "air"
@@ -101,10 +103,11 @@ if __name__ == "__main__":
         roughness=1e-6,  # m
         T_wall=300.0,  # K
         heat_transfer=0.0,
-        wall_friction=0.0,
+        wall_friction=1.0,
         Ma_low=0.95,
         Ma_high=1.05,
         fluid=fluid,
+        geometry=symmetric_nozzle_geometry,
     )
 
     params_solver = BVPSettings(
@@ -214,29 +217,29 @@ if __name__ == "__main__":
     # Show the figures
     plt.show()
 
-    # # --- Differentiability check: mdot vs. p0_in ---
-    # def mdot_vs_p0(p0_in):
-    #     num_points = 50
-    #     local_params = replace_param(params_model, "p0_in", p0_in)
-    #     out, _ = solve_nozzle_model_collocation(
-    #         initial_guess, fluid, local_params, params_solver
-    #     )
-    #     return out["m_dot"][0]
+    # --- Differentiability check: mdot vs. p0_in ---
+    def mdot_vs_p0(p0_in):
+        num_points = 50
+        local_params = replace_param(params_model, "p0_in", p0_in)
+        out, _ = solve_nozzle_model_collocation(
+            initial_guess, local_params, params_solver
+        )
+        return out["m_dot"][0]
 
-    # # Base point
-    # p0_in = 101325.0
+    # Base point
+    p0_in = 101325.0
 
-    # # JAX derivative
-    # mdot_val = mdot_vs_p0(p0_in)
-    # mdot_grad = jax.grad(mdot_vs_p0)(p0_in)
+    # JAX derivative
+    mdot_val = mdot_vs_p0(p0_in)
+    mdot_grad = jax.grad(mdot_vs_p0)(p0_in)
 
-    # # Finite difference derivative
-    # h = 1.0  # small perturbation in Pa
-    # fd_grad = (mdot_vs_p0(p0_in + h) - mdot_vs_p0(p0_in - h)) / (2 * h)
+    # Finite difference derivative
+    h = 1.0  # small perturbation in Pa
+    fd_grad = (mdot_vs_p0(p0_in + h) - mdot_vs_p0(p0_in - h)) / (2 * h)
 
-    # # Print results
-    # print()
-    # print(f" mdot(p0_in={p0_in:.3f}) = {mdot_val:.6e}")
-    # print(f" JAX   d(mdot)/d(p0_in) = {mdot_grad:.6e}")
-    # print(f" FD    d(mdot)/d(p0_in) = {fd_grad:.6e}")
-    # print(f" Relative diff = {abs((mdot_grad - fd_grad) / fd_grad):.3e}")
+    # Print results
+    print()
+    print(f" mdot(p0_in={p0_in:.3f}) = {mdot_val:.6e}")
+    print(f" JAX   d(mdot)/d(p0_in) = {mdot_grad:.6e}")
+    print(f" FD    d(mdot)/d(p0_in) = {fd_grad:.6e}")
+    print(f" Relative diff = {abs((mdot_grad - fd_grad) / fd_grad):.3e}")

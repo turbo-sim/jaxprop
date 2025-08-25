@@ -61,13 +61,11 @@
 from __future__ import annotations
 import jax
 import jax.numpy as jnp
-import optimistix as opx
-import matplotlib.pyplot as plt
-from jax.tree_util import tree_map
 import equinox as eqx
+import optimistix as opx
 import coolpropx as cpx
 
-from typing import Any
+from typing import Any, Callable
 
 jax.config.update("jax_enable_x64", True)
 
@@ -81,6 +79,7 @@ def f64(value):
 
 class NozzleParams(eqx.Module):
     fluid: Any = eqx.field(static=True)
+    geometry: Callable = eqx.field(static=True)
     p0_in: jnp.ndarray = f64(1.0e5)       # Pa
     d0_in: jnp.ndarray = f64(1.20)        # kg/m³
     D_in: jnp.ndarray = f64(0.050)        # m

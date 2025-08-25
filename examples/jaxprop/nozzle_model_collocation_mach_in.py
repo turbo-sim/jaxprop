@@ -60,6 +60,7 @@
 #
 # -----------------------------------------------------------------------------
 
+
 import time
 import jax
 import jax.numpy as jnp
@@ -75,6 +76,8 @@ from examples.jaxprop.nozzle_model_solver import (
     replace_param,
     chebyshev_lobatto_interpolate,
 )
+
+from examples.jaxprop.nozzle_model_core import symmetric_nozzle_geometry
 
 cpx.set_plot_options()
 
@@ -98,6 +101,7 @@ if __name__ == "__main__":
         Ma_low=0.95,
         Ma_high=1.05,
         fluid=fluid,
+        geometry=symmetric_nozzle_geometry,
     )
 
     params_solver = BVPSettings(
@@ -112,7 +116,6 @@ if __name__ == "__main__":
         warmup_method="Dogleg",
         warmup_steps=5,
     )
-
 
     # Inlet Mach number sensitivity analysis
     print("\n" + "-" * 60)

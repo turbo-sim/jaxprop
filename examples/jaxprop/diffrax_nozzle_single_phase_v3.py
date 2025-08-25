@@ -9,7 +9,10 @@ import matplotlib.pyplot as plt
 
 from matplotlib import gridspec
 from coolpropx.perfect_gas import get_props
-from examples.jaxprop.nozzle_model_core import nozzle_single_phase_core
+from examples.jaxprop.nozzle_model_core import (
+    nozzle_single_phase_core,
+    symmetric_nozzle_geometry,
+)
 from examples.jaxprop.nozzle_model_solver import (
     NozzleParams,
     BVPSettings,
@@ -43,7 +46,7 @@ def transonic_nozzle_single_phase(
     """
 
     # --- 1. Find critical state with continuation --
-    Ma_target = jnp.asarray([0.99])
+    Ma_target = jnp.asarray([0.999])
     z0 = initialize_flowfield(params_bvp.num_points, params_model)
     for Ma in Ma_target:
         params_model = replace_param(params_model, "Ma_target", Ma)
@@ -62,7 +65,6 @@ def transonic_nozzle_single_phase(
 
     def ode_rhs_subsonic(t, y, args):
         return ode_full_subsonic(t, y, args)["rhs"]
-
 
     # --- 2. First pass: inlet → Ma_low ---
     solver = cpx.jax_import.make_diffrax_solver(params_ivp.solver_name)
@@ -143,7 +145,8 @@ def _mach_event_cond(t, y, args, **kwargs):
     a = get_props(cpx.DmassP_INPUTS, rho, p, args.fluid)["a"]
     Ma_sqr = (v / a) ** 2
     return Ma_sqr - args.Ma_low**2
-    
+
+
 def _linearize_rhs_at(x_star, y_star, model):
     """Return Taylor expansion coefficients of RHS around (x_star, y_star)."""
     rhs_fn = lambda xx, yy: nozzle_single_phase_core(xx, yy, model)["rhs"]
@@ -152,12 +155,12 @@ def _linearize_rhs_at(x_star, y_star, model):
     Jt = jax.jacrev(lambda xx: rhs_fn(xx, y_star))(x_star)  # ∂f/∂t
     return f_star, Jy, Jt
 
+
 def _smoothstep(x):
     x = jnp.clip(x, 0.0, 1.0)
     return x * x * (3.0 - 2.0 * x)
 
     # return x * x * x * (x * (x * 6.0 - 15.0) + 10.0)
-
 
 
 # -----------------------------------------------------------------------------
@@ -174,18 +177,19 @@ if __name__ == "__main__":
         d0_in=1.20,  # kg/m³
         D_in=0.050,  # m
         length=5.00,  # m
-        roughness=1e-6,  # m
+        roughness=10e-6,  # m
         T_wall=300.0,  # K
-        Ma_low=0.95,
-        Ma_high=1.05,
+        Ma_low=0.975,
+        Ma_high=1.025,
         heat_transfer=0.0,
         wall_friction=0.0,
         fluid=fluid,
+        geometry=symmetric_nozzle_geometry,
     )
 
     params_bvp = BVPSettings(
         solve_mode="mach_crit",
-        num_points=40,
+        num_points=60,
         rtol=1e-8,
         atol=1e-8,
         max_steps=500,
@@ -193,7 +197,7 @@ if __name__ == "__main__":
         verbose=False,
         method="GaussNewton",
         warmup_method="Dogleg",
-        warmup_steps=0,
+        warmup_steps=10,
     )
 
     params_ivp = IVPSettings(
@@ -208,7 +212,7 @@ if __name__ == "__main__":
     print("\n" + "-" * 60)
     print("Evaluating transonic solution")
     print("-" * 60)
-    input_array = jnp.asarray([1, 2, 3, 4, 5]) * 1e5
+    input_array = jnp.asarray([2]) * 1e5
     colors = plt.cm.magma(jnp.linspace(0.2, 0.8, len(input_array)))  # Generate colors
     solution_list = []
     for i, p0_in in enumerate(input_array):
@@ -296,8 +300,6 @@ if __name__ == "__main__":
     # Show figures
     plt.show()
 
-
-
     # # --- Differentiability check: mdot vs. p0_in ---
     # def mdot_vs_p0(p0_in):
     #     num_points = 50
@@ -322,4 +324,3 @@ if __name__ == "__main__":
     # print(f" JAX   d(mdot)/d(p0_in) = {mdot_grad:.6e}")
     # print(f" FD    d(mdot)/d(p0_in) = {fd_grad:.6e}")
     # print(f" Relative diff = {abs((mdot_grad - fd_grad) / fd_grad):.3e}")
-

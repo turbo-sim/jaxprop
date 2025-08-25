@@ -12,7 +12,10 @@ from matplotlib import gridspec
 cpx.set_plot_options(grid=False)
 
 from coolpropx.perfect_gas import get_props
-from examples.jaxprop.nozzle_model_core import nozzle_single_phase_autonomous
+from examples.jaxprop.nozzle_model_core import (
+    nozzle_single_phase_autonomous,
+    symmetric_nozzle_geometry,
+)
 
 from examples.jaxprop.nozzle_model_solver import (
     NozzleParams,
@@ -24,6 +27,7 @@ from examples.jaxprop.nozzle_model_solver import (
 
 # v1 solves the ode system using the space marching in non-autonomous form
 # v2 solves the autonomous system with events for the bounds of domain ends
+
 
 # -----------------------------------------------------------------------------
 # Main API to the converging-diverging nozzle model
@@ -50,8 +54,8 @@ def nozzle_single_phase(
     y0 = jnp.array([x_in, v_in, rho_in, p_in])
 
     # Create and configure the solver
-    t0 = 0.0   # Start at tau=0 (arbitrary)
-    t1 = 1e+9  # Large value that will not be reached
+    t0 = 0.0  # Start at tau=0 (arbitrary)
+    t1 = 1e9  # Large value that will not be reached
     solver = cpx.jax_import.make_diffrax_solver(params_solver.solver_name)
     adjoint = cpx.jax_import.make_diffrax_adjoint(params_solver.adjoint_name)
     term = dfx.ODETerm(eval_ode_rhs)
@@ -74,7 +78,7 @@ def nozzle_single_phase(
         adjoint=adjoint,
         event=event,
         max_steps=20_000,
-    )   
+    )
 
     # Solve the ODE system again saving the solution
     ts = jnp.linspace(t0, sol.ts[-1], params_solver.number_of_points)
@@ -101,12 +105,14 @@ def nozzle_single_phase(
 def eval_ode_full(t, y, args):
     return nozzle_single_phase_autonomous(t, y, args)
 
+
 def eval_ode_rhs(t, y, args):
     return nozzle_single_phase_autonomous(t, y, args)["rhs_autonomous"]
 
+
 # Event: stop when position reaches either end of the domain [0, L]
 def eval_end_of_domain_event(t, y, args, **kwargs):
-    x = y[0] 
+    x = y[0]
     L = params_model.length
     return jnp.minimum(x, L - x)
 
@@ -115,7 +121,7 @@ def eval_end_of_domain_event(t, y, args, **kwargs):
 # Converging-diverging nozzle example
 # -----------------------------------------------------------------------------
 if __name__ == "__main__":
-    
+
     # Define model parameters
     fluid_name = "air"
     fluid = cpx.perfect_gas.get_constants(fluid_name, T_ref=300, P_ref=101325)
@@ -131,6 +137,7 @@ if __name__ == "__main__":
         heat_transfer=0.0,
         wall_friction=0.0,
         fluid=fluid,
+        geometry=symmetric_nozzle_geometry,
     )
 
     params_solver = IVPSettings(solver_name="Dopri5", rtol=1e-8, atol=1e-8)
@@ -160,13 +167,19 @@ if __name__ == "__main__":
     ax1 = fig.add_subplot(gs[1], sharex=ax0)
     ax2 = fig.add_subplot(gs[2], sharex=ax0)
     axs = [ax0, ax1, ax2]
-    
+
     # --- row 1: pressure (bar): solid p0, dashed p ---
     axs[0].set_ylabel("Pressure (bar)")
     for color, val, sol in zip(colors, input_array, solution_list):
         x = sol.ys["x"]
-        axs[0].plot(x, sol.ys["p0"] * 1e-5, linestyle="--",  color=color)
-        axs[0].plot(x, sol.ys["p"]  * 1e-5, linestyle="-", color=color, label=rf"$p_\mathrm{{in}}/p_0 = {val:0.3f}$")
+        axs[0].plot(x, sol.ys["p0"] * 1e-5, linestyle="--", color=color)
+        axs[0].plot(
+            x,
+            sol.ys["p"] * 1e-5,
+            linestyle="-",
+            color=color,
+            label=rf"$p_\mathrm{{in}}/p_0 = {val:0.3f}$",
+        )
     axs[0].legend(loc="lower right", fontsize=7)
 
     # --- row 2: Mach number ---

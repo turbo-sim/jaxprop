@@ -22,6 +22,8 @@ def nozzle_single_phase_autonomous(tau, Y, args):
     """
     x, v, d, p = Y
 
+    # v = jnp.where(jnp.abs(v) < 1e-6, jnp.sign(v)*1e-6, v)
+
     # --- Geometry / model parameters ---
     fluid = args.fluid
     L = args.length
@@ -48,13 +50,14 @@ def nozzle_single_phase_autonomous(tau, Y, args):
     d0 = state0["d"]
 
     # --- Geometry ---
-    A, dAdx, perimeter, diameter = get_nozzle_geometry(x, L)
+    A, dAdx, perimeter, diameter = args.geometry(x, L)
 
     # --- Wall heat transfer and friction ---
     Re = v * d * diameter / jnp.maximum(mu, 1e-12)
     f_D = get_friction_factor_haaland(Re, eps_wall, diameter)
     tau_w = get_wall_viscous_stress(f_D, d, v)
-    htc = get_heat_transfer_coefficient(v, d, cp, f_D)
+    htc = 10000*get_heat_transfer_coefficient(v, d, cp, f_D)
+    htc = jnp.clip(htc, 0.0, 1e6)   # pick bound based on your scaling
     q_w = htc * (T_ext - T)
 
     # Mask with booleans (convert to 0.0 if disabled)
@@ -62,6 +65,11 @@ def nozzle_single_phase_autonomous(tau, Y, args):
     f_D = wall_friction * f_D
     q_w = heat_transfer * q_w
     htc = heat_transfer * htc
+
+    jax.debug.print(
+        "raw htc={:.4e}, raw q_w={:.4e}, T_ext={:.2f}, T={:.2f}", 
+        htc, q_w, T_ext, T
+    )
 
     # --- Build A matrix and b vector ---
     A_mat = jnp.array([[d, v, 0.0], [d * v, 0.0, 1.0], [0.0, -(a**2), 1.0]])
@@ -122,32 +130,6 @@ def nozzle_single_phase_autonomous(tau, Y, args):
     }
 
     return {**out, **state}
-
-
-# ------------------------------------------------------------------
-# Describe the geometry of the converging diverging nozzle
-# ------------------------------------------------------------------
-def get_nozzle_area(x, L):
-    """Area A(x) using physical x (m) and length L (m)."""
-    # Special case of symmetric parabolic nozzle
-    A_THROAT = 0.15  # m^2
-    A_INLET = 0.30  # m^2
-    xi = x / L
-    return A_INLET - 4.0 * (A_INLET - A_THROAT) * xi * (1.0 - xi)
-
-
-# Take the gradient with JAX
-get_nozzle_area_gradient = jax.grad(get_nozzle_area, argnums=0)
-
-
-def get_nozzle_geometry(x, L):
-    """Nozzle geometric parameters as a function of physical x (m) and total length L (m)."""
-    A = get_nozzle_area(x, L)  # m^2
-    dAdx = get_nozzle_area_gradient(x, L)  # m
-    radius = jnp.sqrt(A / jnp.pi)  # m
-    diameter = 2.0 * radius  # m
-    perimeter = jnp.pi * diameter  # m
-    return A, dAdx, perimeter, diameter
 
 
 # -----------------------------------------------------------------------------
@@ -235,3 +217,31 @@ def get_heat_transfer_coefficient(
     """
     fanning_friction_factor = darcy_friction_factor / 4
     return 0.5 * fanning_friction_factor * velocity * density * heat_capacity
+
+
+# ------------------------------------------------------------------
+# Describe the geometry of the converging diverging nozzle
+# ------------------------------------------------------------------
+def symmetric_nozzle_geometry(x, L, A_inlet=0.30, A_throat=0.15):
+    """
+    Return A (m^2), dA/dx (m), perimeter (m), diameter (m) for a symmetric parabolic CD nozzle.
+    x: position in m (scalar or array)
+    L: total length in m (scalar)
+    """
+
+    def area_fn(x_):
+        xi = x_ / L
+        return A_inlet - 4.0 * (A_inlet - A_throat) * xi * (1.0 - xi)
+
+    # make it work for both scalar and array x
+    A = area_fn(x)
+
+    # jacfwd works for vector outputs directly
+    dAdx = jax.jacfwd(area_fn)(x)
+
+    radius = jnp.sqrt(A / jnp.pi)          # m
+    diameter = 2.0 * radius                # m
+    perimeter = jnp.pi * diameter          # m
+
+    return A, dAdx, perimeter, diameter
+
