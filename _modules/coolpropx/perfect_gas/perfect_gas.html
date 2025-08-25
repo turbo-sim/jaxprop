@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>coolpropx.perfect_gas.perfect_gas &#8212; coolpropx v0.2.14 documentation</title>
+    <title>coolpropx.perfect_gas.perfect_gas &#8212; coolpropx v0.2.18 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=37c70904"></script>
+    <script src="../../../_static/documentation_options.js?v=6a15089c"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">coolpropx v0.2.14 documentation</p>
+    <p class="title logo__title">coolpropx v0.2.18 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -272,15 +272,16 @@ document.write(`
                   
   <h1>Source code for coolpropx.perfect_gas.perfect_gas</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">fluid_properties</span> <span class="k">as</span> <span class="n">fp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core_calculations</span><span class="w"> </span><span class="kn">import</span> <span class="n">PROPERTY_ALIAS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..jax_import</span><span class="w"> </span><span class="kn">import</span> <span class="n">jax</span><span class="p">,</span> <span class="n">jnp</span><span class="p">,</span> <span class="n">JAX_AVAILABLE</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 
 <span class="c1"># ----------------------------------------------------------------------------- #</span>
 <span class="c1"># Constant generation and Sutherland estimation</span>
 <span class="c1"># ----------------------------------------------------------------------------- #</span>
-<div class="viewcode-block" id="compute_perfect_gas_constants">
-<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.compute_perfect_gas_constants">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_perfect_gas_constants</span><span class="p">(</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">T_ref</span><span class="p">,</span> <span class="n">P_ref</span><span class="p">,</span> <span class="n">dT</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_constants">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.get_constants">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_constants</span><span class="p">(</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">T_ref</span><span class="p">,</span> <span class="n">P_ref</span><span class="p">,</span> <span class="n">dT</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute perfect gas constants from a real-fluid model at a reference state,</span>
 <span class="sd">    and estimate Sutherland constants using offset temperatures.</span>
@@ -454,6 +455,13 @@ document.write(`
     <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">T_ref</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent</span><span class="p">))</span></div>
 
 
+<div class="viewcode-block" id="temperature_from_rhoP">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.temperature_from_rhoP">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">temperature_from_rhoP</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">constants</span><span class="p">[</span><span class="s2">&quot;R&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="n">R</span><span class="p">))</span></div>
+
+
 <div class="viewcode-block" id="viscosity_from_T">
 <a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.viscosity_from_T">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">viscosity_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
@@ -507,8 +515,8 @@ document.write(`
 <div class="viewcode-block" id="calculate_properties_PT">
 <a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.calculate_properties_PT">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_properties_PT</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">T</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">P</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Temperature and pressure must be positive.&quot;</span><span class="p">)</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">constants</span><span class="p">[</span><span class="s2">&quot;R&quot;</span><span class="p">]</span>
     <span class="n">rho</span> <span class="o">=</span> <span class="n">P</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
     <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
@@ -562,22 +570,43 @@ document.write(`
     <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="calculate_properties_rhop">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.calculate_properties_rhop">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_properties_rhop</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
+    <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">temperature_from_rhoP</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">T</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">entropy_from_rhoP</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="assemble_properties">
 <a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.assemble_properties">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">constants</span><span class="p">[</span><span class="s2">&quot;R&quot;</span><span class="p">]</span>
+    <span class="n">gamma</span> <span class="o">=</span> <span class="n">constants</span><span class="p">[</span><span class="s2">&quot;gamma&quot;</span><span class="p">]</span>
     <span class="n">props</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
         <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="n">P</span><span class="p">,</span>
         <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="n">rho</span><span class="p">,</span>
+        <span class="s2">&quot;rho&quot;</span><span class="p">:</span> <span class="n">rho</span><span class="p">,</span>
         <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span>
         <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="n">s</span><span class="p">,</span>
         <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="n">viscosity_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">),</span>
         <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="n">conductivity_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">),</span>
         <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="n">speed_of_sound_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">),</span>
-        <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="n">constants</span><span class="p">[</span><span class="s2">&quot;gamma&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="n">gamma</span><span class="p">,</span>
+        <span class="s2">&quot;cp&quot;</span><span class="p">:</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">R</span> <span class="o">/</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="s2">&quot;cv&quot;</span><span class="p">:</span> <span class="n">R</span> <span class="o">/</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="s2">&quot;Z&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="s2">&quot;gruneisen&quot;</span><span class="p">:</span> <span class="n">gamma</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="p">}</span>
-    <span class="c1"># for alias, original in PROPERTY_ALIAS.items():</span>
-    <span class="c1">#     props[alias] = props[original]</span>
+    <span class="k">for</span> <span class="n">original</span><span class="p">,</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">PROPERTY_ALIAS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">original</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">props</span><span class="p">[</span><span class="n">alias</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="n">original</span><span class="p">]</span>
+            
     <span class="k">return</span> <span class="n">props</span></div>
 
 
@@ -587,46 +616,36 @@ document.write(`
 <span class="c1"># State evaluators (public API)</span>
 <span class="c1"># ----------------------------------------------------------------------------- #</span>
 
+<span class="k">if</span> <span class="n">JAX_AVAILABLE</span><span class="p">:</span>
+    <span class="n">jit_PT</span>   <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">calculate_properties_PT</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+    <span class="n">jit_hs</span>   <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">calculate_properties_hs</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+    <span class="n">jit_hP</span>   <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">calculate_properties_hP</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+    <span class="n">jit_Ps</span>   <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">calculate_properties_Ps</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+    <span class="n">jit_rhoh</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">calculate_properties_rhoh</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+    <span class="n">jit_rhop</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">calculate_properties_rhop</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># fall back to plain Python functions</span>
+    <span class="n">jit_PT</span>   <span class="o">=</span> <span class="n">calculate_properties_PT</span>
+    <span class="n">jit_hs</span>   <span class="o">=</span> <span class="n">calculate_properties_hs</span>
+    <span class="n">jit_hP</span>   <span class="o">=</span> <span class="n">calculate_properties_hP</span>
+    <span class="n">jit_Ps</span>   <span class="o">=</span> <span class="n">calculate_properties_Ps</span>
+    <span class="n">jit_rhoh</span> <span class="o">=</span> <span class="n">calculate_properties_rhoh</span>
+    <span class="n">jit_rhop</span> <span class="o">=</span> <span class="n">calculate_properties_rhop</span>
+
+    
 <span class="n">PROPERTY_CALCULATORS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;HmassSmass_INPUTS&quot;</span><span class="p">:</span> <span class="n">calculate_properties_hs</span><span class="p">,</span>
-    <span class="s2">&quot;PSmass_INPUTS&quot;</span><span class="p">:</span>     <span class="n">calculate_properties_Ps</span><span class="p">,</span>
-    <span class="s2">&quot;PT_INPUTS&quot;</span><span class="p">:</span>         <span class="n">calculate_properties_PT</span><span class="p">,</span>
-    <span class="s2">&quot;HmassP_INPUTS&quot;</span><span class="p">:</span>     <span class="n">calculate_properties_hP</span><span class="p">,</span>
-    <span class="s2">&quot;DmassHmass_INPUTS&quot;</span><span class="p">:</span> <span class="n">calculate_properties_rhoh</span><span class="p">,</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">:</span> <span class="n">jit_PT</span><span class="p">,</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">HmassSmass_INPUTS</span><span class="p">:</span> <span class="n">jit_hs</span><span class="p">,</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">:</span> <span class="n">jit_hP</span><span class="p">,</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">PSmass_INPUTS</span><span class="p">:</span> <span class="n">jit_Ps</span><span class="p">,</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">DmassHmass_INPUTS</span><span class="p">:</span> <span class="n">jit_rhoh</span><span class="p">,</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">DmassP_INPUTS</span><span class="p">:</span> <span class="n">jit_rhop</span><span class="p">,</span>
 <span class="p">}</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_all_valid</span><span class="p">(</span><span class="n">props</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">props</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="n">arr</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">jnp</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span> <span class="ow">or</span> <span class="n">jnp</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">arr</span><span class="p">)):</span>
-            <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">return</span> <span class="kc">True</span>
-
-<div class="viewcode-block" id="perfect_gas_props">
-<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.perfect_gas_props">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">perfect_gas_props</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
-    <span class="c1"># Ensure type consistency in subsequent calculation</span>
-    <span class="n">prop1</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">prop1</span><span class="p">)</span>
-    <span class="n">prop2</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">prop2</span><span class="p">)</span>
-
-    <span class="c1"># Resolve the type of input pair</span>
-    <span class="n">calculator</span> <span class="o">=</span> <span class="n">PROPERTY_CALCULATORS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">input_pair</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">calculator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">valid_inputs</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PROPERTY_CALCULATORS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown input state: &#39;</span><span class="si">{</span><span class="n">input_pair</span><span class="si">}</span><span class="s2">&#39;. valid options: </span><span class="si">{</span><span class="n">valid_inputs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    
-     <span class="c1"># Compute fluid properties</span>
-    <span class="n">properties</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">(</span><span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span>
-
-    <span class="c1"># Check if anything is wrong</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_all_valid</span><span class="p">(</span><span class="n">properties</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid properties from inputs prop1=</span><span class="si">{</span><span class="n">prop1</span><span class="si">}</span><span class="s2">, prop2=</span><span class="si">{</span><span class="n">prop2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">properties</span></div>
-
-
-
-
+<div class="viewcode-block" id="get_props">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.get_props">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_props</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">PROPERTY_CALCULATORS</span><span class="p">[</span><span class="n">input_pair</span><span class="p">](</span><span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span></div>
 
 
 
@@ -634,9 +653,9 @@ document.write(`
 <span class="c1"># Gradient calculations (only used when JAX is installed)</span>
 <span class="c1"># ----------------------------------------------------------------------------- #</span>
 
-<div class="viewcode-block" id="perfect_gas_gradient">
-<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.perfect_gas_gradient">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">perfect_gas_gradient</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">constants</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">eps_rel</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
+<div class="viewcode-block" id="get_props_gradient">
+<a class="viewcode-back" href="../../../source/api/coolpropx.perfect_gas.perfect_gas.html#coolpropx.perfect_gas.perfect_gas.get_props_gradient">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_props_gradient</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">constants</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">eps_rel</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return (d/dx, d/dy) dictionaries of partials for perfect_gas_props at (x, y).</span>
 
@@ -645,7 +664,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># local wrapper: f(x, y) -&gt; dict</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">perfect_gas_props</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">get_props</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span>
 
     <span class="c1"># choose method</span>
     <span class="n">use_jax</span> <span class="o">=</span> <span class="p">(</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;jax&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span> <span class="ow">and</span> <span class="n">JAX_AVAILABLE</span><span class="p">)</span>
