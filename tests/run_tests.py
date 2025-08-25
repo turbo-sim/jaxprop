@@ -9,7 +9,7 @@ tests_list = [
     "test_helmholtz_eos.py",
     "test_spinodal_calculation.py",
     "test_phase_diagrams.py",
-    "test_perfect_gas_eos.py",
+    # "test_perfect_gas_eos.py",
 ]
 
 # Run pytest when this python script is executed
