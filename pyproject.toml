@@ -23,7 +23,7 @@ jaxlib = { version = "^0.5.3", optional = true }
 [tool.poetry.extras]
 # install with: poetry install --extras jax
 # or: pip install coolpropx[jax]
-jax = ["jax", "jaxlib"]
+jax = ["jax", "jaxlib", "diffrax", "equinox", "optimistix"]
 
 [tool.poetry.group.dev.dependencies]
 ipython = ">=8.13,<8.17"
