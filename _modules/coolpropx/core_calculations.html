@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>coolpropx.core_calculations &#8212; coolpropx v0.2.14 documentation</title>
+    <title>coolpropx.core_calculations &#8212; coolpropx v0.2.15 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=37c70904"></script>
+    <script src="../../_static/documentation_options.js?v=8c3b8b19"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">coolpropx v0.2.14 documentation</p>
+    <p class="title logo__title">coolpropx v0.2.15 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -384,9 +384,10 @@ document.write(`
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">Q</span><span class="p">()</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span>
+        <span class="n">frac_mass</span><span class="p">,</span> <span class="n">frac_vol</span> <span class="o">=</span> <span class="n">calculate_trimmed_quality</span><span class="p">(</span><span class="n">AS</span><span class="p">)</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_mass</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_mass</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_vol</span>
 
     <span class="c1"># Calculate departure from saturation properties</span>
     <span class="k">if</span> <span class="n">supersaturation</span><span class="p">:</span>
@@ -773,12 +774,18 @@ document.write(`
     <span class="k">if</span> <span class="n">generalize_quality</span><span class="p">:</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculate_generalized_quality</span><span class="p">(</span><span class="n">AS</span><span class="p">)</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.00</span> <span class="k">if</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="k">else</span> <span class="mf">0.00</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fluids</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">fluid_names</span><span class="p">()</span>  <span class="c1"># AS.name does not work well for REFPROP backend</span>
+        <span class="n">cloned_AS</span> <span class="o">=</span> <span class="n">CP</span><span class="o">.</span><span class="n">AbstractState</span><span class="p">(</span><span class="n">AS</span><span class="o">.</span><span class="n">backend_name</span><span class="p">(),</span> <span class="n">fluids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">rho_crit</span><span class="p">,</span> <span class="n">T_crit</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">rhomass_critical</span><span class="p">(),</span> <span class="n">AS</span><span class="o">.</span><span class="n">T_critical</span><span class="p">()</span>
+        <span class="n">cloned_AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">rho_crit</span><span class="p">,</span> <span class="n">T_crit</span><span class="p">)</span>
+        <span class="n">s_crit</span> <span class="o">=</span> <span class="n">cloned_AS</span><span class="o">.</span><span class="n">smass</span><span class="p">()</span>
+        <span class="n">frac_mass</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">abstract_state</span><span class="o">.</span><span class="n">smass</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">s_crit</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="n">frac_vol</span> <span class="o">=</span> <span class="n">frac_mass</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_mass</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_mass</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_vol</span>
 
     <span class="c1"># Add properties as aliases</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">PROPERTY_ALIAS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1494,6 +1501,49 @@ document.write(`
     <span class="n">quality</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">smooth_maximum</span><span class="p">(</span><span class="n">quality</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;logsumexp&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">quality</span><span class="o">.</span><span class="n">item</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_trimmed_quality">
+<a class="viewcode-back" href="../../source/api/coolpropx.core_calculations.html#coolpropx.core_calculations.calculate_trimmed_quality">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_trimmed_quality</span><span class="p">(</span><span class="n">abstract_state</span><span class="p">):</span>
+
+    <span class="c1"># Instantiate new abstract state to compute saturation properties without changing the state of the class</span>
+    <span class="n">AS</span> <span class="o">=</span> <span class="n">abstract_state</span>
+    <span class="n">fluids</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">fluid_names</span><span class="p">()</span>  <span class="c1"># AS.name does not work well for REFPROP backend</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fluids</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected one fluid, got </span><span class="si">{</span><span class="n">fluids</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">cloned_AS</span> <span class="o">=</span> <span class="n">CP</span><span class="o">.</span><span class="n">AbstractState</span><span class="p">(</span><span class="n">AS</span><span class="o">.</span><span class="n">backend_name</span><span class="p">(),</span> <span class="n">fluids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># Retrieve single-phase properties</span>
+    <span class="n">is_two_phase</span> <span class="o">=</span> <span class="n">abstract_state</span><span class="o">.</span><span class="n">phase</span><span class="p">()</span> <span class="o">==</span> <span class="n">CP</span><span class="o">.</span><span class="n">iphase_twophase</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_two_phase</span><span class="p">:</span>
+
+        <span class="c1"># Determine quality based on actual vs critical entropy</span>
+        <span class="n">rho_crit</span><span class="p">,</span> <span class="n">T_crit</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">rhomass_critical</span><span class="p">(),</span> <span class="n">AS</span><span class="o">.</span><span class="n">T_critical</span><span class="p">()</span>
+        <span class="n">cloned_AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">rho_crit</span><span class="p">,</span> <span class="n">T_crit</span><span class="p">)</span>
+        <span class="n">s_crit</span> <span class="o">=</span> <span class="n">cloned_AS</span><span class="o">.</span><span class="n">smass</span><span class="p">()</span>
+        <span class="n">frac_mass</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">abstract_state</span><span class="o">.</span><span class="n">smass</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">s_crit</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="n">frac_vol</span> <span class="o">=</span> <span class="n">frac_mass</span>
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="c1"># Saturated liquid density</span>
+        <span class="n">cloned_AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">QT_INPUTS</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">,</span> <span class="n">AS</span><span class="o">.</span><span class="n">T</span><span class="p">())</span>
+        <span class="n">rho_L</span> <span class="o">=</span> <span class="n">cloned_AS</span><span class="o">.</span><span class="n">rhomass</span><span class="p">()</span>
+
+        <span class="c1"># Saturated vapor density</span>
+        <span class="n">cloned_AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">QT_INPUTS</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="n">AS</span><span class="o">.</span><span class="n">T</span><span class="p">())</span>
+        <span class="n">rho_V</span> <span class="o">=</span> <span class="n">cloned_AS</span><span class="o">.</span><span class="n">rhomass</span><span class="p">()</span>
+
+        <span class="c1"># Mass and volume fractions of gas</span>
+        <span class="n">rho_mix</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">rhomass</span><span class="p">()</span>
+        <span class="n">frac_mass</span> <span class="o">=</span> <span class="p">(</span><span class="n">rho_mix</span> <span class="o">-</span> <span class="n">rho_L</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">rho_V</span> <span class="o">-</span> <span class="n">rho_L</span><span class="p">)</span>
+        <span class="n">frac_vol</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">rho_mix</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">rho_L</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">rho_V</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">rho_L</span><span class="p">)</span>
+
+
+    <span class="k">return</span> <span class="n">frac_mass</span><span class="p">,</span> <span class="n">frac_vol</span></div>
+
 
 
 
