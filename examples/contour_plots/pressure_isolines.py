@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
-import coolprop as cpx
+import coolpropx as cpx
 
 cpx.set_plot_options(grid=False)
 
