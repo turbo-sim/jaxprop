@@ -24,7 +24,7 @@ from . import jax_import
 
 
 # Package info
-__version__ = "0.2.16"
+__version__ = "0.2.17"
 PACKAGE_NAME = "coolpropx"
 URL_GITHUB = "https://github.com/turbo-sim/coolpropx"
 URL_DOCS = "https://turbo-sim.github.io/coolpropx/"
