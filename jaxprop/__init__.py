@@ -17,7 +17,7 @@ from .utils import *
 
 
 from . import perfect_gas
-from . import bicubic
+# from . import bicubic
 
 from . import jax_import
 # from .perfect_gas import *
