@@ -1,27 +1,28 @@
 [tool.poetry]
-name = "coolpropx"
+name = "jaxprop"
 version = "0.2.20"
-description = "A lightweight wrapper to CoolProp's low-level interface."
+description = "JAX-compatible thermodynamic property calculations."
 authors = ["Roberto Agromayor"]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/turbo-sim/coolpropx"
-documentation = "https://github.com/turbo-sim/coolpropx"
+repository = "https://github.com/turbo-sim/jaxprop"
+documentation = "https://github.com/turbo-sim/jaxpconrop"
 
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.14"
-numpy = "^2.2.4"
-scipy = "^1.15.2"
-matplotlib = "^3.10.1"
-CoolProp = "^6.6.0"
+python = ">=3.11,<3.14"
+numpy = "^2.3.0"
+scipy = "^1.16.1"
+jax= "^0.7.1"
+jaxlib= "^0.7.1"
+equinox = "^0.13.0"
+diffrax = "^0.7.0"
+optimistix = "^0.0.10"
+matplotlib = "^3.10.6"
+CoolProp = "^7.0.0"
 pysolver_view = "^0.6.8"
 #pysolver_view = { path = "../pysolver_view/", develop = true }
 
-[tool.poetry.extras]
-# install with: poetry install --extras jax
-# or: pip install coolpropx[jax]
-jax = ["jax", "jaxlib", "diffrax", "equinox", "optimistix"]
 
 [tool.poetry.group.dev.dependencies]
 ipython = ">=8.13,<8.17"
