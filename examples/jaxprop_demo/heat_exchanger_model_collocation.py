@@ -29,6 +29,9 @@ cpx.set_plot_options()
 
 
 
+# TODO, make a wrapper function for heat exchanger that inside calls the ODE solver model twice and returns the overall solution for the 2 streams.
+# It should behaver like a normal RHS function, to be solver as IVP or BVP
+
 class HXParams(eqx.Module):
     """Parameters for a counterflow heat exchanger with two nozzle-like streams."""
 

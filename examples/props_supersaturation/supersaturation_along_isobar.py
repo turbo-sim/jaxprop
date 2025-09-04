@@ -2,12 +2,12 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-import coolpropx as cpx
+import jaxprop as jxp
 
 
 # Create the folder to save figures
-cpx.set_plot_options(grid=False)
-colors = cpx.COLORS_MATLAB
+jxp.set_plot_options(grid=False)
+colors = jxp.COLORS_MATLAB
 outdir = "output"
 os.makedirs(outdir, exist_ok=True)
 
@@ -18,14 +18,14 @@ os.makedirs(outdir, exist_ok=True)
 # -------------------------------------------------------------------- #
 
 # Define fluid
-fluid = cpx.Fluid("CO2", backend="HEOS")
+fluid = jxp.Fluid("CO2", backend="HEOS")
 
 # Compute spinodal points for a given pressure
 p = 50e5
-spndl_liq = cpx.compute_spinodal_point_general(
+spndl_liq = jxp.compute_spinodal_point_general(
     "p", p, fluid, branch="liquid", supersaturation=True, tolerance=1e-6
 )
-spndl_vap = cpx.compute_spinodal_point_general(
+spndl_vap = jxp.compute_spinodal_point_general(
     "p", p, fluid, branch="vapor", supersaturation=True, tolerance=1e-6
 )
 
@@ -34,7 +34,7 @@ s1 = fluid.triple_point_liquid.s
 s2 = spndl_liq.s
 ds = s2 - s1
 s_array = np.linspace(s1, s2, 100)
-state = fluid.get_state(cpx.PSmass_INPUTS, p, s1)
+state = fluid.get_state(jxp.PSmass_INPUTS, p, s1)
 states_liquid = []
 for i, s in enumerate(s_array):
     state = fluid.get_state_metastable(
@@ -48,14 +48,14 @@ for i, s in enumerate(s_array):
         solver_algorithm="lm",
     )
     states_liquid.append(state)
-states_liquid = cpx.states_to_dict(states_liquid)
+states_liquid = jxp.states_to_dict(states_liquid)
 
 # Compute states from superheated vapor to spinodal point
 s1 = fluid.triple_point_vapor.s
 s2 = spndl_vap.s
 ds = s2 - s1
 s_array = np.linspace(s1, s2, 100)
-state = fluid.get_state(cpx.PSmass_INPUTS, p, s1)
+state = fluid.get_state(jxp.PSmass_INPUTS, p, s1)
 states_vapor = []
 for i, s in enumerate(s_array):
     state = fluid.get_state_metastable(
@@ -69,7 +69,7 @@ for i, s in enumerate(s_array):
         solver_algorithm="lm",
     )
     states_vapor.append(state)
-states_vapor = cpx.states_to_dict(states_vapor)
+states_vapor = jxp.states_to_dict(states_vapor)
 
 # Compute equilibrium process
 s1 = fluid.triple_point_liquid.s
@@ -78,9 +78,9 @@ s_array = np.linspace(s1, s2, 200)
 
 states_equilibrium = []
 for i, s in enumerate(s_array):
-    state = fluid.get_state(cpx.PSmass_INPUTS, p, s)
+    state = fluid.get_state(jxp.PSmass_INPUTS, p, s)
     states_equilibrium.append(state)
-states_equilibrium = cpx.states_to_dict(states_equilibrium)
+states_equilibrium = jxp.states_to_dict(states_equilibrium)
 
 
 # -------------------------------------------------------------------- #
@@ -137,7 +137,7 @@ ax2.plot(states_vapor[x], states_vapor[y1], color=colors[1])
 ax2.plot(spndl_vap[x], spndl_vap[y1], marker="o", color=colors[1], label="Metastable vapor")
 ax2.legend(loc="upper right")
 ax2.axhline(y=0, color="black")
-cpx.savefig_in_formats(fig, os.path.join(outdir, f"supersaturation_along_isobar_Ts_{fluid.name}"))
+jxp.savefig_in_formats(fig, os.path.join(outdir, f"supersaturation_along_isobar_Ts_{fluid.name}"))
 
 
 
@@ -203,7 +203,7 @@ ax2.plot(states_vapor[x], states_vapor[y1], color=colors[1])
 ax2.plot(spndl_vap[x], spndl_vap[y1], marker="o", color=colors[1], label="Metastable vapor")
 ax2.legend(loc="upper right")
 ax2.axhline(y=1, color="black")
-cpx.savefig_in_formats(fig, os.path.join(outdir, f"supersaturation_along_isobar_ps_{fluid.name}"))
+jxp.savefig_in_formats(fig, os.path.join(outdir, f"supersaturation_along_isobar_ps_{fluid.name}"))
 
 
 # Show figures

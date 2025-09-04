@@ -3,9 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
-import coolpropx as cpx
+import jaxprop as jxp
 
-cpx.set_plot_options(grid=False)
+jxp.set_plot_options(grid=False)
 
 outdir = "output"
 os.makedirs(outdir, exist_ok=True)
@@ -17,7 +17,7 @@ colormap = mcolors.LinearSegmentedColormap.from_list(
 
 # Create fluid object
 fluid_name = "CO2"
-fluid = cpx.Fluid(name=fluid_name, backend="HEOS", exceptions=True)
+fluid = jxp.Fluid(name=fluid_name, backend="HEOS", exceptions=True)
 
 # Create figure for plotting
 fig, ax = plt.subplots(figsize=(6.0, 5.0))
@@ -34,7 +34,7 @@ fig, ax = fluid.plot_phase_diagram("s", "T", axes=ax, plot_quality_isolines=True
 # Plot pressure isobars
 range_x = np.linspace(s_min, s_max, 51) * 1e3
 range_y = np.linspace(T_min, T_max, 51) + 273.15
-prop_dict = fluid.get_states(cpx.SmassT_INPUTS, range_x, range_y, generalize_quality=False)
+prop_dict = fluid.get_states(jxp.SmassT_INPUTS, range_x, range_y, generalize_quality=False)
 contour = ax.contour(
     prop_dict["s"],
     prop_dict["T"],
@@ -58,8 +58,8 @@ contourf.set_visible(False)
 colorbar = fig.colorbar(contourf, ax=ax, label="Pressure (bar)")
 
 # Set plot scale
-cpx.scale_graphics_x(fig, +1e-3, mode="multiply")
-cpx.scale_graphics_y(fig, -273.15, mode="add")
+jxp.scale_graphics_x(fig, +1e-3, mode="multiply")
+jxp.scale_graphics_y(fig, -273.15, mode="add")
 # ax.relim(visible_only=False)
 # ax.autoscale_view()
 
@@ -72,7 +72,7 @@ fig.tight_layout(pad=1)
 
 # Save figure
 filename = os.path.join(outdir, "Ts_diagram_isobars")
-cpx.savefig_in_formats(fig, filename)
+jxp.savefig_in_formats(fig, filename)
 
 # Show figures
 if not os.environ.get("DISABLE_PLOTS"):

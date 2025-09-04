@@ -2,20 +2,20 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-import coolpropx as cpx
+import jaxprop as jxp
 
 
 # Create the folder to save figures
-cpx.set_plot_options(grid=False)
-colors = cpx.COLORS_MATLAB
+jxp.set_plot_options(grid=False)
+colors = jxp.COLORS_MATLAB
 outdir = "output"
 os.makedirs(outdir, exist_ok=True)
 
 # Define fluid
-fluid = cpx.Fluid("CO2", backend="HEOS")
+fluid = jxp.Fluid("CO2", backend="HEOS")
 
 # Compute spinodal lines and store in fluid to avoid redundant calculation
-spinodal_liq, spinodal_vap = cpx.compute_spinodal_line(fluid, N=100, supersaturation=True)
+spinodal_liq, spinodal_vap = jxp.compute_spinodal_line(fluid, N=100, supersaturation=True)
 fluid.spdl_liq = spinodal_liq
 fluid.spdl_vap = spinodal_vap
 
@@ -58,7 +58,7 @@ ax2.plot(spinodal_liq[x], spinodal_liq[y1], color=colors[0], label="Liquid super
 ax2.plot(spinodal_vap[x], spinodal_vap[y1], color=colors[1], label="Vapor supersaturation degree")
 ax2.legend(loc="lower right")
 
-cpx.savefig_in_formats(fig, os.path.join(outdir, f"supersaturation_along_spinodal_Ts_{fluid.name}"))
+jxp.savefig_in_formats(fig, os.path.join(outdir, f"supersaturation_along_spinodal_Ts_{fluid.name}"))
 
 
 # -------------------------------------------------------------------- #
@@ -99,7 +99,7 @@ ax2.axhline(y=1, color="black")
 ax2.plot(spinodal_liq[x], spinodal_liq[y1], color=colors[0], label="Liquid supersaturation ratio")
 ax2.plot(spinodal_vap[x], spinodal_vap[y1], color=colors[1], label="Vapor supersaturation ratio")
 ax2.legend(loc="upper left")
-cpx.savefig_in_formats(fig, os.path.join(outdir, f"supersaturation_along_spinodal_ps_{fluid.name}"))
+jxp.savefig_in_formats(fig, os.path.join(outdir, f"supersaturation_along_spinodal_ps_{fluid.name}"))
 
 
 # Show figures

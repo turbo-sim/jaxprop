@@ -66,10 +66,10 @@ def nozzle_single_phase_autonomous(tau, Y, args):
     q_w = heat_transfer * q_w
     htc = heat_transfer * htc
 
-    jax.debug.print(
-        "raw htc={:.4e}, raw q_w={:.4e}, T_ext={:.2f}, T={:.2f}", 
-        htc, q_w, T_ext, T
-    )
+    # jax.debug.print(
+    #     "raw htc={:.4e}, raw q_w={:.4e}, T_ext={:.2f}, T={:.2f}", 
+    #     htc, q_w, T_ext, T
+    # )
 
     # --- Build A matrix and b vector ---
     A_mat = jnp.array([[d, v, 0.0], [d * v, 0.0, 1.0], [0.0, -(a**2), 1.0]])

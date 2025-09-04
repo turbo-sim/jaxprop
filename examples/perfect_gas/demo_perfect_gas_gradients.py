@@ -1,9 +1,9 @@
 import numpy as np
-import coolpropx as cpx
-import coolpropx.perfect_gas as pg
+import jaxprop as jxp
+import jaxprop.perfect_gas as pg
 
 # config
-input_pair = cpx.HmassP_INPUTS
+input_pair = jxp.HmassP_INPUTS
 h = 3.00e5    # J/kg
 p = 101325.0  # Pa
 

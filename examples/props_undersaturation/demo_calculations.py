@@ -3,15 +3,15 @@ This demo illustrates how to do calculate the generalized degrees of superheatin
 """
 
 import CoolProp as cp
-import coolpropx as cpx
+import jaxprop as jxp
 
 # Create high-level Fluid object
-fluid = cpx.Fluid(name="water", backend="HEOS")
+fluid = jxp.Fluid(name="water", backend="HEOS")
 
 # --- Superheating: low-level (only once) ---
 as_superheat = cp.AbstractState("HEOS", "water")
 as_superheat.update(cp.PT_INPUTS, 101325, 120 + 273.15)
-superheat_low = cpx.calculate_superheating(as_superheat)
+superheat_low = jxp.calculate_superheating(as_superheat)
 print(f"[low-level] Superheating: {superheat_low:+0.3f} K")
 
 # --- Superheating: high-level ---

@@ -2,19 +2,19 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-import coolpropx as cpx
+import jaxprop as jxp
 
 # Choose API level
 PROPERTY_API = 'high_level'  # Toggle between high-level and low-level interface
 
 # Plot options and colors
-cpx.set_plot_options(grid=False)
-colors = cpx.COLORS_MATLAB
+jxp.set_plot_options(grid=False)
+colors = jxp.COLORS_MATLAB
 fig_dir = "output"
 os.makedirs(fig_dir, exist_ok=True)
 
 # Define fluid
-fluid = cpx.Fluid(name="water", backend="HEOS")
+fluid = jxp.Fluid(name="water", backend="HEOS")
 
 # Create figure and labels
 fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14.0, 4.0))
@@ -43,12 +43,12 @@ fluid.plot_phase_diagram(
 p_in = 0.6 * fluid.critical_point.p
 dT_superheating = 5
 if PROPERTY_API == "high_level":
-    props_in = fluid.get_state(cpx.PQ_INPUTS, p_in, 1)
-    props_in = fluid.get_state(cpx.PT_INPUTS, p_in, props_in["T"] + dT_superheating)
+    props_in = fluid.get_state(jxp.PQ_INPUTS, p_in, 1)
+    props_in = fluid.get_state(jxp.PT_INPUTS, p_in, props_in["T"] + dT_superheating)
 elif PROPERTY_API == "low_level":
-    props_in = cpx.compute_properties_coolprop(fluid._AS, cpx.PQ_INPUTS, p_in, 0)
-    props_in = cpx.compute_properties_coolprop(
-        fluid.abstract_state, cpx.PT_INPUTS, p_in, props_in["T"] + dT_superheating
+    props_in = jxp.compute_properties_coolprop(fluid._AS, jxp.PQ_INPUTS, p_in, 0)
+    props_in = jxp.compute_properties_coolprop(
+        fluid.abstract_state, jxp.PT_INPUTS, p_in, props_in["T"] + dT_superheating
     )
 else:
     raise ValueError(f"Unknown value for PROPERTY_API={PROPERTY_API}.")
@@ -89,7 +89,7 @@ for i, p_out in enumerate(p_values):
             solver_algorithm="lm",
         )
     elif PROPERTY_API == "low_level":
-        props_blend, props_eq, props_meta = cpx.compute_properties(
+        props_blend, props_eq, props_meta = jxp.compute_properties(
             fluid._AS,
             prop_1="p",
             prop_1_value=p_out,

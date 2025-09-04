@@ -3,16 +3,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
-import coolpropx as cpx
+import jaxprop as jxp
 
 
 # Create the folder to save figures
-cpx.set_plot_options()
+jxp.set_plot_options()
 outdir = "output"
 os.makedirs(outdir, exist_ok=True)
 
 # Create fluid
-fluid = cpx.Fluid(name="CO2", exceptions=True)
+fluid = jxp.Fluid(name="CO2", exceptions=True)
 
 # Create figure
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
@@ -32,7 +32,7 @@ s_array = np.linspace(s1 + delta_s / 8, s2 + delta_s / 16, 100)
 
 # Subcritical cases
 p_array = np.asarray([0.6, 0.7, 0.8, 0.9, 0.99]) * fluid.critical_point.p
-states = fluid.get_states(cpx.PSmass_INPUTS, p_array, s_array, supersaturation=True)
+states = fluid.get_states(jxp.PSmass_INPUTS, p_array, s_array, supersaturation=True)
 colormap = cm.magma(np.linspace(0.1, 0.7, len(p_array)))
 for i in range(states[prop_x].shape[-1]):
     ax1.plot(
@@ -52,7 +52,7 @@ for i in range(states[prop_x].shape[-1]):
 
 # Supercritical cases
 p_array = np.asarray([1.01, 1.1, 1.2, 1.3, 1.4]) * fluid.critical_point.p
-states = fluid.get_states(cpx.PSmass_INPUTS, p_array, s_array, supersaturation=True)
+states = fluid.get_states(jxp.PSmass_INPUTS, p_array, s_array, supersaturation=True)
 colormap = cm.magma(np.linspace(0.7, 0.1, len(p_array)))
 for i in range(states[prop_x].shape[-1]):
     ax1.plot(
@@ -82,7 +82,7 @@ fluid.plot_phase_diagram(
 ax1.legend(loc="upper left", fontsize=10)
 ax2.legend(loc="upper left", fontsize=10)
 fig.tight_layout(pad=2)
-cpx.savefig_in_formats(fig, os.path.join(outdir, "generalized_superheating"))
+jxp.savefig_in_formats(fig, os.path.join(outdir, "generalized_superheating"))
 
 # Show figures
 if not os.environ.get("DISABLE_PLOTS"):

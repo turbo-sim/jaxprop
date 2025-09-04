@@ -2,13 +2,12 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
-from time import perf_counter
 
-import coolpropx as cpx
+import jaxprop as jxp
 
 # Create the folder to save figures
-cpx.set_plot_options(grid=False)
-colors = cpx.COLORS_MATLAB
+jxp.set_plot_options(grid=False)
+colors = jxp.COLORS_MATLAB
 out_dir = "output"
 os.makedirs(out_dir, exist_ok=True)
 
@@ -21,15 +20,15 @@ names = ["CO2"]
 for fluid_name in names:
 
     # Create fluid
-    fluid = cpx.Fluid(
+    fluid = jxp.Fluid(
         name=fluid_name,
         backend="HEOS",
         exceptions=True,
     )
 
     # Compute saturation and spinodal lines
-    spinodal_liq, spinodal_vap = cpx.compute_spinodal_line(fluid, N=100)
-    saturation_liq, saturation_vap = cpx.compute_saturation_line(fluid, N=100)
+    spinodal_liq, spinodal_vap = jxp.compute_spinodal_line(fluid, N=100)
+    saturation_liq, saturation_vap = jxp.compute_saturation_line(fluid, N=100)
 
     # ------------------------------------------------------------- #
     # Plot metastable liquid region
@@ -88,10 +87,10 @@ for fluid_name in names:
     )
 
     ax.legend(loc="upper left", fontsize=12)
-    cpx.scale_graphics_x(fig, 1/fluid.critical_point[prop_x], mode="multiply")
-    cpx.scale_graphics_y(fig, 1/fluid.critical_point[prop_y], mode="multiply")
+    jxp.scale_graphics_x(fig, 1/fluid.critical_point[prop_x], mode="multiply")
+    jxp.scale_graphics_y(fig, 1/fluid.critical_point[prop_y], mode="multiply")
     fig.tight_layout(pad=1)
-    cpx.savefig_in_formats(fig, os.path.join(out_dir, f"metastable_liquid_{fluid.name}"))
+    jxp.savefig_in_formats(fig, os.path.join(out_dir, f"metastable_liquid_{fluid.name}"))
 
 
     # ------------------------------------------------------------- #
@@ -151,10 +150,10 @@ for fluid_name in names:
     )
 
     ax.legend(loc="upper left", fontsize=12)
-    cpx.scale_graphics_x(fig, 1/fluid.critical_point[prop_x], mode="multiply")
-    cpx.scale_graphics_y(fig, 1/fluid.critical_point[prop_y], mode="multiply")
+    jxp.scale_graphics_x(fig, 1/fluid.critical_point[prop_x], mode="multiply")
+    jxp.scale_graphics_y(fig, 1/fluid.critical_point[prop_y], mode="multiply")
     fig.tight_layout(pad=1)
-    cpx.savefig_in_formats(fig, os.path.join(out_dir, f"metastable_vapor_{fluid.name}"))
+    jxp.savefig_in_formats(fig, os.path.join(out_dir, f"metastable_vapor_{fluid.name}"))
 
 
 # Show figures

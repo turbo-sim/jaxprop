@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from time import perf_counter
 
-import coolpropx as cpx
+import jaxprop as jxp
 
 # Create the folder to save figures
-cpx.set_plot_options(grid=False)
+jxp.set_plot_options(grid=False)
 outdir = "output"
 os.makedirs(outdir, exist_ok=True)
 
@@ -23,7 +23,7 @@ names = ["R134a"]
 for fluid_name in names:
 
     # Create fluid
-    fluid = cpx.Fluid(
+    fluid = jxp.Fluid(
         name=fluid_name,
         backend="HEOS",
         exceptions=True,
@@ -72,7 +72,7 @@ for fluid_name in names:
 
     # Plot metastable states
     T_array = fluid.critical_point.T - np.asarray([5, 10, 15, 20, 25, 30])
-    states_meta = cpx.compute_property_grid_rhoT(fluid, rho_array, T_array)
+    states_meta = jxp.compute_property_grid_rhoT(fluid, rho_array, T_array)
     colormap = cm.magma(np.linspace(0.7, 0.1, len(T_array)))
     for i, T in enumerate(T_array):
         ax1.plot(
@@ -104,7 +104,7 @@ for fluid_name in names:
 
         # Liquid branch
         spinodal_liq.append(
-            cpx.compute_spinodal_point(
+            jxp.compute_spinodal_point(
                 T,
                 fluid,
                 branch="liquid",
@@ -128,7 +128,7 @@ for fluid_name in names:
 
         # Vapor branch
         spinodal_vap.append(
-            cpx.compute_spinodal_point(T, fluid, branch="vapor", method=method)
+            jxp.compute_spinodal_point(T, fluid, branch="vapor", method=method)
         )
         ax1.plot(
             spinodal_vap[i][prop_x],
@@ -148,7 +148,7 @@ for fluid_name in names:
     ax1.legend(loc="upper left", fontsize=10)
     ax2.legend(loc="upper right", fontsize=10)
     fig.tight_layout(pad=1)
-    cpx.savefig_in_formats(
+    jxp.savefig_in_formats(
         fig, os.path.join(outdir, f"spinodal_points_density_pressure_{fluid.name}")
     )
 
@@ -210,7 +210,7 @@ for fluid_name in names:
 
     ax3.legend(loc="upper left", fontsize=10)
     fig.tight_layout(pad=1)
-    cpx.savefig_in_formats(
+    jxp.savefig_in_formats(
         fig, os.path.join(outdir, f"spinodal_points_temperature_entropy_{fluid.name}")
     )
 

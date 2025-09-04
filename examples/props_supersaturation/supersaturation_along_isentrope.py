@@ -2,17 +2,17 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-import coolpropx as cpx
+import jaxprop as jxp
 
 
 # Create the folder to save figures
-cpx.set_plot_options(grid=False)
-colors = cpx.COLORS_MATLAB
+jxp.set_plot_options(grid=False)
+colors = jxp.COLORS_MATLAB
 outdir = "output"
 os.makedirs(outdir, exist_ok=True)
 
 # Define fluid
-fluid = cpx.Fluid("CO2", backend="HEOS")
+fluid = jxp.Fluid("CO2", backend="HEOS")
 N_points = 100
 
 # -------------------------------------------------------------------- #
@@ -24,8 +24,8 @@ p_in, dT_subcooling = 60e5, 5
 p_out = 30e5
 Q_onset = 0.10
 dQ_transition = 0.03
-state_in = fluid.get_state(cpx.PQ_INPUTS, p_in, 0)
-state_in = fluid.get_state(cpx.PT_INPUTS, p_in, state_in.T - dT_subcooling)
+state_in = fluid.get_state(jxp.PQ_INPUTS, p_in, 0)
+state_in = fluid.get_state(jxp.PT_INPUTS, p_in, state_in.T - dT_subcooling)
 
 # Define initial guess
 rhoT_guess_equilibrium = [state_in.rho, state_in.T]
@@ -64,9 +64,9 @@ state_out_meta = states_metastable[-1]
 state_out_blend = states_blended[-1]
 
 # Convert lists to dicts of arrays
-states_equilibrium = cpx.states_to_dict(states_equilibrium)
-states_metastable = cpx.states_to_dict(states_metastable)
-states_blended = cpx.states_to_dict(states_blended)
+states_equilibrium = jxp.states_to_dict(states_equilibrium)
+states_metastable = jxp.states_to_dict(states_metastable)
+states_blended = jxp.states_to_dict(states_blended)
 
 # Print properties at the inlet and outlet
 msgs = [
@@ -175,7 +175,7 @@ lines = [line1, line2, line3]
 labels = [line.get_label() for line in lines]
 ax2.legend(lines, labels, loc="lower right")
 
-cpx.savefig_in_formats(
+jxp.savefig_in_formats(
     fig, os.path.join(outdir, f"supersaturation_along_liquid_isentrope_{fluid.name}")
 )
 
@@ -189,8 +189,8 @@ p_in, dT_superheating = 70e5, 5
 p_out = 40e5
 Q_onset = 0.90
 dQ_transition = 0.01
-state_in = fluid.get_state(cpx.PQ_INPUTS, p_in, 0)
-state_in = fluid.get_state(cpx.PT_INPUTS, p_in, state_in.T + dT_superheating)
+state_in = fluid.get_state(jxp.PQ_INPUTS, p_in, 0)
+state_in = fluid.get_state(jxp.PT_INPUTS, p_in, state_in.T + dT_superheating)
 
 # Define initial guess
 rhoT_guess_equilibrium = [state_in.rho, state_in.T]
@@ -230,9 +230,9 @@ state_out_meta = states_metastable[-1]
 state_out_blend = states_blended[-1]
 
 # Convert lists to dicts of arrays
-states_equilibrium = cpx.states_to_dict(states_equilibrium)
-states_metastable = cpx.states_to_dict(states_metastable)
-states_blended = cpx.states_to_dict(states_blended)
+states_equilibrium = jxp.states_to_dict(states_equilibrium)
+states_metastable = jxp.states_to_dict(states_metastable)
+states_blended = jxp.states_to_dict(states_blended)
 
 # Print properties at the inlet and outlet
 msgs = [
@@ -341,7 +341,7 @@ lines = [line1, line2, line3]
 labels = [line.get_label() for line in lines]
 ax2.legend(lines, labels, loc="lower right")
 
-cpx.savefig_in_formats(
+jxp.savefig_in_formats(
     fig, os.path.join(outdir, f"supersaturation_along_vapor_isentrope_{fluid.name}")
 )
 

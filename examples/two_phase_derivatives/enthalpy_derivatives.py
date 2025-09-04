@@ -10,6 +10,13 @@ import CoolProp as CP
 from coolpropx import get_conductivity, get_viscosity, compute_dsdp_q, GAS_CONSTANT, calculate_subcooling, calculate_superheating, calculate_supersaturation, PROPERTY_ALIAS
 
 
+# TODO:
+
+# First check if the computation of speed of sound is correct against finite differences
+# Then check if the derivatives of entropy are correct against finite difference
+# Then check if the derivatives of enthalpy are corrrect against finite difference
+# Finally chekc if the formulas for the speed of sound for derivatives of entropy and enthalpy check out
+
 def compute_properties_2phase(abstract_state, supersaturation=False):
     """Compute two-phase fluid properties from CoolProp abstract state
 
@@ -291,10 +298,3 @@ print(grad_h)
 
 
 
-
-# TODO:
-
-# First check if the computation of speed of sound is correct against finite differences
-# Then check if the derivatives of entropy are correct against finite difference
-# Then check if the derivatives of enthalpy are corrrect against finite difference
-# Finally chekc if the formulas for the speed of sound for derivatives of entropy and enthalpy check out

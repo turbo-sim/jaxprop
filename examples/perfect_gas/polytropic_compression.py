@@ -1,7 +1,7 @@
 import jax
 import jax.numpy as jnp
-import coolpropx as cpx
-import coolpropx.perfect_gas as pg
+import jaxprop as jxp
+import jaxprop.perfect_gas as pg
 
 from scipy.optimize._numdiff import approx_derivative
 
@@ -17,7 +17,7 @@ def rho_out_polytropic(x, gamma):
     eta_p = eta_p / 100
     exponent = (gamma - 1.0) / (gamma * eta_p)  # compressor form
     T_out = T_in * jnp.power(pr, exponent)
-    d_out = pg.get_props(cpx.PT_INPUTS, p_out, T_out, const)["d"]
+    d_out = pg.get_props(jxp.PT_INPUTS, p_out, T_out, const)["d"]
     return d_out
 
 # Inputs
