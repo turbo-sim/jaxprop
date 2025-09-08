@@ -10,25 +10,34 @@ else:
     sys.excepthook = IPython.core.ultratb.FormattedTB(color_scheme='linux', call_pdb=False)
 
 
-from .core_calculations import *
-from .fluid_properties import *
+import os
+os.environ["JAX_PLATFORM_NAME"] = "cpu"
+import jax
+jax.config.update("jax_enable_x64", True)
+
+
+
 from .graphics import *
 from .utils import *
+from .helpers_jax import *
+from .helpers_coolprop import *
 
 
 from . import perfect_gas
 # from . import bicubic
+from . import components
+from . import coolpropx
 
-from . import jax_import
-# from .perfect_gas import *
+from .perfect_gas import FluidPerfectGas
+from .coolpropx import Fluid
 
 
 # Package info
 __version__ = "0.2.20"
-PACKAGE_NAME = "coolpropx"
-URL_GITHUB = "https://github.com/turbo-sim/coolpropx"
-URL_DOCS = "https://turbo-sim.github.io/coolpropx/"
-URL_PYPI = "https://pypi.org/project/coolpropx/"
+PACKAGE_NAME = "jaxprop"
+URL_GITHUB = "https://github.com/turbo-sim/jaxprop"
+URL_DOCS = "https://turbo-sim.github.io/jaxprop/"
+URL_PYPI = "https://pypi.org/project/jaxprop/"
 URL_DTU = "https://thermalpower.dtu.dk/"
 BREAKLINE = 80 * "-"
 

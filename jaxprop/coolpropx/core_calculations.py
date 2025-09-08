@@ -2,33 +2,11 @@ import numpy as np
 import CoolProp.CoolProp as CP
 import pysolver_view as psv
 
-from . import math
-from . import utils
-# from .. import pysolver_view as psv
+from .. import math
+from .. import utils
 
-# Universal molar gas constant
-GAS_CONSTANT = 8.3144598
+from ..helpers_coolprop import PROPERTY_ALIAS, GAS_CONSTANT
 
-# Define property aliases
-PROPERTY_ALIAS = {
-    "P": "p",
-    "rho": "rhomass",
-    "density": "rhomass",
-    "d": "rhomass",
-    "rhomass": "rho",
-    "dmass": "rhomass",
-    "u": "umass",
-    "h": "hmass",
-    "s": "smass",
-    "cv": "cvmass",
-    "cp": "cpmass",
-    "a": "speed_sound",
-    "Z": "compressibility_factor",
-    "mu": "viscosity",
-    "k": "conductivity",
-    "vapor_quality": "quality_mass",
-    "void_fraction": "quality_volume",
-}
 
 # Define valid phase change types and their aliases
 PHASE_CHANGE_ALIASES = {
@@ -186,7 +164,10 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
     u_mix = AS.umass()
     h_mix = AS.hmass()
     s_mix = AS.smass()
-    surface_tension = AS.surface_tension()
+    try:
+        surface_tension = AS.surface_tension()
+    except:
+        surface_tension = np.nan
     # gibbs_mix = AS.gibbsmass()
 
     # Saturated liquid properties

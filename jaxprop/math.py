@@ -1,7 +1,4 @@
-# import numpy as np
-
-from .jax_import import jnp
-np = jnp
+import jax.numpy as jnp
 
 def smooth_maximum(x1, x2, method="boltzmann", alpha=10):
     r"""
@@ -68,18 +65,18 @@ def smooth_maximum(x1, x2, method="boltzmann", alpha=10):
         If an unsupported method is specified.
     """
     # Ensure x1 and x2 have the same shape by broadcasting
-    x1, x2 = np.broadcast_arrays(x1, x2)
+    x1, x2 = jnp.broadcast_arrays(x1, x2)
     
     # Stack the input arrays along a new axis to treat them as a single array
-    x = np.stack([x1, x2], axis=0)
+    x = jnp.stack([x1, x2], axis=0)
 
     # Compute smooth maximum approximation according to specified method
     if method == "logsumexp":
-        return _smooth_max_logsumexp(x, np.abs(alpha), axis=0)
+        return _smooth_max_logsumexp(x, jnp.abs(alpha), axis=0)
     elif method == "boltzmann":
-        return _smooth_max_boltzmann(x, np.abs(alpha), axis=0)
+        return _smooth_max_boltzmann(x, jnp.abs(alpha), axis=0)
     elif method == "p-norm":
-        return _smooth_max_pnorm(x, np.abs(alpha), axis=0)
+        return _smooth_max_pnorm(x, jnp.abs(alpha), axis=0)
     else:
         raise ValueError(
             f"Unsupported method '{method}'. Supported methods are:\n"
@@ -132,18 +129,18 @@ def smooth_minimum(x1, x2, method="boltzmann", alpha=10):
         If an unsupported method is specified.
     """
     # Ensure x1 and x2 have the same shape by broadcasting
-    x1, x2 = np.broadcast_arrays(x1, x2)
+    x1, x2 = jnp.broadcast_arrays(x1, x2)
     
     # Stack the input arrays along a new axis to treat them as a single array
-    x = np.stack([x1, x2], axis=0)
+    x = jnp.stack([x1, x2], axis=0)
 
     # Compute smooth maximum approximation according to specified method
     if method == "logsumexp":
-        return _smooth_max_logsumexp(x, -np.abs(alpha), axis=0)
+        return _smooth_max_logsumexp(x, -jnp.abs(alpha), axis=0)
     elif method == "boltzmann":
-        return _smooth_max_boltzmann(x, -np.abs(alpha), axis=0)
+        return _smooth_max_boltzmann(x, -jnp.abs(alpha), axis=0)
     elif method == "p-norm":
-        return _smooth_max_pnorm(x, -np.abs(alpha), axis=0)
+        return _smooth_max_pnorm(x, -jnp.abs(alpha), axis=0)
     else:
         raise ValueError(
             f"Unsupported method '{method}'. Supported methods are:\n"
@@ -157,17 +154,17 @@ def _smooth_max_logsumexp(x, alpha, axis=None, keepdims=False):
     """Smooth approximation to the maximum of an array using the log-sum-exp method"""
 
     # Determine the shift for numerical stability
-    shift_value = np.sign(alpha) * np.max(np.sign(alpha) * x, axis=axis, keepdims=True)
+    shift_value = jnp.sign(alpha) * jnp.max(jnp.sign(alpha) * x, axis=axis, keepdims=True)
 
     # Compute log-sum-exp with the shift and scale by alpha
-    log_sum = np.log(np.sum(np.exp(alpha * (x - shift_value)), axis=axis, keepdims=True))
+    log_sum = jnp.log(jnp.sum(jnp.exp(alpha * (x - shift_value)), axis=axis, keepdims=True))
 
     # Normalize the result by alpha and correct for the shift
     smooth_max = (log_sum + alpha * shift_value) / alpha
 
     # Remove the dimensions of size one if keepdims is False
     if not keepdims:
-        smooth_max = np.squeeze(smooth_max, axis=axis)
+        smooth_max = jnp.squeeze(smooth_max, axis=axis)
 
     return smooth_max
 
@@ -176,20 +173,20 @@ def _smooth_max_boltzmann(x, alpha, axis=None, keepdims=False):
     """Smooth approximation to the maximum of an array using the Boltzmann weighted average"""
 
     # Compute the shift for numerical stability
-    shift = np.sign(alpha) * np.max(np.sign(alpha) * x, axis=axis, keepdims=True)
+    shift = jnp.sign(alpha) * jnp.max(jnp.sign(alpha) * x, axis=axis, keepdims=True)
 
     # Compute the weighted sum (numerator) of the elements of x
-    weighted_sum = np.sum(x * np.exp(alpha * (x - shift)), axis=axis, keepdims=True)
+    weighted_sum = jnp.sum(x * jnp.exp(alpha * (x - shift)), axis=axis, keepdims=True)
 
     # Compute the sum of the smooth_max weights (denominator)
-    weight_sum = np.sum(np.exp(alpha * (x - shift)), axis=axis, keepdims=True)
+    weight_sum = jnp.sum(jnp.exp(alpha * (x - shift)), axis=axis, keepdims=True)
 
     # Compute the Boltzmann-weighted average avoiding division by zero
-    smooth_max = weighted_sum / (weight_sum + np.finfo(float).eps)
+    smooth_max = weighted_sum / (weight_sum + jnp.finfo(float).eps)
 
     # Remove the dimensions of size one if keepdims is False
     if not keepdims:
-        smooth_max = np.squeeze(smooth_max, axis=axis)
+        smooth_max = jnp.squeeze(smooth_max, axis=axis)
 
     return smooth_max
 
@@ -198,11 +195,11 @@ def _smooth_max_pnorm(x, alpha, axis=None, keepdims=False):
     """Smooth approximation to the maximum of an array using the p-norm method"""
 
     # Compute the p-norm approximation
-    smooth_max = np.sum(np.power(x, alpha), axis=axis, keepdims=True) ** (1 / alpha)
+    smooth_max = jnp.sum(jnp.power(x, alpha), axis=axis, keepdims=True) ** (1 / alpha)
 
     # Remove the dimensions of size one if keepdims is False
     if not keepdims:
-        smooth_max = np.squeeze(smooth_max, axis=axis)
+        smooth_max = jnp.squeeze(smooth_max, axis=axis)
 
     return smooth_max
 
@@ -231,7 +228,7 @@ def smooth_abs(x, method="quadratic", epsilon=1e-5):
 
     Parameters
     ----------
-    x : float or np.ndarray
+    x : float or jnp.ndarray
         Input value(s) for which the approximation is computed.
     method : str, optional
         The method of approximation:
@@ -245,7 +242,7 @@ def smooth_abs(x, method="quadratic", epsilon=1e-5):
 
     Returns
     -------
-    float or np.ndarray
+    float or jnp.ndarray
         Smooth approximation value(s) of the absolute function.
 
     Raises
@@ -272,48 +269,48 @@ def smooth_abs(x, method="quadratic", epsilon=1e-5):
 
 def _smooth_abs_quadratic(x, epsilon):
     """Quadratic approximation of the absolute value function."""
-    return np.sqrt(x**2 + epsilon)
+    return jnp.sqrt(x**2 + epsilon)
 
 
 def _smooth_abs_tanh(x, epsilon):
     """Hyperbolic tangent approximation of the absolute value function."""
-    return x * np.tanh(x / epsilon)
+    return x * jnp.tanh(x / epsilon)
 
 
 def _smooth_abs_logcosh(x, epsilon):
     """Log-cosh approximation of the absolute value function."""
-    return epsilon * np.log(np.cosh(x / epsilon))
+    return epsilon * jnp.log(jnp.cosh(x / epsilon))
 
 
 def sind(x):
     """Compute the sine of an angle given in degrees."""
-    return np.sin(x * np.pi / 180)
+    return jnp.sin(x * jnp.pi / 180)
 
 
 def cosd(x):
     """Compute the cosine of an angle given in degrees."""
 
-    return np.cos(x * np.pi / 180)
+    return jnp.cos(x * jnp.pi / 180)
 
 
 def tand(x):
     """Compute the tangent of an angle given in degrees."""
-    return np.tan(x * np.pi / 180)
+    return jnp.tan(x * jnp.pi / 180)
 
 
 def arcsind(x):
     """Compute the arcsine of a value and return the result in degrees."""
-    return np.arcsin(x) * 180 / np.pi
+    return jnp.arcsin(x) * 180 / jnp.pi
 
 
 def arccosd(x):
     """Compute the arccosine of a value and return the result in degrees."""
-    return np.arccos(x) * 180 / np.pi
+    return jnp.arccos(x) * 180 / jnp.pi
 
 
 def arctand(x):
     """Compute the arctangent of a value and return the result in degrees."""
-    return np.arctan(x) * 180 / np.pi
+    return jnp.arctan(x) * 180 / jnp.pi
 
 
 def is_odd(number):
@@ -328,12 +325,12 @@ def is_even(number):
 
 def all_numeric(array):
     """Check if all items in Numpy array are numeric (floats or ints)"""
-    return np.issubdtype(array.dtype, np.number)
+    return jnp.issubdtype(array.dtype, jnp.number)
 
 
 def all_non_negative(array):
     "Check if all items in Numpy array are non-negative"
-    return np.all(array >= 0)
+    return jnp.all(array >= 0)
 
 
 def sigmoid_hyperbolic(x, x0=0.5, alpha=1):
@@ -361,8 +358,8 @@ def sigmoid_hyperbolic(x, x0=0.5, alpha=1):
         Output of the sigmoid hyperbolic function.
 
     """
-    x = np.array(x)  # Ensure x is a NumPy array for vectorized operations
-    sigma = (1 + np.tanh((x - x0) / alpha)) / 2
+    x = jnp.array(x)  # Ensure x is a NumPy array for vectorized operations
+    sigma = (1 + jnp.tanh((x - x0) / alpha)) / 2
     return sigma
 
 
@@ -391,9 +388,9 @@ def sigmoid_rational(x, n, m):
         Output of the sigmoid algebraic function.
 
     """
-    x = np.array(x)  # Ensure x is a NumPy array for vectorized operations
-    x = np.where(x < 0, 0, x)  # Set x to 0 where x < 0
-    x = np.where(x > 1, 1, x)  # Set x to 1 where x > 1
+    x = jnp.array(x)  # Ensure x is a NumPy array for vectorized operations
+    x = jnp.where(x < 0, 0, x)  # Set x to 0 where x < 0
+    x = jnp.where(x > 1, 1, x)  # Set x to 1 where x > 1
     sigma = x**n / (x**n + (1 - x) ** m)
     return sigma
 
@@ -417,9 +414,9 @@ def sigmoid_smoothstep(x):
         Output of the sigmoid smoothstep function.
 
     """
-    x = np.array(x)  # Ensure x is a NumPy array for vectorized operations
-    x = np.where(x < 0, 0, x)  # Set x to 0 where x < 0
-    x = np.where(x > 1, 1, x)  # Set x to 1 where x > 1
+    x = jnp.array(x)  # Ensure x is a NumPy array for vectorized operations
+    x = jnp.where(x < 0, 0, x)  # Set x to 0 where x < 0
+    x = jnp.where(x > 1, 1, x)  # Set x to 1 where x > 1
     return x**2 * (3 - 2 * x)
 
 
@@ -442,7 +439,7 @@ def sigmoid_smootherstep(x):
         Output of the sigmoid smootherstep function.
 
     """
-    x = np.array(x)  # Ensure x is a NumPy array for vectorized operations
-    x = np.where(x < 0, 0, x)  # Set x to 0 where x < 0
-    x = np.where(x > 1, 1, x)  # Set x to 1 where x > 1
+    x = jnp.array(x)  # Ensure x is a NumPy array for vectorized operations
+    x = jnp.where(x < 0, 0, x)  # Set x to 0 where x < 0
+    x = jnp.where(x > 1, 1, x)  # Set x to 1 where x > 1
     return 6 * x**5 - 15 * x**4 + 10 * x**3
