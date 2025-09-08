@@ -4,20 +4,16 @@ import jax.numpy as jnp
 import diffrax as dfx
 import equinox as eqx
 import optimistix as optx
-import coolpropx as cpx
+import jaxprop as jxp
 import matplotlib.pyplot as plt
 
 from matplotlib import gridspec
 
-cpx.set_plot_options(grid=False)
+jxp.set_plot_options(grid=False)
 
-from coolpropx.perfect_gas import get_props
-from examples.jaxprop.nozzle_model_core import (
+from jaxprop.components import (
     nozzle_single_phase_autonomous,
     symmetric_nozzle_geometry,
-)
-
-from examples.jaxprop.nozzle_model_solver import (
     NozzleParams,
     IVPSettings,
     replace_param,
@@ -56,8 +52,8 @@ def nozzle_single_phase(
     # Create and configure the solver
     t0 = 0.0  # Start at tau=0 (arbitrary)
     t1 = 1e9  # Large value that will not be reached
-    solver = cpx.jax_import.make_diffrax_solver(params_solver.solver_name)
-    adjoint = cpx.jax_import.make_diffrax_adjoint(params_solver.adjoint_name)
+    solver = jxp.make_diffrax_solver(params_solver.solver_name)
+    adjoint = jxp.make_diffrax_adjoint(params_solver.adjoint_name)
     term = dfx.ODETerm(eval_ode_rhs)
     ctrl = dfx.PIDController(rtol=params_solver.rtol, atol=params_solver.atol)
     event = dfx.Event(
@@ -123,9 +119,6 @@ def eval_end_of_domain_event(t, y, args, **kwargs):
 if __name__ == "__main__":
 
     # Define model parameters
-    fluid_name = "air"
-    fluid = cpx.perfect_gas.get_constants(fluid_name, T_ref=300, P_ref=101325)
-
     params_model = NozzleParams(
         Ma_in=0.25,
         p0_in=1.0e5,  # Pa
@@ -136,7 +129,7 @@ if __name__ == "__main__":
         T_wall=300.0,  # K
         heat_transfer=0.0,
         wall_friction=0.0,
-        fluid=fluid,
+        fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
         geometry=symmetric_nozzle_geometry,
     )
 

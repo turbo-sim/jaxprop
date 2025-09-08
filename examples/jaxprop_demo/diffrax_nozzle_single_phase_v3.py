@@ -4,16 +4,13 @@ import jax.numpy as jnp
 import diffrax as dfx
 import equinox as eqx
 import optimistix as optx
-import coolpropx as cpx
+import jaxprop as jxp
 import matplotlib.pyplot as plt
 
 from matplotlib import gridspec
-from coolpropx.perfect_gas import get_props
-from examples.jaxprop.nozzle_model_core import (
+from jaxprop.components import (
     nozzle_single_phase_core,
     symmetric_nozzle_geometry,
-)
-from examples.jaxprop.nozzle_model_solver import (
     NozzleParams,
     BVPSettings,
     IVPSettings,
@@ -22,7 +19,7 @@ from examples.jaxprop.nozzle_model_solver import (
     initialize_flowfield,
 )
 
-cpx.set_plot_options(grid=False)
+jxp.set_plot_options(grid=False)
 
 
 # v1 solves the ode system using the space marching in non-autonomous form
@@ -67,8 +64,8 @@ def transonic_nozzle_single_phase(
         return ode_full_subsonic(t, y, args)["rhs"]
 
     # --- 2. First pass: inlet → Ma_low ---
-    solver = cpx.jax_import.make_diffrax_solver(params_ivp.solver_name)
-    adjoint = cpx.jax_import.make_diffrax_adjoint(params_ivp.adjoint_name)
+    solver = jxp.make_diffrax_solver(params_ivp.solver_name)
+    adjoint = jxp.make_diffrax_adjoint(params_ivp.adjoint_name)
     ctrl = dfx.PIDController(rtol=params_ivp.rtol, atol=params_ivp.atol)
     y_inlet = jnp.array([out["v"][0], out["d"][0], out["p"][0]])
     event1 = dfx.Event(
@@ -142,7 +139,7 @@ def transonic_nozzle_single_phase(
 def _mach_event_cond(t, y, args, **kwargs):
     """Event function: zero when M^2 - Ma_low^2 = 0."""
     v, rho, p = y
-    a = get_props(cpx.DmassP_INPUTS, rho, p, args.fluid)["a"]
+    a = args.fluid.get_props(jxp.DmassP_INPUTS, rho, p)["a"]
     Ma_sqr = (v / a) ** 2
     return Ma_sqr - args.Ma_low**2
 
@@ -168,9 +165,9 @@ def _smoothstep(x):
 # -----------------------------------------------------------------------------
 if __name__ == "__main__":
 
-    # Define model parameters
-    fluid_name = "air"
-    fluid = cpx.perfect_gas.get_constants(fluid_name, T_ref=300, P_ref=101325)
+    # # Define model parameters
+    # fluid_name = "air"
+    # fluid = jxp.perfect_gas.get_constants(fluid_name, T_ref=300, P_ref=101325)
 
     params_model = NozzleParams(
         p0_in=1.0e5,  # Pa
@@ -183,7 +180,7 @@ if __name__ == "__main__":
         Ma_high=1.025,
         heat_transfer=0.0,
         wall_friction=0.0,
-        fluid=fluid,
+        fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
         geometry=symmetric_nozzle_geometry,
     )
 
@@ -195,9 +192,9 @@ if __name__ == "__main__":
         max_steps=500,
         jac_mode="bwd",
         verbose=False,
-        method="GaussNewton",
+        method="Newton",
         warmup_method="Dogleg",
-        warmup_steps=10,
+        warmup_steps=0,
     )
 
     params_ivp = IVPSettings(
@@ -212,7 +209,7 @@ if __name__ == "__main__":
     print("\n" + "-" * 60)
     print("Evaluating transonic solution")
     print("-" * 60)
-    input_array = jnp.asarray([2]) * 1e5
+    input_array = jnp.asarray([2, 3, 4, 5, 6]) * 1e5
     colors = plt.cm.magma(jnp.linspace(0.2, 0.8, len(input_array)))  # Generate colors
     solution_list = []
     for i, p0_in in enumerate(input_array):

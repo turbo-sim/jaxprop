@@ -1,23 +1,25 @@
 import time
+
+
+import os
+os.environ["JAX_TRACEBACK_FILTERING"] = "off"
+
+
 import jax
 import jax.numpy as jnp
 import diffrax as dfx
 import equinox as eqx
 import optimistix as optx
-import coolpropx as cpx
+import jaxprop as jxp
 import matplotlib.pyplot as plt
 
 from matplotlib import gridspec
 
-cpx.set_plot_options(grid=False)
+jxp.set_plot_options(grid=False)
 
-from coolpropx.perfect_gas import get_props
-from examples.jaxprop.nozzle_model_core import (
+from jaxprop.components import (
     nozzle_single_phase_core,
     symmetric_nozzle_geometry,
-)
-
-from examples.jaxprop.nozzle_model_solver import (
     NozzleParams,
     IVPSettings,
     replace_param,
@@ -25,7 +27,6 @@ from examples.jaxprop.nozzle_model_solver import (
 )
 
 # v1 solves the ode system using the space marching in non-autonomous form
-
 
 # -----------------------------------------------------------------------------
 # Main API to the converging-diverging nozzle model
@@ -52,8 +53,8 @@ def nozzle_single_phase(
     y0 = jnp.array([v_in, rho_in, p_in])
 
     # Create and configure the solver
-    solver = cpx.jax_import.make_diffrax_solver(params_solver.solver_name)
-    adjoint = cpx.jax_import.make_diffrax_adjoint(params_solver.adjoint_name)
+    solver = jxp.make_diffrax_solver(params_solver.solver_name)
+    adjoint = jxp.make_diffrax_adjoint(params_solver.adjoint_name)
     term = dfx.ODETerm(eval_ode_rhs)
     ctrl = dfx.PIDController(rtol=params_solver.rtol, atol=params_solver.atol)
     ts = jnp.linspace(0.0, params_model.length, params_solver.number_of_points)
@@ -95,7 +96,7 @@ def eval_ode_rhs(t, y, _):
 # Event: stop when Ma^2 - 1 < tol
 def _sonic_event_cond(t, y, args, **kwargs):
     v, rho, p = y
-    a = get_props(cpx.DmassP_INPUTS, rho, p, args.fluid)["a"]
+    a = args.fluid.get_props(jxp.DmassP_INPUTS, rho, p)["a"]
     Ma_sqr = (v / a) ** 2
     margin = 1e-5
     return Ma_sqr - (1.0 - margin)
@@ -107,9 +108,6 @@ def _sonic_event_cond(t, y, args, **kwargs):
 if __name__ == "__main__":
 
     # Define model parameters
-    fluid_name = "air"
-    fluid = cpx.perfect_gas.get_constants(fluid_name, T_ref=300, P_ref=101325)
-
     args = NozzleParams(
         Ma_in=0.25,
         p0_in=1.0e5,  # Pa
@@ -120,7 +118,7 @@ if __name__ == "__main__":
         T_wall=300.0,  # K
         heat_transfer=0.0,
         wall_friction=0.0,
-        fluid=fluid,
+        fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
         geometry=symmetric_nozzle_geometry,
     )
 

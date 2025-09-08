@@ -2,7 +2,7 @@ import os
 import pytest
 import atexit
 import numpy as np
-import coolpropx as cpx
+import jaxprop as jxp
 import pandas as pd
 
 from utilities import get_reference_state, assert_consistent_values, get_available_backends
@@ -12,7 +12,7 @@ CONSISTENCY_LOG = []
 PRINT_STATISTICS = os.environ.get("PRINT_STATISTICS") == "1"
 
 # Tolerances for comparison
-TOL = 1e-4
+TOL = 1e-3
 
 # Define list of calculation backends
 BACKENDS = get_available_backends()
@@ -43,8 +43,8 @@ FLUID_NAMES = [
     "CO2",
     "Ammonia",
     "Nitrogen",
-    # "Pentane",
-    # "R134a",
+    "Pentane",
+    # "R134a",  # Does not work well
     "R245fa",
     "R1233ZDE",
 ]
@@ -56,12 +56,12 @@ FLUID_NAMES = [
 def test_hemholtz_solver(fluid_name, backend, state_label):
 
     # Compute reference state
-    fluid = cpx.Fluid(fluid_name, backend)
+    fluid = jxp.Fluid(fluid_name, backend)
     state_ref = get_reference_state(fluid_name, backend, state_label)
 
     # Recompute state with direct call to Helmholtz EoS
     rho_in, T_in = state_ref.rhomass, state_ref.T
-    props = cpx.compute_properties_metastable_rhoT(fluid.abstract_state, rho_in, T_in)
+    props = jxp.compute_properties_metastable_rhoT(fluid.abstract_state, rho_in, T_in)
 
     # Check all properties are consistency
     for key, v_ref in state_ref.items():

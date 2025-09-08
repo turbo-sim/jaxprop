@@ -66,28 +66,25 @@ import jax
 import jax.numpy as jnp
 import optimistix as opx
 import matplotlib.pyplot as plt
-import coolpropx as cpx
+import jaxprop as jxp
 
-from examples.jaxprop.nozzle_model_solver import (
+from jaxprop.components import (
     solve_nozzle_model_collocation,
     initialize_flowfield,
     NozzleParams,
     BVPSettings,
     replace_param,
     chebyshev_lobatto_interpolate,
+    symmetric_nozzle_geometry
 )
 
-from examples.jaxprop.nozzle_model_core import symmetric_nozzle_geometry
 
-cpx.set_plot_options()
+jxp.set_plot_options()
 
 
 if __name__ == "__main__":
 
     # Define model parameters
-    fluid_name = "air"
-    fluid = cpx.perfect_gas.get_constants(fluid_name, T_ref=300, P_ref=101325)
-
     params_model = NozzleParams(
         Ma_in=0.25,
         p0_in=5.0e5,  # Pa
@@ -100,21 +97,21 @@ if __name__ == "__main__":
         wall_friction=0.0,
         Ma_low=0.95,
         Ma_high=1.05,
-        fluid=fluid,
+        fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
         geometry=symmetric_nozzle_geometry,
     )
 
     params_solver = BVPSettings(
         solve_mode="mach_in",
-        num_points=50,
+        num_points=25,
         rtol=1e-8,
         atol=1e-8,
         max_steps=50,
         jac_mode="bwd",
         verbose=False,
-        method="GaussNewton",
+        method="Newton",
         warmup_method="Dogleg",
-        warmup_steps=5,
+        warmup_steps=0,
     )
 
     # Inlet Mach number sensitivity analysis

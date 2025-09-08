@@ -3,7 +3,7 @@ This demo illustrates how to do basic thermodynamic state calculations using
 the barotropy.fluid.get_state() method using different types of input pairs.
 """
 
-import jaxprop as jxp
+import jaxprop.coolpropx as jxp
 
 # State calculation
 fluid = jxp.Fluid(name="Water", backend="HEOS")

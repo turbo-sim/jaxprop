@@ -3,14 +3,14 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import coolpropx as cpx
+import jaxprop as jxp
 import matplotlib
 
 from utilities import get_available_backends
 
 matplotlib.use("Agg")
 
-cpx.set_plot_options(grid=False)
+jxp.set_plot_options(grid=False)
 
 # Define list of calculation backends
 BACKENDS = get_available_backends()
@@ -46,7 +46,7 @@ def test_phase_diagrams(fluid_name):
     fig.suptitle(f"Phase diagrams for {fluid_name}", fontsize=16)
 
     for row, backend in enumerate(BACKENDS):
-        fluid = cpx.Fluid(fluid_name, backend)
+        fluid = jxp.Fluid(fluid_name, backend)
         for col, (x_prop, y_prop) in enumerate(DIAGRAMS):
 
             # Generate plot for given property pair

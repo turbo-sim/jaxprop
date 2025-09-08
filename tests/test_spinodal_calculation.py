@@ -2,7 +2,7 @@ import os
 import pytest
 import atexit
 import numpy as np
-import coolpropx as cpx
+import jaxprop as jxp
 import pandas as pd
 
 from utilities import get_available_backends
@@ -35,8 +35,8 @@ FLUID_NAMES = [
 def test_spinodal_calculation(fluid_name, backend):
 
     # Compute spinodal points
-    fluid = cpx.Fluid(fluid_name, backend)
-    spinodal_liq, spinodal_vap = cpx.compute_spinodal_line(
+    fluid = jxp.Fluid(fluid_name, backend)
+    spinodal_liq, spinodal_vap = jxp.compute_spinodal_line(
         fluid,
         N=10,
         method="slsqp",

@@ -3,7 +3,7 @@ This demo illustrates how to do calculate the generalized degrees of superheatin
 """
 
 import CoolProp as cp
-import jaxprop as jxp
+import jaxprop.coolpropx as jxp
 
 # Create high-level Fluid object
 fluid = jxp.Fluid(name="water", backend="HEOS")

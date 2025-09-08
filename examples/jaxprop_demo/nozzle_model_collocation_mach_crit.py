@@ -70,32 +70,28 @@ import time
 import jax
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
-import coolpropx as cpx
+import jaxprop as jxp
 
-from examples.jaxprop.nozzle_model_solver import (
+from jaxprop.components import (
     solve_nozzle_model_collocation,
     initialize_flowfield,
     NozzleParams,
     BVPSettings,
     replace_param,
     chebyshev_lobatto_interpolate,
+    symmetric_nozzle_geometry
 )
 
-from examples.jaxprop.nozzle_model_core import symmetric_nozzle_geometry
 
 
-cpx.set_plot_options()
+jxp.set_plot_options()
 
 
 # ---------- example ----------
 if __name__ == "__main__":
 
     # Define model parameters
-    fluid_name = "air"
-    fluid = cpx.perfect_gas.get_constants(fluid_name, T_ref=300, P_ref=101325)
-
     params_model = NozzleParams(
-        # Ma_in=0.25,
         p0_in=5.0e5,  # Pa
         d0_in=1.20,  # kg/m³
         D_in=0.050,  # m
@@ -106,19 +102,19 @@ if __name__ == "__main__":
         wall_friction=1.0,
         Ma_low=0.95,
         Ma_high=1.05,
-        fluid=fluid,
+        fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
         geometry=symmetric_nozzle_geometry,
     )
 
     params_solver = BVPSettings(
         solve_mode="mach_crit",
-        num_points=50,
+        num_points=60,
         rtol=1e-8,
         atol=1e-8,
         max_steps=500,
         jac_mode="bwd",
-        verbose=True,
-        method="GaussNewton",
+        verbose=False,
+        method="Newton",
         warmup_method="Dogleg",
         warmup_steps=0,
     )
@@ -141,8 +137,8 @@ if __name__ == "__main__":
             params_solver,
         )
 
-        # Substitute values, keep same array
-        initial_guess = initial_guess.at[:].set(sol.value)
+        # # Continuation strategy
+        # initial_guess = initial_guess.at[:].set(sol.value)
 
         # Relative error diagnostics
         dt_ms = (time.perf_counter() - t0) * 1e3
@@ -161,7 +157,7 @@ if __name__ == "__main__":
 
     # --- Plot the solutions ---
     fig, axs = plt.subplots(4, 1, figsize=(5, 9), sharex=True)
-    x_dense = jnp.linspace(0.0, params_model.length, 1000)
+    x_dense = jnp.linspace(0.0, params_model.length, 10000)
 
     # Pressure (bar)
     axs[0].set_ylabel("Pressure (bar)")
@@ -219,7 +215,6 @@ if __name__ == "__main__":
 
     # --- Differentiability check: mdot vs. p0_in ---
     def mdot_vs_p0(p0_in):
-        num_points = 50
         local_params = replace_param(params_model, "p0_in", p0_in)
         out, _ = solve_nozzle_model_collocation(
             initial_guess, local_params, params_solver

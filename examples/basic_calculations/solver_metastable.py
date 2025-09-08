@@ -10,7 +10,7 @@ that the results of the different methods are consistent.
 import os
 import matplotlib.pyplot as plt
 
-import jaxprop as jxp
+import jaxprop.coolpropx as jxp
 jxp.set_plot_options(grid=False)
 
 # Create fluid

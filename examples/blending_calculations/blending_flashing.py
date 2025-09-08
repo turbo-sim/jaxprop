@@ -2,7 +2,7 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-import jaxprop as jxp
+import jaxprop.coolpropx as jxp
 
 # Choose API level
 PROPERTY_API = 'high_level'  # Toggle between high-level and low-level interface
