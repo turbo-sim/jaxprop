@@ -390,7 +390,7 @@ def initialize_flowfield(num_points, params, Ma_min=0.1, Ma_max=0.2):
     """
     # Inlet stagnation state
     fluid = params.fluid
-    state0_in = fluid.get_props(jxp.DmassP_INPUTS, params.p0_in, params.d0_in)
+    state0_in = fluid.get_props(jxp.DmassP_INPUTS, params.d0_in, params.p0_in)
     a_in = state0_in["a"]  # use inlet speed of sound for initial guess everywhere
     h_in = state0_in["h"]
     s_in = state0_in["s"]

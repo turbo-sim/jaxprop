@@ -176,11 +176,12 @@ if __name__ == "__main__":
         length=5.00,  # m
         roughness=10e-6,  # m
         T_wall=300.0,  # K
-        Ma_low=0.975,
+        Ma_low=0.95,
         Ma_high=1.025,
         heat_transfer=0.0,
         wall_friction=0.0,
         fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
+        # fluid=jxp.FluidJAX(name="air", backend="HEOS"),
         geometry=symmetric_nozzle_geometry,
     )
 
@@ -257,7 +258,7 @@ if __name__ == "__main__":
             color=color,
             marker="o",
             markersize="3",
-            label=rf"$p_\mathrm{{in}}/p_0 = {val:0.3f}$",
+            label = rf"$p_{{0,\mathrm{{in}}}} = {val:0.3f}$"
         )
     axs[0].legend(loc="upper right", fontsize=7)
 

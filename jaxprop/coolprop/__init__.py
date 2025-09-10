@@ -1,3 +1,4 @@
+from .jax_wrapper import *
 from .core_calculations import *
 from .fluid_properties import *
 
@@ -5,4 +6,3 @@ from .fluid_properties import *
 from ..graphics import *
 from ..helpers_coolprop import *
 
-from .jaxprop import *

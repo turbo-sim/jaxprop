@@ -130,6 +130,7 @@ if __name__ == "__main__":
         heat_transfer=0.0,
         wall_friction=0.0,
         fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
+        # fluid=jxp.FluidJAX(name="air", backend="HEOS"),
         geometry=symmetric_nozzle_geometry,
     )
 

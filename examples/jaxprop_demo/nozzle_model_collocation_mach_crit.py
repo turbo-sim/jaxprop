@@ -99,10 +99,11 @@ if __name__ == "__main__":
         roughness=1e-6,  # m
         T_wall=300.0,  # K
         heat_transfer=0.0,
-        wall_friction=1.0,
+        wall_friction=0.0,
         Ma_low=0.95,
         Ma_high=1.05,
-        fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
+        # fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
+        fluid=jxp.FluidJAX(name="air", backend="HEOS"),
         geometry=symmetric_nozzle_geometry,
     )
 
@@ -137,8 +138,8 @@ if __name__ == "__main__":
             params_solver,
         )
 
-        # # Continuation strategy
-        # initial_guess = initial_guess.at[:].set(sol.value)
+        # Continuation strategy
+        initial_guess = initial_guess.at[:].set(sol.value)
 
         # Relative error diagnostics
         dt_ms = (time.perf_counter() - t0) * 1e3

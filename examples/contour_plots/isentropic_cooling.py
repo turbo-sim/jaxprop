@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-import jaxprop.coolpropx as jxp
+import jaxprop.coolprop as jxp
 
 jxp.set_plot_options(grid=False)
 

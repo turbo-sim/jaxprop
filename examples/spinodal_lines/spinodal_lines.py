@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from time import perf_counter
 
-import jaxprop.coolpropx as jxp
+import jaxprop.coolprop as jxp
 
 # Create the folder to save figures
 jxp.set_plot_options(grid=False)

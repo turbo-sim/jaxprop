@@ -2,7 +2,7 @@
 This script shows how to do basic function calculations used the custom Flash solver
 """
 
-import jaxprop.coolpropx as jxp
+import jaxprop.coolprop as jxp
 
 # State calculation using coolprop
 fluid = jxp.Fluid(name="Air", backend="HEOS")

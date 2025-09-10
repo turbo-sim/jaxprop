@@ -128,7 +128,8 @@ def nozzle_single_phase_autonomous(tau, Y, args):
         "N": N,
     }
 
-    return {**out, **vars(state)}
+    return {**out, **state.__dict__}
+    # return {**out, **state}
 
 
 # -----------------------------------------------------------------------------

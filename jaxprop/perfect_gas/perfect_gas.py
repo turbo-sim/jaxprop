@@ -1,62 +1,15 @@
-import dataclasses
 import jax
 import jax.numpy as jnp
 import equinox as eqx
 
-from .. import helpers_coolprop as cpx
+from ..coolprop import Fluid
+from .. import helpers_coolprop as _cp
 
-from ..coolpropx import Fluid
 
-# Define property aliases
-PROPERTY_ALIAS = {
-    "P": "p",
-
-    # density
-    "rho": "rho",
-    "density": "rho",
-    "d": "rho",
-    "rhomass": "rho",
-    "dmass": "rho",
-
-    # enthalpy
-    "h": "h",
-    "hmass": "h",
-
-    # entropy
-    "s": "s",
-    "smass": "s",
-
-    # internal energy (if added later)
-    "u": "u",
-
-    # heat capacities
-    "cv": "cv",
-    "cvmass": "cv",
-    "cp": "cp",
-    "cpmass": "cp",
-
-    # speed of sound
-    "a": "a",
-    "speed_sound": "a",
-
-    # compressibility factor
-    "Z": "Z",
-    "compressibility_factor": "Z",
-
-    # transport properties
-    "mu": "mu",
-    "viscosity": "mu",
-    "k": "k",
-    "conductivity": "k",
-
-    # quality placeholders
-    "vapor_quality": "quality_mass",
-    "void_fraction": "quality_volume",
-}
-
+PROPERTY_ALIAS = _cp.PROPERTY_ALIAS_NEW
 
 # ----------------------------------------------------------------------------- #
-# Equinox objects with fixed structure
+# Constant generation and Sutherland estimation
 # ----------------------------------------------------------------------------- #
 class PerfectGasConstants(eqx.Module):
     R: jnp.ndarray
@@ -69,34 +22,8 @@ class PerfectGasConstants(eqx.Module):
     S_k: jnp.ndarray
     S_mu: jnp.ndarray
 
-
-
-class PerfectGasState(eqx.Module):
-    T: jnp.ndarray
-    p: jnp.ndarray
-    rho: jnp.ndarray
-    h: jnp.ndarray
-    s: jnp.ndarray
-    mu: jnp.ndarray
-    k: jnp.ndarray
-    a: jnp.ndarray
-    gamma: jnp.ndarray
-    cp: jnp.ndarray
-    cv: jnp.ndarray
-    Z: jnp.ndarray
-    gruneisen: jnp.ndarray
-
-    def __getitem__(self, key: str):
-        """Allow dictionary-style access to state variables.
-        Returns the attribute matching `key` or its alias in PROPERTY_ALIAS."""
-        if hasattr(self, key):
-            return getattr(self, key)
-        if key in PROPERTY_ALIAS:
-            return getattr(self, PROPERTY_ALIAS[key])
-        raise KeyError(f"Unknown property alias: {key}")
-
     def __repr__(self) -> str:
-        """Return a readable string representation of the state,
+        """Return a readable string representation of the constants,
         listing all field names and their scalar values."""
         lines = []
         for name, val in self.__dict__.items():
@@ -105,12 +32,8 @@ class PerfectGasState(eqx.Module):
             except Exception:
                 pass
             lines.append(f"  {name}={val}")
-        return "PerfectGasState(\n" + ",\n".join(lines) + "\n)"
+        return "PerfectGasConstants(\n" + ",\n".join(lines) + "\n)"
 
-    
-# ----------------------------------------------------------------------------- #
-# Constant generation and Sutherland estimation
-# ----------------------------------------------------------------------------- #
 
 def get_constants(fluid_name, T_ref, P_ref, dT=100.0):
     """
@@ -152,8 +75,8 @@ def get_constants(fluid_name, T_ref, P_ref, dT=100.0):
     """
     # Calculate fluid constants at the reference pressure and temperature
     fluid = Fluid(name=fluid_name, backend="HEOS")
-    state = fluid.get_state(cpx.PT_INPUTS, P_ref, T_ref)
-    R = jnp.asarray(cpx.GAS_CONSTANT / fluid.abstract_state.molar_mass())
+    state = fluid.get_state(_cp.PT_INPUTS, P_ref, T_ref)
+    R = jnp.asarray(_cp.GAS_CONSTANT / fluid.abstract_state.molar_mass())
     cp = jnp.asarray(state["cp"])
     cv = jnp.asarray(state["cv"])
     gamma = cp / cv
@@ -163,7 +86,7 @@ def get_constants(fluid_name, T_ref, P_ref, dT=100.0):
 
     # Estimate Sutherland constants from values at T_ref ± dT
     T2 = T_ref + dT
-    state2 = fluid.get_state(cpx.PT_INPUTS, P_ref, T2)
+    state2 = fluid.get_state(_cp.PT_INPUTS, P_ref, T2)
     S_mu = estimate_sutherland_constant(T_ref, mu_ref, T2, state2["mu"])
     S_k = estimate_sutherland_constant(T_ref, k_ref, T2, state2["k"])
 
@@ -265,7 +188,43 @@ def entropy_from_rhoP(rho, P, constants):
 # ----------------------------------------------------------------------------- #
 # Helper functions to calculate full fluid states
 # ----------------------------------------------------------------------------- #
+class PerfectGasState(eqx.Module):
+    T: jnp.ndarray
+    p: jnp.ndarray
+    rho: jnp.ndarray
+    h: jnp.ndarray
+    s: jnp.ndarray
+    mu: jnp.ndarray
+    k: jnp.ndarray
+    a: jnp.ndarray
+    gamma: jnp.ndarray
+    cp: jnp.ndarray
+    cv: jnp.ndarray
+    Z: jnp.ndarray
+    gruneisen: jnp.ndarray
 
+    def __getitem__(self, key: str):
+        """Allow dictionary-style access to state variables.
+        Returns the attribute matching `key` or its alias in PROPERTY_ALIAS."""
+        if hasattr(self, key):
+            return getattr(self, key)
+        if key in PROPERTY_ALIAS:
+            return getattr(self, PROPERTY_ALIAS[key])
+        raise KeyError(f"Unknown property alias: {key}")
+
+    def __repr__(self) -> str:
+        """Return a readable string representation of the state,
+        listing all field names and their scalar values."""
+        lines = []
+        for name, val in self.__dict__.items():
+            try:
+                val = jnp.array(val).item()  # scalar to Python number
+            except Exception:
+                pass
+            lines.append(f"  {name}={val}")
+        return "PerfectGasState(\n" + ",\n".join(lines) + "\n)"
+
+    
 def calculate_properties_PT(P, T, constants):
     T = jnp.maximum(T, 0.1)
     P = jnp.maximum(P, 0.1)
@@ -337,17 +296,18 @@ def assemble_properties(T, P, rho, h, s, constants: PerfectGasConstants) -> Perf
     )
 
 
+
 # ----------------------------------------------------------------------------- #
 # State evaluators (public API)
 # ----------------------------------------------------------------------------- #
 
 PROPERTY_CALCULATORS = {
-    cpx.PT_INPUTS: calculate_properties_PT,
-    cpx.HmassSmass_INPUTS: calculate_properties_hs,
-    cpx.HmassP_INPUTS: calculate_properties_hP,
-    cpx.PSmass_INPUTS: calculate_properties_Ps,
-    cpx.DmassHmass_INPUTS: calculate_properties_rhoh,
-    cpx.DmassP_INPUTS: calculate_properties_rhop,
+    _cp.PT_INPUTS: calculate_properties_PT,
+    _cp.HmassSmass_INPUTS: calculate_properties_hs,
+    _cp.HmassP_INPUTS: calculate_properties_hP,
+    _cp.PSmass_INPUTS: calculate_properties_Ps,
+    _cp.DmassHmass_INPUTS: calculate_properties_rhoh,
+    _cp.DmassP_INPUTS: calculate_properties_rhop,
 }
 
 @eqx.filter_jit
@@ -356,16 +316,15 @@ def get_props_perfect_gas(input_pair, prop1, prop2, constants):
 
 
 class FluidPerfectGas(eqx.Module):
-    constants: PerfectGasConstants
+    constants: PerfectGasConstants = eqx.field(static=False)
 
-    def __init__(self, fluid_name: str, T_ref: float = 300.0, P_ref: float = 101325.0):
-        consts = get_constants(fluid_name, T_ref, P_ref)
-        object.__setattr__(self, "constants", consts)
+    def __init__(self, name, T_ref=300.0, P_ref=101_325.0):
+        self.constants = get_constants(name, T_ref, P_ref)
 
     @eqx.filter_jit
     def get_props(self, input_pair: str, x: float, y: float):
+        """Evaluate thermodynamic state for a perfect gas."""
         return get_props_perfect_gas(input_pair, x, y, self.constants)
-    
     
 # ----------------------------------------------------------------------------- #
 # Gradient calculations (only used when JAX is installed)
@@ -393,11 +352,10 @@ def get_props_gradient(input_pair, constants, x, y, method="auto", eps_rel=1e-6,
     fy_m = f(jnp.array([x, y - dy]))
 
     grads = {}
-    for field in dataclasses.fields(fx_p):
-        name = field.name
-        dfdx = (getattr(fx_p, name) - getattr(fx_m, name)) / (2.0 * dx)
-        dfdy = (getattr(fy_p, name) - getattr(fy_m, name)) / (2.0 * dy)
-        grads[name] = jnp.array([dfdx, dfdy])
-
+    for name in fx_p.__dict__.keys():
+        grads[name] = jnp.array([
+            (fx_p[name] - fx_m[name]) / (2.0 * dx),
+            (fy_p[name] - fy_m[name]) / (2.0 * dy),
+        ])
 
     return grads

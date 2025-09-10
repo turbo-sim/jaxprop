@@ -22,14 +22,17 @@ from .utils import *
 from .helpers_jax import *
 from .helpers_coolprop import *
 
-
+# Import subpackages
+from . import coolprop
 from . import perfect_gas
 # from . import bicubic
-from . import components
-from . import coolpropx
 
+# Import API classes
 from .perfect_gas import FluidPerfectGas
-from .coolpropx import Fluid
+from .coolprop import Fluid, FluidJAX
+
+
+from . import components
 
 
 # Package info

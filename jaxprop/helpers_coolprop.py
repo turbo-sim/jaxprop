@@ -25,6 +25,56 @@ PROPERTY_ALIAS = {
 }
 
 
+# Define property aliases
+PROPERTY_ALIAS_NEW = {
+    "P": "p",
+
+    # density
+    "rho": "rho",
+    "density": "rho",
+    "d": "rho",
+    "rhomass": "rho",
+    "dmass": "rho",
+
+    # enthalpy
+    "h": "h",
+    "hmass": "h",
+
+    # entropy
+    "s": "s",
+    "smass": "s",
+
+    # internal energy (if added later)
+    "u": "u",
+
+    # heat capacities
+    "cv": "cv",
+    "cvmass": "cv",
+    "cp": "cp",
+    "cpmass": "cp",
+
+    # speed of sound
+    "a": "a",
+    "speed_sound": "a",
+
+    # compressibility factor
+    "Z": "Z",
+    "compressibility_factor": "Z",
+
+    # transport properties
+    "mu": "mu",
+    "viscosity": "mu",
+    "k": "k",
+    "conductivity": "k",
+
+    # quality placeholders
+    "vapor_quality": "quality_mass",
+    "void_fraction": "quality_volume",
+}
+
+
+
+
 MEANLINE_PROPERTIES = [
     "p",
     "T",

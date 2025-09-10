@@ -1,11 +1,4 @@
 import time
-
-
-import os
-os.environ["JAX_TRACEBACK_FILTERING"] = "off"
-
-
-import jax
 import jax.numpy as jnp
 import diffrax as dfx
 import equinox as eqx
@@ -118,7 +111,8 @@ if __name__ == "__main__":
         T_wall=300.0,  # K
         heat_transfer=0.0,
         wall_friction=0.0,
-        fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
+        fluid=jxp.FluidJAX(name="air", backend="HEOS"),
+        # fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
         geometry=symmetric_nozzle_geometry,
     )
 

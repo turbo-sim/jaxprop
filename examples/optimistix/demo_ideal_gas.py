@@ -5,13 +5,13 @@ import equinox as eqx
 import matplotlib.pyplot as plt
 import optimistix as optx
 import jaxprop as jxp
-from jaxprop.perfect_gas import FluidPerfectGas
+
 
 jxp.set_plot_options(grid=False)
 
 # ---------- Compute static state from stagnation and Mach number ----------
 @eqx.filter_jit
-def compute_static_state(p0, d0, Ma, fluid: FluidPerfectGas):
+def compute_static_state(p0, d0, Ma, fluid):
     """solve h0 - h(p,s0) - 0.5 a(p,s0)^2 Ma^2 = 0 for p"""
 
     st0 = fluid.get_props(jxp.DmassP_INPUTS, d0, p0)
@@ -38,7 +38,8 @@ def compute_static_state(p0, d0, Ma, fluid: FluidPerfectGas):
 if __name__ == "__main__":
 
     # Fluid object
-    fluid = FluidPerfectGas("air", T_ref=300.0, P_ref=101325.0)
+    fluid = jxp.FluidPerfectGas("air", T_ref=300.0, P_ref=101325.0)
+    # fluid = jxp.FluidJAX("air")
 
     # Fixed inlet total conditions
     p0 = jnp.asarray(1e5)   # Pa

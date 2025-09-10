@@ -2,7 +2,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-import jaxprop.coolpropx as jxp
+import jaxprop.coolprop as jxp
 
 
 # Create the folder to save figures
