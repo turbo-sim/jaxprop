@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Welcome to CoolPropX’s documentation! &#8212; coolpropx v0.2.20 documentation</title>
+    <title>Welcome to jaxprop’s documentation! &#8212; jaxprop v0.3.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=1160bb5e"></script>
+    <script src="_static/documentation_options.js?v=f6b05f3f"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -49,6 +49,7 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -142,7 +143,7 @@
   
   
   
-    <p class="title logo__title">coolpropx v0.2.20 documentation</p>
+    <p class="title logo__title">jaxprop v0.3.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -162,12 +163,34 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/bibliography.html">Bibliography</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="source/api/coolpropx.html">API Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="source/api/coolpropx.core_calculations.html">coolpropx.core_calculations module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/api/coolpropx.fluid_properties.html">coolpropx.fluid_properties module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/api/coolpropx.graphics.html">coolpropx.graphics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/api/coolpropx.math.html">coolpropx.math module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/api/coolpropx.utils.html">coolpropx.utils module</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="source/api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="source/api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="source/api/jaxprop.components.html">jaxprop.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="source/api/jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="source/api/jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.perfect_gas.perfect_gas.html">jaxprop.perfect_gas.perfect_gas module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.graphics.html">jaxprop.graphics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.math.html">jaxprop.math module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.utils.html">jaxprop.utils module</a></li>
 </ul>
 </details></li>
 </ul>
@@ -308,7 +331,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Welcome to CoolPropX’s documentation!</h1>
+    <h1>Welcome to jaxprop’s documentation!</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -331,15 +354,16 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="welcome-to-coolpropx-s-documentation">
-<h1>Welcome to CoolPropX’s documentation!<a class="headerlink" href="#welcome-to-coolpropx-s-documentation" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">CoolPropX</span></code> is a thin wrapper around the <a class="reference external" href="https://www.coolprop.org">CoolProp</a> fluid property library that provides easy access to its low-level interface.</p>
+  <section id="welcome-to-jaxprop-s-documentation">
+<h1>Welcome to jaxprop’s documentation!<a class="headerlink" href="#welcome-to-jaxprop-s-documentation" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">jaxprop</span></code> provides JAX-compatible thermodynamic property calculations with support for automatic differentiation, vectorization, and JIT compilation.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This project is developed independently and is not affiliated with or endorsed by the CoolProp project.</p>
 </div>
 <section id="key-features">
 <h2>Key features<a class="headerlink" href="#key-features" title="Link to this heading">#</a></h2>
+<p>This content is outdated.</p>
 <ul class="simple">
 <li><p>Compute and plot phase envelopes and spinodal lines for pure fluids.</p></li>
 <li><p>Evaluate thermodynamic properties from the Helmholtz energy equation of state, including metastable states inside the two-phase region.</p></li>
@@ -356,7 +380,7 @@ document.write(`
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/bibliography.html">Bibliography</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/api/coolpropx.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/api/jaxprop.html">jaxprop package</a></li>
 </ul>
 </div>
 </section>

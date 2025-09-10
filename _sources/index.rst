@@ -1,7 +1,7 @@
-Welcome to CoolPropX's documentation!
+Welcome to jaxprop's documentation!
 =====================================
 
-``CoolPropX`` is a thin wrapper around the `CoolProp <https://www.coolprop.org>`_ fluid property library that provides easy access to its low-level interface.
+``jaxprop`` provides JAX-compatible thermodynamic property calculations with support for automatic differentiation, vectorization, and JIT compilation.  
 
 .. note::
 
@@ -9,6 +9,8 @@ Welcome to CoolPropX's documentation!
 
 Key features
 ------------
+
+This content is outdated.
 
 - Compute and plot phase envelopes and spinodal lines for pure fluids.
 - Evaluate thermodynamic properties from the Helmholtz energy equation of state, including metastable states inside the two-phase region.
@@ -29,4 +31,4 @@ Use the panel to the left or the table of contents below to navigate the documen
 
    source/installation
    source/bibliography
-   source/api/coolpropx
+   source/api/jaxprop
