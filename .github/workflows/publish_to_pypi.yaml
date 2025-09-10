@@ -28,7 +28,7 @@ jobs:
         poetry-version: "1.8.2"
     
     - name: Install dependencies
-      run: poetry install --extras jax
+      run: poetry install
 
     - name: Run tests
       run: poetry run pytest
@@ -52,8 +52,8 @@ jobs:
           poetry-version: "1.8.2"
 
       - name: Install dependencies
-        run: poetry install --extras jax
-
+        run: poetry install
+        
       - name: Run tests
         run: poetry run pytest
 
