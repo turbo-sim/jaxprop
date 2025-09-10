@@ -1,15 +1,15 @@
 import jax.numpy as jnp
-import jaxprop as jxp
+import jaxprop as cpx
 import jaxprop.perfect_gas as pg
 
 # config
-input_pair = jxp.HmassP_INPUTS
+input_pair = cpx.HmassP_INPUTS
 h = 3.00e5    # J/kg
 p = 101325.0  # Pa
 
 
 # base state
-fluid = jxp.FluidPerfectGas("air", T_ref=298.15, P_ref=101325.0)
+fluid = cpx.FluidPerfectGas("air", T_ref=298.15, p_ref=101325.0)
 base = fluid.get_props(input_pair, h, p)
 print("base state:")
 print(f"  T   : {float(base['T']):+0.6f} K")
@@ -19,10 +19,10 @@ print(f"  h   : {float(base['h']):+0.6f} J/kg")
 print(f"  s   : {float(base['s']):+0.6f} J/(kg K)")
 
 # finite differences jacobian
-grad_fd = jxp.perfect_gas.get_props_gradient(input_pair, fluid.constants, h, p, method="fd")
+grad_fd = cpx.perfect_gas.get_props_gradient(input_pair, fluid.constants, h, p, method="fd")
 
 # jax jacobian (will crash if jax is not installed)
-grad_jax = jxp.perfect_gas.get_props_gradient(input_pair, fluid.constants, h, p, method="jax")
+grad_jax = cpx.perfect_gas.get_props_gradient(input_pair, fluid.constants, h, p, method="jax")
 
 
 print("\npartials (finite differences):")
@@ -49,7 +49,7 @@ print(f"  drho/dh|p : {rel(grad_fd['rho'][0], grad_jax['rho'][0]):+0.10e}")
 print(f"  drho/dp|h : {rel(grad_fd['rho'][1], grad_jax['rho'][1]):+0.10e}")
 
 # identity checks using FD results
-cp, _ = jxp.perfect_gas.specific_heat(fluid.constants)
+cp, _ = cpx.perfect_gas.specific_heat(fluid.constants)
 R = fluid.constants.R
 T = base["T"]
 

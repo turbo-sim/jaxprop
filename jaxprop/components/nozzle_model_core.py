@@ -1,6 +1,6 @@
 import jax
 import jax.numpy as jnp
-import jaxprop as jxp
+import jaxprop as cpx
 
 
 
@@ -32,7 +32,7 @@ def nozzle_single_phase_autonomous(tau, Y, args):
     heat_transfer = args.heat_transfer
 
     # --- Thermodynamic state ---
-    state = fluid.get_props(jxp.DmassP_INPUTS, d, p)
+    state = fluid.get_props(cpx.DmassP_INPUTS, d, p)
     T = state["T"]
     h = state["h"]
     s = state["s"]
@@ -43,7 +43,7 @@ def nozzle_single_phase_autonomous(tau, Y, args):
 
     # Stagnation state
     h0 = state["h"] + 0.5 * v**2
-    state0 = fluid.get_props(jxp.HmassSmass_INPUTS, h0, state["s"])
+    state0 = fluid.get_props(cpx.HmassSmass_INPUTS, h0, state["s"])
     p0 = state0["p"]
     T0 = state0["T"]
     d0 = state0["d"]

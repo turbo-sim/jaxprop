@@ -4,7 +4,7 @@ import jax.numpy as jnp
 import diffrax as dfx
 import equinox as eqx
 import optimistix as optx
-import jaxprop as jxp
+import jaxprop as cpx
 import matplotlib.pyplot as plt
 
 from matplotlib import gridspec
@@ -19,7 +19,7 @@ from jaxprop.components import (
     initialize_flowfield,
 )
 
-jxp.set_plot_options(grid=False)
+cpx.set_plot_options(grid=False)
 
 
 # v1 solves the ode system using the space marching in non-autonomous form
@@ -64,8 +64,8 @@ def transonic_nozzle_single_phase(
         return ode_full_subsonic(t, y, args)["rhs"]
 
     # --- 2. First pass: inlet → Ma_low ---
-    solver = jxp.make_diffrax_solver(params_ivp.solver_name)
-    adjoint = jxp.make_diffrax_adjoint(params_ivp.adjoint_name)
+    solver = cpx.make_diffrax_solver(params_ivp.solver_name)
+    adjoint = cpx.make_diffrax_adjoint(params_ivp.adjoint_name)
     ctrl = dfx.PIDController(rtol=params_ivp.rtol, atol=params_ivp.atol)
     y_inlet = jnp.array([out["v"][0], out["d"][0], out["p"][0]])
     event1 = dfx.Event(
@@ -139,7 +139,7 @@ def transonic_nozzle_single_phase(
 def _mach_event_cond(t, y, args, **kwargs):
     """Event function: zero when M^2 - Ma_low^2 = 0."""
     v, rho, p = y
-    a = args.fluid.get_props(jxp.DmassP_INPUTS, rho, p)["a"]
+    a = args.fluid.get_props(cpx.DmassP_INPUTS, rho, p)["a"]
     Ma_sqr = (v / a) ** 2
     return Ma_sqr - args.Ma_low**2
 
@@ -180,7 +180,7 @@ if __name__ == "__main__":
         Ma_high=1.025,
         heat_transfer=0.0,
         wall_friction=0.0,
-        fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
+        fluid=cpx.FluidPerfectGas("air", T_ref=300, p_ref=101325),
         # fluid=jxp.FluidJAX(name="air", backend="HEOS"),
         geometry=symmetric_nozzle_geometry,
     )

@@ -1,7 +1,7 @@
 
 import os
 import numpy as np
-import jaxprop as jxp
+import jaxprop as cpx
 
 # Detect if running in GitHub Actions
 IN_GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS", "false").lower() == "true"
@@ -15,39 +15,39 @@ def get_available_backends():
 
 # Define reference states dynamically
 def get_reference_state(fluid, backend, label):
-    fluid = jxp.Fluid(fluid, backend)
+    fluid = cpx.Fluid(fluid, backend)
     p_crit = fluid.critical_point.p
     T_crit = fluid.critical_point.T
     s_crit = fluid.critical_point.s
     ds_crit = (fluid.triple_point_vapor.s - fluid.triple_point_liquid.s) / 10
     p_subcritical = 0.6 * p_crit
-    T_sat_subcritical = fluid.get_state(jxp.PQ_INPUTS, p_subcritical, 0.0).T
+    T_sat_subcritical = fluid.get_state(cpx.PQ_INPUTS, p_subcritical, 0.0).T
 
     if label == "saturated_liquid":
-        return fluid.get_state(jxp.PQ_INPUTS, p_subcritical, 0 + 1e-3)
+        return fluid.get_state(cpx.PQ_INPUTS, p_subcritical, 0 + 1e-3)
 
     elif label == "saturated_vapor":
-        return fluid.get_state(jxp.PQ_INPUTS, p_subcritical, 1 - 1e-3)
+        return fluid.get_state(cpx.PQ_INPUTS, p_subcritical, 1 - 1e-3)
 
     elif label == "two_phase":
-        return fluid.get_state(jxp.PQ_INPUTS, p_subcritical, 0.5)
+        return fluid.get_state(cpx.PQ_INPUTS, p_subcritical, 0.5)
 
     elif label == "subcooled_liquid":
-        state = fluid.get_state(jxp.PT_INPUTS, p_subcritical, T_sat_subcritical - 5)
-        return fluid.get_state(jxp.DmassT_INPUTS, state.rhomass, state.T)
+        state = fluid.get_state(cpx.PT_INPUTS, p_subcritical, T_sat_subcritical - 5)
+        return fluid.get_state(cpx.DmassT_INPUTS, state.rhomass, state.T)
 
     elif label == "superheated_vapor":
-        state = fluid.get_state(jxp.PT_INPUTS, p_subcritical, T_sat_subcritical + 5)
-        return fluid.get_state(jxp.DmassT_INPUTS, state.rhomass, state.T)
+        state = fluid.get_state(cpx.PT_INPUTS, p_subcritical, T_sat_subcritical + 5)
+        return fluid.get_state(cpx.DmassT_INPUTS, state.rhomass, state.T)
 
     elif label == "supercritical_liquid":
-        state = fluid.get_state(jxp.PSmass_INPUTS, 1.5 * p_crit, s_crit - ds_crit)
-        return fluid.get_state(jxp.DmassT_INPUTS, state.rhomass, state.T)
+        state = fluid.get_state(cpx.PSmass_INPUTS, 1.5 * p_crit, s_crit - ds_crit)
+        return fluid.get_state(cpx.DmassT_INPUTS, state.rhomass, state.T)
 
     elif label == "supercritical_gas":
         T = min(fluid.abstract_state.Tmax(), 1.1*T_crit)
-        state = fluid.get_state(jxp.SmassT_INPUTS, s_crit + ds_crit, T)
-        return fluid.get_state(jxp.DmassT_INPUTS, state.rhomass, state.T)
+        state = fluid.get_state(cpx.SmassT_INPUTS, s_crit + ds_crit, T)
+        return fluid.get_state(cpx.DmassT_INPUTS, state.rhomass, state.T)
 
     raise ValueError(f"Unknown state label: {label}")
 

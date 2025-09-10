@@ -2,7 +2,7 @@ import os
 import pytest
 import atexit
 import numpy as np
-import jaxprop as jxp
+import jaxprop.coolprop as cpx
 import pandas as pd
 
 from utilities import get_reference_state, assert_consistent_values, get_available_backends
@@ -56,12 +56,12 @@ FLUID_NAMES = [
 def test_hemholtz_solver(fluid_name, backend, state_label):
 
     # Compute reference state
-    fluid = jxp.Fluid(fluid_name, backend)
+    fluid = cpx.Fluid(fluid_name, backend)
     state_ref = get_reference_state(fluid_name, backend, state_label)
 
     # Recompute state with direct call to Helmholtz EoS
     rho_in, T_in = state_ref.rhomass, state_ref.T
-    props = jxp.compute_properties_metastable_rhoT(fluid.abstract_state, rho_in, T_in)
+    props = cpx.compute_properties_metastable_rhoT(fluid.abstract_state, rho_in, T_in)
 
     # Check all properties are consistency
     for key, v_ref in state_ref.items():

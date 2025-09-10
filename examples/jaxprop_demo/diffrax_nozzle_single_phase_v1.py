@@ -3,12 +3,12 @@ import jax.numpy as jnp
 import diffrax as dfx
 import equinox as eqx
 import optimistix as optx
-import jaxprop as jxp
+import jaxprop as cpx
 import matplotlib.pyplot as plt
 
 from matplotlib import gridspec
 
-jxp.set_plot_options(grid=False)
+cpx.set_plot_options(grid=False)
 
 from jaxprop.components import (
     nozzle_single_phase_core,
@@ -46,8 +46,8 @@ def nozzle_single_phase(
     y0 = jnp.array([v_in, rho_in, p_in])
 
     # Create and configure the solver
-    solver = jxp.make_diffrax_solver(params_solver.solver_name)
-    adjoint = jxp.make_diffrax_adjoint(params_solver.adjoint_name)
+    solver = cpx.make_diffrax_solver(params_solver.solver_name)
+    adjoint = cpx.make_diffrax_adjoint(params_solver.adjoint_name)
     term = dfx.ODETerm(eval_ode_rhs)
     ctrl = dfx.PIDController(rtol=params_solver.rtol, atol=params_solver.atol)
     ts = jnp.linspace(0.0, params_model.length, params_solver.number_of_points)
@@ -89,7 +89,7 @@ def eval_ode_rhs(t, y, _):
 # Event: stop when Ma^2 - 1 < tol
 def _sonic_event_cond(t, y, args, **kwargs):
     v, rho, p = y
-    a = args.fluid.get_props(jxp.DmassP_INPUTS, rho, p)["a"]
+    a = args.fluid.get_props(cpx.DmassP_INPUTS, rho, p)["a"]
     Ma_sqr = (v / a) ** 2
     margin = 1e-5
     return Ma_sqr - (1.0 - margin)
@@ -111,7 +111,7 @@ if __name__ == "__main__":
         T_wall=300.0,  # K
         heat_transfer=0.0,
         wall_friction=0.0,
-        fluid=jxp.FluidJAX(name="air", backend="HEOS"),
+        fluid=cpx.FluidJAX(name="air", backend="HEOS"),
         # fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
         geometry=symmetric_nozzle_geometry,
     )

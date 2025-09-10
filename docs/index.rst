@@ -1,7 +1,7 @@
-Welcome to CoolPropX's documentation!
+Welcome to jaxprop's documentation!
 =====================================
 
-``CoolPropX`` is a thin wrapper around the `CoolProp <https://www.coolprop.org>`_ fluid property library that provides easy access to its low-level interface.
+``jaxprop`` provides JAX-compatible thermodynamic property calculations with support for automatic differentiation, vectorization, and JIT compilation.  
 
 .. note::
 

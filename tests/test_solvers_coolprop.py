@@ -2,7 +2,7 @@ import os
 import pytest
 import atexit
 import numpy as np
-import jaxprop as jxp
+import jaxprop.coolprop as cpx
 import pandas as pd
 
 from utilities import get_reference_state, assert_consistent_values, get_available_backends
@@ -51,10 +51,10 @@ SOLVERS_SINGLE_PHASE = [
 
 # Convert to input_id form for lookup
 SOLVERS_SINGLE_PHASE = {
-    v: k for k, v in jxp.INPUT_TYPE_MAP.items() if v in SOLVERS_SINGLE_PHASE
+    v: k for k, v in cpx.INPUT_TYPE_MAP.items() if v in SOLVERS_SINGLE_PHASE
 }
 SOLVERS_TWO_PHASE = {
-    v: k for k, v in jxp.INPUT_TYPE_MAP.items() if v in SOLVERS_TWO_PHASE
+    v: k for k, v in cpx.INPUT_TYPE_MAP.items() if v in SOLVERS_TWO_PHASE
 }
 
 # Define all working fluids
@@ -97,7 +97,7 @@ QUALITY_NAMES = [
 def test_default_solver_consistency(fluid_name, backend, state_label):
 
     # Compute reference state
-    fluid = jxp.Fluid(fluid_name, backend)
+    fluid = cpx.Fluid(fluid_name, backend)
     state_ref = get_reference_state(fluid_name, backend, state_label)
 
     # Choose solver types based on current state
@@ -107,7 +107,7 @@ def test_default_solver_consistency(fluid_name, backend, state_label):
     for input_type, input_idx in input_map.items():
 
         # Get the input values
-        prop1_name, prop2_name = jxp.extract_vars(input_type)
+        prop1_name, prop2_name = cpx.extract_vars(input_type)
         prop1 = state_ref[prop1_name]
         prop2 = state_ref[prop2_name]
 

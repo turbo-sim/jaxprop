@@ -4,12 +4,12 @@ import jax.numpy as jnp
 import diffrax as dfx
 import equinox as eqx
 import optimistix as optx
-import jaxprop as jxp
+import jaxprop as cpx
 import matplotlib.pyplot as plt
 
 from matplotlib import gridspec
 
-jxp.set_plot_options(grid=False)
+cpx.set_plot_options(grid=False)
 
 from jaxprop.components import (
     nozzle_single_phase_autonomous,
@@ -52,8 +52,8 @@ def nozzle_single_phase(
     # Create and configure the solver
     t0 = 0.0  # Start at tau=0 (arbitrary)
     t1 = 1e9  # Large value that will not be reached
-    solver = jxp.make_diffrax_solver(params_solver.solver_name)
-    adjoint = jxp.make_diffrax_adjoint(params_solver.adjoint_name)
+    solver = cpx.make_diffrax_solver(params_solver.solver_name)
+    adjoint = cpx.make_diffrax_adjoint(params_solver.adjoint_name)
     term = dfx.ODETerm(eval_ode_rhs)
     ctrl = dfx.PIDController(rtol=params_solver.rtol, atol=params_solver.atol)
     event = dfx.Event(
@@ -129,7 +129,7 @@ if __name__ == "__main__":
         T_wall=300.0,  # K
         heat_transfer=0.0,
         wall_friction=0.0,
-        fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
+        fluid=cpx.FluidPerfectGas("air", T_ref=300, p_ref=101325),
         # fluid=jxp.FluidJAX(name="air", backend="HEOS"),
         geometry=symmetric_nozzle_geometry,
     )

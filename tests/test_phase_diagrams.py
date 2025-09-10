@@ -3,14 +3,14 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import jaxprop as jxp
+import jaxprop.coolprop as cpx
 import matplotlib
 
 from utilities import get_available_backends
 
 matplotlib.use("Agg")
 
-jxp.set_plot_options(grid=False)
+cpx.set_plot_options(grid=False)
 
 # Define list of calculation backends
 BACKENDS = get_available_backends()
@@ -46,7 +46,7 @@ def test_phase_diagrams(fluid_name):
     fig.suptitle(f"Phase diagrams for {fluid_name}", fontsize=16)
 
     for row, backend in enumerate(BACKENDS):
-        fluid = jxp.Fluid(fluid_name, backend)
+        fluid = cpx.Fluid(fluid_name, backend)
         for col, (x_prop, y_prop) in enumerate(DIAGRAMS):
 
             # Generate plot for given property pair
@@ -78,11 +78,11 @@ def test_phase_diagrams(fluid_name):
             ax.set_xscale("linear" if x_prop != "p" else "log")
             ax.set_yscale("linear" if y_prop != "p" else "log")
 
-    # Save figure
-    fname = os.path.join(OUTPUT_DIR, f"phase_diagrams_{fluid_name.lower()}.png")
-    fig.savefig(fname, dpi=250)
-    plt.close(fig)
-    print(f"Phase diagrams created for '{fluid_name}'")
+    # # Save figure
+    # fname = os.path.join(OUTPUT_DIR, f"phase_diagrams_{fluid_name.lower()}.png")
+    # fig.savefig(fname, dpi=250)
+    # plt.close(fig)
+    # print(f"Phase diagrams created for '{fluid_name}'")
 
 
 if __name__ == "__main__":

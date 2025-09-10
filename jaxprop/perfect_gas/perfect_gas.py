@@ -318,8 +318,8 @@ def get_props_perfect_gas(input_pair, prop1, prop2, constants):
 class FluidPerfectGas(eqx.Module):
     constants: PerfectGasConstants = eqx.field(static=False)
 
-    def __init__(self, name, T_ref=300.0, P_ref=101_325.0):
-        self.constants = get_constants(name, T_ref, P_ref)
+    def __init__(self, name, T_ref=300.0, p_ref=101_325.0):
+        self.constants = get_constants(name, T_ref, p_ref)
 
     @eqx.filter_jit
     def get_props(self, input_pair: str, x: float, y: float):

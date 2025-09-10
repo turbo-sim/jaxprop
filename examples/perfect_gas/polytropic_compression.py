@@ -1,6 +1,6 @@
 import jax
 import jax.numpy as jnp
-import jaxprop as jxp
+import jaxprop as cpx
 # import jaxprop.perfect_gas as pg
 
 from scipy.optimize._numdiff import approx_derivative
@@ -18,7 +18,7 @@ def rho_out_polytropic(x, fluid):
     eta_p = eta_p / 100
     exponent = (gamma - 1.0) / (gamma * eta_p)  # compressor form
     T_out = T_in * jnp.power(pr, exponent)
-    d_out = fluid.get_props(jxp.PT_INPUTS, p_out, T_out)["d"]
+    d_out = fluid.get_props(cpx.PT_INPUTS, p_out, T_out)["d"]
     return d_out
 
 # Inputs
@@ -29,7 +29,7 @@ T_in = 300.0
 eta_p = 90
 
 # Pull gamma from your perfect-gas constants at the inlet state
-fluid = jxp.FluidPerfectGas("air", T_ref=298.15, P_ref=101325.0)
+fluid = cpx.FluidPerfectGas("air", T_ref=298.15, p_ref=101325.0)
 
 # Base point (match function order!)
 x0 = jnp.array([T_in, p_in, p_out, eta_p])
