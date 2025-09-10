@@ -1,26 +1,26 @@
 import numpy as np
 import jax
-import coolpropx as cpx
-from coolpropx.jaxprop import get_props
+import jaxprop as jxp
 
 # baseline (PT)
-fluid = cpx.Fluid(name="nitrogen", backend="HEOS")
-P0, T0 = 101325.0, 300.0
-ref = fluid.get_state(cpx.PT_INPUTS, P0, T0)
+T_ref=300.0
+p_ref=101325.0
+fluid = jxp.FluidJAX(name="nitrogen", backend="HEOS")
+ref = fluid.get_props(jxp.PT_INPUTS, p_ref, T_ref)
 
 # input pair HmassP
-input_state = cpx.HmassP_INPUTS
+input_pair = jxp.HmassP_INPUTS
 h0, p0 = ref["h"], ref["p"]
 
 # primals
-st = get_props(input_state, h0, p0, fluid)
+st = fluid.get_props(input_pair, h0, p0)
 print("state (HmassP_INPUTS):")
 for k in ("T", "p", "d", "h", "s", "a", "mu", "k", "gamma"):
     print(f"  {k:>5s}: {float(np.asarray(st[k])):+0.6f}")
 
 # scalar extractors
-def T_of(h, p): return get_props(input_state, h, p, fluid)["T"]
-def rho_of(h, p): return get_props(input_state, h, p, fluid)["d"]
+def T_of(h, p): return fluid.get_props(input_pair, h, p)["T"]
+def rho_of(h, p): return fluid.get_props(input_pair, h, p)["d"]
 
 # forward-mode
 dT_dh = jax.jacfwd(T_of, argnums=0)(h0, p0)

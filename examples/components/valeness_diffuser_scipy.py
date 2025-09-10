@@ -2,11 +2,11 @@ import numpy as np
 import scipy.integrate
 import scipy.optimize
 import matplotlib.pyplot as plt
-import coolpropx as cpx
+import jaxprop as jxp
 
 from time import perf_counter
 
-cpx.set_plot_options(grid=False)
+jxp.set_plot_options(grid=False)
 
 
 # -----------------------------------------------------------------------------
@@ -36,7 +36,7 @@ def evaluate_vaneless_diffuser_1d(
 
     # Compute initial conditions for ODE system
     p_in, s_in = compute_inlet_static_state(p0_in, T0_in, Ma_in, fluid)
-    state = get_props(cpx.PSmass_INPUTS, p_in, s_in, fluid)
+    state = fluid.get_props(jxp.PSmass_INPUTS, p_in, s_in)
     d_in = state["rho"]
     p_in = state["p"]
     a_in = state["a"]
@@ -61,7 +61,7 @@ def evaluate_vaneless_diffuser_1d(
         diff_br = br_grad(length, b_in, div, r_in, phi)
 
         # Calculate thermodynamic state
-        state = get_props(cpx.DmassP_INPUTS, d, p, fluid)
+        state = fluid.get_props(jxp.DmassP_INPUTS, d, p)
         a = state["a"]
         h = state["h"]
         s = state["s"]
@@ -220,12 +220,12 @@ def compute_inlet_static_state(p0, T0, Ma, fluid):
     """
     Calculate the static pressure from stagnation conditions and Mach number.
     """
-    state0 = get_props(cpx.PT_INPUTS, p0, T0, fluid)
+    state0 = fluid.get_props(jxp.PT_INPUTS, p0, T0)
     s0 = state0["s"]
     h0 = state0["h"]
 
     def stagnation_definition_error(p):
-        state = get_props(cpx.PSmass_INPUTS, p, s0, fluid)
+        state = fluid.get_props(jxp.PSmass_INPUTS, p, s0)
         a = state["a"]
         h = state["h"]
         v = a * Ma
@@ -259,9 +259,7 @@ if __name__ == "__main__":
     params = {k: np.array(v) for k, v in params.items()}
 
     # Define fluid
-    from coolpropx.perfect_gas import get_props, get_constants
-    fluid_name = "air"
-    fluid = get_constants(fluid_name, params["T0_in"], params["p0_in"])
+    fluid = jxp.FluidPerfectGas("air", params["T0_in"], params["p0_in"])
 
     # Plot the pressure recovery coefficient distribution
     fig_1, ax_1 = plt.subplots(figsize=(6, 5))

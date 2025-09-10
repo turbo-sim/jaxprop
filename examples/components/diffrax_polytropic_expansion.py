@@ -32,20 +32,23 @@ Key points:
   libraries with JAX and diffrax for differentiable process modeling.
 """
 
+# TODO: this script is too slow, I have to doublecheck implementation
+
 # diffrax_polytropic_ode_jax_only.py
 import time
 import jax
 import jax.numpy as jnp
 import diffrax as dfx
 import equinox as eqx
-import coolprop as cpx
+import jaxprop as jxp
 import matplotlib.pyplot as plt
 
-cpx.set_plot_options(grid=False)
+jxp.set_plot_options(grid=False)
 
 # -----------------------------------------------------------------------------
 # Main API to the polytropic expansion model
 # -----------------------------------------------------------------------------
+@eqx.filter_jit
 def polytropic_expansion(
     params,
     fluid,
@@ -116,14 +119,14 @@ def polytropic_expansion(
 def _polytropic_odefun(t, y, args):
     p, h = t, y
     eta, fluid = args
-    rho = get_props(cpx.HmassP_INPUTS, h, p, fluid)["rho"]
+    rho = fluid.get_props(jxp.HmassP_INPUTS, h, p)["rho"]
     return eta / rho
 
 
 def postprocess_ode(t, y, args):
     """compute derived outputs at save times"""
     p, h = t, y
-    state = get_props(cpx.HmassP_INPUTS, h, p, fluid)
+    state = fluid.get_props(jxp.HmassP_INPUTS, h, p)
     return state
 
 # -----------------------------------------------------------------------------
@@ -170,40 +173,26 @@ def finite_diff_grad(fun, x, rel_eps=1e-6):
 if __name__ == "__main__":
 
     # Define the case parameters
-    fluid_name = "CO2"
     T_in = 400.0
     p_in = 200e5 
     p_out = 50e5
     efficiency = 0.8
-    
-    # Initialize fluid and plot depending on backend
-    # backend = "perfect_gas"
-    backend = "jaxprop"
+    fluid = jxp.FluidJAX(name="CO2", backend="HEOS")
+
+    # Initialize figure
+    fig, ax = plt.subplots(figsize=(6, 5))
     x_prop, y_prop = "s", "T"
-    if backend == "perfect_gas":
-        from coolprop.perfect_gas import get_props, get_perfect_gas_constants
-        fluid = get_perfect_gas_constants(fluid_name, T_in, p_in)
-        fig, ax = plt.subplots(figsize=(6, 5))
-        ax.set_xlabel(cpx.LABEL_MAPPING.get(x_prop, x_prop))
-        ax.set_ylabel(cpx.LABEL_MAPPING.get(y_prop, y_prop))
-
-    elif backend == "jaxprop":
-        from coolprop.jaxprop import get_props
-        fluid = cpx.Fluid(name=fluid_name, backend="HEOS")
-        fig, ax = fluid.plot_phase_diagram(x_prop, y_prop)
-
-    else:
-        raise ValueError("Invalid fluid backend seclection")
+    ax.set_xlabel(jxp.LABEL_MAPPING.get(x_prop, x_prop))
+    ax.set_ylabel(jxp.LABEL_MAPPING.get(y_prop, y_prop))
 
     # Group model parameters
     params = {
-        "h_in": get_props(cpx.PT_INPUTS, p_in, T_in, fluid)["h"],
+        "h_in": fluid.get_props(jxp.PT_INPUTS, p_in, T_in)["h"],
         "p_in": p_in,
         "p_out": p_out,
         "efficiency": efficiency,
     }
     params = {k: jnp.asarray(v) for k, v in params.items()}
-
 
     # Polytropic efficiency sensitivity analysis
     eff_array = jnp.linspace(1.0, 0.1, 10)
@@ -223,7 +212,6 @@ if __name__ == "__main__":
         ax.plot(s, T, label=rf"\\eta_{{p}}={eff:.2f}", color=colors[i])
 
     fig.tight_layout(pad=1)
-
 
     # Prepare gradient functions
     fwd_grad_fn = eqx.filter_jit(jax.jacfwd(get_exit_temperature))

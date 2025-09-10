@@ -1,7 +1,7 @@
 import time
 import jax
 import jax.numpy as jnp
-import jaxprop as cpx
+import jaxprop as jxp
 
 # ---------------------------------------------------------------------
 # reference state and fluids
@@ -9,8 +9,8 @@ import jaxprop as cpx
 p0 = 101325.0   # Pa
 T0 = 300.0      # K
 
-fluid_perfect_gas = cpx.FluidPerfectGas(name="air", T_ref=T0, p_ref=p0)
-fluid_coolprop    = cpx.FluidJAX(name="air")  # requires broadcast-aware get_props
+fluid_perfect_gas = jxp.FluidPerfectGas(name="air", T_ref=T0, p_ref=p0)
+fluid_coolprop    = jxp.FluidJAX(name="air")  # requires broadcast-aware get_props
 
 # sizes to test (compilation time included; no warmup)
 sizes = [10, 10, 10, 100, 100, 100, 1000, 1000, 1000]
@@ -26,13 +26,13 @@ for n in sizes:
     temperatures = T0 * (1.0 + 0.1 * jax.random.normal(kT, (n,)))
 
     t0 = time.perf_counter()
-    state_pg = fluid_perfect_gas.get_props(cpx.PT_INPUTS, pressures, temperatures)
+    state_pg = fluid_perfect_gas.get_props(jxp.PT_INPUTS, pressures, temperatures)
     _ = state_pg.rho.block_until_ready()
     t1 = time.perf_counter()
     time_pg = (t1 - t0) * 1000.0
 
     t0 = time.perf_counter()
-    state_cp = fluid_coolprop.get_props(cpx.PT_INPUTS, pressures, temperatures)
+    state_cp = fluid_coolprop.get_props(jxp.PT_INPUTS, pressures, temperatures)
     _ = state_cp.rho.block_until_ready()
     t1 = time.perf_counter()
     time_cp = (t1 - t0) * 1000.0
@@ -49,13 +49,13 @@ for n in sizes:
     T_scalar = jnp.asarray(T0)
 
     t0 = time.perf_counter()
-    state_pg = fluid_perfect_gas.get_props(cpx.PT_INPUTS, pressures, T_scalar)
+    state_pg = fluid_perfect_gas.get_props(jxp.PT_INPUTS, pressures, T_scalar)
     _ = state_pg.rho.block_until_ready()
     t1 = time.perf_counter()
     time_pg = (t1 - t0) * 1000.0
 
     t0 = time.perf_counter()
-    state_cp = fluid_coolprop.get_props(cpx.PT_INPUTS, pressures, T_scalar)
+    state_cp = fluid_coolprop.get_props(jxp.PT_INPUTS, pressures, T_scalar)
     _ = state_cp.rho.block_until_ready()
     t1 = time.perf_counter()
     time_cp = (t1 - t0) * 1000.0

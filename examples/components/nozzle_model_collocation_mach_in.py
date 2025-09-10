@@ -66,7 +66,7 @@ import jax
 import jax.numpy as jnp
 import optimistix as opx
 import matplotlib.pyplot as plt
-import jaxprop as cpx
+import jaxprop as jxp
 
 from jaxprop.components import (
     solve_nozzle_model_collocation,
@@ -79,7 +79,7 @@ from jaxprop.components import (
 )
 
 
-cpx.set_plot_options()
+jxp.set_plot_options()
 
 
 if __name__ == "__main__":
@@ -97,7 +97,7 @@ if __name__ == "__main__":
         wall_friction=0.0,
         Ma_low=0.95,
         Ma_high=1.05,
-        fluid=cpx.FluidPerfectGas("air", T_ref=300, p_ref=101325),
+        fluid=jxp.FluidPerfectGas("air", T_ref=300, p_ref=101325),
         # fluid=jxp.FluidJAX(name="air", backend="HEOS"),
         geometry=symmetric_nozzle_geometry,
     )

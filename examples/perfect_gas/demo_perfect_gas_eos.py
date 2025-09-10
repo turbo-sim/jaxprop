@@ -12,10 +12,10 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-import jaxprop as cpx
+import jaxprop as jxp
 import jaxprop.perfect_gas as pg
 
-cpx.set_plot_options()
+jxp.set_plot_options()
 
 
 # --------------------------- get constants -------------------------- #
@@ -29,30 +29,30 @@ print(constants)
 # Property calculation using (p, T)
 P0 = 101_325.0  # Pa
 T0 = 300.0      # K
-state_PT = pg.get_props_perfect_gas(cpx.PT_INPUTS, P0, T0, constants)
+state_PT = pg.get_props_perfect_gas(jxp.PT_INPUTS, P0, T0, constants)
 print(f"\nState from PT (p = {P0:.0f} Pa, T = {T0:.2f} K)")
 print(state_PT)
 
 # Property calculation using (h, s)
 H = state_PT["h"]
 S = state_PT["s"]
-state_hs = pg.get_props_perfect_gas(cpx.HmassSmass_INPUTS, H, S, constants)
+state_hs = pg.get_props_perfect_gas(jxp.HmassSmass_INPUTS, H, S, constants)
 print("\nState from HmassSmass (h, s)")
 print(state_hs)
 
 # Property calculation using (h, p)
-state_hP = pg.get_props_perfect_gas(cpx.HmassP_INPUTS, H, P0, constants)
+state_hP = pg.get_props_perfect_gas(jxp.HmassP_INPUTS, H, P0, constants)
 print("\nState from HmassP (h, p)")
 print(state_hP)
 
 # Property calculation using (p, s)
-state_Ps = pg.get_props_perfect_gas(cpx.PSmass_INPUTS, P0, S, constants)
+state_Ps = pg.get_props_perfect_gas(jxp.PSmass_INPUTS, P0, S, constants)
 print("\nState from PSmass (p, s)")
 print(state_Ps)
 
 # Property calculation using (rho, h)
 rho0 = state_PT["rho"]
-state_rhoh = pg.get_props_perfect_gas(cpx.DmassHmass_INPUTS, rho0, H, constants)
+state_rhoh = pg.get_props_perfect_gas(jxp.DmassHmass_INPUTS, rho0, H, constants)
 print("\nState from DmassHmass (rho, h)")
 print(state_rhoh)
 

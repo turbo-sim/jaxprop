@@ -1,5 +1,5 @@
 # import matplotlib.pyplot as plt
-# import coolpropx as cpx
+# import jaxprop as cpx
 
 # import CoolProp.CoolProp as CP
 # # from CoolProp import AbstractState

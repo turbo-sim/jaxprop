@@ -6,7 +6,7 @@ import CoolProp.CoolProp as cp
 # import turboflow as tf
 import os
 import pickle
-from coolpropx.fluid_properties import Fluid
+from jaxprop.fluid_properties import Fluid
 
 def generate_property_table(hmin, hmax, Pmin, Pmax, fluid_name, Nh, Np, outdir='fluid_tables'):
     fluid = Fluid(fluid_name)

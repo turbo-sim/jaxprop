@@ -1,13 +1,13 @@
 
 import numpy as np
-import coolpropx as cpx
+import jaxprop as jxp
 
 
 from pysolver_view import approx_derivative
 
 
 import CoolProp as CP
-from coolpropx import get_conductivity, get_viscosity, compute_dsdp_q, GAS_CONSTANT, calculate_subcooling, calculate_superheating, calculate_supersaturation, PROPERTY_ALIAS
+from jaxprop import get_conductivity, get_viscosity, compute_dsdp_q, GAS_CONSTANT, calculate_subcooling, calculate_superheating, calculate_supersaturation, PROPERTY_ALIAS
 
 
 # TODO:
@@ -252,7 +252,7 @@ def get_enthalpy_derivatives_numerical(fluid, pressure, density, eps=None):
 
     def get_h(x):
         p, d = x
-        return fluid.get_state(cpx.DmassP_INPUTS, d, p).h
+        return fluid.get_state(jxp.DmassP_INPUTS, d, p).h
     
     x0 = np.asarray([pressure, density])
     grad_h = approx_derivative(get_h, x0, method='2-point', rel_step=eps)
@@ -263,13 +263,13 @@ def get_enthalpy_derivatives_numerical(fluid, pressure, density, eps=None):
 
 def get_enthalpy_derivatives_analytic(fluid, pressure, density):
 
-    state = fluid.get_state(cpx.DmassP_INPUTS, density, pressure)
+    state = fluid.get_state(jxp.DmassP_INPUTS, density, pressure)
     temperature = state.T
     density = state.d
 
     eps = 1e-6*temperature
-    p1 = fluid.get_state(cpx.QT_INPUTS, 0.0, temperature-eps).p
-    p2 = fluid.get_state(cpx.QT_INPUTS, 0.0, temperature+eps).p
+    p1 = fluid.get_state(jxp.QT_INPUTS, 0.0, temperature-eps).p
+    p2 = fluid.get_state(jxp.QT_INPUTS, 0.0, temperature+eps).p
     dpdT = (p2 - p1) / (2*eps)
 
     grad_h = -temperature*dpdT/density**2
@@ -277,13 +277,13 @@ def get_enthalpy_derivatives_analytic(fluid, pressure, density):
     return grad_h   
 
 
-fluid = cpx.Fluid("water", backend="HEOS")
+fluid = jxp.Fluid("water", backend="HEOS")
 
 
 Q = 0.7
 T = 150+273.15
 
-state = fluid.get_state(cpx.QT_INPUTS, Q, T)
+state = fluid.get_state(jxp.QT_INPUTS, Q, T)
 
 print(state)
 

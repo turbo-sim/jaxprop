@@ -1,4 +1,4 @@
-# import coolpropx as cpx
+# import jaxprop as cpx
 
 # fluid = cpx.Fluid(name="CO2", backend="REFPROP")
 

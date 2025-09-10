@@ -1,6 +1,6 @@
 
 import CoolProp as CP
-from coolpropx import compute_properties_metastable_rhoT
+from jaxprop import compute_properties_metastable_rhoT
 from scipy.optimize import brentq
 
 def gibbs_difference_rhoT(p_trial, T, fluid):

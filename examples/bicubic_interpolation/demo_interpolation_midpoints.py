@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib.colors import LogNorm
 import CoolProp.CoolProp as cp
-from coolpropx.fluid_properties import Fluid
+from jaxprop.fluid_properties import Fluid
 
-import coolpropx as cpx
+import jaxprop as cpx
 
 
 # ---------------------------

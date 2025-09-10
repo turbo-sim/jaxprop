@@ -1,13 +1,13 @@
 
 import numpy as np
-import coolpropx as cpx
+import jaxprop as jxp
 import matplotlib.pyplot as plt
 
 from pysolver_view import approx_derivative, print_dict, set_plot_options
 
 
 import CoolProp as CP
-from coolpropx import get_conductivity, get_viscosity, compute_dsdp_q, GAS_CONSTANT, calculate_subcooling, calculate_superheating, calculate_supersaturation, PROPERTY_ALIAS
+from jaxprop import get_conductivity, get_viscosity, compute_dsdp_q, GAS_CONSTANT, calculate_subcooling, calculate_superheating, calculate_supersaturation, PROPERTY_ALIAS
 
 
 # TODO:
@@ -358,7 +358,7 @@ for T in T_list:
     fluid.update(CP.QT_INPUTS, Q, T)
     props.append(compute_properties_2phase(fluid)) 
 
-props = cpx.states_to_dict(props)
+props = jxp.states_to_dict(props)
 
 
 

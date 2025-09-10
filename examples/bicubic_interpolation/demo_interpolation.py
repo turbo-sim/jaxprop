@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-import coolpropx as cpx
+import jaxprop as cpx
 
 # ---------------------------
 # Configuration

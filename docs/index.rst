@@ -10,6 +10,8 @@ Welcome to jaxprop's documentation!
 Key features
 ------------
 
+This content is outdated.
+
 - Compute and plot phase envelopes and spinodal lines for pure fluids.
 - Evaluate thermodynamic properties from the Helmholtz energy equation of state, including metastable states inside the two-phase region.
 - Perform flash calculations for any input pair with a custom solver with user-defined initial guesses.
@@ -29,4 +31,4 @@ Use the panel to the left or the table of contents below to navigate the documen
 
    source/installation
    source/bibliography
-   source/api/coolpropx
+   source/api/jaxprop

@@ -2,7 +2,7 @@
 # import numpy as np
 # import matplotlib as mpl
 # import matplotlib.pyplot as plt
-# import coolpropx as cpx
+# import jaxprop as cpx
 
 # # Setup
 # cpx.set_plot_options(grid=False)

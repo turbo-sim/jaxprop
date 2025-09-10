@@ -5,11 +5,11 @@ import jax.numpy as jnp
 import optimistix as opx
 import equinox as eqx
 import matplotlib.pyplot as plt
-import coolpropx as cpx
+import jaxprop as cpx
 
 from typing import Any, Callable
 
-from coolpropx.perfect_gas import get_props
+from jaxprop.perfect_gas import get_props
 
 
 from examples.jaxprop.nozzle_model_solver import (

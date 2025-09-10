@@ -70,7 +70,7 @@ import time
 import jax
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
-import jaxprop as cpx
+import jaxprop as jxp
 
 from jaxprop.components import (
     solve_nozzle_model_collocation,
@@ -84,7 +84,7 @@ from jaxprop.components import (
 
 
 
-cpx.set_plot_options()
+jxp.set_plot_options()
 
 
 # ---------- example ----------
@@ -103,7 +103,7 @@ if __name__ == "__main__":
         Ma_low=0.95,
         Ma_high=1.05,
         # fluid=jxp.FluidPerfectGas("air", T_ref=300, P_ref=101325),
-        fluid=cpx.FluidJAX(name="air", backend="HEOS"),
+        fluid=jxp.FluidJAX(name="air", backend="HEOS"),
         geometry=symmetric_nozzle_geometry,
     )
 

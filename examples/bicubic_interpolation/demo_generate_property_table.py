@@ -1,6 +1,6 @@
 import os
 import pickle
-import coolpropx as cpx
+import jaxprop as cpx
 
 
 outdir = "fluid_tables"

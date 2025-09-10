@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, os.path.abspath(".."))
 
 # Define project metadata
-project = "coolpropx"
+project = "jaxprop"
 copyright = "2025, Roberto Agromayor"
 author = ""
 release = "v0.2.20"

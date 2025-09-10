@@ -63,7 +63,7 @@ import jax
 import jax.numpy as jnp
 import equinox as eqx
 import optimistix as optx
-import jaxprop as cpx
+import jaxprop as jxp
 
 from typing import Any, Callable
 
@@ -390,7 +390,7 @@ def initialize_flowfield(num_points, params, Ma_min=0.1, Ma_max=0.2):
     """
     # Inlet stagnation state
     fluid = params.fluid
-    state0_in = fluid.get_props(cpx.DmassP_INPUTS, params.d0_in, params.p0_in)
+    state0_in = fluid.get_props(jxp.DmassP_INPUTS, params.d0_in, params.p0_in)
     a_in = state0_in["a"]  # use inlet speed of sound for initial guess everywhere
     h_in = state0_in["h"]
     s_in = state0_in["s"]
@@ -407,7 +407,7 @@ def initialize_flowfield(num_points, params, Ma_min=0.1, Ma_max=0.2):
 
     # Static density/pressure from h0 = h + v^2/2, s = s_in
     h_static = h_in - 0.5 * flowfield_v**2
-    state_static = fluid.get_props(cpx.HmassSmass_INPUTS, h_static, s_in)
+    state_static = fluid.get_props(jxp.HmassSmass_INPUTS, h_static, s_in)
     d_static = jnp.maximum(state_static["rho"], 1e-12)
     p_static = jnp.maximum(state_static["p"], 1e-12)
 
@@ -556,12 +556,12 @@ def chebyshev_lobatto_interpolate_and_derivative(x_nodes, y_nodes, x_eval):
 # ---------- Compute static state from stagnation and Mach number ----------
 def compute_static_state(p0, d0, Ma, fluid):
     """solve h0 - h(p,s0) - 0.5 a(p,s0)^2 Ma^2 = 0 for p"""
-    st0 = fluid.get_props(cpx.DmassP_INPUTS, d0, p0)
+    st0 = fluid.get_props(jxp.DmassP_INPUTS, d0, p0)
     s0, h0 = st0["s"], st0["h"]
 
     def residual(p_vec, _):
         p = p_vec[0]
-        st = fluid.get_props(cpx.PSmass_INPUTS, p, s0)
+        st = fluid.get_props(jxp.PSmass_INPUTS, p, s0)
         a, h = st["a"], st["h"]
         v = a * Ma
         return jnp.array([h0 - h - 0.5 * v * v])
@@ -569,5 +569,5 @@ def compute_static_state(p0, d0, Ma, fluid):
     p_init = jnp.array([0.9 * p0])  # 1-D, not scalar
     solver = optx.Newton(rtol=1e-10, atol=1e-10)
     sol = optx.root_find(residual, solver, y0=p_init, args=())
-    state = fluid.get_props(cpx.PSmass_INPUTS, sol.value[0], s0)
+    state = fluid.get_props(jxp.PSmass_INPUTS, sol.value[0], s0)
     return state

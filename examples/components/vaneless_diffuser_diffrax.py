@@ -5,12 +5,12 @@ import jax.numpy as jnp
 import diffrax as dfx
 import equinox as eqx
 import optimistix as optx
-import coolpropx as cpx
+import jaxprop as jxp
 import matplotlib.pyplot as plt
 
 from time import perf_counter
 
-cpx.set_plot_options(grid=False)
+jxp.set_plot_options(grid=False)
 
 
 # -----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ def vaneless_diffuser(
 
     # Compute initial conditions for ODE system
     p_in, s_in = compute_inlet_static_state(p0_in, T0_in, Ma_in, fluid)
-    state = get_props(cpx.PSmass_INPUTS, p_in, s_in, fluid)
+    state = fluid.get_props(jxp.PSmass_INPUTS, p_in, s_in)
     d_in = state["rho"]
     a_in = state["a"]
     v_in = Ma_in * a_in
@@ -56,8 +56,8 @@ def vaneless_diffuser(
     args = (Cf, q_w, r_in, b_in, phi, div, p0_in, p_in, fluid)
 
     # Create and configure the solver
-    solver = cpx.jax_import.make_diffrax_solver(solver_name)
-    adjoint = cpx.jax_import.make_diffrax_adjoint(adjoint_name)
+    solver = jxp.make_diffrax_solver(solver_name)
+    adjoint = jxp.make_diffrax_adjoint(adjoint_name)
     term = dfx.ODETerm(diffuser_odefun)
     ctrl = dfx.PIDController(rtol=rtol, atol=atol)
     if number_of_points is not None:
@@ -105,7 +105,7 @@ def diffuser_odefun(t, y, args):
     dAdr = area_grad(length, b_in, div, r_in, phi)
 
     # Calculate thermodynamic state
-    state = get_props(cpx.DmassP_INPUTS, d, p, fluid)
+    state = fluid.get_props(jxp.DmassP_INPUTS, d, p)
     a = state["a"]
     h = state["h"]
     s = state["s"]
@@ -150,7 +150,7 @@ def postprocess_ode(t, y, args):
     Cf, q_w, r_in, b_in, phi, div, p0_in, p_in, fluid = args
     v_m, v_t, d, p, s_gen, theta = y
     v = jnp.sqrt(v_t**2 + v_m**2)
-    state = get_props(cpx.DmassP_INPUTS, d, p, fluid)
+    state = fluid.get_props(jxp.DmassP_INPUTS, d, p)
     a = state["a"]
     r = radius_fun(r_in, phi, t)
     b = width_fun(b_in, div, t)
@@ -226,13 +226,13 @@ def compute_inlet_static_state(p0, T0, Ma, fluid):
     """
 
     # Compute stagnation state properties
-    state0 = get_props(cpx.PT_INPUTS, p0, T0, fluid)
+    state0 = fluid.get_props(jxp.PT_INPUTS, p0, T0)
     s0, h0 = state0["s"], state0["h"]
 
     # Residual function for root find
     def residual(p, _):
         # f(p) = h0 - h(p,s0) - 0.5 a(p,s0)^2 Ma^2
-        state = get_props(cpx.PSmass_INPUTS, p, s0, fluid)
+        state = fluid.get_props(jxp.PSmass_INPUTS, p, s0)
         a, h = state["a"], state["h"]
         v = a * Ma
         return h0 - h - 0.5 * v * v
@@ -274,21 +274,8 @@ if __name__ == "__main__":
     # Convert to JAX types
     params = {k: jnp.asarray(v) for k, v in params.items()}
 
-    # Initialize fluid depending on backend
-    backend = "perfect_gas"
-    # backend = "jaxprop"
-    x_prop, y_prop = "s", "T"
-    if backend == "perfect_gas":
-        from coolpropx.perfect_gas import get_props, get_constants
-        fluid = get_constants(fluid_name, params["T0_in"], params["p0_in"])
-
-    elif backend == "jaxprop":
-        from coolpropx.jaxprop import get_props
-        fluid = cpx.Fluid(name=fluid_name, backend="HEOS")
-
-    else:
-        raise ValueError("Invalid fluid backend seclection")
-    
+    # Define fluid
+    fluid = jxp.FluidPerfectGas("air", params["T0_in"], params["p0_in"])
 
     # Plot the pressure recovery coefficient distribution
     fig_1, ax_1 = plt.subplots(figsize=(6, 5))
@@ -429,8 +416,6 @@ if __name__ == "__main__":
         err_rel = err_abs/(g_ad[k]+1e-16)
         print(f" {k:<10}  AD: {g_ad[k]: .6e}   FD: {g_fd: .6e}   abs.err: {err_abs: .3e}   rel.err: {err_rel: .3e}")
 
-
-    if backend == "perfect_gas":
 
         print("\n------------------------------------------")
         print("Hessian timings (forward-over-reverse):")

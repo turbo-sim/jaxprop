@@ -2,7 +2,7 @@ import os
 import pytest
 import numpy as np
 import jax
-import jaxprop as cpx
+import jaxprop as jxp
 
 from scipy.optimize._numdiff import approx_derivative
 
@@ -15,11 +15,11 @@ PROP_KEYS = ("T", "p", "d", "h", "s", "mu", "k", "a", "gamma")
 
 # input types to exercise
 INPUT_TYPES = [
-    cpx.HmassSmass_INPUTS,
-    cpx.HmassP_INPUTS,
-    cpx.PSmass_INPUTS,
-    cpx.DmassHmass_INPUTS,
-    cpx.DmassP_INPUTS,
+    jxp.HmassSmass_INPUTS,
+    jxp.HmassP_INPUTS,
+    jxp.PSmass_INPUTS,
+    jxp.DmassHmass_INPUTS,
+    jxp.DmassP_INPUTS,
 ]
 
 # reference cases (pressures in Pa, temperatures in K)
@@ -37,10 +37,10 @@ def case(request):
     """Provides one fluid reference case at a time and its perfect-gas constants."""
     c = request.param
     # compute constants at the requested reference state
-    fluid = cpx.FluidPerfectGas(name=c["fluid"], T_ref=c["T"], p_ref=c["p"])
+    fluid = jxp.FluidPerfectGas(name=c["fluid"], T_ref=c["T"], p_ref=c["p"])
 
     # sanity: force the baseline to exactly this PT
-    ref = fluid.get_props(cpx.PT_INPUTS, c["p"], c["T"])
+    ref = fluid.get_props(jxp.PT_INPUTS, c["p"], c["T"])
 
     return {
         "metadata": c,           # id, fluid name, T, p
@@ -60,15 +60,15 @@ def test_perfect_gas_consistency(input_type, case):
     cid = case["metadata"]["id"]
 
     # choose inputs for each solver
-    if input_type == cpx.HmassSmass_INPUTS:
+    if input_type == jxp.HmassSmass_INPUTS:
         v1, v2 = case["h"], case["s"]
-    elif input_type == cpx.HmassP_INPUTS:
+    elif input_type == jxp.HmassP_INPUTS:
         v1, v2 = case["h"], case["p"]
-    elif input_type == cpx.PSmass_INPUTS:
+    elif input_type == jxp.PSmass_INPUTS:
         v1, v2 = case["p"], case["s"]
-    elif input_type == cpx.DmassHmass_INPUTS:
+    elif input_type == jxp.DmassHmass_INPUTS:
         v1, v2 = case["rho"], case["h"]
-    elif input_type == cpx.DmassP_INPUTS:
+    elif input_type == jxp.DmassP_INPUTS:
         v1, v2 = case["rho"], case["p"]
     else:
         pytest.skip(f"unhandled input_type: {input_type}")
@@ -98,15 +98,15 @@ def test_perfect_gas_derivatives(input_type, case):
     cid = case["metadata"]["id"]
 
     # choose inputs for each solver
-    if input_type == cpx.HmassSmass_INPUTS:
+    if input_type == jxp.HmassSmass_INPUTS:
         v1, v2 = case["h"], case["s"]
-    elif input_type == cpx.HmassP_INPUTS:
+    elif input_type == jxp.HmassP_INPUTS:
         v1, v2 = case["h"], case["p"]
-    elif input_type == cpx.PSmass_INPUTS:
+    elif input_type == jxp.PSmass_INPUTS:
         v1, v2 = case["p"], case["s"]
-    elif input_type == cpx.DmassHmass_INPUTS:
+    elif input_type == jxp.DmassHmass_INPUTS:
         v1, v2 = case["rho"], case["h"]
-    elif input_type == cpx.DmassP_INPUTS:
+    elif input_type == jxp.DmassP_INPUTS:
         v1, v2 = case["rho"], case["p"]
     else:
         pytest.skip(f"unhandled input_type: {input_type}")

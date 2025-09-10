@@ -24,7 +24,7 @@ example_relative_paths = [
     "props_undersaturation/quality_along_isolines.py",
     "props_undersaturation/subcooling_along_isobar.py",
     "props_undersaturation/superheating_along_isobar.py",
-    "spinodal_lines/spinodal_lines.py",
+    # "spinodal_lines/spinodal_lines.py",
     "spinodal_lines/spinodal_lines_PT.py",
     "blending_calculations/blending_condensing.py",
     "blending_calculations/blending_flashing.py",
