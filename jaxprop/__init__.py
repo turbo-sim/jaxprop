@@ -36,7 +36,7 @@ from . import components
 
 
 # Package info
-__version__ = "0.2.20"
+__version__ = "0.3.0"
 PACKAGE_NAME = "jaxprop"
 URL_GITHUB = "https://github.com/turbo-sim/jaxprop"
 URL_DOCS = "https://turbo-sim.github.io/jaxprop/"
