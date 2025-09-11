@@ -7,79 +7,78 @@ import equinox as eqx
 from functools import partial
 from dataclasses import fields
 
-# aliases, to mirror perfect-gas behavior
-PROPERTY_ALIAS = {
-    "P": "p",
-    "pressure": "p",
-    "density": "rho",
-    "d": "rho",
-    "rhomass": "rho",
-    "dmass": "rho",
-    "hmass": "h",
-    "smass": "s",
-    "speed_sound": "a",
-    "viscosity": "mu",
-    "conductivity": "k",
-}
+from .. import helpers_coolprop as jxp
 
 
 # ----------------------------------------------------------------------------- #
 # state container (single source of truth for fields)
 # ----------------------------------------------------------------------------- #
 
-class CoolPropState(eqx.Module):
-    """Container for a thermodynamic state from CoolProp.
+# class CoolPropState(eqx.Module):
+#     """Container for a thermodynamic state from CoolProp.
 
-    Fields correspond to common mass-based properties (p, T, rho, u, h, s, …),
-    stored as JAX arrays for compatibility with JIT and autodiff.
+#     Fields correspond to common mass-based properties (p, T, rho, u, h, s, …),
+#     stored as JAX arrays for compatibility with JIT and autodiff.
 
-    Provides attribute-style access (state.p) and alias-aware dict-style access
-    (state["P"], state["rhomass"], …).
-    """
-    p: jnp.ndarray
-    T: jnp.ndarray
-    rho: jnp.ndarray
-    u: jnp.ndarray
-    h: jnp.ndarray
-    s: jnp.ndarray
-    a: jnp.ndarray
-    gruneisen: jnp.ndarray
-    mu: jnp.ndarray
-    k: jnp.ndarray
-    cp: jnp.ndarray
-    cv: jnp.ndarray
-    gamma: jnp.ndarray
+#     Provides attribute-style access (state.p) and alias-aware dict-style access
+#     (state["P"], state["rhomass"], …).
+#     """
+#     p: jnp.ndarray
+#     T: jnp.ndarray
+#     rho: jnp.ndarray
+#     u: jnp.ndarray
+#     h: jnp.ndarray
+#     s: jnp.ndarray
+#     a: jnp.ndarray
+#     gruneisen: jnp.ndarray
+#     mu: jnp.ndarray
+#     k: jnp.ndarray
+#     cp: jnp.ndarray
+#     cv: jnp.ndarray
+#     gamma: jnp.ndarray
 
-    def __getitem__(self, key: str):
-        """Allow dictionary-style access to state variables.
-        Returns the attribute matching `key` or its alias in PROPERTY_ALIAS."""
-        if hasattr(self, key):
-            return getattr(self, key)
-        if key in PROPERTY_ALIAS:
-            return getattr(self, PROPERTY_ALIAS[key])
-        raise KeyError(f"Unknown property alias: {key}")
+#     def __getitem__(self, key: str):
+#         """Allow dictionary-style access to state variables.
+#         Returns the attribute matching `key` or its alias in PROPERTY_ALIAS."""
+#         if hasattr(self, key):
+#             return getattr(self, key)
+#         if key in PROPERTY_ALIAS:
+#             return getattr(self, PROPERTY_ALIAS[key])
+#         raise KeyError(f"Unknown property alias: {key}")
 
-    def __repr__(self):
-        """Return a readable string representation of the state,
-        listing all field names and their scalar values."""
-        lines = []
-        for name, val in self.__dict__.items():
-            try:
-                val = jnp.array(val).item()
-            except Exception:
-                pass
-            lines.append(f"  {name}={val}")
-        return "CoolPropState(\n" + ",\n".join(lines) + "\n)"
+#     def __repr__(self):
+#         """Return a readable string representation of the state,
+#         listing all field names and their scalar values."""
+#         lines = []
+#         for name, val in self.__dict__.items():
+#             try:
+#                 val = jnp.array(val).item()
+#             except Exception:
+#                 pass
+#             lines.append(f"  {name}={val}")
+#         return "CoolPropState(\n" + ",\n".join(lines) + "\n)"
 
 
 # output template for pure_callback (shapes/dtypes must be static)
-_NAMES = [f.name for f in fields(CoolPropState)]
-_TEMPLATE = {k: jax.ShapeDtypeStruct((), jnp.float64) for k in _NAMES}
+_NAMES = [f.name for f in fields(jxp.FluidState)]
 
-# remove the scalar-only template and replace with a shape-aware factory
 def _make_template(shape):
     """Return a pure_callback template dict with the given output shape."""
     return {k: jax.ShapeDtypeStruct(shape, jnp.float64) for k in _NAMES}
+
+
+# def _get_props_python(input_pair, x, y, fluid):
+#     """Host-side evaluation. Accepts scalars or arrays and returns dict of ndarrays."""
+#     x, y = np.broadcast_arrays(np.asarray(x), np.asarray(y))
+#     results = {name: np.empty(x.shape, dtype=np.float64) for name in _NAMES}
+
+#     for i in np.ndindex(x.shape):
+#         state = fluid.get_state(input_pair, float(x[i]), float(y[i])).to_dict()
+#         for name in _NAMES:
+#             val = state.get(name)
+#             results[name][i] = np.float64(val) if np.isfinite(val) else np.nan
+
+#     return results
 
 
 def _get_props_python(input_pair, x, y, fluid):
@@ -89,9 +88,31 @@ def _get_props_python(input_pair, x, y, fluid):
 
     for i in np.ndindex(x.shape):
         state = fluid.get_state(input_pair, float(x[i]), float(y[i])).to_dict()
+
         for name in _NAMES:
-            val = state.get(name)
-            results[name][i] = np.float64(val) if np.isfinite(val) else np.nan
+            val = state.get(name, None)
+
+            if val is None:
+                results[name][i] = np.nan
+                continue
+
+            # convert jax/numpy arrays to scalars if possible
+            if isinstance(val, (jnp.ndarray, np.ndarray)):
+                try:
+                    val = val.item()
+                except Exception:
+                    val = float(val.ravel()[0])
+
+            # convert booleans to {0.0, 1.0}
+            if isinstance(val, (bool, np.bool_)):
+                results[name][i] = 1.0 if val else 0.0
+                continue
+
+            try:
+                v = float(val)
+                results[name][i] = v if math.isfinite(v) else np.nan
+            except Exception:
+                results[name][i] = np.nan
 
     return results
 
@@ -174,4 +195,4 @@ class FluidJAX(eqx.Module):
     def get_props(self, input_pair, x, y):
         """Return a CoolPropState with fields shaped like broadcast(x, y)."""
         raw = get_props(input_pair, x, y, self.fluid)
-        return CoolPropState(**{k: raw[k] for k in _NAMES})
+        return jxp.FluidState(**{k: raw[k] for k in _NAMES})

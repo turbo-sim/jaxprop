@@ -3,10 +3,7 @@ import jax.numpy as jnp
 import equinox as eqx
 
 from ..coolprop import Fluid
-from .. import helpers_coolprop as _cp
-
-
-PROPERTY_ALIAS = _cp.PROPERTY_ALIAS_NEW
+from .. import helpers_coolprop as jxp
 
 # ----------------------------------------------------------------------------- #
 # Constant generation and Sutherland estimation
@@ -35,7 +32,7 @@ class PerfectGasConstants(eqx.Module):
         return "PerfectGasConstants(\n" + ",\n".join(lines) + "\n)"
 
 
-def get_constants(fluid_name, T_ref, P_ref, dT=100.0):
+def get_constants(fluid_name, T_ref, p_ref, dT=100.0):
     """
     Compute perfect-gas constants from a real-fluid model at a reference state,
     and estimate Sutherland constants using offset temperatures.
@@ -75,8 +72,8 @@ def get_constants(fluid_name, T_ref, P_ref, dT=100.0):
     """
     # Calculate fluid constants at the reference pressure and temperature
     fluid = Fluid(name=fluid_name, backend="HEOS")
-    state = fluid.get_state(_cp.PT_INPUTS, P_ref, T_ref)
-    R = jnp.asarray(_cp.GAS_CONSTANT / fluid.abstract_state.molar_mass())
+    state = fluid.get_state(jxp.PT_INPUTS, p_ref, T_ref)
+    R = jnp.asarray(jxp.GAS_CONSTANT / fluid.abstract_state.molar_mass())
     cp = jnp.asarray(state["cp"])
     cv = jnp.asarray(state["cv"])
     gamma = cp / cv
@@ -86,14 +83,14 @@ def get_constants(fluid_name, T_ref, P_ref, dT=100.0):
 
     # Estimate Sutherland constants from values at T_ref ± dT
     T2 = T_ref + dT
-    state2 = fluid.get_state(_cp.PT_INPUTS, P_ref, T2)
+    state2 = fluid.get_state(jxp.PT_INPUTS, p_ref, T2)
     S_mu = estimate_sutherland_constant(T_ref, mu_ref, T2, state2["mu"])
     S_k = estimate_sutherland_constant(T_ref, k_ref, T2, state2["k"])
 
     # Create object to store constants
     consts = PerfectGasConstants(
         R=R, gamma=gamma,
-        T_ref=T_ref, P_ref=P_ref, s_ref=s_ref,
+        T_ref=T_ref, P_ref=p_ref, s_ref=s_ref,
         k_ref=k_ref, mu_ref=mu_ref,
         S_k=S_k, S_mu=S_mu,
     )
@@ -140,14 +137,14 @@ def temperature_from_h(h, constants):
     cp, _ = specific_heat(constants)
     return jnp.maximum(1.0, h / cp)
 
-def temperature_from_Ps(P, s, constants):
+def temperature_from_Ps(p, s, constants):
     R = constants.R
     gamma = constants.gamma
     T_ref = constants.T_ref
     P_ref = constants.P_ref
     s_ref = constants.s_ref
     cp, _ = specific_heat(constants)
-    exponent = ((s - s_ref) + (R * jnp.log(P / P_ref))) / cp
+    exponent = ((s - s_ref) + (R * jnp.log(p / P_ref))) / cp
     return jnp.maximum(1.0, T_ref * jnp.exp(exponent))
 
 def temperature_from_rhoP(rho, p, constants):
@@ -171,69 +168,33 @@ def speed_of_sound_from_T(T, constants):
     gamma = constants.gamma
     return jnp.sqrt(gamma * R * T)
 
-def entropy_from_PT(P, T, constants):
+def entropy_from_PT(p, T, constants):
     R = constants.R
     T_ref = constants.T_ref
     P_ref = constants.P_ref
     s_ref = constants.s_ref
     cp, _ = specific_heat(constants)
-    return s_ref + (cp * jnp.log(T / T_ref)) - (R * jnp.log(P / P_ref))
+    return s_ref + (cp * jnp.log(T / T_ref)) - (R * jnp.log(p / P_ref))
 
-def entropy_from_rhoP(rho, P, constants):
+def entropy_from_rhoP(rho, p, constants):
     R = constants.R
-    T = P / (rho * R)
-    return entropy_from_PT(P, T, constants)
+    T = p / (rho * R)
+    return entropy_from_PT(p, T, constants)
 
 
 # ----------------------------------------------------------------------------- #
 # Helper functions to calculate full fluid states
 # ----------------------------------------------------------------------------- #
-class PerfectGasState(eqx.Module):
-    T: jnp.ndarray
-    p: jnp.ndarray
-    rho: jnp.ndarray
-    h: jnp.ndarray
-    s: jnp.ndarray
-    mu: jnp.ndarray
-    k: jnp.ndarray
-    a: jnp.ndarray
-    gamma: jnp.ndarray
-    cp: jnp.ndarray
-    cv: jnp.ndarray
-    Z: jnp.ndarray
-    gruneisen: jnp.ndarray
-
-    def __getitem__(self, key: str):
-        """Allow dictionary-style access to state variables.
-        Returns the attribute matching `key` or its alias in PROPERTY_ALIAS."""
-        if hasattr(self, key):
-            return getattr(self, key)
-        if key in PROPERTY_ALIAS:
-            return getattr(self, PROPERTY_ALIAS[key])
-        raise KeyError(f"Unknown property alias: {key}")
-
-    def __repr__(self) -> str:
-        """Return a readable string representation of the state,
-        listing all field names and their scalar values."""
-        lines = []
-        for name, val in self.__dict__.items():
-            try:
-                val = jnp.array(val).item()  # scalar to Python number
-            except Exception:
-                pass
-            lines.append(f"  {name}={val}")
-        return "PerfectGasState(\n" + ",\n".join(lines) + "\n)"
-
     
-def calculate_properties_PT(P, T, constants):
+def calculate_properties_PT(p, T, constants):
     T = jnp.maximum(T, 0.1)
-    P = jnp.maximum(P, 0.1)
+    p = jnp.maximum(p, 0.1)
     R = constants.R
-    rho = P / (R * T)
+    rho = p / (R * T)
     cp, _ = specific_heat(constants)
     h = cp * T
-    s = entropy_from_PT(P, T, constants)
-    return assemble_properties(T, P, rho, h, s, constants)
+    s = entropy_from_PT(p, T, constants)
+    return assemble_properties(T, p, rho, h, s, constants)
 
 def calculate_properties_hs(h, s, constants):
     cp, _ = specific_heat(constants)
@@ -246,97 +207,99 @@ def calculate_properties_hs(h, s, constants):
     rho = P / (R * T)
     return assemble_properties(T, P, rho, h, s, constants)
 
-def calculate_properties_hP(h, P, constants):
+def calculate_properties_hP(h, p, constants):
     T = temperature_from_h(h, constants)
     R = constants.R
-    rho = P / (R * T)
-    s = entropy_from_PT(P, T, constants)
-    return assemble_properties(T, P, rho, h, s, constants)
+    rho = p / (R * T)
+    s = entropy_from_PT(p, T, constants)
+    return assemble_properties(T, p, rho, h, s, constants)
 
-def calculate_properties_Ps(P, s, constants):
-    T = temperature_from_Ps(P, s, constants)
+def calculate_properties_Ps(p, s, constants):
+    T = temperature_from_Ps(p, s, constants)
     R = constants.R
-    rho = P / (R * T)
+    rho = p / (R * T)
     cp, _ = specific_heat(constants)
     h = cp * T
-    return assemble_properties(T, P, rho, h, s, constants)
+    return assemble_properties(T, p, rho, h, s, constants)
 
 def calculate_properties_rhoh(rho, h, constants):
     T = temperature_from_h(h, constants)
     R = constants.R
-    P = rho * R * T
-    s = entropy_from_rhoP(rho, P, constants)
-    return assemble_properties(T, P, rho, h, s, constants)
+    p = rho * R * T
+    s = entropy_from_rhoP(rho, p, constants)
+    return assemble_properties(T, p, rho, h, s, constants)
 
-def calculate_properties_rhop(rho, P, constants):
+def calculate_properties_rhop(rho, p, constants):
     cp, _ = specific_heat(constants)
-    T = temperature_from_rhoP(rho, P, constants)
+    T = temperature_from_rhoP(rho, p, constants)
     h = cp * T
-    s = entropy_from_rhoP(rho, P, constants)
-    return assemble_properties(T, P, rho, h, s, constants)
+    s = entropy_from_rhoP(rho, p, constants)
+    return assemble_properties(T, p, rho, h, s, constants)
 
-def assemble_properties(T, P, rho, h, s, constants: PerfectGasConstants) -> PerfectGasState:
+def assemble_properties(T, p, rho, h, s, constants):
     R = constants.R
     gamma = constants.gamma
-
-    return PerfectGasState(
-        T=T,
-        p=P,
-        rho=rho,
-        h=h,
-        s=s,
-        mu=viscosity_from_T(T, constants),
-        k=conductivity_from_T(T, constants),
-        a=speed_of_sound_from_T(T, constants),
-        gamma=gamma,
-        cp=gamma * R / (gamma - 1),
-        cv=R / (gamma - 1),
-        Z=jnp.asarray(1.0, dtype=jnp.float64),
-        gruneisen=gamma - 1,
-    )
-
-
+    return {
+        "temperature": T,
+        "pressure": p,
+        "density": rho,
+        "enthalpy": h,
+        "entropy": s,
+        "viscosity": viscosity_from_T(T, constants),
+        "conductivity": conductivity_from_T(T, constants),
+        "speed_of_sound": speed_of_sound_from_T(T, constants),
+        "heat_capacity_ratio": gamma,
+        "isobaric_heat_capacity": gamma * R / (gamma - 1),
+        "isochoric_heat_capacity": R / (gamma - 1),
+        "compressibility_factor": jnp.asarray(1.0, dtype=jnp.float64),
+        "gruneisen": gamma - 1,
+    }
 
 # ----------------------------------------------------------------------------- #
 # State evaluators (public API)
 # ----------------------------------------------------------------------------- #
 
 PROPERTY_CALCULATORS = {
-    _cp.PT_INPUTS: calculate_properties_PT,
-    _cp.HmassSmass_INPUTS: calculate_properties_hs,
-    _cp.HmassP_INPUTS: calculate_properties_hP,
-    _cp.PSmass_INPUTS: calculate_properties_Ps,
-    _cp.DmassHmass_INPUTS: calculate_properties_rhoh,
-    _cp.DmassP_INPUTS: calculate_properties_rhop,
+    jxp.PT_INPUTS: calculate_properties_PT,
+    jxp.HmassSmass_INPUTS: calculate_properties_hs,
+    jxp.HmassP_INPUTS: calculate_properties_hP,
+    jxp.PSmass_INPUTS: calculate_properties_Ps,
+    jxp.DmassHmass_INPUTS: calculate_properties_rhoh,
+    jxp.DmassP_INPUTS: calculate_properties_rhop,
 }
-
-@eqx.filter_jit
-def get_props_perfect_gas(input_pair, prop1, prop2, constants):
-    return PROPERTY_CALCULATORS[input_pair](prop1, prop2, constants)
 
 
 class FluidPerfectGas(eqx.Module):
     constants: PerfectGasConstants = eqx.field(static=False)
+    fluid_name: str = eqx.field(static=True, default=None)
+    identifier: str = eqx.field(static=True, default=None)
 
-    def __init__(self, name, T_ref=300.0, p_ref=101_325.0):
+    def __init__(self, name, T_ref=300.0, p_ref=101_325.0, identifier=None):
         self.constants = get_constants(name, T_ref, p_ref)
+        self.fluid_name = name
+        self.identifier = identifier
 
     @eqx.filter_jit
     def get_props(self, input_pair: str, x: float, y: float):
         """Evaluate thermodynamic state for a perfect gas."""
-        return get_props_perfect_gas(input_pair, x, y, self.constants)
+        props = PROPERTY_CALCULATORS[input_pair](x, y, self.constants)
+        return jxp.FluidState(
+            fluid_name=self.fluid_name,
+            identifier=self.identifier,
+            **props,
+        )
     
 # ----------------------------------------------------------------------------- #
 # Gradient calculations (only used when JAX is installed)
 # ----------------------------------------------------------------------------- #
 
-def get_props_gradient(input_pair, constants, x, y, method="auto", eps_rel=1e-6, eps_abs=1e-6):
+def get_props_gradient(fluid, input_pair, x, y, method="auto", eps_rel=1e-6, eps_abs=1e-6):
     """
     Return dict of gradients for perfect_gas_props at (x, y).
     Each entry: grads[prop] = jnp.array([∂prop/∂x, ∂prop/∂y])
     """
     def f(vec):
-        return get_props_perfect_gas(input_pair, vec[0], vec[1], constants)
+        return fluid.get_props(input_pair, vec[0], vec[1])
 
     # JAX autodiff path
     if method in ("auto", "jax"):
@@ -352,10 +315,17 @@ def get_props_gradient(input_pair, constants, x, y, method="auto", eps_rel=1e-6,
     fy_m = f(jnp.array([x, y - dy]))
 
     grads = {}
-    for name in fx_p.__dict__.keys():
+    for name in fx_p.to_dict().keys():
+        if name in ("fluid_name", "identifier"):
+            continue
         grads[name] = jnp.array([
             (fx_p[name] - fx_m[name]) / (2.0 * dx),
             (fy_p[name] - fy_m[name]) / (2.0 * dy),
         ])
 
-    return grads
+    return jxp.FluidState(
+        fluid_name=fluid.fluid_name,
+        identifier=fluid.identifier,
+        **grads,
+    )
+

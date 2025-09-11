@@ -25,7 +25,7 @@ from .helpers_coolprop import *
 # Import subpackages
 from . import coolprop
 from . import perfect_gas
-# from . import bicubic
+from . import bicubic
 
 # Import API classes
 from .perfect_gas import FluidPerfectGas

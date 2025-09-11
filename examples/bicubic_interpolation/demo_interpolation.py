@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-import jaxprop as cpx
+import jaxprop as jxp
 
 # ---------------------------
 # Configuration
@@ -15,12 +15,12 @@ Nh = 60           # Grid size
 Np = 40
 SAVE_FIGURES = True  # Set to False to just display plots
 
-fluid = cpx.Fluid(fluid_name)
+fluid = jxp.Fluid(fluid_name)
 
 # ---------------------------
 # Generate Table
 # ---------------------------
-table = cpx.bicubic.generate_property_table(hmin, hmax, Pmin, Pmax, fluid_name, Nh, Np)
+table = jxp.bicubic.generate_property_table(hmin, hmax, Pmin, Pmax, fluid_name, Nh, Np)
 
 
 # ---------------------------
@@ -31,7 +31,7 @@ test_h = 300e3   # Test enthalpy [J/kg]
 test_P = 8e6     # Test pressure [Pa]
 print(f"\n Interpolating at h = {test_h:.0f} J/kg, P = {test_P/1e5:.2f} bar")
 
-interp_props = cpx.bicubic.bicubic_interpolant_property(test_h, test_P, table)
+interp_props = jxp.bicubic.bicubic_interpolant_property(test_h, test_P, table)
 
 # ---------------------------
 # Step 3: Compare with CoolProp
@@ -42,7 +42,7 @@ cp_keys = {'T': 'T', 'd': 'D', 's': 'S', 'mu': 'V', 'k': 'L'}
 for prop, interp_val in interp_props.items():
     cp_key = cp_keys[prop]
     try:
-        cp_val = fluid.get_state(cpx.HmassP_INPUTS, test_h, test_P)[prop]
+        cp_val = fluid.get_state(jxp.HmassP_INPUTS, test_h, test_P)[prop]
         rel_error = abs(interp_val - cp_val) / cp_val
         print(f" - {prop}: Interpolated = {interp_val:.4e}, CoolProp = {cp_val:.4e}, Rel. Error = {rel_error:.2%}")
     except Exception as e:

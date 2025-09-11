@@ -8,7 +8,7 @@ from matplotlib.colors import LogNorm
 import CoolProp.CoolProp as cp
 from jaxprop.fluid_properties import Fluid
 
-import jaxprop as cpx
+import jaxprop as jxp
 
 
 # ---------------------------
@@ -29,7 +29,7 @@ fluid = Fluid(fluid_name)
 # ---------------------------
 # Generate Table
 # ---------------------------
-table = cpx.bicubic.generate_property_table(hmin, hmax, Pmin, Pmax, fluid_name, Nh, Np)
+table = jxp.bicubic.generate_property_table(hmin, hmax, Pmin, Pmax, fluid_name, Nh, Np)
 
 
 # ---------------------------
@@ -65,7 +65,7 @@ for prop in properties:
     for i, h in enumerate(h_vals):
         for j, P in enumerate(P_vals):
             try:
-                interp_val = cpx.bicubic.bicubic_interpolant_property(float(h), float(P), table)[prop]
+                interp_val = jxp.bicubic.bicubic_interpolant_property(float(h), float(P), table)[prop]
                 # cp_val = cp.PropsSI(cp_keys[prop], 'H', float(h), 'P', float(P), fluid)
                 cp_val = fluid.get_state(cp.HmassP_INPUTS, float(h), float(P))[prop]
                 # cp_val = tf.get_props_custom_jvp(fluid, cp.HmassP_INPUTS, float(h), float(P))[prop]

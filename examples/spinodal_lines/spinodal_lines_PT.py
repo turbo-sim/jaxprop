@@ -1,5 +1,5 @@
 import os
-import numpy as np
+import jax.numpy as jnp
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
@@ -27,8 +27,8 @@ for fluid_name in names:
     )
 
     # Compute saturation and spinodal lines
-    spinodal_liq, spinodal_vap = jxp.compute_spinodal_line(fluid, N=100)
-    saturation_liq, saturation_vap = jxp.compute_saturation_line(fluid, N=100)
+    spinodal_liq, spinodal_vap = jxp.compute_spinodal_line(fluid, N=50)
+    saturation_liq, saturation_vap = jxp.compute_saturation_line(fluid, N=50)
 
     # ------------------------------------------------------------- #
     # Plot metastable liquid region
@@ -42,18 +42,34 @@ for fluid_name in names:
     ax.set_ylim([0, 1])
 
     # Plot subcooled liquid region
-    x = saturation_liq[prop_x] + [fluid.triple_point_liquid[prop_x], 1.1*fluid.critical_point[prop_x]]
-    y = saturation_liq[prop_y] + [2*fluid.critical_point[prop_y], 2*fluid.critical_point[prop_y]]
+    x = jnp.concatenate([
+        saturation_liq[prop_x],
+        jnp.array([fluid.triple_point_liquid[prop_x],
+                1.1 * fluid.critical_point[prop_x]])
+    ])
+    y = jnp.concatenate([
+        saturation_liq[prop_y],
+        jnp.array([2 * fluid.critical_point[prop_y],
+                2 * fluid.critical_point[prop_y]])
+    ])
     ax.fill(x, y, colors[0], alpha=0.7, label="Subcooled liquid")
 
     # Plot metastable liquid region
-    x = list(reversed(saturation_liq[prop_x])) + spinodal_liq[prop_x]
-    y = list(reversed(saturation_liq[prop_y])) + spinodal_liq[prop_y]
+    x = jnp.concatenate([jnp.flip(saturation_liq[prop_x]), spinodal_liq[prop_x]])
+    y = jnp.concatenate([jnp.flip(saturation_liq[prop_y]), spinodal_liq[prop_y]])
     ax.fill(x, y, colors[0], alpha=0.5, label="Metastable liquid")
 
     # Plot superheated vapor region
-    x = spinodal_liq[prop_x] + [fluid.triple_point_liquid[prop_x], 1.1*fluid.critical_point[prop_x]]
-    y = spinodal_liq[prop_y] + [-2*fluid.critical_point[prop_y], -2*fluid.critical_point[prop_y]]
+    x = jnp.concatenate([
+        spinodal_liq[prop_x],
+        jnp.array([fluid.triple_point_liquid[prop_x],
+                1.1 * fluid.critical_point[prop_x]])
+    ])
+    y = jnp.concatenate([
+        spinodal_liq[prop_y],
+        jnp.array([-2 * fluid.critical_point[prop_y],
+                -2 * fluid.critical_point[prop_y]])
+    ])
     ax.fill(x, y, colors[1], alpha=0.7, label="Superheated vapor")
 
     # Plot spinodal lines
@@ -105,18 +121,36 @@ for fluid_name in names:
     ax.set_ylim([0, 1])
 
     # Plot subcooled liquid region
-    x = spinodal_vap[prop_x] + [fluid.triple_point_liquid[prop_x], 1.1*fluid.critical_point[prop_x]]
-    y = spinodal_vap[prop_y] + [2*fluid.critical_point[prop_y], 2*fluid.critical_point[prop_y]]
+    x = jnp.concatenate([
+        spinodal_vap[prop_x],
+        jnp.array([fluid.triple_point_liquid[prop_x], 1.1 * fluid.critical_point[prop_x]])
+    ])
+    y = jnp.concatenate([
+        spinodal_vap[prop_y],
+        jnp.array([2 * fluid.critical_point[prop_y], 2 * fluid.critical_point[prop_y]])
+    ])
     ax.fill(x, y, colors[0], alpha=0.7, label="Subcooled liquid")
 
     # Plot metastable vapor region
-    x = list(reversed(saturation_vap[prop_x])) + spinodal_vap[prop_x]
-    y = list(reversed(saturation_vap[prop_y])) + spinodal_vap[prop_y]
-    ax.fill(x, y, colors[1], alpha=0.5, label="Metastable Vapor")
+    x = jnp.concatenate([
+        jnp.flip(saturation_vap[prop_x]),
+        spinodal_vap[prop_x]
+    ])
+    y = jnp.concatenate([
+        jnp.flip(saturation_vap[prop_y]),
+        spinodal_vap[prop_y]
+    ])
+    ax.fill(x, y, colors[1], alpha=0.5, label="Metastable vapor")
 
     # Plot superheated vapor region
-    x = saturation_vap[prop_x] + [fluid.triple_point_liquid[prop_x], 1.1*fluid.critical_point[prop_x]]
-    y = saturation_vap[prop_y] + [-2*fluid.critical_point[prop_y], -2*fluid.critical_point[prop_y]]
+    x = jnp.concatenate([
+        saturation_vap[prop_x],
+        jnp.array([fluid.triple_point_liquid[prop_x], 1.1 * fluid.critical_point[prop_x]])
+    ])
+    y = jnp.concatenate([
+        saturation_vap[prop_y],
+        jnp.array([-2 * fluid.critical_point[prop_y], -2 * fluid.critical_point[prop_y]])
+    ])
     ax.fill(x, y, colors[1], alpha=0.7, label="Superheated vapor")
 
     # Plot spinodal lines

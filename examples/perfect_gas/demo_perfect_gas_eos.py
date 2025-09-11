@@ -19,9 +19,9 @@ jxp.set_plot_options()
 
 
 # --------------------------- get constants -------------------------- #
-constants = pg.get_constants("air", 298.15, 101_325.0)
+fluid = jxp.FluidPerfectGas("air", 298.15, 101_325.0)
 print(f"\nPerfect-gas constants:")
-print(constants)
+print(fluid.constants)
 
 
 # -------------------------- basic evaluations ----------------------- #
@@ -29,30 +29,30 @@ print(constants)
 # Property calculation using (p, T)
 P0 = 101_325.0  # Pa
 T0 = 300.0      # K
-state_PT = pg.get_props_perfect_gas(jxp.PT_INPUTS, P0, T0, constants)
+state_PT = fluid.get_props(jxp.PT_INPUTS, P0, T0)
 print(f"\nState from PT (p = {P0:.0f} Pa, T = {T0:.2f} K)")
 print(state_PT)
 
 # Property calculation using (h, s)
 H = state_PT["h"]
 S = state_PT["s"]
-state_hs = pg.get_props_perfect_gas(jxp.HmassSmass_INPUTS, H, S, constants)
+state_hs = fluid.get_props(jxp.HmassSmass_INPUTS, H, S)
 print("\nState from HmassSmass (h, s)")
 print(state_hs)
 
 # Property calculation using (h, p)
-state_hP = pg.get_props_perfect_gas(jxp.HmassP_INPUTS, H, P0, constants)
+state_hP = fluid.get_props(jxp.HmassP_INPUTS, H, P0)
 print("\nState from HmassP (h, p)")
 print(state_hP)
 
 # Property calculation using (p, s)
-state_Ps = pg.get_props_perfect_gas(jxp.PSmass_INPUTS, P0, S, constants)
+state_Ps = fluid.get_props(jxp.PSmass_INPUTS, P0, S)
 print("\nState from PSmass (p, s)")
 print(state_Ps)
 
 # Property calculation using (rho, h)
 rho0 = state_PT["rho"]
-state_rhoh = pg.get_props_perfect_gas(jxp.DmassHmass_INPUTS, rho0, H, constants)
+state_rhoh = fluid.get_props(jxp.DmassHmass_INPUTS, rho0, H)
 print("\nState from DmassHmass (rho, h)")
 print(state_rhoh)
 
@@ -60,7 +60,7 @@ print(state_rhoh)
 
 # Compute viscosity over the temperature range
 T_range = np.linspace(300.0, 1000.0, 200)
-mu_vals = pg.viscosity_from_T(T_range, constants)
+mu_vals = pg.viscosity_from_T(T_range, fluid.constants)
 
 # Create figure
 fig, ax = plt.subplots(figsize=(6, 5))

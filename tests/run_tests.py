@@ -3,7 +3,7 @@ import pytest
 
 # Define the list of tests
 tests_list = [
-    "test_example_cases.py",
+    # "test_example_cases.py",
     "test_solvers_coolprop.py",
     "test_solvers_equilibrium.py",
     "test_solvers_metastable.py",

@@ -34,8 +34,8 @@ for fluid_name in names:
     # ---------------------------------------------------------------------------------- #
 
     # Create figure
-    prop_x = "rhomass"
-    prop_y = "p"
+    prop_x = "density"
+    prop_y = "pressure"
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
     ax1.set_xlabel(r"Density (kg/m$^3$)")
     ax1.set_ylabel(r"Pressure (Pa)")
@@ -82,7 +82,7 @@ for fluid_name in names:
             label=f"$\\Delta T_{{crit}}={fluid.critical_point.T - T:0.0f}$ K"
         )
         ax2.plot(
-            states_meta["rho"][i, :],
+            states_meta["density"][i, :],
             states_meta["isothermal_bulk_modulus"][i, :],
             color=colormap[i],
             label=f"$\\Delta T_{{crit}}={fluid.critical_point.T-T:0.0f}$ K",
@@ -119,7 +119,7 @@ for fluid_name in names:
             color=colormap[i],
         )
         ax2.plot(
-            spinodal_liq[i]["rho"],
+            spinodal_liq[i]["density"],
             spinodal_liq[i]["isothermal_bulk_modulus"],
             marker="o",
             markerfacecolor="w",
@@ -138,7 +138,7 @@ for fluid_name in names:
             color=colormap[i],
         )
         ax2.plot(
-            spinodal_vap[i]["rho"],
+            spinodal_vap[i]["density"],
             spinodal_vap[i]["isothermal_bulk_modulus"],
             marker="o",
             markerfacecolor="w",
@@ -157,8 +157,8 @@ for fluid_name in names:
     # ---------------------------------------------------------------------------------- #
 
     # Create figure
-    prop_x = "s"
-    prop_y = "T"
+    prop_x = "entropy"
+    prop_y = "temperature"
     fig, ax3 = plt.subplots(figsize=(6, 5))
     ax3.set_xlabel("Entropy (J/kg/K))")
     ax3.set_ylabel("Temperature (K)")

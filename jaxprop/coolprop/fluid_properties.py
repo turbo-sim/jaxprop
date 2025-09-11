@@ -1,16 +1,18 @@
 import difflib
 import numpy as np
+import jax.numpy as jnp
 import matplotlib.pyplot as plt
 import CoolProp.CoolProp as CP
 import pysolver_view as psv
 
 from functools import wraps
 
-from . import core_calculations as props
+from . import core_calculations as core
 
 from ..helpers_coolprop import (
+    FluidState,
     INPUT_TYPE_MAP,
-    MEANLINE_PROPERTIES,
+    # MEANLINE_PROPERTIES,
     LABEL_MAPPING,
 )
 
@@ -133,7 +135,6 @@ class Fluid:
         self.abstract_state = self._AS
         self.exceptions = exceptions
         self.converged_flag = False
-        self._properties = {}
         self.identifier = identifier if identifier is not None else name
 
         # Initialize variables
@@ -223,7 +224,7 @@ class Fluid:
 
 
         """
-        self._properties = props.compute_properties_coolprop(
+        props = core.compute_properties_coolprop(
             self._AS,
             input_type,
             prop_1,
@@ -231,87 +232,13 @@ class Fluid:
             generalize_quality=generalize_quality,
             supersaturation=supersaturation,
         )
-        self._properties["identifier"] = self.identifier
-        return FluidState(self._properties, self.name)
 
-    def get_states(
-        self,
-        input_type,
-        prop_1,
-        prop_2,
-        generalize_quality=False,
-        supersaturation=False,
-    ):
-        """
-        Vectorized version of get_state:
-        - if both prop_1 and prop_2 are scalars, returns a single FluidState
-        - if one is 1D array and the other scalar, returns ({prop: 1D array}, grid)
-        - if both are 1D arrays, returns ({prop: 2D array}, grid1, grid2)
-        """
-        # Force into 1D arrays
-        p1 = np.atleast_1d(prop_1)
-        p2 = np.atleast_1d(prop_2)
-
-        # Both properties are scalars
-        if p1.size == 1 and p2.size == 1:
-            return self.get_state(
-                input_type, float(p1), float(p2), generalize_quality, supersaturation
-            )
-
-        # 1D array for property 1
-        if p1.size > 1 and p2.size == 1:
-            states = [
-                self.get_state(
-                    input_type,
-                    float(p1i),
-                    float(p2),
-                    generalize_quality,
-                    supersaturation,
-                )
-                for p1i in p1
-            ]
-            return states_to_dict(states)
-
-        # 1D array for property 2
-        if p1.size == 1 and p2.size > 1:
-            states = [
-                self.get_state(
-                    input_type,
-                    float(p1),
-                    float(p2j),
-                    generalize_quality,
-                    supersaturation,
-                )
-                for p2j in p2
-            ]
-            return states_to_dict(states)
-
-        # Both properties are 1D arrays
-        # meshgrid with indexing='xy' yields shape (len(p2),len(p1))
-        if p1.ndim == 1 and p2.ndim == 1 and p1.size > 1 and p2.size > 1:
-            grid_1, grid_2 = np.meshgrid(p1, p2, indexing="xy")
-            states_2d = []
-            for i in range(grid_1.shape[0]):
-                row = []
-                for j in range(grid_1.shape[1]):
-                    row.append(
-                        self.get_state(
-                            input_type,
-                            float(grid_1[i, j]),
-                            float(grid_2[i, j]),
-                            generalize_quality,
-                            supersaturation,
-                        )
-                    )
-                states_2d.append(row)
-
-            return states_to_dict_2d(states_2d)
-
-        # Invalid combination
-        raise ValueError(
-            f"Invalid prop_1 and prop_2 shapes. Expected scalar or 1D array. "
-            f"Got prop_1.shape = {p1.shape}, prop_2.shape = {p2.shape}."
+        return FluidState(
+            fluid_name=self.name,
+            identifier=self.identifier,
+            **props,
         )
+    
 
     @_handle_computation_exceptions
     def get_state_equilibrium(
@@ -337,7 +264,7 @@ class Fluid:
             documentation of the function :ref:`compute_properties <compute_properties>`.
 
         """
-        self._properties = props.compute_properties(
+        props = core.compute_properties(
             self._AS,
             prop_1=prop_1,
             prop_1_value=prop_1_value,
@@ -352,8 +279,12 @@ class Fluid:
             solver_max_iterations=solver_max_iterations,
             print_convergence=print_convergence,
         )
-        return FluidState(self._properties, self.name)
-
+        return FluidState(
+            fluid_name=self.name,
+            identifier=self.identifier,
+            **props,
+        )
+    
     @_handle_computation_exceptions
     def get_state_metastable(
         self,
@@ -379,7 +310,7 @@ class Fluid:
 
         """
         if prop_1 == "rho" and prop_2 == "T":
-            self._properties = props.compute_properties_metastable_rhoT(
+            props = core.compute_properties_metastable_rhoT(
                 abstract_state=self._AS,
                 rho=prop_1_value,
                 T=prop_2_value,
@@ -387,7 +318,7 @@ class Fluid:
                 supersaturation=supersaturation,
             )
         elif prop_1 == "T" and prop_2 == "rho":
-            self._properties = props.compute_properties_metastable_rhoT(
+            props = core.compute_properties_metastable_rhoT(
                 abstract_state=self._AS,
                 rho=prop_2_value,
                 T=prop_1_value,
@@ -395,7 +326,7 @@ class Fluid:
                 supersaturation=supersaturation,
             )
         else:
-            self._properties = props.compute_properties(
+            props = core.compute_properties(
                 self._AS,
                 prop_1=prop_1,
                 prop_1_value=prop_1_value,
@@ -410,7 +341,12 @@ class Fluid:
                 solver_max_iterations=solver_max_iterations,
                 print_convergence=print_convergence,
             )
-        return FluidState(self._properties, self.name)
+        
+        return FluidState(
+            fluid_name=self.name,
+            identifier=self.identifier,
+            **props,
+        )
 
     @_handle_computation_exceptions
     def get_state_blending(
@@ -441,7 +377,7 @@ class Fluid:
             documentation of the function :ref:`compute_properties <compute_properties>`.
 
         """
-        blended, equilibrium, metastable = props.compute_properties(
+        blended, equilibrium, metastable = core.compute_properties(
             self._AS,
             prop_1=prop_1,
             prop_1_value=prop_1_value,
@@ -463,33 +399,12 @@ class Fluid:
         )
 
         return (
-            FluidState(blended, self.name),
-            FluidState(equilibrium, self.name),
-            FluidState(metastable, self.name),
+            FluidState(fluid_name=self.name, identifier=self.identifier, **blended),
+            FluidState(fluid_name=self.name, identifier=self.identifier, **equilibrium),
+            FluidState(fluid_name=self.name, identifier=self.identifier, **metastable),
         )
 
-    def get_property(self, propname):
-        """Get the value of a single property"""
-        if propname in self._properties:
-            return self._properties[propname]
-        else:
-            valid_options = "\n\t".join(self._properties.keys())
-            raise ValueError(
-                f"The requested property '{propname}' is not available. The valid options are:\n\t{valid_options}"
-            )
-
-    def compute_properties_meanline(self, input_type, prop_1, prop_2):
-        """Extract fluid properties for meanline model"""
-
-        # Compute properties in the normal way
-        self.get_state(input_type, prop_1, prop_2)
-
-        # Store a subset of the properties in a dictionary
-        fluid_properties = {}
-        for item in MEANLINE_PROPERTIES:
-            fluid_properties[item] = self._properties[item]
-
-        return fluid_properties
+    
 
     def plot_phase_diagram(
         self,
@@ -531,8 +446,8 @@ class Fluid:
                 self.sat_liq, self.sat_vap = compute_saturation_line(
                     self, N, dT_crit=dT_crit
                 )
-            x = list(reversed(self.sat_liq[x_prop])) + self.sat_vap[x_prop]
-            y = list(reversed(self.sat_liq[y_prop])) + self.sat_vap[y_prop]
+            x = jnp.concatenate([jnp.flip(self.sat_liq[x_prop]), self.sat_vap[x_prop]])
+            y = jnp.concatenate([jnp.flip(self.sat_liq[y_prop]), self.sat_vap[y_prop]])
             label = self._get_label("Saturation line", show_in_legend)
             params = {"label": label, "color": "black"}
             self._graphic_saturation_line = self._plot_or_update_line(
@@ -556,8 +471,8 @@ class Fluid:
                     supersaturation=False,
                     dT_crit=dT_crit,
                 )
-            x = list(reversed(self.spdl_liq[x_prop])) + self.spdl_vap[x_prop]
-            y = list(reversed(self.spdl_liq[y_prop])) + self.spdl_vap[y_prop]
+            x = jnp.concatenate([jnp.flip(self.spdl_liq[x_prop]), self.spdl_vap[x_prop]])
+            y = jnp.concatenate([jnp.flip(self.spdl_liq[y_prop]), self.spdl_vap[y_prop]])
             label = self._get_label("Spinodal line", show_in_legend)
             params = {
                 "label": label,
@@ -748,252 +663,6 @@ class Fluid:
 # ------------------------------------------------------------------------------------ #
 
 
-class FluidState:
-    """
-    An immutable class representing the thermodynamic state of a fluid.
-
-    This class is designed to provide a read-only representation of a fluid's state,
-    with properties accessible through both attribute-style and dictionary-style access.
-    The state of a fluid is defined at initialization and cannot be altered thereafter,
-    ensuring the integrity of the data.
-
-    Instances of this class store fluid properties and the fluid's name, providing
-    methods to access these properties but not to modify them.
-
-    Parameters
-    ----------
-    properties : dict
-        A dictionary where keys are property names (as strings) and values are the
-        corresponding properties of the fluid. This dictionary is converted to an
-        immutable internal representation.
-    fluid_name : str
-        The name of the fluid.
-
-    Attributes
-    ----------
-    properties : dict
-        An internal dictionary storing the properties of the fluid state. This attribute
-        is immutable and cannot be modified after the object's initialization.
-    fluid_name : str
-        The name of the fluid. Immutable after initialization.
-
-    Methods
-    -------
-    to_dict():
-        Returns a copy of the fluid properties as a dictionary.
-    keys():
-        Returns the keys of the fluid properties.
-    items():
-        Returns the items (key-value pairs) of the fluid properties.
-    """
-
-    __slots__ = ("_properties", "fluid_name")  # Define allowed attributes
-
-    def __init__(self, properties, fluid_name):
-        # Convert keys to strings and store properties in an internal attribute
-        # Ensure the properties dictionary is immutable (e.g., by using a frozendict if modifications are a concern)
-        object.__setattr__(
-            self, "_properties", {str(k): v for k, v in properties.items()}
-        )
-        object.__setattr__(self, "fluid_name", fluid_name)
-
-    def __getattr__(self, name):
-        # Allows attribute-style access to the fluid properties. If the property does not exist, raises AttributeError.
-        try:
-            props = object.__getattribute__(self, "_properties")
-            return props[name]
-        except KeyError:
-            raise AttributeError(f"'{name}' not found in FluidState properties")
-
-    def __getitem__(self, key):
-        # Allows dictionary-style access to the fluid properties. If the key does not exist, raises KeyError.
-        try:
-            props = object.__getattribute__(self, "_properties")
-            return props[str(key)]
-        except KeyError:
-            raise KeyError(f"'{key}' not found in FluidState properties")
-
-    def __setattr__(self, key, value):
-        # Prevents modifications to the instance attributes, ensuring immutability.
-        raise AttributeError(
-            "Cannot modify properties of an immutable FluidState class"
-        )
-
-    def __setitem__(self, key, value):
-        # Prevents modifications to the fluid properties through dictionary-style access, ensuring immutability.
-        raise AttributeError(
-            "Cannot modify properties of an immutable FluidState class"
-        )
-
-    def __repr__(self):
-        # Returns a string representation of the FluidState instance
-        return f"FluidState(n_props={len(self._properties)}, fluid='{self.fluid_name}')"
-
-    def __str__(self):
-        # Recursive pretty-printing of nested dictionaries
-        def format_entry(key, value, indent="   "):
-            if isinstance(value, dict):
-                lines = [f"{indent}{key}:"]
-                for subkey, subval in value.items():
-                    lines.append(format_entry(subkey, subval, indent + "  "))
-                return "\n".join(lines)
-            elif isinstance(value, str):
-                return f"{indent}{key}: {value}"
-            elif isinstance(value, bool):  # Handle booleans separately
-                return f"{indent}{key}: {value}"
-            else:
-                try:
-                    return f"{indent}{key}: {value: .6e}"
-                except (TypeError, ValueError):
-                    return f"{indent}{key}: {value}"
-
-        lines = [format_entry(k, v) for k, v in self._properties.items()]
-        return "FluidState:\n" + "\n".join(lines)
-
-    def __iter__(self):
-        # Iterate over the object like a dictionary
-        return iter(self._properties)
-
-    def to_dict(self):
-        # Return a copy of the properties to ensure immutability
-        return dict(self._properties)
-
-    def keys(self):
-        # Return the keys of the properties
-        return self._properties.keys()
-
-    def values(self):
-        # Return the values of the properties
-        return self._properties.values()
-
-    def items(self):
-        # Return the items of the properties
-        return self._properties.items()
-
-    def get(self, key, default=None):
-        return self._properties.get(key, default)
-
-    def __getstate__(self):
-        """Enable pickling by returning internal state without violating immutability."""
-        return {
-            "_properties": self._properties,
-            "fluid_name": self.fluid_name,
-        }
-
-    def __setstate__(self, state):
-        """Restore internal state during unpickling while bypassing immutability guard."""
-        object.__setattr__(self, "_properties", state["_properties"])
-        object.__setattr__(self, "fluid_name", state["fluid_name"])
-
-
-# def states_to_dict(states):
-#     """
-#     Convert a list of state objects into a dictionary.
-
-#     Each key is a field name of the state objects, and each value is a Numpy array of all the values for that field.
-
-#     Parameters
-#     ----------
-#     states_grid : list of FluidState
-#         A 1D grid where each element is a state object with the same keys.
-
-#     Returns
-#     -------
-#     dict
-#         A dictionary where keys are field names and values are 1D arrays of field values.
-#     """
-#     state_dict = {}
-#     for field in states[0].keys():
-#         state_dict[field] = np.array([getattr(state, field) for state in states])
-#     return state_dict
-
-
-def states_to_dict(states):
-    """
-    Recursively convert a list of FluidState objects into a nested dictionary
-    of NumPy arrays. Handles missing keys by inserting NaNs or None.
-
-    Parameters
-    ----------
-    states : list of FluidState
-        A list of FluidState objects. Keys may differ between objects.
-
-    Returns
-    -------
-    dict
-        Nested dictionary where leaf nodes are 1D numpy arrays of field values.
-        Missing keys are filled with NaN or None.
-    """
-    # from .jax_import import jax, jnp, JAX_AVAILABLE
-    # np = jnp
-
-    from collections.abc import Mapping
-
-    def extract_value(state, key):
-        if hasattr(state, "get"):
-            return state.get(key, None)
-        return getattr(state, key, None)
-
-    def is_nested(value):
-        return isinstance(value, Mapping) or hasattr(value, "keys")
-
-    # Collect the union of all keys across states
-    all_keys = set()
-    for state in states:
-        all_keys.update(state.keys())
-
-    result = {}
-
-    for key in sorted(all_keys):
-        values = [extract_value(s, key) for s in states]
-
-        # Check if this field is nested (but skip None)
-        nested_values = [v for v in values if v is not None]
-        if nested_values and is_nested(nested_values[0]):
-            result[key] = states_to_dict(nested_values)
-        else:
-            # If values are mixed (e.g., some None), fill with None or np.nan
-            if all(isinstance(v, (int, float, np.number, type(None))) for v in values):
-                result[key] = np.array([np.nan if v is None else v for v in values])
-            else:
-                result[key] = np.array(values, dtype=object)
-
-    return result
-
-
-def states_to_dict_2d(states):
-    """
-    Convert a 2D list (grid) of state objects into a dictionary.
-
-    Each key is a field name of the state objects, and each value is a 2D Numpy array of all the values for that field.
-
-    Parameters
-    ----------
-    states_grid : list of lists of FluidState
-        A 2D grid where each element is a state object with the same keys.
-
-    Returns
-    -------
-    dict
-        A dictionary where keys are field names and values are 2D arrays of field values.
-    """
-    state_dict_2d = {}
-    m, n = len(states), len(states[0])
-    for i, row in enumerate(states):
-        for j, state in enumerate(row):
-            for field, value in state.items():
-                if field not in state_dict_2d:
-                    dtype = type(value)  # Determine dtype from the first occurrence
-                    state_dict_2d[field] = np.empty((m, n), dtype=dtype)
-                state_dict_2d[field][i, j] = value
-    return state_dict_2d
-
-
-# ------------------------------------------------------------------------------------ #
-# ------------------------------------------------------------------------------------ #
-# ------------------------------------------------------------------------------------ #
-
-
 def compute_saturation_line(fluid, N=100, dT_crit=0.5):
     """
     Compute the saturation line for a given fluid.
@@ -1007,10 +676,10 @@ def compute_saturation_line(fluid, N=100, dT_crit=0.5):
 
     Returns
     -------
-    saturation_liq : dict of lists
-        Dictionary containing the liquid saturation properties.
-    saturation_vap : dict of lists
-        Dictionary containing the vapor saturation properties.
+    saturation_liq : FluidState
+        Batched FluidState for the liquid saturation line.
+    saturation_vap : FluidState
+        Batched FluidState for the vapor saturation line.
     """
     # Define temperature array with refinement close to the critical point
     R = 1 - fluid.triple_point_liquid.T / fluid.critical_point.T
@@ -1020,29 +689,38 @@ def compute_saturation_line(fluid, N=100, dT_crit=0.5):
     # t2 = np.asarray([])
     T_sat = (1 - np.concatenate([t1, t2])) * fluid.critical_point.T
 
-    # Initialize dictionaries for storing properties
-    saturation_liq = {}
-    saturation_vap = {}
+    # Collect states in lists
+    liq_states = [fluid.critical_point]  # start with critical point
+    vap_states = [fluid.critical_point]
 
-    # Loop over temperatures for liquid and vapor states
     for T in T_sat:
-        state_liquid = fluid.get_state(CP.QT_INPUTS, 0.00, T)
-        state_vapor = fluid.get_state(CP.QT_INPUTS, 1.00, T)
-        for name in state_liquid.keys():
-            if name not in saturation_liq:
-                saturation_liq[name] = [fluid.critical_point.get(name, None)]
-            saturation_liq[name].append(state_liquid[name])
+        liq_states.append(fluid.get_state(CP.QT_INPUTS, 0.00, T))
+        vap_states.append(fluid.get_state(CP.QT_INPUTS, 1.00, T))
 
-        for name in state_vapor.keys():
-            if name not in saturation_vap:
-                saturation_vap[name] = [fluid.critical_point.get(name, None)]
-            saturation_vap[name].append(state_vapor[name])
+    # Reverse the liquid branch if needed
+    # liq_states = list(reversed(liq_states))
 
-    # # Reverse the liquid properties for easy concatenation
-    # for name in saturation_liq.keys():
-    #     saturation_liq[name] = list(reversed(saturation_liq[name]))
+    # Stack into batched FluidState
+    saturation_liq = FluidState.stack(liq_states)
+    saturation_vap = FluidState.stack(vap_states)
 
     return saturation_liq, saturation_vap
+
+def compute_pseudocritical_line(fluid, N_points=100):
+    """Compute pseudocritical line (approximate, defined here at critical density)."""
+    # Define temperature array with refinement close to the critical point
+    tau = np.logspace(np.log10(1e-3), np.log10(1), N_points)
+    T_range = (1 + tau) * fluid.critical_point.T
+
+    states = []
+    for T in T_range:
+        if T >= fluid.abstract_state.Tmax():
+            break
+        state = fluid.get_state(CP.DmassT_INPUTS, fluid.critical_point.d, T)
+        states.append(state)
+
+    # Stack all computed states into one batched FluidState
+    return FluidState.stack(states)
 
 
 def compute_spinodal_line(
@@ -1072,10 +750,10 @@ def compute_spinodal_line(
 
     Returns
     -------
-    spinodal_liq : dict of lists
-        Dictionary containing the liquid spinodal properties.
-    spinodal_vap : dict of lists
-        Dictionary containing the vapor spinodal properties.
+    spinodal_liq : FluidState
+        Batched FluidState for the liquid spinodal line.
+    spinodal_vap : FluidState
+        Batched FluidState for the vapor spinodal line.
     """
 
     # Temperature array with refinement close to the critical point
@@ -1092,11 +770,8 @@ def compute_spinodal_line(
     delta = (s_max - s_min) / 100
     s_min, s_max = s_min + delta, s_max - delta
 
-    # Initialize dictionaries for storing properties
-    spinodal_liq = {}
-    spinodal_vap = {}
-
-    # Compute liquid branch until calculations break down
+    # --- liquid branch
+    states_liq = []
     props_liq = compute_spinodal_point(
         T_spinodal[0],
         fluid,
@@ -1115,16 +790,13 @@ def compute_spinodal_line(
             supersaturation=supersaturation,
             tolerance=tolerance,
         )
-
         if s_min < props_liq["s"] < s_max:
-            for name in props_liq.keys():
-                if name not in spinodal_liq:  # Initialize list if new property
-                    spinodal_liq[name] = []
-                spinodal_liq[name].append(props_liq.get(name, np.nan))
+            states_liq.append(props_liq)
         else:
             break
 
-    # Compute vapor branch until calculations break down
+    # --- vapor branch
+    states_vap = []
     props_vap = compute_spinodal_point(
         T_spinodal[0], fluid, "vapor", method=method, supersaturation=supersaturation
     )
@@ -1138,149 +810,16 @@ def compute_spinodal_line(
             method=method,
             supersaturation=supersaturation,
         )
-
-        if s_min < props_vap["s"] < s_max:  # If not satisfied the HEOS is blowing up
-            for name in props_vap.keys():
-                if name not in spinodal_vap:  # Initialize list if new property
-                    spinodal_vap[name] = []
-                spinodal_vap[name].append(props_vap.get(name, np.nan))
+        if s_min < props_vap["s"] < s_max:
+            states_vap.append(props_vap)
         else:
             break
 
-    # # Reverse the liquid properties for easy concatenation
-    # for name in spinodal_liq.keys():
-    #     spinodal_liq[name] = list(reversed(spinodal_liq[name]))
+    # Convert to batched FluidState objects
+    spinodal_liq = FluidState.stack(states_liq)
+    spinodal_vap = FluidState.stack(states_vap)
 
     return spinodal_liq, spinodal_vap
-
-
-def compute_pseudocritical_line(fluid, N_points=100):
-    """This calculation is not exact, the actual definition is given
-    by the maximum of the heat capacity, not by the critical density"""
-    # Initialize objects to store properties
-    prop_names = fluid._properties.keys()
-    pseudocritical_line = {name: [] for name in prop_names}
-
-    # Define temperature array with refinement close to the critical point
-    tau = np.logspace(np.log10(1e-3), np.log10(1), N_points)
-    T_range = (1 + tau) * fluid.critical_point.T
-
-    # Loop over temperatures and compute pseudocritical properties
-    for T in T_range:
-        if T >= fluid.abstract_state.Tmax():
-            break
-        for name in prop_names:
-            state = fluid.get_state(CP.DmassT_INPUTS, fluid.critical_point.d, T)
-            pseudocritical_line[name].append(state.get(name, None))
-
-    return pseudocritical_line
-
-
-def compute_quality_grid(fluid, num_points, quality_levels, dT_crit=1.0):
-    # Define temperature levels
-    R = 1 - fluid.triple_point_liquid.T / fluid.critical_point.T
-    R_crit = dT_crit / fluid.critical_point.T
-    t1 = np.logspace(np.log10(R_crit), np.log10(R / 2), int(np.ceil(num_points / 2)))
-    t2 = np.linspace(R / 2, R, int(np.floor(num_points / 2)))
-    temperature_levels = (1 - np.concatenate([t1, t2])) * fluid.critical_point.T
-
-    # Calculate property grid
-    quality_grid = []
-    for q in quality_levels:
-        row = []
-        row.append(fluid.critical_point)
-        for T in temperature_levels:
-            row.append(fluid.get_state(CP.QT_INPUTS, q, T))
-
-        quality_grid.append(row)
-
-    return states_to_dict_2d(quality_grid)
-
-
-def compute_property_grid(
-    fluid,
-    input_pair,
-    range_1,
-    range_2,
-    generalize_quality=False,
-    supersaturation=False,
-):
-    """
-    Compute fluid properties over a specified range and store them in a dictionary.
-
-    This function creates a meshgrid of property values based on the specified ranges and input pair,
-    computes the properties of the fluid at each point on the grid, and stores the results in a
-    dictionary where each key corresponds to a fluid property.
-
-    Parameters
-    ----------
-    fluid : Fluid object
-        An instance of the Fluid class.
-    input_pair : tuple
-        The input pair specifying the property type (e.g., PT_INPUTS for pressure-temperature).
-    range1 : tuple
-        The range linspace(min, max, n) for the first property of the input pair.
-    range2 : tuple
-        The range linspace(min, max, n) for the second property of the input pair.
-
-    Returns
-    -------
-    properties_dict : dict
-        A dictionary where keys are property names and values are 2D numpy arrays of computed properties.
-    grid1, grid2 : numpy.ndarray
-        The meshgrid arrays for the first and second properties.
-    """
-
-    # Create the meshgrid
-    grid1, grid2 = np.meshgrid(range_1, range_2)
-
-    # Initialize dictionary to store properties and pre-allocate storage
-    properties_dict = {}
-    n, m = len(range_1), len(range_2)
-
-    # Compute properties at each point
-    for i in range(m):
-        for j in range(n):
-            # Set state of the fluid
-            state = fluid.get_state(
-                input_pair,
-                grid1[i, j],
-                grid2[i, j],
-                generalize_quality=generalize_quality,
-                supersaturation=supersaturation,
-            )
-
-            # Store the properties (initialize as empty array if new key)
-            for key, value in state.items():
-                if key not in properties_dict.keys():
-                    dtype = type(value)  # Determine dtype from the first occurrence
-                    properties_dict[key] = np.empty((m, n), dtype=dtype)
-                    # properties_dict[key] = np.zeros_like(grid1)
-                properties_dict[key][i, j] = state[key]
-
-    return properties_dict
-
-
-def compute_property_grid_rhoT(
-    fluid,
-    rho_array,
-    T_array,
-):
-
-    # Calculate property grid
-    states_meta = []
-    for T in T_array:
-        row = []
-        for rho in rho_array:
-            row.append(props.compute_properties_metastable_rhoT(fluid._AS, rho, T))
-        states_meta.append(row)
-
-    # Convert nested list of dictionaries into dictionary of 2D arrays
-    states_meta = states_to_dict_2d(states_meta)
-
-    return states_meta
-
-
 
 
 # ------------------------------------------------------------------------------------ #
@@ -1650,6 +1189,193 @@ class _SpinodalPointProblem(psv.OptimizationProblem):
 # ------------------------------------------------------------------------------------ #
 # Other calculations
 # ------------------------------------------------------------------------------------ #
+
+
+def states_to_dict(states):
+    """
+    Recursively convert a list of FluidState objects into a nested dictionary
+    of NumPy arrays. Handles missing keys by inserting NaNs or None.
+
+    Parameters
+    ----------
+    states : list of FluidState
+        A list of FluidState objects. Keys may differ between objects.
+
+    Returns
+    -------
+    dict
+        Nested dictionary where leaf nodes are 1D numpy arrays of field values.
+        Missing keys are filled with NaN or None.
+    """
+    # from .jax_import import jax, jnp, JAX_AVAILABLE
+    # np = jnp
+
+    from collections.abc import Mapping
+
+    def extract_value(state, key):
+        if hasattr(state, "get"):
+            return state.get(key, None)
+        return getattr(state, key, None)
+
+    def is_nested(value):
+        return isinstance(value, Mapping) or hasattr(value, "keys")
+
+    # Collect the union of all keys across states
+    all_keys = set()
+    for state in states:
+        all_keys.update(state.keys())
+
+    result = {}
+
+    for key in sorted(all_keys):
+        values = [extract_value(s, key) for s in states]
+
+        # Check if this field is nested (but skip None)
+        nested_values = [v for v in values if v is not None]
+        if nested_values and is_nested(nested_values[0]):
+            result[key] = states_to_dict(nested_values)
+        else:
+            # If values are mixed (e.g., some None), fill with None or np.nan
+            if all(isinstance(v, (int, float, np.number, type(None))) for v in values):
+                result[key] = np.array([np.nan if v is None else v for v in values])
+            else:
+                result[key] = np.array(values, dtype=object)
+
+    return result
+
+
+def states_to_dict_2d(states):
+    """
+    Convert a 2D list (grid) of state objects into a dictionary.
+
+    Each key is a field name of the state objects, and each value is a 2D Numpy array of all the values for that field.
+
+    Parameters
+    ----------
+    states_grid : list of lists of FluidState
+        A 2D grid where each element is a state object with the same keys.
+
+    Returns
+    -------
+    dict
+        A dictionary where keys are field names and values are 2D arrays of field values.
+    """
+    state_dict_2d = {}
+    m, n = len(states), len(states[0])
+    for i, row in enumerate(states):
+        for j, state in enumerate(row):
+            for field, value in state.items():
+                if field not in state_dict_2d:
+                    dtype = type(value)  # Determine dtype from the first occurrence
+                    state_dict_2d[field] = np.empty((m, n), dtype=dtype)
+                state_dict_2d[field][i, j] = value
+    return state_dict_2d
+
+
+def compute_quality_grid(fluid, num_points, quality_levels, dT_crit=1.0):
+    # Define temperature levels
+    R = 1 - fluid.triple_point_liquid.T / fluid.critical_point.T
+    R_crit = dT_crit / fluid.critical_point.T
+    t1 = np.logspace(np.log10(R_crit), np.log10(R / 2), int(np.ceil(num_points / 2)))
+    t2 = np.linspace(R / 2, R, int(np.floor(num_points / 2)))
+    temperature_levels = (1 - np.concatenate([t1, t2])) * fluid.critical_point.T
+
+    # Calculate property grid
+    quality_grid = []
+    for q in quality_levels:
+        row = []
+        row.append(fluid.critical_point)
+        for T in temperature_levels:
+            row.append(fluid.get_state(CP.QT_INPUTS, q, T))
+
+        quality_grid.append(row)
+
+    return states_to_dict_2d(quality_grid)
+
+
+def compute_property_grid(
+    fluid,
+    input_pair,
+    range_1,
+    range_2,
+    generalize_quality=False,
+    supersaturation=False,
+):
+    """
+    Compute fluid properties over a specified range and store them in a dictionary.
+
+    This function creates a meshgrid of property values based on the specified ranges and input pair,
+    computes the properties of the fluid at each point on the grid, and stores the results in a
+    dictionary where each key corresponds to a fluid property.
+
+    Parameters
+    ----------
+    fluid : Fluid object
+        An instance of the Fluid class.
+    input_pair : tuple
+        The input pair specifying the property type (e.g., PT_INPUTS for pressure-temperature).
+    range1 : tuple
+        The range linspace(min, max, n) for the first property of the input pair.
+    range2 : tuple
+        The range linspace(min, max, n) for the second property of the input pair.
+
+    Returns
+    -------
+    properties_dict : dict
+        A dictionary where keys are property names and values are 2D numpy arrays of computed properties.
+    grid1, grid2 : numpy.ndarray
+        The meshgrid arrays for the first and second properties.
+    """
+
+    # Create the meshgrid
+    grid1, grid2 = np.meshgrid(range_1, range_2)
+
+    # Initialize dictionary to store properties and pre-allocate storage
+    properties_dict = {}
+    n, m = len(range_1), len(range_2)
+
+    # Compute properties at each point
+    for i in range(m):
+        for j in range(n):
+            # Set state of the fluid
+            state = fluid.get_state(
+                input_pair,
+                grid1[i, j],
+                grid2[i, j],
+                generalize_quality=generalize_quality,
+                supersaturation=supersaturation,
+            )
+
+            # Store the properties (initialize as empty array if new key)
+            for key, value in state.items():
+                if key not in properties_dict.keys():
+                    dtype = type(value)  # Determine dtype from the first occurrence
+                    properties_dict[key] = np.empty((m, n), dtype=dtype)
+                    # properties_dict[key] = np.zeros_like(grid1)
+                properties_dict[key][i, j] = state[key]
+
+    return properties_dict
+
+
+def compute_property_grid_rhoT(
+    fluid,
+    rho_array,
+    T_array,
+):
+
+    # Calculate property grid
+    states_meta = []
+    for T in T_array:
+        row = []
+        for rho in rho_array:
+            row.append(core.compute_properties_metastable_rhoT(fluid._AS, rho, T))
+        states_meta.append(row)
+
+    # Convert nested list of dictionaries into dictionary of 2D arrays
+    states_meta = states_to_dict_2d(states_meta)
+
+    return states_meta
+
 
 
 # def get_state_Qs(fluid, Q, s):

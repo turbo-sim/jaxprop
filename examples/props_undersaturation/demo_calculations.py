@@ -9,9 +9,9 @@ import jaxprop.coolprop as jxp
 fluid = jxp.Fluid(name="water", backend="HEOS")
 
 # --- Superheating: low-level (only once) ---
-as_superheat = cp.AbstractState("HEOS", "water")
-as_superheat.update(cp.PT_INPUTS, 101325, 120 + 273.15)
-superheat_low = jxp.calculate_superheating(as_superheat)
+AS_superheat = cp.AbstractState("HEOS", "water")
+AS_superheat.update(cp.PT_INPUTS, 101325, 120 + 273.15)
+superheat_low = jxp.calculate_superheating(AS_superheat)
 print(f"[low-level] Superheating: {superheat_low:+0.3f} K")
 
 # --- Superheating: high-level ---

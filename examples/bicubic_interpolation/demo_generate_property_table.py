@@ -1,6 +1,6 @@
 import os
 import pickle
-import jaxprop as cpx
+import jaxprop as jxp
 
 
 outdir = "fluid_tables"
@@ -10,41 +10,53 @@ outdir = "fluid_tables"
 # Test parameters
 # ---------------------------s
 fluid = "CO2"
-hmin = 200e3     # J/kg
-hmax = 600e3     # J/kg
-Pmin = 2e6       # Pa
-Pmax = 20e6      # Pa
-Np = 20          # Grid size for quick test
-Nh = 16
+h_min = 200e3  # J/kg
+h_max = 600e3  # J/kg
+p_min = 2e6  # Pa
+p_max = 20e6  # Pa
+N_p = 20  # Grid size for quick test
+N_h = 16
 
 # ---------------------------
 # Run table generation
 # ---------------------------
-cpx.bicubic.generate_property_table(hmin, hmax, Pmin, Pmax, fluid, Nh=Nh, Np=Np, outdir=outdir)
+table = jxp.bicubic.generate_property_table(
+    fluid_name=fluid,
+    backend="HEOS",
+    h_min=h_min,
+    h_max=h_max,
+    p_min=p_min,
+    p_max=p_max,
+    N_h=N_h,
+    N_p=N_p,
+    outdir=outdir,
+)
 
 
-# ---------------------------
-# Load and preview output
-# ---------------------------
+print(table)
 
-pkl_file = os.path.join(outdir, f"{fluid}_{Nh}_x_{Np}.pkl")
+# # ---------------------------
+# # Load and preview output
+# # ---------------------------
 
-print("\n Verifying saved table structure...\n")
+# pkl_file = os.path.join(outdir, f"{fluid}_{Nh}_x_{Np}.pkl")
 
-# Load pickled dict
-with open(pkl_file, 'rb') as f:
-    table = pickle.load(f)
+# print("\n Verifying saved table structure...\n")
 
-# Check and print summary
-print(" Keys in table:", list(table.keys()))
+# # Load pickled dict
+# with open(pkl_file, 'rb') as f:
+#     table = pickle.load(f)
 
-print("\n h values:", table['h'][:5])
-print(" P values:", table['P'][:5])
+# # Check and print summary
+# print(" Keys in table:", list(table.keys()))
 
-print("\n Preview for property 'T':")
-if 'T' in table:
-    print(" - Value shape:", table['T']['value'].shape)
-    print(" - Sample values (top-left corner):")
-    print(table['T']['value'][:3, :3])
-else:
-    print(" - Property 'T' not found.")
+# print("\n h values:", table['h'][:5])
+# print(" P values:", table['P'][:5])
+
+# print("\n Preview for property 'T':")
+# if 'T' in table:
+#     print(" - Value shape:", table['T']['value'].shape)
+#     print(" - Sample values (top-left corner):")
+#     print(table['T']['value'][:3, :3])
+# else:
+#     print(" - Property 'T' not found.")

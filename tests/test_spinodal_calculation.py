@@ -46,7 +46,7 @@ def test_spinodal_calculation(fluid_name, backend):
 
     # Check both spinodal branches
     for label, spinodal in [("liquid", spinodal_liq), ("vapor", spinodal_vap)]:
-        p = np.array(spinodal["p"])
+        p = np.array(spinodal["pressure"])
         B = np.array(spinodal["isothermal_bulk_modulus"])
         B_over_p = B / p
 

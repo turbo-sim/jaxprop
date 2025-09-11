@@ -1,83 +1,86 @@
-import numpy as np
-
-from ..jax_import import jnp
-# import jax.numpy as jnp
-import CoolProp.CoolProp as cp
-# import turboflow as tf
 import os
 import pickle
-from jaxprop.fluid_properties import Fluid
 
-def generate_property_table(hmin, hmax, Pmin, Pmax, fluid_name, Nh, Np, outdir='fluid_tables'):
-    fluid = Fluid(fluid_name)
-    # fluid = tf.Fluid(fluid_name)
-    h_vals = jnp.linspace(hmin, hmax, Nh)
-    Lmin=jnp.log(Pmin) # Log of P
-    Lmax=jnp.log(Pmax) # Log of P
-    P_vals = jnp.linspace(Lmin, Lmax, Np)
+import numpy as np
 
-    deltah = float(h_vals[1] - h_vals[0])
-    deltaL = P_vals[1]-P_vals[0]
-    eps_h = 0.001 * deltah
-    eps_P = 1e-6 * float(Pmin)
+from ..coolprop import Fluid
+from .. import helpers_coolprop as jxp
+
+
+def generate_property_table(
+    fluid_name,
+    backend,
+    h_min,
+    h_max,
+    p_min,
+    p_max,
+    N_h,
+    N_p,
+    outdir="fluid_tables",
+):
+
+    # Create fluid
+    fluid = Fluid(fluid_name, backend)
+    h_vals = np.linspace(h_min, h_max, N_h)
+    logP_min = np.log(p_min)  # Log of P
+    logP_max = np.log(p_max)  # Log of P
+    logP_vals = np.linspace(logP_min, logP_max, N_p)
+
+    delta_h = h_vals[1] - h_vals[0]
+    delta_logP = logP_vals[1] - logP_vals[0]
 
     properties = {
-        'T': 'T',       # Temperature [K]
-        'd': 'D',       # Density [kg/m³]
-        's': 'S',       # Entropy [J/kg/K]
-        'mu': 'V',      # Viscosity [Pa·s]
-        'k': 'L',       # Thermal conductivity [W/m/K]
+        "T": "T",  # Temperature [K]
+        "d": "D",  # Density [kg/m³]
+        "s": "S",  # Entropy [J/kg/K]
+        "mu": "V",  # Viscosity [Pa·s]
+        "k": "L",  # Thermal conductivity [W/m/K]
     }
 
     # Initialize property grids
-    table = {
-        'h': np.array(h_vals),
-        'P': np.array(jnp.exp(P_vals))
-    }
+    table = {"h": np.array(h_vals), "p": np.array(np.exp(logP_vals))}
 
-    for key in properties:
-        table[key] = {
-            'value': np.zeros((Nh, Np), dtype=np.float64),
-            'd_dh':  np.zeros((Nh, Np), dtype=np.float64),
-            'd_dP':  np.zeros((Nh, Np), dtype=np.float64),
-            'd2_dhdP': np.zeros((Nh, Np), dtype=np.float64),
+    for k in properties:
+        table[k] = {
+            "val": np.zeros((N_h, N_p)),
+            "dval_dh": np.zeros((N_h, N_p)),
+            "dval_dp": np.zeros((N_h, N_p)),
+            "d2val_dhdp": np.zeros((N_h, N_p)),
         }
 
     # Loop over grid and populate values
     for i, h in enumerate(h_vals):
-        for j, P in enumerate(P_vals):
-            hf = float(h)
-            Pf = jnp.exp(P)
+        for j, logP in enumerate(logP_vals):
+            p = np.exp(logP)
 
-            try:        
-                f_0 = fluid.get_state(cp.HmassP_INPUTS, float(hf), float(Pf))
-                f_h = fluid.get_state(cp.HmassP_INPUTS, float(hf + eps_h), float(Pf))
-                f_p = fluid.get_state(cp.HmassP_INPUTS, float(hf), float(Pf + eps_P))
-                f_hp = fluid.get_state(cp.HmassP_INPUTS, float(hf + eps_h), float(Pf + eps_P))
-            # Uncomment below if using turboflow
-                # f_0 = tf.get_props_custom_jvp(fluid, cp.HmassP_INPUTS, hf, Pf)
-                # f_h = tf.get_props_custom_jvp(fluid, cp.HmassP_INPUTS, hf + eps_h, Pf)
-                # f_p = tf.get_props_custom_jvp(fluid, cp.HmassP_INPUTS, hf, Pf + eps_P)
-                # f_hp = tf.get_props_custom_jvp(fluid, cp.HmassP_INPUTS, hf + eps_h, Pf + eps_P)
-            except Exception:
-                continue  # Skip invalid points
+            eps_h = max(1e-6 * abs(h), 1e-3 * delta_h)
+            eps_p = max(1e-6 * abs(p), 1e-3 * (np.exp(delta_logP) - 1.0) * p)
 
-            for key in properties:
-                val = f_0[key]
-                dval_dh = (f_h[key] - f_0[key]) / eps_h
-                dval_dP = (f_p[key] - f_0[key]) / eps_P
-                d2val_dhdP = (f_hp[key] - f_h[key] - f_p[key] + f_0[key]) / (eps_h * eps_P)
+            # try:
+            f_0 = fluid.get_state(jxp.HmassP_INPUTS, h, p)
+            f_h = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p)
+            f_p = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p)
+            f_hp = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p + eps_p)
 
-                table[key]['value'][i, j] = val
-                table[key]['d_dh'][i, j] = dval_dh
-                table[key]['d_dP'][i, j] = dval_dP
-                table[key]['d2_dhdP'][i, j] = d2val_dhdP
+            # except Exception:
+            #     continue  # Skip invalid points
+
+            for k in properties:
+                val = f_0[k]
+                dval_dh = (f_h[k] - f_0[k]) / eps_h
+                dval_dP = (f_p[k] - f_0[k]) / eps_p
+                d2val_dhdP = (f_hp[k] - f_h[k] - f_p[k] + f_0[k]) / (eps_h * eps_p)
+
+                table[k]["val"][i, j] = val
+                table[k]["dval_dh"][i, j] = dval_dh
+                table[k]["dval_dp"][i, j] = dval_dP
+                table[k]["d2val_dhdp"][i, j] = d2val_dhdP
 
     # Save as pickle only (most useful for JAX processing)
     os.makedirs(outdir, exist_ok=True)
-    pkl_path = os.path.join(outdir, f'{fluid_name}_{Nh}_x_{Np}.pkl')
+    pkl_path = os.path.join(outdir, f"{fluid_name}_{N_h}_x_{N_p}.pkl")
 
-    with open(pkl_path, 'wb') as f:
+    with open(pkl_path, "wb") as f:
         pickle.dump(table, f)
 
     print(f" Saved the table to:\n -> Pickle: {pkl_path}")

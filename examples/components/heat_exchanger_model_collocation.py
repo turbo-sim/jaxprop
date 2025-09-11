@@ -5,7 +5,7 @@ import jax.numpy as jnp
 import optimistix as opx
 import equinox as eqx
 import matplotlib.pyplot as plt
-import jaxprop as cpx
+import jaxprop as jxp
 
 from typing import Any, Callable
 
@@ -25,7 +25,7 @@ from examples.jaxprop.nozzle_model_solver import (
 )
 
 
-cpx.set_plot_options()
+jxp.set_plot_options()
 
 
 
@@ -189,7 +189,7 @@ def temperature_nodes_from_z(x_nodes, z_side, params_side):
     p = jnp.exp(ln_p)
 
     def per_node(di, pi):
-        st = get_props(cpx.DmassP_INPUTS, di, pi, params_side.fluid)
+        st = get_props(jxp.DmassP_INPUTS, di, pi, params_side.fluid)
         return st["T"]
 
     return jax.vmap(per_node)(d, p)
@@ -314,7 +314,7 @@ if __name__ == "__main__":
 
     # Define model parameters
     fluid_name = "air"
-    fluid = cpx.perfect_gas.get_constants(fluid_name, T_ref=300, P_ref=101325)
+    fluid = jxp.perfect_gas.get_constants(fluid_name, T_ref=300, p_ref=101325)
 
 
 
