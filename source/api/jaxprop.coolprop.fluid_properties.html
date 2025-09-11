@@ -341,23 +341,11 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid"><code class="docutils literal notranslate"><span class="pre">Fluid</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.compute_properties_meanline"><code class="docutils literal notranslate"><span class="pre">Fluid.compute_properties_meanline()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.get_property"><code class="docutils literal notranslate"><span class="pre">Fluid.get_property()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.get_state"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.get_state_blending"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_blending()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.get_state_equilibrium"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_equilibrium()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.get_state_metastable"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_metastable()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.get_states"><code class="docutils literal notranslate"><span class="pre">Fluid.get_states()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.plot_phase_diagram"><code class="docutils literal notranslate"><span class="pre">Fluid.plot_phase_diagram()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState"><code class="docutils literal notranslate"><span class="pre">FluidState</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidState.fluid_name</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState.get"><code class="docutils literal notranslate"><span class="pre">FluidState.get()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState.items"><code class="docutils literal notranslate"><span class="pre">FluidState.items()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState.keys"><code class="docutils literal notranslate"><span class="pre">FluidState.keys()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState.to_dict"><code class="docutils literal notranslate"><span class="pre">FluidState.to_dict()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState.values"><code class="docutils literal notranslate"><span class="pre">FluidState.values()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.build_alias_map"><code class="docutils literal notranslate"><span class="pre">build_alias_map()</span></code></a></li>
@@ -451,18 +439,6 @@ document.write(`
 </pre></div>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.coolprop.fluid_properties.Fluid.compute_properties_meanline">
-<span class="sig-name descname"><span class="pre">compute_properties_meanline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/fluid_properties.html#Fluid.compute_properties_meanline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.fluid_properties.Fluid.compute_properties_meanline" title="Link to this definition">#</a></dt>
-<dd><p>Extract fluid properties for meanline model</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.coolprop.fluid_properties.Fluid.get_property">
-<span class="sig-name descname"><span class="pre">get_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">propname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/fluid_properties.html#Fluid.get_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.fluid_properties.Fluid.get_property" title="Link to this definition">#</a></dt>
-<dd><p>Get the value of a single property</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="jaxprop.coolprop.fluid_properties.Fluid.get_state">
 <span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/fluid_properties.html#Fluid.get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.fluid_properties.Fluid.get_state" title="Link to this definition">#</a></dt>
 <dd><p>Set the thermodynamic state of the fluid using the CoolProp low level interface.</p>
@@ -533,96 +509,8 @@ documentation of the function <a class="reference internal" href="jaxprop.coolpr
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.coolprop.fluid_properties.Fluid.get_states">
-<span class="sig-name descname"><span class="pre">get_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/fluid_properties.html#Fluid.get_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.fluid_properties.Fluid.get_states" title="Link to this definition">#</a></dt>
-<dd><p>Vectorized version of get_state:
-- if both prop_1 and prop_2 are scalars, returns a single FluidState
-- if one is 1D array and the other scalar, returns ({prop: 1D array}, grid)
-- if both are 1D arrays, returns ({prop: 2D array}, grid1, grid2)</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="jaxprop.coolprop.fluid_properties.Fluid.plot_phase_diagram">
 <span class="sig-name descname"><span class="pre">plot_phase_diagram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_prop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_prop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'T'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_saturation_line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_critical_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_triple_point_liquid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_triple_point_vapor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_spinodal_line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spinodal_line_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([0.5,</span> <span class="pre">0.5,</span> <span class="pre">0.5])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spinodal_line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spinodal_line_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'slsqp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spinodal_line_use_previous</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_quality_isolines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_two_phase_patch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_pseudocritical_line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([0.1,</span> <span class="pre">0.2,</span> <span class="pre">0.3,</span> <span class="pre">0.4,</span> <span class="pre">0.5,</span> <span class="pre">0.6,</span> <span class="pre">0.7,</span> <span class="pre">0.8,</span> <span class="pre">0.9,</span> <span class="pre">1.])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_in_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dT_crit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/fluid_properties.html#Fluid.plot_phase_diagram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.fluid_properties.Fluid.plot_phase_diagram" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="jaxprop.coolprop.fluid_properties.FluidState">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">FluidState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/fluid_properties.html#FluidState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.fluid_properties.FluidState" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>An immutable class representing the thermodynamic state of a fluid.</p>
-<p>This class is designed to provide a read-only representation of a fluid’s state,
-with properties accessible through both attribute-style and dictionary-style access.
-The state of a fluid is defined at initialization and cannot be altered thereafter,
-ensuring the integrity of the data.</p>
-<p>Instances of this class store fluid properties and the fluid’s name, providing
-methods to access these properties but not to modify them.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>properties</strong><span class="classifier">dict</span></dt><dd><p>A dictionary where keys are property names (as strings) and values are the
-corresponding properties of the fluid. This dictionary is converted to an
-immutable internal representation.</p>
-</dd>
-<dt><strong>fluid_name</strong><span class="classifier">str</span></dt><dd><p>The name of the fluid.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Attributes<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>properties</strong><span class="classifier">dict</span></dt><dd><p>An internal dictionary storing the properties of the fluid state. This attribute
-is immutable and cannot be modified after the object’s initialization.</p>
-</dd>
-<dt><strong>fluid_name</strong><span class="classifier">str</span></dt><dd><p>The name of the fluid. Immutable after initialization.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>to_dict():</strong></p></td>
-<td><p>Returns a copy of the fluid properties as a dictionary.</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>keys():</strong></p></td>
-<td><p>Returns the keys of the fluid properties.</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>items():</strong></p></td>
-<td><p>Returns the items (key-value pairs) of the fluid properties.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.fluid_properties.FluidState.fluid_name">
-<span class="sig-name descname"><span class="pre">fluid_name</span></span><a class="headerlink" href="#jaxprop.coolprop.fluid_properties.FluidState.fluid_name" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.coolprop.fluid_properties.FluidState.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/fluid_properties.html#FluidState.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.fluid_properties.FluidState.get" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.coolprop.fluid_properties.FluidState.items">
-<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/fluid_properties.html#FluidState.items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.fluid_properties.FluidState.items" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.coolprop.fluid_properties.FluidState.keys">
-<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/fluid_properties.html#FluidState.keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.fluid_properties.FluidState.keys" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.coolprop.fluid_properties.FluidState.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/fluid_properties.html#FluidState.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.fluid_properties.FluidState.to_dict" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.coolprop.fluid_properties.FluidState.values">
-<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/fluid_properties.html#FluidState.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.fluid_properties.FluidState.values" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -680,8 +568,7 @@ dictionary where each key corresponds to a fluid property.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.fluid_properties.compute_pseudocritical_line">
 <span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.fluid_properties.</span></span><span class="sig-name descname"><span class="pre">compute_pseudocritical_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/fluid_properties.html#compute_pseudocritical_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.fluid_properties.compute_pseudocritical_line" title="Link to this definition">#</a></dt>
-<dd><p>This calculation is not exact, the actual definition is given
-by the maximum of the heat capacity, not by the critical density</p>
+<dd><p>Compute pseudocritical line (approximate, defined here at critical density).</p>
 </dd></dl>
 
 <dl class="py function">
@@ -704,9 +591,9 @@ by the maximum of the heat capacity, not by the critical density</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>saturation_liq</strong><span class="classifier">dict of lists</span></dt><dd><p>Dictionary containing the liquid saturation properties.</p>
+<dt><strong>saturation_liq</strong><span class="classifier">FluidState</span></dt><dd><p>Batched FluidState for the liquid saturation line.</p>
 </dd>
-<dt><strong>saturation_vap</strong><span class="classifier">dict of lists</span></dt><dd><p>Dictionary containing the vapor saturation properties.</p>
+<dt><strong>saturation_vap</strong><span class="classifier">FluidState</span></dt><dd><p>Batched FluidState for the vapor saturation line.</p>
 </dd>
 </dl>
 </dd>
@@ -734,9 +621,9 @@ by the maximum of the heat capacity, not by the critical density</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>spinodal_liq</strong><span class="classifier">dict of lists</span></dt><dd><p>Dictionary containing the liquid spinodal properties.</p>
+<dt><strong>spinodal_liq</strong><span class="classifier">FluidState</span></dt><dd><p>Batched FluidState for the liquid spinodal line.</p>
 </dd>
-<dt><strong>spinodal_vap</strong><span class="classifier">dict of lists</span></dt><dd><p>Dictionary containing the vapor spinodal properties.</p>
+<dt><strong>spinodal_vap</strong><span class="classifier">FluidState</span></dt><dd><p>Batched FluidState for the vapor spinodal line.</p>
 </dd>
 </dl>
 </dd>
@@ -1024,23 +911,11 @@ If initialization fails, raise a ValueError with close name suggestions.</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid"><code class="docutils literal notranslate"><span class="pre">Fluid</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.compute_properties_meanline"><code class="docutils literal notranslate"><span class="pre">Fluid.compute_properties_meanline()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.get_property"><code class="docutils literal notranslate"><span class="pre">Fluid.get_property()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.get_state"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.get_state_blending"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_blending()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.get_state_equilibrium"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_equilibrium()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.get_state_metastable"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_metastable()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.get_states"><code class="docutils literal notranslate"><span class="pre">Fluid.get_states()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.Fluid.plot_phase_diagram"><code class="docutils literal notranslate"><span class="pre">Fluid.plot_phase_diagram()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState"><code class="docutils literal notranslate"><span class="pre">FluidState</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidState.fluid_name</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState.get"><code class="docutils literal notranslate"><span class="pre">FluidState.get()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState.items"><code class="docutils literal notranslate"><span class="pre">FluidState.items()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState.keys"><code class="docutils literal notranslate"><span class="pre">FluidState.keys()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState.to_dict"><code class="docutils literal notranslate"><span class="pre">FluidState.to_dict()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.FluidState.values"><code class="docutils literal notranslate"><span class="pre">FluidState.values()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.fluid_properties.build_alias_map"><code class="docutils literal notranslate"><span class="pre">build_alias_map()</span></code></a></li>

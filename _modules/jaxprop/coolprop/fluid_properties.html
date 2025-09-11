@@ -295,17 +295,19 @@ document.write(`
   <h1>Source code for jaxprop.coolprop.fluid_properties</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">difflib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">CoolProp.CoolProp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">CP</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pysolver_view</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">psv</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">wraps</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">core_calculations</span> <span class="k">as</span> <span class="n">props</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">core_calculations</span> <span class="k">as</span> <span class="n">core</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..helpers_coolprop</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FluidState</span><span class="p">,</span>
     <span class="n">INPUT_TYPE_MAP</span><span class="p">,</span>
-    <span class="n">MEANLINE_PROPERTIES</span><span class="p">,</span>
+    <span class="c1"># MEANLINE_PROPERTIES,</span>
     <span class="n">LABEL_MAPPING</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -430,7 +432,6 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">abstract_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_AS</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exceptions</span> <span class="o">=</span> <span class="n">exceptions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">converged_flag</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span> <span class="k">if</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span>
 
         <span class="c1"># Initialize variables</span>
@@ -522,7 +523,7 @@ document.write(`
 
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">compute_properties_coolprop</span><span class="p">(</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">compute_properties_coolprop</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_AS</span><span class="p">,</span>
             <span class="n">input_type</span><span class="p">,</span>
             <span class="n">prop_1</span><span class="p">,</span>
@@ -530,91 +531,14 @@ document.write(`
             <span class="n">generalize_quality</span><span class="o">=</span><span class="n">generalize_quality</span><span class="p">,</span>
             <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;identifier&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span>
-        <span class="k">return</span> <span class="n">FluidState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="Fluid.get_states">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.get_states">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_states</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">input_type</span><span class="p">,</span>
-        <span class="n">prop_1</span><span class="p">,</span>
-        <span class="n">prop_2</span><span class="p">,</span>
-        <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Vectorized version of get_state:</span>
-<span class="sd">        - if both prop_1 and prop_2 are scalars, returns a single FluidState</span>
-<span class="sd">        - if one is 1D array and the other scalar, returns ({prop: 1D array}, grid)</span>
-<span class="sd">        - if both are 1D arrays, returns ({prop: 2D array}, grid1, grid2)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Force into 1D arrays</span>
-        <span class="n">p1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">prop_1</span><span class="p">)</span>
-        <span class="n">p2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">prop_2</span><span class="p">)</span>
-
-        <span class="c1"># Both properties are scalars</span>
-        <span class="k">if</span> <span class="n">p1</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">p2</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
-                <span class="n">input_type</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">p1</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">p2</span><span class="p">),</span> <span class="n">generalize_quality</span><span class="p">,</span> <span class="n">supersaturation</span>
-            <span class="p">)</span>
-
-        <span class="c1"># 1D array for property 1</span>
-        <span class="k">if</span> <span class="n">p1</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">p2</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">states</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
-                    <span class="n">input_type</span><span class="p">,</span>
-                    <span class="nb">float</span><span class="p">(</span><span class="n">p1i</span><span class="p">),</span>
-                    <span class="nb">float</span><span class="p">(</span><span class="n">p2</span><span class="p">),</span>
-                    <span class="n">generalize_quality</span><span class="p">,</span>
-                    <span class="n">supersaturation</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="k">for</span> <span class="n">p1i</span> <span class="ow">in</span> <span class="n">p1</span>
-            <span class="p">]</span>
-            <span class="k">return</span> <span class="n">states_to_dict</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
-
-        <span class="c1"># 1D array for property 2</span>
-        <span class="k">if</span> <span class="n">p1</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">p2</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">states</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
-                    <span class="n">input_type</span><span class="p">,</span>
-                    <span class="nb">float</span><span class="p">(</span><span class="n">p1</span><span class="p">),</span>
-                    <span class="nb">float</span><span class="p">(</span><span class="n">p2j</span><span class="p">),</span>
-                    <span class="n">generalize_quality</span><span class="p">,</span>
-                    <span class="n">supersaturation</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="k">for</span> <span class="n">p2j</span> <span class="ow">in</span> <span class="n">p2</span>
-            <span class="p">]</span>
-            <span class="k">return</span> <span class="n">states_to_dict</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
-
-        <span class="c1"># Both properties are 1D arrays</span>
-        <span class="c1"># meshgrid with indexing=&#39;xy&#39; yields shape (len(p2),len(p1))</span>
-        <span class="k">if</span> <span class="n">p1</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">p2</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">p1</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">p2</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">grid_1</span><span class="p">,</span> <span class="n">grid_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">)</span>
-            <span class="n">states_2d</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">grid_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">grid_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
-                            <span class="n">input_type</span><span class="p">,</span>
-                            <span class="nb">float</span><span class="p">(</span><span class="n">grid_1</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]),</span>
-                            <span class="nb">float</span><span class="p">(</span><span class="n">grid_2</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]),</span>
-                            <span class="n">generalize_quality</span><span class="p">,</span>
-                            <span class="n">supersaturation</span><span class="p">,</span>
-                        <span class="p">)</span>
-                    <span class="p">)</span>
-                <span class="n">states_2d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">states_to_dict_2d</span><span class="p">(</span><span class="n">states_2d</span><span class="p">)</span>
-
-        <span class="c1"># Invalid combination</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Invalid prop_1 and prop_2 shapes. Expected scalar or 1D array. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Got prop_1.shape = </span><span class="si">{</span><span class="n">p1</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, prop_2.shape = </span><span class="si">{</span><span class="n">p2</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="k">return</span> <span class="n">FluidState</span><span class="p">(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">props</span><span class="p">,</span>
         <span class="p">)</span></div>
 
+    
 
 <div class="viewcode-block" id="Fluid.get_state_equilibrium">
 <a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.get_state_equilibrium">[docs]</a>
@@ -642,7 +566,7 @@ document.write(`
 <span class="sd">            documentation of the function :ref:`compute_properties &lt;compute_properties&gt;`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">compute_properties</span><span class="p">(</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">compute_properties</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_AS</span><span class="p">,</span>
             <span class="n">prop_1</span><span class="o">=</span><span class="n">prop_1</span><span class="p">,</span>
             <span class="n">prop_1_value</span><span class="o">=</span><span class="n">prop_1_value</span><span class="p">,</span>
@@ -657,9 +581,13 @@ document.write(`
             <span class="n">solver_max_iterations</span><span class="o">=</span><span class="n">solver_max_iterations</span><span class="p">,</span>
             <span class="n">print_convergence</span><span class="o">=</span><span class="n">print_convergence</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">FluidState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">FluidState</span><span class="p">(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">props</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
-
+    
 <div class="viewcode-block" id="Fluid.get_state_metastable">
 <a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.get_state_metastable">[docs]</a>
     <span class="nd">@_handle_computation_exceptions</span>
@@ -687,7 +615,7 @@ document.write(`
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">prop_1</span> <span class="o">==</span> <span class="s2">&quot;rho&quot;</span> <span class="ow">and</span> <span class="n">prop_2</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">compute_properties_metastable_rhoT</span><span class="p">(</span>
+            <span class="n">props</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">compute_properties_metastable_rhoT</span><span class="p">(</span>
                 <span class="n">abstract_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_AS</span><span class="p">,</span>
                 <span class="n">rho</span><span class="o">=</span><span class="n">prop_1_value</span><span class="p">,</span>
                 <span class="n">T</span><span class="o">=</span><span class="n">prop_2_value</span><span class="p">,</span>
@@ -695,7 +623,7 @@ document.write(`
                 <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">prop_1</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span> <span class="ow">and</span> <span class="n">prop_2</span> <span class="o">==</span> <span class="s2">&quot;rho&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">compute_properties_metastable_rhoT</span><span class="p">(</span>
+            <span class="n">props</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">compute_properties_metastable_rhoT</span><span class="p">(</span>
                 <span class="n">abstract_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_AS</span><span class="p">,</span>
                 <span class="n">rho</span><span class="o">=</span><span class="n">prop_2_value</span><span class="p">,</span>
                 <span class="n">T</span><span class="o">=</span><span class="n">prop_1_value</span><span class="p">,</span>
@@ -703,7 +631,7 @@ document.write(`
                 <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">compute_properties</span><span class="p">(</span>
+            <span class="n">props</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">compute_properties</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_AS</span><span class="p">,</span>
                 <span class="n">prop_1</span><span class="o">=</span><span class="n">prop_1</span><span class="p">,</span>
                 <span class="n">prop_1_value</span><span class="o">=</span><span class="n">prop_1_value</span><span class="p">,</span>
@@ -718,7 +646,12 @@ document.write(`
                 <span class="n">solver_max_iterations</span><span class="o">=</span><span class="n">solver_max_iterations</span><span class="p">,</span>
                 <span class="n">print_convergence</span><span class="o">=</span><span class="n">print_convergence</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="n">FluidState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+        
+        <span class="k">return</span> <span class="n">FluidState</span><span class="p">(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">props</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Fluid.get_state_blending">
@@ -752,7 +685,7 @@ document.write(`
 <span class="sd">            documentation of the function :ref:`compute_properties &lt;compute_properties&gt;`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">blended</span><span class="p">,</span> <span class="n">equilibrium</span><span class="p">,</span> <span class="n">metastable</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">compute_properties</span><span class="p">(</span>
+        <span class="n">blended</span><span class="p">,</span> <span class="n">equilibrium</span><span class="p">,</span> <span class="n">metastable</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">compute_properties</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_AS</span><span class="p">,</span>
             <span class="n">prop_1</span><span class="o">=</span><span class="n">prop_1</span><span class="p">,</span>
             <span class="n">prop_1_value</span><span class="o">=</span><span class="n">prop_1_value</span><span class="p">,</span>
@@ -774,40 +707,13 @@ document.write(`
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span>
-            <span class="n">FluidState</span><span class="p">(</span><span class="n">blended</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
-            <span class="n">FluidState</span><span class="p">(</span><span class="n">equilibrium</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
-            <span class="n">FluidState</span><span class="p">(</span><span class="n">metastable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+            <span class="n">FluidState</span><span class="p">(</span><span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">blended</span><span class="p">),</span>
+            <span class="n">FluidState</span><span class="p">(</span><span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">equilibrium</span><span class="p">),</span>
+            <span class="n">FluidState</span><span class="p">(</span><span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">metastable</span><span class="p">),</span>
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Fluid.get_property">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.get_property">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">propname</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the value of a single property&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">propname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="n">propname</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">valid_options</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;The requested property &#39;</span><span class="si">{</span><span class="n">propname</span><span class="si">}</span><span class="s2">&#39; is not available. The valid options are:</span><span class="se">\n\t</span><span class="si">{</span><span class="n">valid_options</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Fluid.compute_properties_meanline">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.compute_properties_meanline">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">compute_properties_meanline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_type</span><span class="p">,</span> <span class="n">prop_1</span><span class="p">,</span> <span class="n">prop_2</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract fluid properties for meanline model&quot;&quot;&quot;</span>
-
-        <span class="c1"># Compute properties in the normal way</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">input_type</span><span class="p">,</span> <span class="n">prop_1</span><span class="p">,</span> <span class="n">prop_2</span><span class="p">)</span>
-
-        <span class="c1"># Store a subset of the properties in a dictionary</span>
-        <span class="n">fluid_properties</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">MEANLINE_PROPERTIES</span><span class="p">:</span>
-            <span class="n">fluid_properties</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">fluid_properties</span></div>
-
+    
 
 <div class="viewcode-block" id="Fluid.plot_phase_diagram">
 <a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.plot_phase_diagram">[docs]</a>
@@ -851,8 +757,8 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">sat_liq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sat_vap</span> <span class="o">=</span> <span class="n">compute_saturation_line</span><span class="p">(</span>
                     <span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">dT_crit</span><span class="o">=</span><span class="n">dT_crit</span>
                 <span class="p">)</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sat_liq</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sat_vap</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sat_liq</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sat_vap</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">jnp</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sat_liq</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sat_vap</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]])</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">jnp</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sat_liq</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sat_vap</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]])</span>
             <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_label</span><span class="p">(</span><span class="s2">&quot;Saturation line&quot;</span><span class="p">,</span> <span class="n">show_in_legend</span><span class="p">)</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_graphic_saturation_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_or_update_line</span><span class="p">(</span>
@@ -876,8 +782,8 @@ document.write(`
                     <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">dT_crit</span><span class="o">=</span><span class="n">dT_crit</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spdl_liq</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spdl_vap</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spdl_liq</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spdl_vap</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">jnp</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spdl_liq</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">spdl_vap</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]])</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">jnp</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spdl_liq</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">spdl_vap</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]])</span>
             <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_label</span><span class="p">(</span><span class="s2">&quot;Spinodal line&quot;</span><span class="p">,</span> <span class="n">show_in_legend</span><span class="p">)</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
@@ -1070,276 +976,6 @@ document.write(`
 <span class="c1"># ------------------------------------------------------------------------------------ #</span>
 
 
-<div class="viewcode-block" id="FluidState">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidState">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FluidState</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    An immutable class representing the thermodynamic state of a fluid.</span>
-
-<span class="sd">    This class is designed to provide a read-only representation of a fluid&#39;s state,</span>
-<span class="sd">    with properties accessible through both attribute-style and dictionary-style access.</span>
-<span class="sd">    The state of a fluid is defined at initialization and cannot be altered thereafter,</span>
-<span class="sd">    ensuring the integrity of the data.</span>
-
-<span class="sd">    Instances of this class store fluid properties and the fluid&#39;s name, providing</span>
-<span class="sd">    methods to access these properties but not to modify them.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    properties : dict</span>
-<span class="sd">        A dictionary where keys are property names (as strings) and values are the</span>
-<span class="sd">        corresponding properties of the fluid. This dictionary is converted to an</span>
-<span class="sd">        immutable internal representation.</span>
-<span class="sd">    fluid_name : str</span>
-<span class="sd">        The name of the fluid.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    properties : dict</span>
-<span class="sd">        An internal dictionary storing the properties of the fluid state. This attribute</span>
-<span class="sd">        is immutable and cannot be modified after the object&#39;s initialization.</span>
-<span class="sd">    fluid_name : str</span>
-<span class="sd">        The name of the fluid. Immutable after initialization.</span>
-
-<span class="sd">    Methods</span>
-<span class="sd">    -------</span>
-<span class="sd">    to_dict():</span>
-<span class="sd">        Returns a copy of the fluid properties as a dictionary.</span>
-<span class="sd">    keys():</span>
-<span class="sd">        Returns the keys of the fluid properties.</span>
-<span class="sd">    items():</span>
-<span class="sd">        Returns the items (key-value pairs) of the fluid properties.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_properties&quot;</span><span class="p">,</span> <span class="s2">&quot;fluid_name&quot;</span><span class="p">)</span>  <span class="c1"># Define allowed attributes</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">properties</span><span class="p">,</span> <span class="n">fluid_name</span><span class="p">):</span>
-        <span class="c1"># Convert keys to strings and store properties in an internal attribute</span>
-        <span class="c1"># Ensure the properties dictionary is immutable (e.g., by using a frozendict if modifications are a concern)</span>
-        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_properties&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="p">)</span>
-        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fluid_name&quot;</span><span class="p">,</span> <span class="n">fluid_name</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="c1"># Allows attribute-style access to the fluid properties. If the property does not exist, raises AttributeError.</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">props</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_properties&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">props</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; not found in FluidState properties&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="c1"># Allows dictionary-style access to the fluid properties. If the key does not exist, raises KeyError.</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">props</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_properties&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">props</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; not found in FluidState properties&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="c1"># Prevents modifications to the instance attributes, ensuring immutability.</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-            <span class="s2">&quot;Cannot modify properties of an immutable FluidState class&quot;</span>
-        <span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="c1"># Prevents modifications to the fluid properties through dictionary-style access, ensuring immutability.</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-            <span class="s2">&quot;Cannot modify properties of an immutable FluidState class&quot;</span>
-        <span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Returns a string representation of the FluidState instance</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;FluidState(n_props=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">)</span><span class="si">}</span><span class="s2">, fluid=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Recursive pretty-printing of nested dictionaries</span>
-        <span class="k">def</span><span class="w"> </span><span class="nf">format_entry</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;   &quot;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">key</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">subkey</span><span class="p">,</span> <span class="n">subval</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">format_entry</span><span class="p">(</span><span class="n">subkey</span><span class="p">,</span> <span class="n">subval</span><span class="p">,</span> <span class="n">indent</span> <span class="o">+</span> <span class="s2">&quot;  &quot;</span><span class="p">))</span>
-                <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>  <span class="c1"># Handle booleans separately</span>
-                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2"> .6e</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
-
-        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">format_entry</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
-        <span class="k">return</span> <span class="s2">&quot;FluidState:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Iterate over the object like a dictionary</span>
-        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">)</span>
-
-<div class="viewcode-block" id="FluidState.to_dict">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidState.to_dict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Return a copy of the properties to ensure immutability</span>
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="FluidState.keys">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidState.keys">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Return the keys of the properties</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="FluidState.values">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidState.values">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Return the values of the properties</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="FluidState.items">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidState.items">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Return the items of the properties</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">items</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="FluidState.get">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidState.get">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span></div>
-
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable pickling by returning internal state without violating immutability.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;_properties&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">,</span>
-            <span class="s2">&quot;fluid_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span>
-        <span class="p">}</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restore internal state during unpickling while bypassing immutability guard.&quot;&quot;&quot;</span>
-        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_properties&quot;</span><span class="p">,</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;_properties&quot;</span><span class="p">])</span>
-        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fluid_name&quot;</span><span class="p">,</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;fluid_name&quot;</span><span class="p">])</span></div>
-
-
-
-<span class="c1"># def states_to_dict(states):</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     Convert a list of state objects into a dictionary.</span>
-
-<span class="c1">#     Each key is a field name of the state objects, and each value is a Numpy array of all the values for that field.</span>
-
-<span class="c1">#     Parameters</span>
-<span class="c1">#     ----------</span>
-<span class="c1">#     states_grid : list of FluidState</span>
-<span class="c1">#         A 1D grid where each element is a state object with the same keys.</span>
-
-<span class="c1">#     Returns</span>
-<span class="c1">#     -------</span>
-<span class="c1">#     dict</span>
-<span class="c1">#         A dictionary where keys are field names and values are 1D arrays of field values.</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     state_dict = {}</span>
-<span class="c1">#     for field in states[0].keys():</span>
-<span class="c1">#         state_dict[field] = np.array([getattr(state, field) for state in states])</span>
-<span class="c1">#     return state_dict</span>
-
-
-<div class="viewcode-block" id="states_to_dict">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.states_to_dict">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">states_to_dict</span><span class="p">(</span><span class="n">states</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Recursively convert a list of FluidState objects into a nested dictionary</span>
-<span class="sd">    of NumPy arrays. Handles missing keys by inserting NaNs or None.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    states : list of FluidState</span>
-<span class="sd">        A list of FluidState objects. Keys may differ between objects.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    dict</span>
-<span class="sd">        Nested dictionary where leaf nodes are 1D numpy arrays of field values.</span>
-<span class="sd">        Missing keys are filled with NaN or None.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># from .jax_import import jax, jnp, JAX_AVAILABLE</span>
-    <span class="c1"># np = jnp</span>
-
-    <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">extract_value</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="s2">&quot;get&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">is_nested</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;keys&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Collect the union of all keys across states</span>
-    <span class="n">all_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
-        <span class="n">all_keys</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-
-    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
-
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_keys</span><span class="p">):</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">extract_value</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="p">]</span>
-
-        <span class="c1"># Check if this field is nested (but skip None)</span>
-        <span class="n">nested_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">nested_values</span> <span class="ow">and</span> <span class="n">is_nested</span><span class="p">(</span><span class="n">nested_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">states_to_dict</span><span class="p">(</span><span class="n">nested_values</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># If values are mixed (e.g., some None), fill with None or np.nan</span>
-            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)))</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">):</span>
-                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">result</span></div>
-
-
-
-<div class="viewcode-block" id="states_to_dict_2d">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.states_to_dict_2d">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">states_to_dict_2d</span><span class="p">(</span><span class="n">states</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert a 2D list (grid) of state objects into a dictionary.</span>
-
-<span class="sd">    Each key is a field name of the state objects, and each value is a 2D Numpy array of all the values for that field.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    states_grid : list of lists of FluidState</span>
-<span class="sd">        A 2D grid where each element is a state object with the same keys.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    dict</span>
-<span class="sd">        A dictionary where keys are field names and values are 2D arrays of field values.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">state_dict_2d</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">states</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">state_dict_2d</span><span class="p">:</span>
-                    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># Determine dtype from the first occurrence</span>
-                    <span class="n">state_dict_2d</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-                <span class="n">state_dict_2d</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-    <span class="k">return</span> <span class="n">state_dict_2d</span></div>
-
-
-
-<span class="c1"># ------------------------------------------------------------------------------------ #</span>
-<span class="c1"># ------------------------------------------------------------------------------------ #</span>
-<span class="c1"># ------------------------------------------------------------------------------------ #</span>
-
-
 <div class="viewcode-block" id="compute_saturation_line">
 <a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.compute_saturation_line">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_saturation_line</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">dT_crit</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
@@ -1355,10 +991,10 @@ document.write(`
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    saturation_liq : dict of lists</span>
-<span class="sd">        Dictionary containing the liquid saturation properties.</span>
-<span class="sd">    saturation_vap : dict of lists</span>
-<span class="sd">        Dictionary containing the vapor saturation properties.</span>
+<span class="sd">    saturation_liq : FluidState</span>
+<span class="sd">        Batched FluidState for the liquid saturation line.</span>
+<span class="sd">    saturation_vap : FluidState</span>
+<span class="sd">        Batched FluidState for the vapor saturation line.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Define temperature array with refinement close to the critical point</span>
     <span class="n">R</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_liquid</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span>
@@ -1368,29 +1004,41 @@ document.write(`
     <span class="c1"># t2 = np.asarray([])</span>
     <span class="n">T_sat</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">]))</span> <span class="o">*</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span>
 
-    <span class="c1"># Initialize dictionaries for storing properties</span>
-    <span class="n">saturation_liq</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">saturation_vap</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Collect states in lists</span>
+    <span class="n">liq_states</span> <span class="o">=</span> <span class="p">[</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="p">]</span>  <span class="c1"># start with critical point</span>
+    <span class="n">vap_states</span> <span class="o">=</span> <span class="p">[</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="p">]</span>
 
-    <span class="c1"># Loop over temperatures for liquid and vapor states</span>
     <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="n">T_sat</span><span class="p">:</span>
-        <span class="n">state_liquid</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">QT_INPUTS</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-        <span class="n">state_vapor</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">QT_INPUTS</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">state_liquid</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">saturation_liq</span><span class="p">:</span>
-                <span class="n">saturation_liq</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
-            <span class="n">saturation_liq</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state_liquid</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+        <span class="n">liq_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">QT_INPUTS</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
+        <span class="n">vap_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">QT_INPUTS</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
 
-        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">state_vapor</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">saturation_vap</span><span class="p">:</span>
-                <span class="n">saturation_vap</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
-            <span class="n">saturation_vap</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state_vapor</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+    <span class="c1"># Reverse the liquid branch if needed</span>
+    <span class="c1"># liq_states = list(reversed(liq_states))</span>
 
-    <span class="c1"># # Reverse the liquid properties for easy concatenation</span>
-    <span class="c1"># for name in saturation_liq.keys():</span>
-    <span class="c1">#     saturation_liq[name] = list(reversed(saturation_liq[name]))</span>
+    <span class="c1"># Stack into batched FluidState</span>
+    <span class="n">saturation_liq</span> <span class="o">=</span> <span class="n">FluidState</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">liq_states</span><span class="p">)</span>
+    <span class="n">saturation_vap</span> <span class="o">=</span> <span class="n">FluidState</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">vap_states</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">saturation_liq</span><span class="p">,</span> <span class="n">saturation_vap</span></div>
+
+
+<div class="viewcode-block" id="compute_pseudocritical_line">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.compute_pseudocritical_line">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_pseudocritical_line</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">N_points</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute pseudocritical line (approximate, defined here at critical density).&quot;&quot;&quot;</span>
+    <span class="c1"># Define temperature array with refinement close to the critical point</span>
+    <span class="n">tau</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">N_points</span><span class="p">)</span>
+    <span class="n">T_range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">tau</span><span class="p">)</span> <span class="o">*</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">states</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="n">T_range</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">T</span> <span class="o">&gt;=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">abstract_state</span><span class="o">.</span><span class="n">Tmax</span><span class="p">():</span>
+            <span class="k">break</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">d</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+        <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+    <span class="c1"># Stack all computed states into one batched FluidState</span>
+    <span class="k">return</span> <span class="n">FluidState</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">states</span><span class="p">)</span></div>
 
 
 
@@ -1423,10 +1071,10 @@ document.write(`
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    spinodal_liq : dict of lists</span>
-<span class="sd">        Dictionary containing the liquid spinodal properties.</span>
-<span class="sd">    spinodal_vap : dict of lists</span>
-<span class="sd">        Dictionary containing the vapor spinodal properties.</span>
+<span class="sd">    spinodal_liq : FluidState</span>
+<span class="sd">        Batched FluidState for the liquid spinodal line.</span>
+<span class="sd">    spinodal_vap : FluidState</span>
+<span class="sd">        Batched FluidState for the vapor spinodal line.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Temperature array with refinement close to the critical point</span>
@@ -1443,11 +1091,8 @@ document.write(`
     <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_max</span> <span class="o">-</span> <span class="n">s_min</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span>
     <span class="n">s_min</span><span class="p">,</span> <span class="n">s_max</span> <span class="o">=</span> <span class="n">s_min</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="n">s_max</span> <span class="o">-</span> <span class="n">delta</span>
 
-    <span class="c1"># Initialize dictionaries for storing properties</span>
-    <span class="n">spinodal_liq</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">spinodal_vap</span> <span class="o">=</span> <span class="p">{}</span>
-
-    <span class="c1"># Compute liquid branch until calculations break down</span>
+    <span class="c1"># --- liquid branch</span>
+    <span class="n">states_liq</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">props_liq</span> <span class="o">=</span> <span class="n">compute_spinodal_point</span><span class="p">(</span>
         <span class="n">T_spinodal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">fluid</span><span class="p">,</span>
@@ -1466,16 +1111,13 @@ document.write(`
             <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
             <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span>
         <span class="p">)</span>
-
         <span class="k">if</span> <span class="n">s_min</span> <span class="o">&lt;</span> <span class="n">props_liq</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">s_max</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">props_liq</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spinodal_liq</span><span class="p">:</span>  <span class="c1"># Initialize list if new property</span>
-                    <span class="n">spinodal_liq</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">spinodal_liq</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">props_liq</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">))</span>
+            <span class="n">states_liq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">props_liq</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">break</span>
 
-    <span class="c1"># Compute vapor branch until calculations break down</span>
+    <span class="c1"># --- vapor branch</span>
+    <span class="n">states_vap</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">props_vap</span> <span class="o">=</span> <span class="n">compute_spinodal_point</span><span class="p">(</span>
         <span class="n">T_spinodal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fluid</span><span class="p">,</span> <span class="s2">&quot;vapor&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span>
     <span class="p">)</span>
@@ -1489,161 +1131,16 @@ document.write(`
             <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
             <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
         <span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">s_min</span> <span class="o">&lt;</span> <span class="n">props_vap</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">s_max</span><span class="p">:</span>  <span class="c1"># If not satisfied the HEOS is blowing up</span>
-            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">props_vap</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spinodal_vap</span><span class="p">:</span>  <span class="c1"># Initialize list if new property</span>
-                    <span class="n">spinodal_vap</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">spinodal_vap</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">props_vap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">s_min</span> <span class="o">&lt;</span> <span class="n">props_vap</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">s_max</span><span class="p">:</span>
+            <span class="n">states_vap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">props_vap</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">break</span>
 
-    <span class="c1"># # Reverse the liquid properties for easy concatenation</span>
-    <span class="c1"># for name in spinodal_liq.keys():</span>
-    <span class="c1">#     spinodal_liq[name] = list(reversed(spinodal_liq[name]))</span>
+    <span class="c1"># Convert to batched FluidState objects</span>
+    <span class="n">spinodal_liq</span> <span class="o">=</span> <span class="n">FluidState</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">states_liq</span><span class="p">)</span>
+    <span class="n">spinodal_vap</span> <span class="o">=</span> <span class="n">FluidState</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">states_vap</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">spinodal_liq</span><span class="p">,</span> <span class="n">spinodal_vap</span></div>
-
-
-
-<div class="viewcode-block" id="compute_pseudocritical_line">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.compute_pseudocritical_line">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_pseudocritical_line</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">N_points</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This calculation is not exact, the actual definition is given</span>
-<span class="sd">    by the maximum of the heat capacity, not by the critical density&quot;&quot;&quot;</span>
-    <span class="c1"># Initialize objects to store properties</span>
-    <span class="n">prop_names</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-    <span class="n">pseudocritical_line</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">prop_names</span><span class="p">}</span>
-
-    <span class="c1"># Define temperature array with refinement close to the critical point</span>
-    <span class="n">tau</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">N_points</span><span class="p">)</span>
-    <span class="n">T_range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">tau</span><span class="p">)</span> <span class="o">*</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span>
-
-    <span class="c1"># Loop over temperatures and compute pseudocritical properties</span>
-    <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="n">T_range</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">T</span> <span class="o">&gt;=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">abstract_state</span><span class="o">.</span><span class="n">Tmax</span><span class="p">():</span>
-            <span class="k">break</span>
-        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">prop_names</span><span class="p">:</span>
-            <span class="n">state</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">d</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-            <span class="n">pseudocritical_line</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="n">pseudocritical_line</span></div>
-
-
-
-<div class="viewcode-block" id="compute_quality_grid">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.compute_quality_grid">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_quality_grid</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">num_points</span><span class="p">,</span> <span class="n">quality_levels</span><span class="p">,</span> <span class="n">dT_crit</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
-    <span class="c1"># Define temperature levels</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_liquid</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span>
-    <span class="n">R_crit</span> <span class="o">=</span> <span class="n">dT_crit</span> <span class="o">/</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span>
-    <span class="n">t1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">R_crit</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">R</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">num_points</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)))</span>
-    <span class="n">t2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">R</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">num_points</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)))</span>
-    <span class="n">temperature_levels</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">]))</span> <span class="o">*</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span>
-
-    <span class="c1"># Calculate property grid</span>
-    <span class="n">quality_grid</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">quality_levels</span><span class="p">:</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="n">temperature_levels</span><span class="p">:</span>
-            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">QT_INPUTS</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
-
-        <span class="n">quality_grid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">states_to_dict_2d</span><span class="p">(</span><span class="n">quality_grid</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="compute_property_grid">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.compute_property_grid">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_property_grid</span><span class="p">(</span>
-    <span class="n">fluid</span><span class="p">,</span>
-    <span class="n">input_pair</span><span class="p">,</span>
-    <span class="n">range_1</span><span class="p">,</span>
-    <span class="n">range_2</span><span class="p">,</span>
-    <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute fluid properties over a specified range and store them in a dictionary.</span>
-
-<span class="sd">    This function creates a meshgrid of property values based on the specified ranges and input pair,</span>
-<span class="sd">    computes the properties of the fluid at each point on the grid, and stores the results in a</span>
-<span class="sd">    dictionary where each key corresponds to a fluid property.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    fluid : Fluid object</span>
-<span class="sd">        An instance of the Fluid class.</span>
-<span class="sd">    input_pair : tuple</span>
-<span class="sd">        The input pair specifying the property type (e.g., PT_INPUTS for pressure-temperature).</span>
-<span class="sd">    range1 : tuple</span>
-<span class="sd">        The range linspace(min, max, n) for the first property of the input pair.</span>
-<span class="sd">    range2 : tuple</span>
-<span class="sd">        The range linspace(min, max, n) for the second property of the input pair.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    properties_dict : dict</span>
-<span class="sd">        A dictionary where keys are property names and values are 2D numpy arrays of computed properties.</span>
-<span class="sd">    grid1, grid2 : numpy.ndarray</span>
-<span class="sd">        The meshgrid arrays for the first and second properties.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># Create the meshgrid</span>
-    <span class="n">grid1</span><span class="p">,</span> <span class="n">grid2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">range_1</span><span class="p">,</span> <span class="n">range_2</span><span class="p">)</span>
-
-    <span class="c1"># Initialize dictionary to store properties and pre-allocate storage</span>
-    <span class="n">properties_dict</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">range_1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">range_2</span><span class="p">)</span>
-
-    <span class="c1"># Compute properties at each point</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-            <span class="c1"># Set state of the fluid</span>
-            <span class="n">state</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
-                <span class="n">input_pair</span><span class="p">,</span>
-                <span class="n">grid1</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span>
-                <span class="n">grid2</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span>
-                <span class="n">generalize_quality</span><span class="o">=</span><span class="n">generalize_quality</span><span class="p">,</span>
-                <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
-            <span class="p">)</span>
-
-            <span class="c1"># Store the properties (initialize as empty array if new key)</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">properties_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># Determine dtype from the first occurrence</span>
-                    <span class="n">properties_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-                    <span class="c1"># properties_dict[key] = np.zeros_like(grid1)</span>
-                <span class="n">properties_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">properties_dict</span></div>
-
-
-
-<div class="viewcode-block" id="compute_property_grid_rhoT">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.compute_property_grid_rhoT">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_property_grid_rhoT</span><span class="p">(</span>
-    <span class="n">fluid</span><span class="p">,</span>
-    <span class="n">rho_array</span><span class="p">,</span>
-    <span class="n">T_array</span><span class="p">,</span>
-<span class="p">):</span>
-
-    <span class="c1"># Calculate property grid</span>
-    <span class="n">states_meta</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="n">T_array</span><span class="p">:</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">rho</span> <span class="ow">in</span> <span class="n">rho_array</span><span class="p">:</span>
-            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">compute_properties_metastable_rhoT</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">_AS</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
-        <span class="n">states_meta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-
-    <span class="c1"># Convert nested list of dictionaries into dictionary of 2D arrays</span>
-    <span class="n">states_meta</span> <span class="o">=</span> <span class="n">states_to_dict_2d</span><span class="p">(</span><span class="n">states_meta</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">states_meta</span></div>
-
-
 
 
 
@@ -2020,6 +1517,208 @@ document.write(`
 <span class="c1"># ------------------------------------------------------------------------------------ #</span>
 <span class="c1"># Other calculations</span>
 <span class="c1"># ------------------------------------------------------------------------------------ #</span>
+
+
+<div class="viewcode-block" id="states_to_dict">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.states_to_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">states_to_dict</span><span class="p">(</span><span class="n">states</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recursively convert a list of FluidState objects into a nested dictionary</span>
+<span class="sd">    of NumPy arrays. Handles missing keys by inserting NaNs or None.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    states : list of FluidState</span>
+<span class="sd">        A list of FluidState objects. Keys may differ between objects.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Nested dictionary where leaf nodes are 1D numpy arrays of field values.</span>
+<span class="sd">        Missing keys are filled with NaN or None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># from .jax_import import jax, jnp, JAX_AVAILABLE</span>
+    <span class="c1"># np = jnp</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_value</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="s2">&quot;get&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_nested</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;keys&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Collect the union of all keys across states</span>
+    <span class="n">all_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+        <span class="n">all_keys</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_keys</span><span class="p">):</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">extract_value</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="p">]</span>
+
+        <span class="c1"># Check if this field is nested (but skip None)</span>
+        <span class="n">nested_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">nested_values</span> <span class="ow">and</span> <span class="n">is_nested</span><span class="p">(</span><span class="n">nested_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">states_to_dict</span><span class="p">(</span><span class="n">nested_values</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If values are mixed (e.g., some None), fill with None or np.nan</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)))</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">):</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="states_to_dict_2d">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.states_to_dict_2d">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">states_to_dict_2d</span><span class="p">(</span><span class="n">states</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a 2D list (grid) of state objects into a dictionary.</span>
+
+<span class="sd">    Each key is a field name of the state objects, and each value is a 2D Numpy array of all the values for that field.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    states_grid : list of lists of FluidState</span>
+<span class="sd">        A 2D grid where each element is a state object with the same keys.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary where keys are field names and values are 2D arrays of field values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">state_dict_2d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">states</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">state_dict_2d</span><span class="p">:</span>
+                    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># Determine dtype from the first occurrence</span>
+                    <span class="n">state_dict_2d</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="n">state_dict_2d</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">return</span> <span class="n">state_dict_2d</span></div>
+
+
+
+<div class="viewcode-block" id="compute_quality_grid">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.compute_quality_grid">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_quality_grid</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">num_points</span><span class="p">,</span> <span class="n">quality_levels</span><span class="p">,</span> <span class="n">dT_crit</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="c1"># Define temperature levels</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_liquid</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">R_crit</span> <span class="o">=</span> <span class="n">dT_crit</span> <span class="o">/</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">R_crit</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">R</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">num_points</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)))</span>
+    <span class="n">t2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">R</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">num_points</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)))</span>
+    <span class="n">temperature_levels</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">]))</span> <span class="o">*</span> <span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="c1"># Calculate property grid</span>
+    <span class="n">quality_grid</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">quality_levels</span><span class="p">:</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="n">temperature_levels</span><span class="p">:</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">QT_INPUTS</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
+
+        <span class="n">quality_grid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">states_to_dict_2d</span><span class="p">(</span><span class="n">quality_grid</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="compute_property_grid">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.compute_property_grid">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_property_grid</span><span class="p">(</span>
+    <span class="n">fluid</span><span class="p">,</span>
+    <span class="n">input_pair</span><span class="p">,</span>
+    <span class="n">range_1</span><span class="p">,</span>
+    <span class="n">range_2</span><span class="p">,</span>
+    <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute fluid properties over a specified range and store them in a dictionary.</span>
+
+<span class="sd">    This function creates a meshgrid of property values based on the specified ranges and input pair,</span>
+<span class="sd">    computes the properties of the fluid at each point on the grid, and stores the results in a</span>
+<span class="sd">    dictionary where each key corresponds to a fluid property.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fluid : Fluid object</span>
+<span class="sd">        An instance of the Fluid class.</span>
+<span class="sd">    input_pair : tuple</span>
+<span class="sd">        The input pair specifying the property type (e.g., PT_INPUTS for pressure-temperature).</span>
+<span class="sd">    range1 : tuple</span>
+<span class="sd">        The range linspace(min, max, n) for the first property of the input pair.</span>
+<span class="sd">    range2 : tuple</span>
+<span class="sd">        The range linspace(min, max, n) for the second property of the input pair.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    properties_dict : dict</span>
+<span class="sd">        A dictionary where keys are property names and values are 2D numpy arrays of computed properties.</span>
+<span class="sd">    grid1, grid2 : numpy.ndarray</span>
+<span class="sd">        The meshgrid arrays for the first and second properties.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Create the meshgrid</span>
+    <span class="n">grid1</span><span class="p">,</span> <span class="n">grid2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">range_1</span><span class="p">,</span> <span class="n">range_2</span><span class="p">)</span>
+
+    <span class="c1"># Initialize dictionary to store properties and pre-allocate storage</span>
+    <span class="n">properties_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">range_1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">range_2</span><span class="p">)</span>
+
+    <span class="c1"># Compute properties at each point</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="c1"># Set state of the fluid</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
+                <span class="n">input_pair</span><span class="p">,</span>
+                <span class="n">grid1</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span>
+                <span class="n">grid2</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span>
+                <span class="n">generalize_quality</span><span class="o">=</span><span class="n">generalize_quality</span><span class="p">,</span>
+                <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Store the properties (initialize as empty array if new key)</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">properties_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># Determine dtype from the first occurrence</span>
+                    <span class="n">properties_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+                    <span class="c1"># properties_dict[key] = np.zeros_like(grid1)</span>
+                <span class="n">properties_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">properties_dict</span></div>
+
+
+
+<div class="viewcode-block" id="compute_property_grid_rhoT">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.compute_property_grid_rhoT">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_property_grid_rhoT</span><span class="p">(</span>
+    <span class="n">fluid</span><span class="p">,</span>
+    <span class="n">rho_array</span><span class="p">,</span>
+    <span class="n">T_array</span><span class="p">,</span>
+<span class="p">):</span>
+
+    <span class="c1"># Calculate property grid</span>
+    <span class="n">states_meta</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="n">T_array</span><span class="p">:</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">rho</span> <span class="ow">in</span> <span class="n">rho_array</span><span class="p">:</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">compute_properties_metastable_rhoT</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">_AS</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
+        <span class="n">states_meta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+    <span class="c1"># Convert nested list of dictionaries into dictionary of 2D arrays</span>
+    <span class="n">states_meta</span> <span class="o">=</span> <span class="n">states_to_dict_2d</span><span class="p">(</span><span class="n">states_meta</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">states_meta</span></div>
+
+
 
 
 <span class="c1"># def get_state_Qs(fluid, Q, s):</span>

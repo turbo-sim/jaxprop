@@ -339,22 +339,6 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState"><code class="docutils literal notranslate"><span class="pre">CoolPropState</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.T"><code class="docutils literal notranslate"><span class="pre">CoolPropState.T</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.a"><code class="docutils literal notranslate"><span class="pre">CoolPropState.a</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.cp"><code class="docutils literal notranslate"><span class="pre">CoolPropState.cp</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.cv"><code class="docutils literal notranslate"><span class="pre">CoolPropState.cv</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.gamma"><code class="docutils literal notranslate"><span class="pre">CoolPropState.gamma</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.gruneisen"><code class="docutils literal notranslate"><span class="pre">CoolPropState.gruneisen</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.h"><code class="docutils literal notranslate"><span class="pre">CoolPropState.h</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.k"><code class="docutils literal notranslate"><span class="pre">CoolPropState.k</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.mu"><code class="docutils literal notranslate"><span class="pre">CoolPropState.mu</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.p"><code class="docutils literal notranslate"><span class="pre">CoolPropState.p</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.rho"><code class="docutils literal notranslate"><span class="pre">CoolPropState.rho</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.s"><code class="docutils literal notranslate"><span class="pre">CoolPropState.s</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.u"><code class="docutils literal notranslate"><span class="pre">CoolPropState.u</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX"><code class="docutils literal notranslate"><span class="pre">FluidJAX</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.backend"><code class="docutils literal notranslate"><span class="pre">FluidJAX.backend</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.fluid"><code class="docutils literal notranslate"><span class="pre">FluidJAX.fluid</span></code></a></li>
@@ -375,82 +359,6 @@ document.write(`
                   
   <section id="module-jaxprop.coolprop.jax_wrapper">
 <span id="jaxprop-coolprop-jax-wrapper-module"></span><h1>jaxprop.coolprop.jax_wrapper module<a class="headerlink" href="#module-jaxprop.coolprop.jax_wrapper" title="Link to this heading">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.jax_wrapper.</span></span><span class="sig-name descname"><span class="pre">CoolPropState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gruneisen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/jax_wrapper.html#CoolPropState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
-<p>Container for a thermodynamic state from CoolProp.</p>
-<p>Fields correspond to common mass-based properties (p, T, rho, u, h, s, …),
-stored as JAX arrays for compatibility with JIT and autodiff.</p>
-<p>Provides attribute-style access (state.p) and alias-aware dict-style access
-(state[“P”], state[“rhomass”], …).</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState.T">
-<span class="sig-name descname"><span class="pre">T</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.T" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState.a">
-<span class="sig-name descname"><span class="pre">a</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.a" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState.cp">
-<span class="sig-name descname"><span class="pre">cp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.cp" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState.cv">
-<span class="sig-name descname"><span class="pre">cv</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.cv" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState.gamma">
-<span class="sig-name descname"><span class="pre">gamma</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.gamma" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState.gruneisen">
-<span class="sig-name descname"><span class="pre">gruneisen</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.gruneisen" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState.h">
-<span class="sig-name descname"><span class="pre">h</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.h" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState.k">
-<span class="sig-name descname"><span class="pre">k</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.k" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState.mu">
-<span class="sig-name descname"><span class="pre">mu</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.mu" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState.p">
-<span class="sig-name descname"><span class="pre">p</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.p" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState.rho">
-<span class="sig-name descname"><span class="pre">rho</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.rho" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState.s">
-<span class="sig-name descname"><span class="pre">s</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.s" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.CoolPropState.u">
-<span class="sig-name descname"><span class="pre">u</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.u" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.jax_wrapper.</span></span><span class="sig-name descname"><span class="pre">FluidJAX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HEOS'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/jax_wrapper.html#FluidJAX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX" title="Link to this definition">#</a></dt>
@@ -534,22 +442,6 @@ stored as JAX arrays for compatibility with JIT and autodiff.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState"><code class="docutils literal notranslate"><span class="pre">CoolPropState</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.T"><code class="docutils literal notranslate"><span class="pre">CoolPropState.T</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.a"><code class="docutils literal notranslate"><span class="pre">CoolPropState.a</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.cp"><code class="docutils literal notranslate"><span class="pre">CoolPropState.cp</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.cv"><code class="docutils literal notranslate"><span class="pre">CoolPropState.cv</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.gamma"><code class="docutils literal notranslate"><span class="pre">CoolPropState.gamma</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.gruneisen"><code class="docutils literal notranslate"><span class="pre">CoolPropState.gruneisen</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.h"><code class="docutils literal notranslate"><span class="pre">CoolPropState.h</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.k"><code class="docutils literal notranslate"><span class="pre">CoolPropState.k</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.mu"><code class="docutils literal notranslate"><span class="pre">CoolPropState.mu</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.p"><code class="docutils literal notranslate"><span class="pre">CoolPropState.p</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.rho"><code class="docutils literal notranslate"><span class="pre">CoolPropState.rho</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.s"><code class="docutils literal notranslate"><span class="pre">CoolPropState.s</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.CoolPropState.u"><code class="docutils literal notranslate"><span class="pre">CoolPropState.u</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX"><code class="docutils literal notranslate"><span class="pre">FluidJAX</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.backend"><code class="docutils literal notranslate"><span class="pre">FluidJAX.backend</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.fluid"><code class="docutils literal notranslate"><span class="pre">FluidJAX.fluid</span></code></a></li>
