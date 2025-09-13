@@ -1,66 +1,10 @@
 import CoolProp.CoolProp as CP
 import jax.numpy as jnp
 import equinox as eqx
+from dataclasses import fields
+
 # Universal molar gas constant
 GAS_CONSTANT = 8.3144598
-
-
-PROPERTY_ALIASES = {
-    # --- basic thermodynamic properties
-    "pressure": ["p", "P"],
-    "temperature": ["T"],
-    "density": ["rho", "d", "rhomass", "dmass", "density"],
-    "enthalpy": ["h", "hmass", "enthalpy"],
-    "entropy": ["s", "smass", "entropy"],
-    "internal_energy": ["u", "umass", "energy", "internal_energy"],
-
-    # --- heat capacities & ratios
-    "isobaric_heat_capacity": ["cp", "cpmass"],
-    "isochoric_heat_capacity": ["cv", "cvmass"],
-    "heat_capacity_ratio": ["gamma", "kappa"],
-
-    # --- compressibility & bulk moduli
-    "compressibility_factor": ["Z", "compressibility_factor"],
-    "isothermal_compressibility": ["kappa_T"],
-    "isentropic_compressibility": ["kappa_s"],
-    "isothermal_bulk_modulus": ["K_T"],
-    "isentropic_bulk_modulus": ["K_s"],
-
-    # --- transport & misc
-    "speed_of_sound": ["a", "speed_sound"],
-    "viscosity": ["mu"],
-    "conductivity": ["k"],
-    "gruneisen": ["gruneisen"],
-
-    # --- expansion & JT effects
-    "isobaric_expansion_coefficient": ["alpha_p"],
-    "isothermal_joule_thomson": ["mu_T"],
-    "joule_thomson": ["mu_JT"],
-
-    # --- two-phase
-    "is_two_phase": [],
-    "quality_mass": ["vapor_quality", "x", "Q", "q"],
-    "quality_volume": ["void_fraction", "alpha"],
-    "surface_tension": ["sigma"],
-    "pressure_saturation": [],
-    "temperature_saturation": [],
-    "supersaturation_degree": [],
-    "supersaturation_ratio":  [],
-    "subcooling": [],
-    "superheating": [],
-}
-
-
-# flat lookup alias -> canonical
-ALIAS_TO_CANONICAL = {}
-for canonical, aliases in PROPERTY_ALIASES.items():
-    for alias in aliases:
-        if alias in ALIAS_TO_CANONICAL:
-            raise ValueError(f"Alias {alias} defined for multiple properties")
-        ALIAS_TO_CANONICAL[alias] = canonical
-    # also allow canonical name itself
-    ALIAS_TO_CANONICAL[canonical] = canonical
-
 
 
 class FluidState(eqx.Module):
@@ -69,43 +13,43 @@ class FluidState(eqx.Module):
     identifier: str = eqx.field(static=True, default=None)
 
     # --- basic thermodynamic properties
-    pressure: jnp.ndarray = None
-    temperature: jnp.ndarray = None
-    density: jnp.ndarray = None
-    enthalpy: jnp.ndarray = None
-    entropy: jnp.ndarray = None
-    internal_energy: jnp.ndarray = None
-    compressibility_factor: jnp.ndarray = None
+    pressure: jnp.ndarray = jnp.nan
+    temperature: jnp.ndarray = jnp.nan
+    density: jnp.ndarray = jnp.nan
+    enthalpy: jnp.ndarray = jnp.nan
+    entropy: jnp.ndarray = jnp.nan
+    internal_energy: jnp.ndarray = jnp.nan
+    compressibility_factor: jnp.ndarray = jnp.nan
 
     # --- thermodynamic properties involving derivatives
-    isobaric_heat_capacity: jnp.ndarray = None
-    isochoric_heat_capacity: jnp.ndarray = None
-    heat_capacity_ratio: jnp.ndarray = None
-    speed_of_sound: jnp.ndarray = None
-    isothermal_compressibility: jnp.ndarray = None
-    isentropic_compressibility: jnp.ndarray = None
-    isothermal_bulk_modulus: jnp.ndarray = None
-    isentropic_bulk_modulus: jnp.ndarray = None
-    isobaric_expansion_coefficient: jnp.ndarray = None
-    isothermal_joule_thomson: jnp.ndarray = None
-    joule_thomson: jnp.ndarray = None
-    gruneisen: jnp.ndarray = None
+    isobaric_heat_capacity: jnp.ndarray = jnp.nan
+    isochoric_heat_capacity: jnp.ndarray = jnp.nan
+    heat_capacity_ratio: jnp.ndarray = jnp.nan
+    speed_of_sound: jnp.ndarray = jnp.nan
+    isothermal_compressibility: jnp.ndarray = jnp.nan
+    isentropic_compressibility: jnp.ndarray = jnp.nan
+    isothermal_bulk_modulus: jnp.ndarray = jnp.nan
+    isentropic_bulk_modulus: jnp.ndarray = jnp.nan
+    isobaric_expansion_coefficient: jnp.ndarray = jnp.nan
+    isothermal_joule_thomson: jnp.ndarray = jnp.nan
+    joule_thomson: jnp.ndarray = jnp.nan
+    gruneisen: jnp.ndarray = jnp.nan
 
     # --- transport properties
-    viscosity: jnp.ndarray = None
-    conductivity: jnp.ndarray = None
+    viscosity: jnp.ndarray = jnp.nan
+    conductivity: jnp.ndarray = jnp.nan
 
     # --- two-phase properties
-    is_two_phase: jnp.ndarray = None
-    quality_mass: jnp.ndarray = None
-    quality_volume: jnp.ndarray = None
-    surface_tension: jnp.ndarray = None
-    subcooling: jnp.ndarray = None
-    superheating: jnp.ndarray = None
-    pressure_saturation: jnp.ndarray = None
-    temperature_saturation: jnp.ndarray = None
-    supersaturation_degree: jnp.ndarray = None
-    supersaturation_ratio:  jnp.ndarray = None
+    is_two_phase: jnp.ndarray = jnp.nan
+    quality_mass: jnp.ndarray = jnp.nan
+    quality_volume: jnp.ndarray = jnp.nan
+    surface_tension: jnp.ndarray = jnp.nan
+    subcooling: jnp.ndarray = jnp.nan
+    superheating: jnp.ndarray = jnp.nan
+    pressure_saturation: jnp.ndarray = jnp.nan
+    temperature_saturation: jnp.ndarray = jnp.nan
+    supersaturation_degree: jnp.ndarray = jnp.nan
+    supersaturation_ratio: jnp.ndarray = jnp.nan
 
     # --- Access helpers
     def __getitem__(self, key: str):
@@ -119,13 +63,13 @@ class FluidState(eqx.Module):
             return getattr(self, ALIAS_TO_CANONICAL[key])
 
         raise KeyError(f"Unknown property alias: {key}")
-    
+
     def __getattr__(self, key: str):
         """Allow attribute-style access via alias names"""
         if key in ALIAS_TO_CANONICAL:
             return getattr(self, ALIAS_TO_CANONICAL[key])
         raise AttributeError(f"'FluidState' object has no attribute '{key}'")
-    
+
     def __repr__(self) -> str:
         """Readable string representation with scalars if possible"""
         lines = []
@@ -138,11 +82,13 @@ class FluidState(eqx.Module):
                 pass
             lines.append(f"  {name}={val}")
         return "FluidState(\n" + ",\n".join(lines) + "\n)"
-    
+
     def to_dict(self, include_aliases: bool = False):
         """Return dict of numeric properties, with optional aliases."""
         skip = {"fluid_name", "identifier"}
-        out = {k: v for k, v in self.__dict__.items() if v is not None and k not in skip}
+        out = {
+            k: v for k, v in self.__dict__.items() if v is not None and k not in skip
+        }
 
         if include_aliases:
             for canonical, aliases in PROPERTY_ALIASES.items():
@@ -165,8 +111,6 @@ class FluidState(eqx.Module):
         """Dict-style iteration"""
         return self.to_dict().items()
 
-
-
     @classmethod
     def stack(cls, states: list["FluidState"]) -> "FluidState":
         """Combine a list of FluidState into a batched FluidState (values stacked into arrays)."""
@@ -178,7 +122,9 @@ class FluidState(eqx.Module):
         identifier = states[0].identifier
         for s in states[1:]:
             if s.fluid_name != fluid_name or s.identifier != identifier:
-                raise ValueError("All FluidState objects must have the same fluid_name and identifier")
+                raise ValueError(
+                    "All FluidState objects must have the same fluid_name and identifier"
+                )
 
         # Collect stacked properties
         data = {}
@@ -188,102 +134,88 @@ class FluidState(eqx.Module):
 
             values = [getattr(s, field) for s in states]
             if all(v is None for v in values):
-                data[field] = None
+                data[field] = jnp.nan
             else:
                 # Convert scalars to arrays before stacking
-                arrs = [jnp.atleast_1d(v) if v is not None else jnp.array([jnp.nan]) for v in values]
+                arrs = [
+                    jnp.atleast_1d(v) if v is not None else jnp.array([jnp.nan])
+                    for v in values
+                ]
                 data[field] = jnp.stack(arrs).squeeze()
 
         return cls(fluid_name=fluid_name, identifier=identifier, **data)
-    
-
-# # Define property aliases
-# PROPERTY_ALIAS = {
-#     "P": "p",
-#     "rho": "rhomass",
-#     "density": "rhomass",
-#     "d": "rhomass",
-#     "rhomass": "rho",
-#     "dmass": "rhomass",
-#     "u": "umass",
-#     "h": "hmass",
-#     "s": "smass",
-#     "cv": "cvmass",
-#     "cp": "cpmass",
-#     "a": "speed_sound",
-#     "Z": "compressibility_factor",
-#     "mu": "viscosity",
-#     "k": "conductivity",
-#     "vapor_quality": "quality_mass",
-#     "void_fraction": "quality_volume",
-# }
 
 
-
-# # Define property aliases
-# PROPERTY_ALIAS_NEW = {
-#     "P": "p",
-
-#     # density
-#     "rho": "rho",
-#     "density": "rho",
-#     "d": "rho",
-#     "rhomass": "rho",
-#     "dmass": "rho",
-
-#     # enthalpy
-#     "h": "h",
-#     "hmass": "h",
-
-#     # entropy
-#     "s": "s",
-#     "smass": "s",
-
-#     # internal energy (if added later)
-#     "u": "u",
-
-#     # heat capacities
-#     "cv": "cv",
-#     "cvmass": "cv",
-#     "cp": "cp",
-#     "cpmass": "cp",
-
-#     # speed of sound
-#     "a": "a",
-#     "speed_sound": "a",
-
-#     # compressibility factor
-#     "Z": "Z",
-#     "compressibility_factor": "Z",
-
-#     # transport properties
-#     "mu": "mu",
-#     "viscosity": "mu",
-#     "k": "k",
-#     "conductivity": "k",
-
-#     # quality placeholders
-#     "vapor_quality": "quality_mass",
-#     "void_fraction": "quality_volume",
-# }
+PROPERTY_ALIASES = {
+    # --- metadata
+    # "fluid_name": [],
+    # "identifier": [],
+    # --- basic thermodynamic properties
+    "pressure": ["p", "P"],
+    "temperature": ["T"],
+    "density": ["rho", "d", "rhomass", "dmass", "density"],
+    "enthalpy": ["h", "hmass", "enthalpy", "H"],
+    "entropy": ["s", "smass", "entropy"],
+    "internal_energy": ["u", "umass", "energy", "internal_energy"],
+    # --- heat capacities & ratios
+    "isobaric_heat_capacity": ["cp", "cpmass"],
+    "isochoric_heat_capacity": ["cv", "cvmass"],
+    "heat_capacity_ratio": ["gamma", "kappa"],
+    # --- compressibility & bulk moduli
+    "compressibility_factor": ["Z", "compressibility_factor"],
+    "isothermal_compressibility": ["kappa_T"],
+    "isentropic_compressibility": ["kappa_s"],
+    "isothermal_bulk_modulus": ["K_T"],
+    "isentropic_bulk_modulus": ["K_s"],
+    # --- transport & misc
+    "speed_of_sound": ["a", "speed_sound"],
+    "viscosity": ["mu"],
+    "conductivity": ["k"],
+    "gruneisen": ["gruneisen"],
+    # --- expansion & JT effects
+    "isobaric_expansion_coefficient": ["alpha_p"],
+    "isothermal_joule_thomson": ["mu_T"],
+    "joule_thomson": ["mu_JT"],
+    # --- two-phase
+    "is_two_phase": [],
+    "quality_mass": ["vapor_quality", "x", "Q", "q"],
+    "quality_volume": ["void_fraction", "alpha"],
+    "surface_tension": ["sigma"],
+    "pressure_saturation": [],
+    "temperature_saturation": [],
+    "supersaturation_degree": [],
+    "supersaturation_ratio": [],
+    "subcooling": [],
+    "superheating": [],
+}
 
 
+# flat lookup alias -> canonical
+ALIAS_TO_CANONICAL = {}
+for canonical, aliases in PROPERTY_ALIASES.items():
+    for alias in aliases:
+        if alias in ALIAS_TO_CANONICAL:
+            raise ValueError(f"Alias {alias} defined for multiple properties")
+        ALIAS_TO_CANONICAL[alias] = canonical
+    # also allow canonical name itself
+    ALIAS_TO_CANONICAL[canonical] = canonical
 
 
-MEANLINE_PROPERTIES = [
-    "p",
-    "T",
-    "h",
-    "s",
-    "d",
-    "Z",
-    "a",
-    "mu",
-    "k",
-    "cp",
-    "cv",
-    "gamma",
+SKIP_FIELDS = {"fluid_name", "identifier"}
+PROPERTIES_CANONICAL = [
+    f.name for f in fields(FluidState) if f.name not in SKIP_FIELDS
 ]
+
+missing_in_aliases = PROPERTIES_CANONICAL - PROPERTY_ALIASES.keys()
+extra_in_aliases = PROPERTY_ALIASES.keys() - PROPERTIES_CANONICAL
+
+if missing_in_aliases or extra_in_aliases:
+    raise ValueError(
+        f"Inconsistent property mapping.\n"
+        f"Missing in aliases: {missing_in_aliases}\n"
+        f"Extra in aliases: {extra_in_aliases}"
+    )
+
 
 LABEL_MAPPING = {
     "density": "Density (kg/m$^3$)",
@@ -354,7 +286,9 @@ DmolarUmolar_INPUTS = CP.DmolarUmolar_INPUTS
 
 # Convert each input key to a tuple of FluidState variable names
 # Capitalized names that should not be lowercased
-preserve_case = {'T', 'Q'}
+preserve_case = {"T", "Q"}
+
+
 def extract_vars(name):
     base = name.replace("_INPUTS", "")
     parts = []
@@ -368,6 +302,7 @@ def extract_vars(name):
     parts.append(current)
     return tuple(p if p in preserve_case else p.lower() for p in parts)
 
+
 # Define dictionary with dynamically generated fields
 PHASE_INDEX = {attr: getattr(CP, attr) for attr in dir(CP) if attr.startswith("iphase")}
 INPUT_PAIRS = {attr: getattr(CP, attr) for attr in dir(CP) if attr.endswith("_INPUTS")}
@@ -375,7 +310,6 @@ INPUT_TYPE_MAP = {v: k for k, v in sorted(INPUT_PAIRS.items(), key=lambda x: x[1
 INPUT_PAIR_MAP = {k: extract_vars(v) for k, v in INPUT_TYPE_MAP.items()}
 
 
-    
 def _generate_coolprop_input_table():
     """Create table of input pairs as string to be copy-pasted in Sphinx documentation"""
     inputs_table = ".. list-table:: CoolProp input mappings\n"
@@ -388,4 +322,3 @@ def _generate_coolprop_input_table():
         inputs_table += f"     - {value}\n"
 
     return inputs_table
-

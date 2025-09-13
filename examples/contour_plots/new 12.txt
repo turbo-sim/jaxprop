@@ -1,0 +1,45 @@
+Time required to generate the fluid property diagram of CO2 (wihtout spinodal lines)
+
+Vanilla Python:
+
+Run 0: 1.020258 s
+Run 1: 1.005228 s
+Run 2: 0.991242 s
+Run 3: 0.981236 s
+Run 4: 0.981515 s
+Run 5: 0.982404 s
+
+
+
+
+
+Last in pip
+
+Run 0: 2.282197 s
+Run 1: 2.470562 s
+Run 2: 2.616102 s
+Run 3: 2.504504 s
+Run 4: 2.427226 s
+Run 5: 2.460095 s
+
+
+
+
+Current version
+
+Run 0: 2.780283 s
+Run 1: 2.350256 s
+Run 2: 2.355489 s
+Run 3: 2.373284 s
+Run 4: 2.400884 s
+Run 5: 2.396723 s
+
+
+The code became quite slower after introducing the fluid state within the fluid properties.
+I should clean up the code, merge the Fluid and FluidJAX into a single FluidCoolProp object
+
+Then make sure that things run fast and nice.
+
+
+
+meeting_23.06.2024

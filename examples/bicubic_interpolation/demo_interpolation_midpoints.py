@@ -65,7 +65,7 @@ for prop in properties:
     for i, h in enumerate(h_vals):
         for j, P in enumerate(P_vals):
             try:
-                interp_val = jxp.bicubic.bicubic_interpolant_property(float(h), float(P), table)[prop]
+                interp_val = jxp.bicubic.interpolate_bicubic_hp(float(h), float(P), table)[prop]
                 # cp_val = cp.PropsSI(cp_keys[prop], 'H', float(h), 'P', float(P), fluid)
                 cp_val = fluid.get_state(cp.HmassP_INPUTS, float(h), float(P))[prop]
                 # cp_val = tf.get_props_custom_jvp(fluid, cp.HmassP_INPUTS, float(h), float(P))[prop]

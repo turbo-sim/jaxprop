@@ -5,7 +5,7 @@ import pysolver_view as psv
 from .. import math
 from .. import utils
 
-from ..helpers_coolprop import PROPERTY_ALIASES, ALIAS_TO_CANONICAL, GAS_CONSTANT
+from ..helpers_props import PROPERTY_ALIASES, ALIAS_TO_CANONICAL, GAS_CONSTANT
 
 
 # Define valid phase change types and their aliases
@@ -107,7 +107,7 @@ def compute_properties_1phase(
         "viscosity": mu,
         "conductivity": k,
         "quality_mass": q_mass,
-        "is_two_phase": False,
+        "is_two_phase": 0.0,
         "quality_volume": q_vol,
         "surface_tension": np.nan,
         "subcooling": np.nan,
@@ -262,9 +262,9 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
         "quality_mass": mfrac_V,
         "quality_volume": vfrac_V,
         "surface_tension": surface_tension,
-        "is_two_phase": True,
-        "subcooling": None,
-        "superheating": None,
+        "is_two_phase": 1.0,
+        "subcooling": np.nan,
+        "superheating": np.nan,
     }
 
     if supersaturation:
@@ -452,11 +452,15 @@ def compute_properties_metastable_rhoT(
         "viscosity": mu,
         "conductivity": k,
         "surface_tension": np.nan,
-        "is_two_phase": False,  # default
-        "quality_mass": None,
-        "quality_volume": None,
-        "subcooling": None,
-        "superheating": None,
+        "is_two_phase": 0.0,  # always for Helmholtz EoS
+        "quality_mass": np.nan,
+        "quality_volume": np.nan,
+        "subcooling": np.nan,
+        "superheating": np.nan,
+        "pressure_saturation": np.nan,
+        "supersaturation_ratio": np.nan,
+        "temperature_saturation": np.nan,
+        "supersaturation_degree": np.nan,
     }
 
     # Supersaturation options
