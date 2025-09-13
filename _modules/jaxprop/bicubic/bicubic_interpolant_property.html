@@ -293,77 +293,278 @@ document.write(`
                 <article class="bd-article">
                   
   <h1>Source code for jaxprop.bicubic.bicubic_interpolant_property</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="c1"># import jax.numpy as jnp</span>
-<span class="c1"># from ..jax_import import jnp</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="c1"># from .jax_bicubic_HEOS_interpolation_1 import (</span>
+<span class="c1">#     compute_bicubic_coefficients_of_ij,</span>
+<span class="c1">#     bicubic_interpolant,</span>
+<span class="c1"># )</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.jax_bicubic_HEOS_interpolation_1</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">compute_bicubic_coefficients_of_ij</span><span class="p">,</span>
-    <span class="n">bicubic_interpolant</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="c1"># ======================== Config ========================</span>
+<span class="c1"># NCORES = psutil.cpu_count(logical=False)</span>
+<span class="c1"># os.environ[&quot;XLA_FLAGS&quot;] = f&quot;--xla_force_host_platform_device_count={NCORES}&quot;</span>
+<span class="c1"># jax.config.update(&quot;jax_enable_x64&quot;, True)</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">helpers_props</span> <span class="k">as</span> <span class="n">jxp</span>
+
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># build once at import</span>
+<span class="c1"># fmt: off</span>
+<span class="n">A_MAT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">+</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">+</span><span class="mf">9.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">9.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">4.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">4.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">+</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">4.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">+</span><span class="mf">4.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">4.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.0</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="c1"># fmt: on</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_index_and_fractions</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">h_vals</span><span class="p">,</span> <span class="n">logP_vals</span><span class="p">):</span>
+    <span class="n">Nh</span> <span class="o">=</span> <span class="n">h_vals</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">Np</span> <span class="o">=</span> <span class="n">logP_vals</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">hmin</span><span class="p">,</span> <span class="n">hmax</span> <span class="o">=</span> <span class="n">h_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">h_vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">Lmin</span><span class="p">,</span> <span class="n">Lmax</span> <span class="o">=</span> <span class="n">logP_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">logP_vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">dh</span>    <span class="o">=</span> <span class="p">(</span><span class="n">hmax</span> <span class="o">-</span> <span class="n">hmin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Nh</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">dL</span>    <span class="o">=</span> <span class="p">(</span><span class="n">Lmax</span> <span class="o">-</span> <span class="n">Lmin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Np</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># continuous indices</span>
+    <span class="n">ii</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">hmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">dh</span>
+    <span class="n">jj</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P</span><span class="p">)</span> <span class="o">-</span> <span class="n">Lmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">dL</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">jj</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="n">Nh</span> <span class="o">-</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">Nh</span> <span class="o">-</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">i</span><span class="p">)</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="n">Np</span> <span class="o">-</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="n">Np</span> <span class="o">-</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">j</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">-</span> <span class="n">i</span>  <span class="c1"># fractional within cell</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">jj</span> <span class="o">-</span> <span class="n">j</span>
+    <span class="k">return</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dh</span><span class="p">,</span> <span class="n">dL</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_coeffs_local</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">fx</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">fxy</span><span class="p">,</span> <span class="n">dh</span><span class="p">,</span> <span class="n">dL</span><span class="p">):</span>
+    <span class="c1"># scale derivatives to cell size once here</span>
+    <span class="n">xx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span>     <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span>   <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>   <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">fx</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">dh</span><span class="p">,</span> <span class="n">fx</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">dh</span><span class="p">,</span> <span class="n">fx</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">dh</span><span class="p">,</span> <span class="n">fx</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">dh</span><span class="p">,</span>
+        <span class="n">fy</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">dL</span><span class="p">,</span> <span class="n">fy</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">dL</span><span class="p">,</span> <span class="n">fy</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">dL</span><span class="p">,</span> <span class="n">fy</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">dL</span><span class="p">,</span>
+        <span class="n">fxy</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">dh</span><span class="o">*</span><span class="n">dL</span><span class="p">,</span> <span class="n">fxy</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">dh</span><span class="o">*</span><span class="n">dL</span><span class="p">,</span> <span class="n">fxy</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">dh</span><span class="o">*</span><span class="n">dL</span><span class="p">,</span> <span class="n">fxy</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">dh</span><span class="o">*</span><span class="n">dL</span>
+    <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">A_MAT</span> <span class="o">@</span> <span class="n">xx</span>  <span class="c1"># (16,)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_eval_cubic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c16</span><span class="p">):</span>
+    <span class="c1"># basis in the order 4*n + m</span>
+    <span class="n">xm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">])</span>
+    <span class="n">ym</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="o">*</span><span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="o">*</span><span class="n">y</span><span class="o">*</span><span class="n">y</span><span class="p">])</span>
+    <span class="c1"># build matching flattened basis (n outer, m inner)</span>
+    <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xm</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">*</span><span class="n">ym</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">c16</span> <span class="o">@</span> <span class="n">basis</span><span class="p">)</span>
 
 <div class="viewcode-block" id="bicubic_interpolant_property">
 <a class="viewcode-back" href="../../../source/api/jaxprop.bicubic.bicubic_interpolant_property.html#jaxprop.bicubic.bicubic_interpolant_property.bicubic_interpolant_property">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">bicubic_interpolant_property</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Interpolates all properties at a given enthalpy (h) and pressure (P) using bicubic interpolation.</span>
+    <span class="c1"># ensure numpy arrays on query path</span>
+    <span class="n">h_vals</span>    <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;h_vals&quot;</span><span class="p">]</span>
+    <span class="n">logP_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">table</span><span class="p">[</span><span class="s2">&quot;p_vals&quot;</span><span class="p">]))</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        h (float): Enthalpy in J/kg</span>
-<span class="sd">        P (float): Pressure in Pa</span>
-<span class="sd">        table_path (str): Path to saved property table (dict-based .pkl)</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dh</span><span class="p">,</span> <span class="n">dL</span> <span class="o">=</span> <span class="n">_index_and_fractions</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">h_vals</span><span class="p">,</span> <span class="n">logP_vals</span><span class="p">)</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        dict: Dictionary of interpolated property values at (h, P)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">h_vals</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">])</span>
-    <span class="n">P_vals</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s2">&quot;P&quot;</span><span class="p">])</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">:</span>
+        <span class="n">prop</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">f</span>   <span class="o">=</span> <span class="n">prop</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="n">fx</span>  <span class="o">=</span> <span class="n">prop</span><span class="p">[</span><span class="s2">&quot;grad_h&quot;</span><span class="p">]</span>
+        <span class="n">fy</span>  <span class="o">=</span> <span class="n">prop</span><span class="p">[</span><span class="s2">&quot;grad_p&quot;</span><span class="p">]</span>
+        <span class="n">fxy</span> <span class="o">=</span> <span class="n">prop</span><span class="p">[</span><span class="s2">&quot;grad_ph&quot;</span><span class="p">]</span>
+        <span class="n">c16</span> <span class="o">=</span> <span class="n">_coeffs_local</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">fx</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">fxy</span><span class="p">,</span> <span class="n">dh</span><span class="p">,</span> <span class="n">dL</span><span class="p">)</span>
 
-    <span class="n">Nh</span><span class="p">,</span> <span class="n">Np</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">h_vals</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">P_vals</span><span class="p">)</span>
-    <span class="n">hmin</span><span class="p">,</span> <span class="n">hmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">h_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">h_vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">Lmin</span><span class="p">,</span> <span class="n">Lmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P_vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_eval_cubic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c16</span><span class="p">)</span>
 
-    <span class="n">logP</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
 
-    <span class="c1"># Identify cell (i, j)</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">h</span> <span class="o">-</span> <span class="n">hmin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">hmax</span> <span class="o">-</span> <span class="n">hmin</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Nh</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="n">j</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">logP</span> <span class="o">-</span> <span class="n">Lmin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Lmax</span> <span class="o">-</span> <span class="n">Lmin</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Np</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="c1"># print(c16)</span>
+        <span class="n">c16bis</span> <span class="o">=</span> <span class="n">prop</span><span class="p">[</span><span class="s2">&quot;coeffs&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
 
-    <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Nh</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Np</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># print(&quot;charlie&quot;)</span>
+        <span class="c1"># print(c16bis)</span>
 
-    <span class="n">deltah</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">h_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">h_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">deltaL</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">c16bis</span> <span class="o">-</span> <span class="n">c16</span>
+        <span class="n">avg_abs_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diff</span><span class="p">))</span> <span class="o">/</span> <span class="n">diff</span><span class="o">.</span><span class="n">size</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;avg abs difference =&quot;</span><span class="p">,</span> <span class="n">avg_abs_diff</span><span class="p">)</span>
 
-    <span class="n">interpolated_props</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">for</span> <span class="n">prop</span><span class="p">,</span> <span class="n">prop_data</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">prop</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">]:</span>
-            <span class="k">continue</span>  <span class="c1"># skip grid axes</span>
+        <span class="c1"># c16_bis = prop[&quot;coeffs&quot;][i, j]</span>
+        <span class="c1"># diff_avg = np.sum(np.abs(c16 - c16_bis)) / c16.size</span>
+        <span class="c1"># print()</span>
+        <span class="c1"># print(&quot;average absolute difference =&quot;, diff_avg)</span>
+        <span class="c1"># print()</span>
 
-        <span class="n">f_grid</span> <span class="o">=</span> <span class="n">prop_data</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
-        <span class="n">fx_grid</span> <span class="o">=</span> <span class="n">prop_data</span><span class="p">[</span><span class="s2">&quot;d_dh&quot;</span><span class="p">]</span>
-        <span class="n">fy_grid</span> <span class="o">=</span> <span class="n">prop_data</span><span class="p">[</span><span class="s2">&quot;d_dP&quot;</span><span class="p">]</span>
-        <span class="n">fxy_grid</span> <span class="o">=</span> <span class="n">prop_data</span><span class="p">[</span><span class="s2">&quot;d2_dhdP&quot;</span><span class="p">]</span>
 
-        <span class="n">coeffs_local</span> <span class="o">=</span> <span class="n">compute_bicubic_coefficients_of_ij</span><span class="p">(</span>
-            <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">f_grid</span><span class="p">,</span> <span class="n">fx_grid</span> <span class="o">*</span> <span class="n">deltah</span><span class="p">,</span> <span class="n">fy_grid</span> <span class="o">*</span> <span class="n">deltaL</span><span class="p">,</span> <span class="n">fxy_grid</span> <span class="o">*</span> <span class="n">deltah</span> <span class="o">*</span> <span class="n">deltaL</span>
-        <span class="p">)</span>
 
-        <span class="n">coeffs</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Nh</span><span class="p">,</span> <span class="n">Np</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">coeffs</span> <span class="o">=</span> <span class="n">coeffs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">coeffs_local</span><span class="p">)</span>
 
-        <span class="n">val</span> <span class="o">=</span> <span class="n">bicubic_interpolant</span><span class="p">(</span>
-            <span class="n">h</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">h_vals</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P_vals</span><span class="p">),</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">Nh</span><span class="p">,</span> <span class="n">Np</span><span class="p">,</span> <span class="n">hmin</span><span class="p">,</span> <span class="n">hmax</span><span class="p">,</span> <span class="n">Lmin</span><span class="p">,</span> <span class="n">Lmax</span>
-        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span></div>
 
-        <span class="n">interpolated_props</span><span class="p">[</span><span class="n">prop</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">interpolated_props</span></div>
 
+
+
+<span class="c1"># def bicubic_interpolant_property(h, P, table):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Interpolates all properties at a given enthalpy (h) and pressure (P) using bicubic interpolation.</span>
+
+<span class="c1">#     Args:</span>
+<span class="c1">#         h (float): Enthalpy in J/kg</span>
+<span class="c1">#         P (float): Pressure in Pa</span>
+<span class="c1">#         table_path (str): Path to saved property table (dict-based .pkl)</span>
+
+<span class="c1">#     Returns:</span>
+<span class="c1">#         dict: Dictionary of interpolated property values at (h, P)</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+
+<span class="c1">#     h = jnp.asarray(h)</span>
+<span class="c1">#     P = jnp.asarray(P)</span>
+<span class="c1">#     h_vals = jnp.array(table[&quot;h_vals&quot;])</span>
+<span class="c1">#     P_vals = jnp.array(table[&quot;p_vals&quot;])</span>
+
+<span class="c1">#     Nh, Np = len(h_vals), len(P_vals)</span>
+<span class="c1">#     hmin, hmax = float(h_vals[0]), float(h_vals[-1])</span>
+<span class="c1">#     Lmin, Lmax = float(jnp.log(P_vals[0])), float(jnp.log(P_vals[-1]))</span>
+
+<span class="c1">#     logP = jnp.log(P)</span>
+
+<span class="c1">#     # Identify cell (i, j)</span>
+<span class="c1">#     i = int((h - hmin) / (hmax - hmin) * (Nh - 1))</span>
+<span class="c1">#     j = int((logP - Lmin) / (Lmax - Lmin) * (Np - 1))</span>
+
+<span class="c1">#     i = np.clip(i, 0, Nh - 2)</span>
+<span class="c1">#     j = np.clip(j, 0, Np - 2)</span>
+
+<span class="c1">#     deltah = float(h_vals[1] - h_vals[0])</span>
+<span class="c1">#     deltaL = float(jnp.log(P_vals[1]) - jnp.log(P_vals[0]))</span>
+
+<span class="c1">#     interpolated_props = {}</span>
+
+<span class="c1">#     for prop_name in jxp.PROPERTIES_CANONICAL:</span>
+<span class="c1">#         # if prop_name in [&quot;enthalpy&quot;, &quot;pressure&quot;]:</span>
+<span class="c1">#         #     continue  # skip grid axes</span>
+
+<span class="c1">#         prop_data = table[prop_name]</span>
+<span class="c1">#         f_grid = prop_data[&quot;value&quot;]</span>
+<span class="c1">#         fx_grid = prop_data[&quot;grad_h&quot;]</span>
+<span class="c1">#         fy_grid = prop_data[&quot;grad_p&quot;]</span>
+<span class="c1">#         fxy_grid = prop_data[&quot;grad_ph&quot;]</span>
+
+<span class="c1">#         coeffs_local = compute_bicubic_coefficients_of_ij(</span>
+<span class="c1">#             i, j, f_grid, fx_grid * deltah, fy_grid * deltaL, fxy_grid * deltah * deltaL</span>
+<span class="c1">#         )</span>
+
+<span class="c1">#         coeffs = jnp.zeros((Nh, Np, 16), dtype=jnp.float64)</span>
+<span class="c1">#         coeffs = coeffs.at[i, j, :].set(coeffs_local)</span>
+
+<span class="c1">#         val = bicubic_interpolant(</span>
+<span class="c1">#             h, P, h_vals, jnp.log(P_vals), coeffs, Nh, Np, hmin, hmax, Lmin, Lmax</span>
+<span class="c1">#         )</span>
+
+<span class="c1">#         interpolated_props[prop_name] = float(val)</span>
+
+<span class="c1">#     return interpolated_props</span>
+
+
+<span class="c1"># # Global precision</span>
+<span class="c1"># float64 = jnp.dtype(&quot;float64&quot;)</span>
+<span class="c1"># complex128 = jnp.dtype(&quot;complex128&quot;)</span>
+
+<span class="c1"># # fmt: off</span>
+<span class="c1"># A = [</span>
+<span class="c1">#     [+1.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0],</span>
+<span class="c1">#     [+0.0, +0.0, +0.0, +0.0, +1.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0],</span>
+<span class="c1">#     [-3.0, +3.0, +0.0, +0.0, -2.0, -1.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0],</span>
+<span class="c1">#     [+2.0, -2.0, +0.0, +0.0, +1.0, +1.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0],</span>
+<span class="c1">#     [+0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +1.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0],</span>
+<span class="c1">#     [+0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +1.0, +0.0, +0.0, +0.0],</span>
+<span class="c1">#     [+0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, -3.0, +3.0, +0.0, +0.0, -2.0, -1.0, +0.0, +0.0],</span>
+<span class="c1">#     [+0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +0.0, +2.0, -2.0, +0.0, +0.0, +1.0, +1.0, +0.0, +0.0],</span>
+<span class="c1">#     [-3.0, +0.0, +3.0, +0.0, +0.0, +0.0, +0.0, +0.0, -2.0, +0.0, -1.0, +0.0, +0.0, +0.0, +0.0, +0.0],</span>
+<span class="c1">#     [+0.0, +0.0, +0.0, +0.0, -3.0, +0.0, +3.0, +0.0, +0.0, +0.0, +0.0, +0.0, -2.0, +0.0, -1.0, +0.0],</span>
+<span class="c1">#     [+9.0, -9.0, -9.0, +9.0, +6.0, +3.0, -6.0, -3.0, +6.0, -6.0, +3.0, -3.0, +4.0, +2.0, +2.0, +1.0],</span>
+<span class="c1">#     [-6.0, +6.0, +6.0, -6.0, -3.0, -3.0, +3.0, +3.0, -4.0, +4.0, -2.0, +2.0, -2.0, -2.0, -1.0, -1.0],</span>
+<span class="c1">#     [+2.0, +0.0, -2.0, +0.0, +0.0, +0.0, +0.0, +0.0, +1.0, +0.0, +1.0, +0.0, +0.0, +0.0, +0.0, +0.0],</span>
+<span class="c1">#     [+0.0, +0.0, +0.0, +0.0, +2.0, +0.0, -2.0, +0.0, +0.0, +0.0, +0.0, +0.0, +1.0, +0.0, +1.0, +0.0],</span>
+<span class="c1">#     [-6.0, +6.0, +6.0, -6.0, -4.0, -2.0, +4.0, +2.0, -3.0, +3.0, -3.0, +3.0, -2.0, -1.0, -2.0, -1.0],</span>
+<span class="c1">#     [+4.0, -4.0, -4.0, +4.0, +2.0, +2.0, -2.0, -2.0, +2.0, -2.0, +2.0, -2.0, +1.0, +1.0, +1.0, +1.0],</span>
+<span class="c1"># ]</span>
+<span class="c1"># # fmt: on</span>
+
+
+<span class="c1"># # =================== Functions to Export ===================</span>
+<span class="c1"># # @jax.jit</span>
+<span class="c1"># def compute_bicubic_coefficients_of_ij(i, j, f, fx, fy, fxy):</span>
+<span class="c1">#     # xx=f(0,0)&amp;f(1,0)&amp;f(0,1)&amp;f(1,1)&amp;f_x(0,0)&amp;f_x(1,0)&amp;f_x(0,1)&amp;f_x(1,1)&amp;f_y(0,0)&amp;f_y(1,0)&amp;f_y(0,1)&amp;f_y(1,1)&amp;f_{xy}(0,0)&amp;f_{xy}(1,0)&amp;f_{xy}(0,1)&amp;f_{xy}(1,1)</span>
+<span class="c1">#     xx = [</span>
+<span class="c1">#         f[i, j],</span>
+<span class="c1">#         f[i + 1, j],</span>
+<span class="c1">#         f[i, j + 1],</span>
+<span class="c1">#         f[i + 1, j + 1],</span>
+<span class="c1">#         fx[i, j],</span>
+<span class="c1">#         fx[i + 1, j],</span>
+<span class="c1">#         fx[i, j + 1],</span>
+<span class="c1">#         fx[i + 1, j + 1],</span>
+<span class="c1">#         fy[i, j],</span>
+<span class="c1">#         fy[i + 1, j],</span>
+<span class="c1">#         fy[i, j + 1],</span>
+<span class="c1">#         fy[i + 1, j + 1],</span>
+<span class="c1">#         fxy[i, j],</span>
+<span class="c1">#         fxy[i + 1, j],</span>
+<span class="c1">#         fxy[i, j + 1],</span>
+<span class="c1">#         fxy[i + 1, j + 1],</span>
+<span class="c1">#     ]</span>
+
+<span class="c1">#     return jnp.matmul(jnp.array(A, dtype=f.dtype), jnp.array(xx, dtype=f.dtype))</span>
+
+
+<span class="c1"># # @partial(jit, static_argnums=(5, 6))</span>
+<span class="c1"># def bicubic_interpolant(h, P, h_vals, P_vals, coeffs, Nh, Np, hmin, hmax, Lmin, Lmax):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Evaluate the bicubic interpolant at (h, P) using precomputed coefficients.</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     # Log-transform P</span>
+<span class="c1">#     L = jnp.log(P)</span>
+
+<span class="c1">#     # Normalize positions to [0, 1] cell coordinates</span>
+<span class="c1">#     ii = (h - hmin) / (hmax - hmin) * (Nh - 1)</span>
+<span class="c1">#     i = ii.astype(int)</span>
+<span class="c1">#     x = ii - i</span>
+
+<span class="c1">#     jj = (L - Lmin) / (Lmax - Lmin) * (Np - 1)</span>
+<span class="c1">#     j = jj.astype(int)</span>
+<span class="c1">#     y = jj - j</span>
+
+<span class="c1">#     # Evaluate bicubic polynomial</span>
+<span class="c1">#     result = jnp.zeros_like(h)  # use h shape</span>
+<span class="c1">#     x_pow = jnp.ones_like(h)  # x^0</span>
+
+<span class="c1">#     for m in range(4):  # m = x power</span>
+<span class="c1">#         y_pow = jnp.ones_like(h)  # y^0 initially</span>
+<span class="c1">#         for n in range(4):  # n = y power</span>
+<span class="c1">#             c = coeffs[i, j, 4 * n + m]</span>
+<span class="c1">#             result += c * x_pow * y_pow</span>
+<span class="c1">#             y_pow = y_pow * y</span>
+<span class="c1">#         x_pow = x_pow * x</span>
+
+<span class="c1">#     return result</span>
 </pre></div>
 
                 </article>

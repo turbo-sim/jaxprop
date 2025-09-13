@@ -300,7 +300,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">math</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..helpers_coolprop</span><span class="w"> </span><span class="kn">import</span> <span class="n">PROPERTY_ALIASES</span><span class="p">,</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="p">,</span> <span class="n">GAS_CONSTANT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..helpers_props</span><span class="w"> </span><span class="kn">import</span> <span class="n">PROPERTY_ALIASES</span><span class="p">,</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="p">,</span> <span class="n">GAS_CONSTANT</span>
 
 
 <span class="c1"># Define valid phase change types and their aliases</span>
@@ -410,7 +410,7 @@ document.write(`
         <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="n">mu</span><span class="p">,</span>
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
         <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">q_mass</span><span class="p">,</span>
-        <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
         <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="n">q_vol</span><span class="p">,</span>
         <span class="s2">&quot;surface_tension&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;subcooling&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
@@ -571,9 +571,9 @@ document.write(`
         <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">mfrac_V</span><span class="p">,</span>
         <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="n">vfrac_V</span><span class="p">,</span>
         <span class="s2">&quot;surface_tension&quot;</span><span class="p">:</span> <span class="n">surface_tension</span><span class="p">,</span>
-        <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;subcooling&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;superheating&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="s2">&quot;subcooling&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;superheating&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">supersaturation</span><span class="p">:</span>
@@ -764,11 +764,15 @@ document.write(`
         <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="n">mu</span><span class="p">,</span>
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
         <span class="s2">&quot;surface_tension&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-        <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># default</span>
-        <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;subcooling&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;superheating&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># always for Helmholtz EoS</span>
+        <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;subcooling&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;superheating&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;pressure_saturation&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;supersaturation_ratio&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;temperature_saturation&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;supersaturation_degree&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="c1"># Supersaturation options</span>

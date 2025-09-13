@@ -366,7 +366,9 @@ document.write(`
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html#jaxprop.bicubic.generate_tables.generate_property_table"><code class="docutils literal notranslate"><span class="pre">generate_property_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html#jaxprop.bicubic.generate_tables.FluidBicubic"><code class="docutils literal notranslate"><span class="pre">FluidBicubic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html#jaxprop.bicubic.generate_tables.compute_coefficients"><code class="docutils literal notranslate"><span class="pre">compute_coefficients()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html#jaxprop.bicubic.generate_tables.interpolate_bicubic_hp"><code class="docutils literal notranslate"><span class="pre">interpolate_bicubic_hp()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a><ul>
@@ -511,51 +513,7 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.graphics.html#jaxprop.graphics.set_plot_options"><code class="docutils literal notranslate"><span class="pre">set_plot_options()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState"><code class="docutils literal notranslate"><span class="pre">FluidState</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.compressibility_factor"><code class="docutils literal notranslate"><span class="pre">FluidState.compressibility_factor</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.conductivity"><code class="docutils literal notranslate"><span class="pre">FluidState.conductivity</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.density"><code class="docutils literal notranslate"><span class="pre">FluidState.density</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.enthalpy"><code class="docutils literal notranslate"><span class="pre">FluidState.enthalpy</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.entropy"><code class="docutils literal notranslate"><span class="pre">FluidState.entropy</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidState.fluid_name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.gruneisen"><code class="docutils literal notranslate"><span class="pre">FluidState.gruneisen</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.heat_capacity_ratio"><code class="docutils literal notranslate"><span class="pre">FluidState.heat_capacity_ratio</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.identifier"><code class="docutils literal notranslate"><span class="pre">FluidState.identifier</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.internal_energy"><code class="docutils literal notranslate"><span class="pre">FluidState.internal_energy</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.is_two_phase"><code class="docutils literal notranslate"><span class="pre">FluidState.is_two_phase</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.isentropic_bulk_modulus"><code class="docutils literal notranslate"><span class="pre">FluidState.isentropic_bulk_modulus</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.isentropic_compressibility"><code class="docutils literal notranslate"><span class="pre">FluidState.isentropic_compressibility</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.isobaric_expansion_coefficient"><code class="docutils literal notranslate"><span class="pre">FluidState.isobaric_expansion_coefficient</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.isobaric_heat_capacity"><code class="docutils literal notranslate"><span class="pre">FluidState.isobaric_heat_capacity</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.isochoric_heat_capacity"><code class="docutils literal notranslate"><span class="pre">FluidState.isochoric_heat_capacity</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.isothermal_bulk_modulus"><code class="docutils literal notranslate"><span class="pre">FluidState.isothermal_bulk_modulus</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.isothermal_compressibility"><code class="docutils literal notranslate"><span class="pre">FluidState.isothermal_compressibility</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.isothermal_joule_thomson"><code class="docutils literal notranslate"><span class="pre">FluidState.isothermal_joule_thomson</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.items"><code class="docutils literal notranslate"><span class="pre">FluidState.items()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.joule_thomson"><code class="docutils literal notranslate"><span class="pre">FluidState.joule_thomson</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.keys"><code class="docutils literal notranslate"><span class="pre">FluidState.keys()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.pressure"><code class="docutils literal notranslate"><span class="pre">FluidState.pressure</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.pressure_saturation"><code class="docutils literal notranslate"><span class="pre">FluidState.pressure_saturation</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.quality_mass"><code class="docutils literal notranslate"><span class="pre">FluidState.quality_mass</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.quality_volume"><code class="docutils literal notranslate"><span class="pre">FluidState.quality_volume</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.speed_of_sound"><code class="docutils literal notranslate"><span class="pre">FluidState.speed_of_sound</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.stack"><code class="docutils literal notranslate"><span class="pre">FluidState.stack()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.subcooling"><code class="docutils literal notranslate"><span class="pre">FluidState.subcooling</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.superheating"><code class="docutils literal notranslate"><span class="pre">FluidState.superheating</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.supersaturation_degree"><code class="docutils literal notranslate"><span class="pre">FluidState.supersaturation_degree</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.supersaturation_ratio"><code class="docutils literal notranslate"><span class="pre">FluidState.supersaturation_ratio</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.surface_tension"><code class="docutils literal notranslate"><span class="pre">FluidState.surface_tension</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.temperature"><code class="docutils literal notranslate"><span class="pre">FluidState.temperature</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.temperature_saturation"><code class="docutils literal notranslate"><span class="pre">FluidState.temperature_saturation</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.to_dict"><code class="docutils literal notranslate"><span class="pre">FluidState.to_dict()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.values"><code class="docutils literal notranslate"><span class="pre">FluidState.values()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.FluidState.viscosity"><code class="docutils literal notranslate"><span class="pre">FluidState.viscosity</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_coolprop.html#jaxprop.helpers_coolprop.extract_vars"><code class="docutils literal notranslate"><span class="pre">extract_vars()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_jax.html#jaxprop.helpers_jax.format_list_80"><code class="docutils literal notranslate"><span class="pre">format_list_80()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_jax.html#jaxprop.helpers_jax.make_diffrax_adjoint"><code class="docutils literal notranslate"><span class="pre">make_diffrax_adjoint()</span></code></a></li>
