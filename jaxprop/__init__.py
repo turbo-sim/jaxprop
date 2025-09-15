@@ -10,6 +10,8 @@ else:
     sys.excepthook = IPython.core.ultratb.FormattedTB(color_scheme='linux', call_pdb=False)
 
 
+print("I am fixing the error")
+
 import os
 os.environ["JAX_PLATFORM_NAME"] = "cpu"
 import jax
