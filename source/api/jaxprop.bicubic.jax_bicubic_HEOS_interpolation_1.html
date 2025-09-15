@@ -316,9 +316,7 @@ document.write(`
   </button>
 `);
 </script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</button>
+
 </div></div>
       
     </div>
@@ -334,17 +332,6 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> Contents </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.bicubic_interpolant"><code class="docutils literal notranslate"><span class="pre">bicubic_interpolant()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.compute_bicubic_coefficients_of_ij"><code class="docutils literal notranslate"><span class="pre">compute_bicubic_coefficients_of_ij()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.inverse_interpolant_scalar_DP"><code class="docutils literal notranslate"><span class="pre">inverse_interpolant_scalar_DP()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.inverse_interpolant_scalar_hD"><code class="docutils literal notranslate"><span class="pre">inverse_interpolant_scalar_hD()</span></code></a></li>
-</ul>
-            </nav>
         </div>
     </div>
 </div>
@@ -354,29 +341,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1">
-<span id="jaxprop-bicubic-jax-bicubic-heos-interpolation-1-module"></span><h1>jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module<a class="headerlink" href="#module-jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1" title="Link to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.bicubic_interpolant">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.</span></span><span class="sig-name descname"><span class="pre">bicubic_interpolant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lmax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/jax_bicubic_HEOS_interpolation_1.html#bicubic_interpolant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.bicubic_interpolant" title="Link to this definition">#</a></dt>
-<dd><p>Evaluate the bicubic interpolant at (h, P) using precomputed coefficients.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.compute_bicubic_coefficients_of_ij">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.</span></span><span class="sig-name descname"><span class="pre">compute_bicubic_coefficients_of_ij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fxy</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/jax_bicubic_HEOS_interpolation_1.html#compute_bicubic_coefficients_of_ij"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.compute_bicubic_coefficients_of_ij" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.inverse_interpolant_scalar_DP">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.</span></span><span class="sig-name descname"><span class="pre">inverse_interpolant_scalar_DP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/jax_bicubic_HEOS_interpolation_1.html#inverse_interpolant_scalar_DP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.inverse_interpolant_scalar_DP" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.inverse_interpolant_scalar_hD">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.</span></span><span class="sig-name descname"><span class="pre">inverse_interpolant_scalar_hD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/jax_bicubic_HEOS_interpolation_1.html#inverse_interpolant_scalar_hD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.inverse_interpolant_scalar_hD" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
+  <section id="jaxprop-bicubic-jax-bicubic-heos-interpolation-1-module">
+<h1>jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module<a class="headerlink" href="#jaxprop-bicubic-jax-bicubic-heos-interpolation-1-module" title="Link to this heading">#</a></h1>
 </section>
 
 
@@ -414,24 +380,6 @@ document.write(`
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.bicubic_interpolant"><code class="docutils literal notranslate"><span class="pre">bicubic_interpolant()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.compute_bicubic_coefficients_of_ij"><code class="docutils literal notranslate"><span class="pre">compute_bicubic_coefficients_of_ij()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.inverse_interpolant_scalar_DP"><code class="docutils literal notranslate"><span class="pre">inverse_interpolant_scalar_DP()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.inverse_interpolant_scalar_hD"><code class="docutils literal notranslate"><span class="pre">inverse_interpolant_scalar_hD()</span></code></a></li>
-</ul>
-  </nav></div>
-
-</div></div>
               
             
           </div>
