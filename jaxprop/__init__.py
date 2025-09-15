@@ -22,7 +22,7 @@ jax.config.update("jax_enable_x64", True)
 from .graphics import *
 from .utils import *
 from .helpers_jax import *
-from .helpers_coolprop import *
+from .helpers_props import *
 
 # Import subpackages
 from . import coolprop
@@ -32,6 +32,7 @@ from . import bicubic
 # Import API classes
 from .perfect_gas import FluidPerfectGas
 from .coolprop import Fluid, FluidJAX
+from .bicubic import FluidBicubic
 
 
 from . import components

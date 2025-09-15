@@ -3,7 +3,7 @@ import jax.numpy as jnp
 import equinox as eqx
 
 from ..coolprop import Fluid
-from .. import helpers_coolprop as jxp
+from .. import helpers_props as jxp
 
 # ----------------------------------------------------------------------------- #
 # Constant generation and Sutherland estimation

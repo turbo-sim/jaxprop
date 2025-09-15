@@ -9,7 +9,7 @@ from functools import wraps
 
 from . import core_calculations as core
 
-from ..helpers_coolprop import (
+from ..helpers_props import (
     FluidState,
     INPUT_TYPE_MAP,
     # MEANLINE_PROPERTIES,

@@ -4,5 +4,5 @@ from .fluid_properties import *
 
 # Backwards compatibility
 from ..graphics import *
-from ..helpers_coolprop import *
+from ..helpers_props import *
 
