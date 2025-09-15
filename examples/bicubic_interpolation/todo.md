@@ -19,14 +19,6 @@ we specify the input_pair as cpx.HmassP_INPUTS and the table object as inputs
 
 
 (these others need a 1d root finding)
-PQ_INPUTS = CP.PQ_INPUTS
-HmassQ_INPUTS = CP.HmassQ_INPUTS
-PT_INPUTS = CP.PT_INPUTS
-HmassT_INPUTS = CP.HmassT_INPUTS
-DmassP_INPUTS = CP.DmassP_INPUTS
-PSmass_INPUTS = CP.PSmass_INPUTS
-HmassSmass_INPUTS = CP.HmassSmass_INPUTS
-DmassHmass_INPUTS = CP.DmassHmass_INPUTS
 
 Would it be possible to clean and use the functions:
 

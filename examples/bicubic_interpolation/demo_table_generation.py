@@ -4,12 +4,6 @@ import shutil
 import jaxprop as jxp
 
 
-outdir = "fluid_tables"
-if os.path.exists(outdir):
-    shutil.rmtree(outdir, ignore_errors=True)
-
-
-
 # ---------------------------
 # Define table parameters
 # ---------------------------
@@ -20,6 +14,15 @@ p_min = 2e6    # Pa
 p_max = 20e6   # Pa
 N_p = 80       # Number of pressure points
 N_h = 80       # Number of enthalpy points
+
+
+# ---------------------------
+# Delete existing tables
+# ---------------------------
+outdir = "demo_table_generation"
+if os.path.exists(outdir):
+    shutil.rmtree(outdir, ignore_errors=True)
+
 
 # ---------------------------
 # First call: generate table
@@ -38,8 +41,6 @@ fluid = jxp.FluidBicubic(
 )
 end = time.time()
 print(f"FluidBicubic init took {end - start:.3f} s")
-
-
 
 
 # ---------------------------

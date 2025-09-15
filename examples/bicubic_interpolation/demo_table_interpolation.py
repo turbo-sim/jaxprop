@@ -2,8 +2,6 @@ import jaxprop as jxp
 import matplotlib.pyplot as plt
 
 
-
-
 # ---------------------------
 # Configuration
 # ---------------------------
@@ -16,7 +14,7 @@ p_max = 20e6   # Pa
 N_p = 80       # Grid size for quick test
 N_h = 80
 
-fluid = jxp.FluidBicubic(
+fluid_bicubic = jxp.FluidBicubic(
     fluid_name=fluid_name,
     backend="HEOS",
     h_min=h_min,
@@ -29,24 +27,22 @@ fluid = jxp.FluidBicubic(
 )
 
 
+
 # ---------------------------
 # Step 2: Interpolate at (h, P)
 # ---------------------------
 test_h = 500e3   # Test enthalpy [J/kg]
 test_P = 12e6     # Test pressure [Pa]
-
-interp_props = fluid.get_props(jxp.HmassP_INPUTS, test_h, test_P)
-fluid = jxp.Fluid(fluid_name)
-coolprop_props = fluid.get_state(jxp.HmassP_INPUTS, test_h, test_P)
-
-
-
-
+props_bicubic = fluid_bicubic.get_props(jxp.HmassP_INPUTS, test_h, test_P)
 
 
 # -----------------------------------
 # Step 3: Compare with CoolProp
 # -----------------------------------
+fluid_coolprop = jxp.FluidJAX(fluid_name)
+props_coolprop = fluid_coolprop.get_props(jxp.HmassP_INPUTS, test_h, test_P)
+
+
 header = f"{'Property':<35} {'Bicubic':>14} {'CoolProp':>14} {'Error [%]':>14}"
 print("-" * len(header))
 print("Comparison between interpolated and CoolProp values:")
@@ -56,8 +52,8 @@ print(header)
 print("-" * len(header))
 
 for prop in jxp.PROPERTIES_CANONICAL:
-    bicubic_val = interp_props[prop]
-    coolprop_val = coolprop_props[prop]
+    bicubic_val = props_bicubic[prop]
+    coolprop_val = props_coolprop[prop]
     if coolprop_val != 0 and not (bicubic_val is None or coolprop_val is None):
         rel_err = (bicubic_val - coolprop_val) / coolprop_val * 100
     else:
@@ -66,12 +62,13 @@ for prop in jxp.PROPERTIES_CANONICAL:
     print(f"{prop:<35} {bicubic_val:14.6e} {coolprop_val:14.6e} {rel_err:14.6f}")
 
 
+
 # Plot the state
 prop_x = "enthalpy"
 prop_y = "pressure"
-fig, ax = fluid.plot_phase_diagram(x_prop=prop_x, y_prop=prop_y, x_scale="linear", y_scale="log")
-ax.plot(interp_props[prop_x], interp_props[prop_y], "ko")
-ax.plot(coolprop_props[prop_x], coolprop_props[prop_y], "b+")
+fig, ax = fluid_coolprop.fluid.plot_phase_diagram(x_prop=prop_x, y_prop=prop_y, x_scale="linear", y_scale="log")
+ax.plot(props_bicubic[prop_x], props_bicubic[prop_y], "ko")
+ax.plot(props_coolprop[prop_x], props_coolprop[prop_y], "b+")
 
 # add interpolation domain box (simple line version)
 ax.plot(
@@ -86,33 +83,13 @@ plt.show()
 
 
 #TODO, why is p not exaclty recovered?
-# Comparison between interpolated and CoolProp values:
-# Property                                   Bicubic       CoolProp      Error [%]
-# --------------------------------------------------------------------------------
-# pressure                              1.201237e+07   1.200000e+07       0.103112
-# temperature                           3.806271e+02   3.805691e+02       0.015249
-# density                               2.288502e+02   2.286297e+02       0.096424
-# enthalpy                              5.000000e+05   5.000000e+05      -0.000000
-# entropy                               1.893554e+03   1.893695e+03      -0.007476
-# internal_energy                       4.475099e+05   4.475134e+05      -0.000779
+# # Comparison between interpolated and CoolProp values:
+# # Property                                   Bicubic       CoolProp      Error [%]
+# # --------------------------------------------------------------------------------
+# # pressure                              1.201237e+07   1.200000e+07       0.103112
+# # temperature                           3.806271e+02   3.805691e+02       0.015249
+# # density                               2.288502e+02   2.286297e+02       0.096424
+# # enthalpy                              5.000000e+05   5.000000e+05      -0.000000
+# # entropy                               1.893554e+03   1.893695e+03      -0.007476
+# # internal_energy                       4.475099e+05   4.475134e+05      -0.000779
 
-
-
-# Time the cost of precomputing coefficients for different number of points
-# 1. Save only prop tables
-# 2. Save prop and coefficient tables
-# See which cost dociminates for 10, 100, 1000 function evaluations
-
-
-# Avoid converting to int and use pure jax?
-
-
-# 2. Coefficient allocation inefficiency
-
-# You allocate a full (Nh, Np, 16) coefficient array but only fill one cell:
-
-# coeffs = jnp.zeros((Nh, Np, 16), dtype=jnp.float64)
-# coeffs = coeffs.at[i, j, :].set(coeffs_local)
-
-
-# That’s a lot of memory churn, especially for large grids.
