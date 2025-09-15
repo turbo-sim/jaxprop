@@ -598,11 +598,26 @@ document.write(`
 
 
 
+<span class="c1"># TODO: it seems that having jax.lax.cond slows things a lot!</span>
+<span class="c1"># A better aproach could be to do the mapping like in perect gas</span>
+
+<span class="c1"># Taken from perfect gas</span>
+<span class="c1"># PROPERTY_CALCULATORS = {</span>
+<span class="c1">#     jxp.PT_INPUTS: calculate_properties_PT,</span>
+<span class="c1">#     jxp.HmassSmass_INPUTS: calculate_properties_hs,</span>
+<span class="c1">#     jxp.HmassP_INPUTS: calculate_properties_hP,</span>
+<span class="c1">#     jxp.PSmass_INPUTS: calculate_properties_Ps,</span>
+<span class="c1">#     jxp.DmassHmass_INPUTS: calculate_properties_rhoh,</span>
+<span class="c1">#     jxp.DmassP_INPUTS: calculate_properties_rhop,</span>
+<span class="c1"># }</span>
+
+
 
 <span class="c1"># Unified entry point</span>
 <div class="viewcode-block" id="calculate_props">
 <a class="viewcode-back" href="../../../source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.calculate_props">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_props</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+    <span class="c1"># return interpolate_bicubic_hp(x, y, table)</span>
     <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">cond</span><span class="p">(</span>
         <span class="n">input_pair</span> <span class="o">==</span> <span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span>
         <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">interpolate_bicubic_hp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">table</span><span class="p">),</span>
@@ -899,134 +914,11 @@ document.write(`
     <span class="c1"># solver = optx.Newton(rtol=1e-8, atol=1e-8)</span>
     <span class="c1"># sol = optx.root_find(residual, solver, x0, throw=True)</span>
 
-
     <span class="n">h_scaled</span><span class="p">,</span> <span class="n">p_scaled</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">value</span>
     <span class="n">h</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">from_scaled</span><span class="p">(</span><span class="n">h_scaled</span><span class="p">,</span> <span class="n">p_scaled</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">interpolate_bicubic_hp</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span></div>
 
 
-
-
-    <span class="c1"># # bounded Newton solver in [0,1]²</span>
-    <span class="c1"># solver = optx.Dogleg(rtol=1e-8, atol=1e-8)</span>
-    <span class="c1"># sol = optx.least_squares(</span>
-    <span class="c1">#     residual, solver, x0, throw=True,</span>
-    <span class="c1"># )</span>
-
-    <span class="c1"># h_norm, p_norm = sol.value</span>
-    <span class="c1"># h, p = from_unit(h_norm, p_norm)</span>
-    <span class="c1"># return interpolate_bicubic_hp(h, p, table)</span>
-
-
-
-<span class="c1"># def interpolate_bicubic_xy(input_pair, val1, val2, table, coarse_step=1):</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     Invert the bicubic interpolant for a given input pair.</span>
-<span class="c1">#     Finds (h, p) such that interpolate_bicubic_hp(h, p, table)</span>
-<span class="c1">#     matches the target values.</span>
-
-<span class="c1">#     Parameters</span>
-<span class="c1">#     ----------</span>
-<span class="c1">#     input_pair : int</span>
-<span class="c1">#         Identifier for the input pair (e.g. jxp.HmassSmass_INPUTS).</span>
-<span class="c1">#     val1, val2 : float</span>
-<span class="c1">#         Target values for the two properties.</span>
-<span class="c1">#     table : dict</span>
-<span class="c1">#         Property table with bicubic coefficients and node values.</span>
-<span class="c1">#     coarse_step : int, optional</span>
-<span class="c1">#         Step for coarse grid scan (default: 5).</span>
-
-<span class="c1">#     Returns</span>
-<span class="c1">#     -------</span>
-<span class="c1">#     sol : Optimistix solution object</span>
-<span class="c1">#         Contains .value = [h, p], residuals, stats, etc.</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-
-<span class="c1">#     # Map input_pair → property names</span>
-<span class="c1">#     prop1, prop2 = jxp.INPUT_PAIR_MAP[input_pair]</span>
-<span class="c1">#     prop1 = jxp.ALIAS_TO_CANONICAL[prop1]</span>
-<span class="c1">#     prop2 = jxp.ALIAS_TO_CANONICAL[prop2]</span>
-
-
-<span class="c1">#     h_vals = table[&quot;h_vals&quot;]          # (Nh,) enthalpy grid</span>
-<span class="c1">#     p_vals = table[&quot;p_vals&quot;]          # (Np,) pressure grid</span>
-<span class="c1">#     logPvals = jnp.log(p_vals)       # work in logP for smoother interpolation</span>
-<span class="c1">#     h_min, h_max = h_vals[0], h_vals[-1]</span>
-<span class="c1">#     logPmin, logPmax = logPvals[0], logPvals[-1]</span>
-
-<span class="c1">#     def to_unit(h, p):</span>
-<span class="c1">#         h_norm = (h - h_min) / (h_max - h_min)</span>
-<span class="c1">#         logP = jnp.log(p)</span>
-<span class="c1">#         logP_norm = (logP - logPmin) / (logPmax - logPmin)</span>
-<span class="c1">#         return h_norm, logP_norm</span>
-
-<span class="c1">#     def from_unit(h_norm, logPnorm):</span>
-<span class="c1">#         h = h_norm * (h_max - h_min) + h_min</span>
-<span class="c1">#         logP = logPnorm * (logPmax - logPmin) + logPmin</span>
-<span class="c1">#         p = jnp.exp(logP)</span>
-<span class="c1">#         return h, p</span>
-
-
-<span class="c1">#     # --- coarse grid scan for initial guess ---</span>
-<span class="c1">#     # Use precomputed node values (no interpolation needed)</span>
-<span class="c1">#     h_vals = table[&quot;enthalpy&quot;][&quot;value&quot;][::coarse_step, ::coarse_step]</span>
-<span class="c1">#     p_vals = table[&quot;pressure&quot;][&quot;value&quot;][::coarse_step, ::coarse_step]</span>
-<span class="c1">#     prop1_vals = table[prop1][&quot;value&quot;][::coarse_step, ::coarse_step]</span>
-<span class="c1">#     prop2_vals = table[prop2][&quot;value&quot;][::coarse_step, ::coarse_step]</span>
-
-<span class="c1">#     errs = (prop1_vals - val1)**2 + (prop2_vals - val2)**2</span>
-<span class="c1">#     idx = jnp.argmin(errs)</span>
-<span class="c1">#     i, j = jnp.unravel_index(idx, errs.shape)</span>
-<span class="c1">#     h0, p0 = h_vals[i, j], p_vals[i, j]</span>
-
-<span class="c1">#     # --- diagnostics ---</span>
-<span class="c1">#     err_min = errs[i, j]</span>
-<span class="c1">#     err_max = jnp.max(errs)</span>
-<span class="c1">#     err_mean = jnp.mean(errs)</span>
-<span class="c1">#     jax.debug.print(</span>
-<span class="c1">#         &quot;coarse scan: min_err={:.3e}, mean_err={:.3e}, max_err={:.3e}, initial (h={:.3e}, p={:.3e})&quot;,</span>
-<span class="c1">#         err_min, err_mean, err_max, h0, p0,</span>
-<span class="c1">#     )</span>
-
-<span class="c1">#     def residual(vars, args):</span>
-<span class="c1">#         h_norm, logp_norm = vars</span>
-        
-<span class="c1">#         h, p = from_unit(h_norm, logp_norm)</span>
-<span class="c1">#         props = interpolate_bicubic_hp(h, p, table)</span>
-
-<span class="c1">#         scale1 = jnp.maximum(jnp.abs(table[prop1][&quot;value&quot;].ptp()), 1.0)</span>
-<span class="c1">#         scale2 = jnp.maximum(jnp.abs(table[prop2][&quot;value&quot;].ptp()), 1.0)</span>
-<span class="c1">#         r1 = (props[prop1] - val1) / scale1</span>
-<span class="c1">#         r2 = (props[prop2] - val2) / scale2</span>
-
-<span class="c1">#         jax.debug.print(</span>
-<span class="c1">#             &quot;residual(h_norm={:.3e}, logp_norm={:.3e}, h={:.6e}, p={:.6e})\n&quot;</span>
-<span class="c1">#             &quot;  {prop1}: props={:.6e}, target={:.6e}, normdiff={:.3e}\n&quot;</span>
-<span class="c1">#             &quot;  {prop2}: props={:.6e}, target={:.6e}, normdiff={:.3e}&quot;,</span>
-<span class="c1">#             h_norm, logp_norm, h, p,</span>
-<span class="c1">#             props[prop1], val1, r1,</span>
-<span class="c1">#             props[prop2], val2, r2,</span>
-<span class="c1">#             prop1=prop1, prop2=prop2</span>
-<span class="c1">#         )</span>
-
-<span class="c1">#         return jnp.array([r1, r2])</span>
-
-<span class="c1">#     h0, p0 = h_vals[i, j], p_vals[i, j]</span>
-<span class="c1">#     x0 = jnp.array(to_unit(h0, p0))</span>
-
-<span class="c1">#     jax.debug.print(</span>
-<span class="c1">#         &quot;initial (h={:.3e}, p={:.3e})&quot;,</span>
-<span class="c1">#         x0[0], x0[1],</span>
-<span class="c1">#     )</span>
-
-<span class="c1">#     solver = optx.Newton(rtol=1e-8, atol=1e-8,</span>
-<span class="c1">#                         )</span>
-<span class="c1">#     sol = optx.root_find(residual, solver, x0, throw=True, options = {&quot;lower&quot;:jnp.array([0.0, 0.0]), &quot;upper&quot;: jnp.array([1.0, 1.0])})</span>
-
-<span class="c1">#     # Compute the fluid properties</span>
-<span class="c1">#     h_norm, logp_norm = sol.value</span>
-<span class="c1">#     h, p = from_unit(h_norm, logp_norm)</span>
-<span class="c1">#     return interpolate_bicubic_hp(h, p, table)</span>
 
 
 
