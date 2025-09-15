@@ -53,7 +53,7 @@ p_samples = scaled_samples[:, 1]
 # Serial evaluation
 # ---------------------------
 print("\nEvaluating samples serially...\n")
-print(f"{'Sample':>6} | {'h [J/kg]':>12} | {'p [Pa]':>12} | {'PerfectGas [microsec]':>25} | {'Bicubic [microsec]':>25} | {'CoolProp [microsec]':>25}")
+print(f"{'Sample':>6} | {'h [J/kg]':>12} | {'p [Pa]':>12} | {'PerfectGas [ms]':>15} | {'Bicubic [ms]':>15} | {'CoolProp [ms]':>15}")
 
 # store timings
 timings_pg = []
@@ -65,19 +65,19 @@ for i, (h, p) in enumerate(zip(h_samples, p_samples), 1):
     t0 = time.perf_counter()
     _ = fluid_perfect.get_props(jxp.HmassP_INPUTS, h, p)
     t1 = time.perf_counter()
-    dt_pg = (t1 - t0) * 1e6  # µs
+    dt_pg = (t1 - t0) * 1e3  # ms
 
     # Bicubic
     t0 = time.perf_counter()
     _ = fluid_bicubic.get_props(jxp.HmassP_INPUTS, h, p)
     t1 = time.perf_counter()
-    dt_bi = (t1 - t0) * 1e6  # µs
+    dt_bi = (t1 - t0) * 1e3  # ms
 
     # CoolProp
     t0 = time.perf_counter()
     _ = fluid_coolprop.get_props(jxp.HmassP_INPUTS, h, p)
     t1 = time.perf_counter()
-    dt_cp = (t1 - t0) * 1e6  # µs
+    dt_cp = (t1 - t0) * 1e3  # ms
 
     # collect
     timings_pg.append(dt_pg)
@@ -85,7 +85,7 @@ for i, (h, p) in enumerate(zip(h_samples, p_samples), 1):
     timings_cp.append(dt_cp)
 
     # Print row
-    print(f"{i:6d} | {h:12.2f} | {p:12.2f} | {dt_pg:25.2f} | {dt_bi:25.2f} | {dt_cp:25.2f}")
+    print(f"{i:6d} | {h:12.2f} | {p:12.2f} | {dt_pg:15.2f} | {dt_bi:15.2f} | {dt_cp:15.2f}")
 
 # ---------------------------
 # Averages (skip first entry)
@@ -96,6 +96,6 @@ if len(timings_pg) > 1:
     avg_cp = np.mean(timings_cp[1:])
 
     print("\nAverage timings (skipping first sample):")
-    print(f"  PerfectGas = {avg_pg:.2f} microsec")
-    print(f"  Bicubic    = {avg_bi:.2f} microsec")
-    print(f"  CoolProp   = {avg_cp:.2f} microsec")
+    print(f"  PerfectGas = {avg_pg:.2f} ms")
+    print(f"  Bicubic    = {avg_bi:.2f} ms")
+    print(f"  CoolProp   = {avg_cp:.2f} ms")

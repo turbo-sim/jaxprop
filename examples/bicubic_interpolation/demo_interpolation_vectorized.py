@@ -19,7 +19,7 @@ p_min = 2e6    # Pa
 p_max = 20e6   # Pa
 N_p = 30       # Grid size for table
 N_h = 30
-N_samples = 1000  # number of LHS samples
+N_samples = 100  # number of LHS samples
 
 # ---------------------------
 # Build fluids
@@ -52,7 +52,7 @@ p_samples = scaled_samples[:, 1]
 # ---------------------------
 # Warmup (to trigger JIT compilation)
 # ---------------------------
-print("\nWarming up JIT for all solvers...\n")
+print("Warming up JIT for all solvers...")
 _ = fluid_perfect.get_props(jxp.HmassP_INPUTS, h_samples, p_samples)
 _ = fluid_bicubic.get_props(jxp.HmassP_INPUTS, h_samples, p_samples)
 _ = fluid_coolprop.get_props(jxp.HmassP_INPUTS, h_samples, p_samples)
@@ -61,7 +61,7 @@ _ = fluid_coolprop.get_props(jxp.HmassP_INPUTS, h_samples, p_samples)
 # ---------------------------
 # Batched evaluation
 # ---------------------------
-print("\nEvaluating samples in batch...\n")
+print("Evaluating samples in batch...")
 
 t0 = time.perf_counter()
 interp_props = fluid_bicubic.get_props(jxp.HmassP_INPUTS, h_samples, p_samples)
@@ -76,10 +76,10 @@ t3 = time.perf_counter()
 # ---------------------------
 # Timing summary
 # ---------------------------
-print("\nTiming summary (JIT warmup excluded):")
-print(f"  PerfectGas= {t3 - t2:8.6f} s")
-print(f"  Bicubic   = {t1 - t0:8.6f} s")
-print(f"  CoolProp  = {t2 - t1:8.6f} s")
+print("Timing summary (JIT warmup excluded):")
+print(f"  PerfectGas = {1000*(t3 - t2):8.3f} ms")
+print(f"  Bicubic    = {1000*(t1 - t0):8.3f} ms")
+print(f"  CoolProp   = {1000*(t2 - t1):8.3f} ms")
 
 
 
