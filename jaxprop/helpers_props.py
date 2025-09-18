@@ -171,7 +171,7 @@ PROPERTY_ALIASES = {
     "speed_of_sound": ["a", "speed_sound"],
     "viscosity": ["mu"],
     "conductivity": ["k"],
-    "gruneisen": ["gruneisen"],
+    "gruneisen": ["gruneisen", "G"],
     # --- expansion & JT effects
     "isobaric_expansion_coefficient": ["alpha_p"],
     "isothermal_joule_thomson": ["mu_T"],
@@ -227,6 +227,10 @@ LABEL_MAPPING = {
     "s": "Entropy (J/kg/K)",
     "T": "Temperature (K)",
     "h": "Enthalpy (J/kg)",
+    "pressure": "Pressure (Pa)",
+    "entropy": "Entropy (J/kg/K)",
+    "temperature": "Temperature (K)",
+    "enthalpy": "Enthalpy (J/kg)",
     "rho": r"Density (kg/m$^3$)",
 }
 

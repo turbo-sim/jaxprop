@@ -230,11 +230,11 @@ if __name__ == "__main__":
     efficiency = 0.8
     process_type = "expansion"
 
-    A_throat_mm2 = 1000
+    A_throat_mm2 = 250
     A_throat = A_throat_mm2 / 1e6  # mm² -> m²
 
     # sensitivity parameters
-    p_in_list = [20e5]           # Pa
+    p_in_list = [13e5]           # Pa
     R_list = [10, 25, 50, 100, 250, 500]      # mass ratio
 
     # containers

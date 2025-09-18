@@ -189,11 +189,11 @@ class FluidBicubic(eqx.Module):
 
         for k in jxp.PROPERTIES_CANONICAL:
             table[k] = {
-                "value": np.zeros((self.N_h, self.N_p)),
-                "grad_h": np.zeros((self.N_h, self.N_p)),
-                "grad_p": np.zeros((self.N_h, self.N_p)),
-                "grad_ph": np.zeros((self.N_h, self.N_p)),
-                "coeffs": np.zeros((self.N_h - 1, self.N_p - 1, 16)),
+                "value": np.empty((self.N_h, self.N_p)),
+                "grad_h": np.empty((self.N_h, self.N_p)),
+                "grad_p": np.empty((self.N_h, self.N_p)),
+                "grad_ph": np.empty((self.N_h, self.N_p)),
+                "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16)),
             }
 
         total_points = self.N_h * self.N_p
@@ -221,10 +221,11 @@ class FluidBicubic(eqx.Module):
                         f_ph = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p + eps_p)
                         success_count += 1
                     except Exception:
-                        f_0 = np.nan
-                        f_h = np.nan
-                        f_p = np.nan
-                        f_ph = np.nan
+                        pass
+                        # f_0 = np.nan
+                        # f_h = np.nan
+                        # f_p = np.nan
+                        # f_ph = np.nan
 
                     for k in jxp.PROPERTIES_CANONICAL:
                         value = f_0[k]
