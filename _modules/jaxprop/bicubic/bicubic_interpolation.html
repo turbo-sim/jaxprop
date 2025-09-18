@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.bicubic.bicubic_interpolation &#8212; jaxprop v0.3.1 documentation</title>
+    <title>jaxprop.bicubic.bicubic_interpolation &#8212; jaxprop v0.4.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=4d4cdd22"></script>
+    <script src="../../../_static/documentation_options.js?v=6d25dc78"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.3.1 documentation</p>
+    <p class="title logo__title">jaxprop v0.4.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -486,11 +486,11 @@ document.write(`
 
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">:</span>
             <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
-                <span class="s2">&quot;grad_h&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
-                <span class="s2">&quot;grad_p&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
-                <span class="s2">&quot;grad_ph&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
-                <span class="s2">&quot;coeffs&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">)),</span>
+                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
+                <span class="s2">&quot;grad_h&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
+                <span class="s2">&quot;grad_p&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
+                <span class="s2">&quot;grad_ph&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
+                <span class="s2">&quot;coeffs&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">)),</span>
             <span class="p">}</span>
 
         <span class="n">total_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_h</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span>
@@ -518,10 +518,11 @@ document.write(`
                         <span class="n">f_ph</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">)</span>
                         <span class="n">success_count</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                        <span class="n">f_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-                        <span class="n">f_h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-                        <span class="n">f_p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-                        <span class="n">f_ph</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                        <span class="k">pass</span>
+                        <span class="c1"># f_0 = np.nan</span>
+                        <span class="c1"># f_h = np.nan</span>
+                        <span class="c1"># f_p = np.nan</span>
+                        <span class="c1"># f_ph = np.nan</span>
 
                     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">:</span>
                         <span class="n">value</span> <span class="o">=</span> <span class="n">f_0</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>

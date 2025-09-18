@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.coolprop.core_calculations &#8212; jaxprop v0.3.1 documentation</title>
+    <title>jaxprop.coolprop.core_calculations &#8212; jaxprop v0.4.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=4d4cdd22"></script>
+    <script src="../../../_static/documentation_options.js?v=6d25dc78"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.3.1 documentation</p>
+    <p class="title logo__title">jaxprop v0.4.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -405,6 +405,9 @@ document.write(`
         <span class="s2">&quot;gruneisen&quot;</span><span class="p">:</span> <span class="n">gruneisen</span><span class="p">,</span>
         <span class="s2">&quot;isothermal_joule_thomson&quot;</span><span class="p">:</span> <span class="n">mu_T</span><span class="p">,</span>
         <span class="s2">&quot;joule_thomson&quot;</span><span class="p">:</span> <span class="n">mu_JT</span><span class="p">,</span>
+        <span class="c1"># &quot;gruneisen&quot;: compute_gruneisen(AS),</span>
+        <span class="c1"># &quot;isothermal_joule_thomson&quot;: compute_isothermal_joule_thomson(AS),</span>
+        <span class="c1"># &quot;joule_thomson&quot;: compute_joule_thomson(AS),</span>
         <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="n">mu</span><span class="p">,</span>
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
         <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">q_mass</span><span class="p">,</span>
@@ -414,6 +417,8 @@ document.write(`
         <span class="s2">&quot;subcooling&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;superheating&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
     <span class="p">}</span>
+
+    <span class="c1"># Note: behavior of quality and void fraction in the single phase region should produce a behavior that is consistent with the two-phase values to ensure barotropy polynomials are well posed.</span>
 
     <span class="c1"># --- extra saturation departures</span>
     <span class="k">if</span> <span class="n">supersaturation</span><span class="p">:</span>
@@ -428,45 +433,6 @@ document.write(`
 <span class="c1"># ------------------------------------------------------------------------------------ #</span>
 <span class="c1"># Equilibrium property calculations in the two-phase region</span>
 <span class="c1"># ------------------------------------------------------------------------------------ #</span>
-<div class="viewcode-block" id="compute_dsdp_q">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.compute_dsdp_q">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_dsdp_q</span><span class="p">(</span><span class="n">AS</span><span class="p">,</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">quality</span><span class="p">,</span> <span class="n">rel_dp</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute ds/dp|q using analytic method if available, otherwise fall back to finite difference.</span>
-
-<span class="sd">    Parameters:</span>
-<span class="sd">        AS : CoolProp.AbstractState</span>
-<span class="sd">            AbstractState instance (already configured with fluid and backend)</span>
-<span class="sd">        pressure : float</span>
-<span class="sd">            Pressure [Pa]</span>
-<span class="sd">        quality : float</span>
-<span class="sd">            Vapor quality. 0.0 for saturated liquid, 1.0 for saturated vapor</span>
-<span class="sd">        rel_dp : float</span>
-<span class="sd">            Relative pressure perturbation for finite difference (default: 1e-4)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        dsdp : float or np.nan</span>
-<span class="sd">            Derivative of entropy with respect to pressure at constant quality</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># Try analytic saturation derivative</span>
-        <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">quality</span><span class="p">)</span>
-        <span class="n">dsdp</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">first_saturation_deriv</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">iSmass</span><span class="p">,</span> <span class="n">CP</span><span class="o">.</span><span class="n">iP</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">dsdp</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Fallback: finite difference</span>
-            <span class="n">dp</span> <span class="o">=</span> <span class="n">rel_dp</span> <span class="o">*</span> <span class="n">pressure</span>
-            <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">quality</span><span class="p">)</span>
-            <span class="n">s0</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">smass</span><span class="p">()</span>
-            <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">pressure</span> <span class="o">+</span> <span class="n">dp</span><span class="p">,</span> <span class="n">quality</span><span class="p">)</span>
-            <span class="n">s1</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">smass</span><span class="p">()</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">s1</span> <span class="o">-</span> <span class="n">s0</span><span class="p">)</span> <span class="o">/</span> <span class="n">dp</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span></div>
-
-
-
 
 <div class="viewcode-block" id="compute_properties_2phase">
 <a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.compute_properties_2phase">[docs]</a>
@@ -561,9 +527,9 @@ document.write(`
         <span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;isobaric_expansion_coefficient&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-        <span class="s2">&quot;gruneisen&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-        <span class="s2">&quot;isothermal_joule_thomson&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-        <span class="s2">&quot;joule_thomson&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;gruneisen&quot;</span><span class="p">:</span> <span class="n">compute_gruneisen</span><span class="p">(</span><span class="n">AS</span><span class="p">),</span>
+        <span class="s2">&quot;isothermal_joule_thomson&quot;</span><span class="p">:</span> <span class="n">compute_isothermal_joule_thomson</span><span class="p">(</span><span class="n">AS</span><span class="p">),</span>
+        <span class="s2">&quot;joule_thomson&quot;</span><span class="p">:</span> <span class="n">compute_joule_thomson</span><span class="p">(</span><span class="n">AS</span><span class="p">),</span>
         <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="n">mu</span><span class="p">,</span>
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
         <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">mfrac_V</span><span class="p">,</span>
@@ -581,6 +547,116 @@ document.write(`
 
     <span class="k">return</span> <span class="n">props</span></div>
 
+
+
+<div class="viewcode-block" id="compute_dsdp_q">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.compute_dsdp_q">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_dsdp_q</span><span class="p">(</span><span class="n">AS</span><span class="p">,</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">quality</span><span class="p">,</span> <span class="n">rel_dp</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute ds/dp|q using analytic method if available, otherwise fall back to finite difference.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        AS : CoolProp.AbstractState</span>
+<span class="sd">            AbstractState instance (already configured with fluid and backend)</span>
+<span class="sd">        pressure : float</span>
+<span class="sd">            Pressure [Pa]</span>
+<span class="sd">        quality : float</span>
+<span class="sd">            Vapor quality. 0.0 for saturated liquid, 1.0 for saturated vapor</span>
+<span class="sd">        rel_dp : float</span>
+<span class="sd">            Relative pressure perturbation for finite difference (default: 1e-4)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dsdp : float or np.nan</span>
+<span class="sd">            Derivative of entropy with respect to pressure at constant quality</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Try analytic saturation derivative</span>
+        <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">quality</span><span class="p">)</span>
+        <span class="n">dsdp</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">first_saturation_deriv</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">iSmass</span><span class="p">,</span> <span class="n">CP</span><span class="o">.</span><span class="n">iP</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dsdp</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Fallback: finite difference</span>
+            <span class="n">dp</span> <span class="o">=</span> <span class="n">rel_dp</span> <span class="o">*</span> <span class="n">pressure</span>
+            <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">quality</span><span class="p">)</span>
+            <span class="n">s0</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">smass</span><span class="p">()</span>
+            <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">pressure</span> <span class="o">+</span> <span class="n">dp</span><span class="p">,</span> <span class="n">quality</span><span class="p">)</span>
+            <span class="n">s1</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">smass</span><span class="p">()</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">s1</span> <span class="o">-</span> <span class="n">s0</span><span class="p">)</span> <span class="o">/</span> <span class="n">dp</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span></div>
+
+
+
+<div class="viewcode-block" id="compute_gruneisen">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.compute_gruneisen">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_gruneisen</span><span class="p">(</span><span class="n">AS</span><span class="p">,</span> <span class="n">rel_du</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute Gruneisen parameter Γ = (1/rho) * (∂p/∂e)_rho</span>
+<span class="sd">    using finite differences.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">rho</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">rhomass</span><span class="p">()</span>
+        <span class="n">u0</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">umass</span><span class="p">()</span>
+        <span class="n">p0</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">p</span><span class="p">()</span>
+        <span class="n">du</span> <span class="o">=</span> <span class="n">rel_du</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">u0</span><span class="p">)</span> <span class="k">if</span> <span class="n">u0</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">rel_du</span>
+
+        <span class="c1"># Perturb internal energy</span>
+        <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassUmass_INPUTS</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">u0</span> <span class="o">+</span> <span class="n">du</span><span class="p">)</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">p</span><span class="p">()</span>
+
+        <span class="n">dpde</span> <span class="o">=</span> <span class="p">(</span><span class="n">p1</span> <span class="o">-</span> <span class="n">p0</span><span class="p">)</span> <span class="o">/</span> <span class="n">du</span>
+        <span class="n">Gamma</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">rho</span><span class="p">)</span> <span class="o">*</span> <span class="n">dpde</span>
+        <span class="k">return</span> <span class="n">Gamma</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span></div>
+
+
+<div class="viewcode-block" id="compute_joule_thomson">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.compute_joule_thomson">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_joule_thomson</span><span class="p">(</span><span class="n">AS</span><span class="p">,</span> <span class="n">rel_dp</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute Joule-Thomson coefficient μ_JT = (∂T/∂p)_h</span>
+<span class="sd">    using finite differences.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">hmass</span><span class="p">()</span>
+        <span class="n">p0</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">p</span><span class="p">()</span>
+        <span class="n">T0</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+        <span class="n">dp</span> <span class="o">=</span> <span class="n">rel_dp</span> <span class="o">*</span> <span class="n">p0</span>
+
+        <span class="c1"># Perturb pressure at constant enthalpy</span>
+        <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p0</span> <span class="o">+</span> <span class="n">dp</span><span class="p">)</span>
+        <span class="n">T1</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+
+        <span class="n">mu_JT</span> <span class="o">=</span> <span class="p">(</span><span class="n">T1</span> <span class="o">-</span> <span class="n">T0</span><span class="p">)</span> <span class="o">/</span> <span class="n">dp</span>
+        <span class="k">return</span> <span class="n">mu_JT</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span></div>
+
+    
+
+<div class="viewcode-block" id="compute_isothermal_joule_thomson">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.compute_isothermal_joule_thomson">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_isothermal_joule_thomson</span><span class="p">(</span><span class="n">AS</span><span class="p">,</span> <span class="n">rel_dp</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute isothermal Joule-Thomson coefficient μ_T = (∂h/∂p)_T</span>
+<span class="sd">    using finite differences.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+        <span class="n">p0</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">p</span><span class="p">()</span>
+        <span class="n">h0</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">hmass</span><span class="p">()</span>
+        <span class="n">dp</span> <span class="o">=</span> <span class="n">rel_dp</span> <span class="o">*</span> <span class="n">p0</span>
+
+        <span class="c1"># Perturb pressure at constant T</span>
+        <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p0</span> <span class="o">+</span> <span class="n">dp</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+        <span class="n">h1</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">hmass</span><span class="p">()</span>
+
+        <span class="n">mu_T</span> <span class="o">=</span> <span class="p">(</span><span class="n">h1</span> <span class="o">-</span> <span class="n">h0</span><span class="p">)</span> <span class="o">/</span> <span class="n">dp</span>
+        <span class="k">return</span> <span class="n">mu_T</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span></div>
 
 
 

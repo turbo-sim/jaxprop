@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>jaxprop.coolprop.core_calculations module &#8212; jaxprop v0.3.1 documentation</title>
+    <title>jaxprop.coolprop.core_calculations module &#8212; jaxprop v0.4.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=4d4cdd22"></script>
+    <script src="../../_static/documentation_options.js?v=6d25dc78"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -142,7 +142,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.3.1 documentation</p>
+    <p class="title logo__title">jaxprop v0.4.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -348,6 +348,9 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_supersaturation"><code class="docutils literal notranslate"><span class="pre">calculate_supersaturation()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_trimmed_quality"><code class="docutils literal notranslate"><span class="pre">calculate_trimmed_quality()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_dsdp_q"><code class="docutils literal notranslate"><span class="pre">compute_dsdp_q()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_gruneisen"><code class="docutils literal notranslate"><span class="pre">compute_gruneisen()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_isothermal_joule_thomson"><code class="docutils literal notranslate"><span class="pre">compute_isothermal_joule_thomson()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_joule_thomson"><code class="docutils literal notranslate"><span class="pre">compute_joule_thomson()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_properties"><code class="docutils literal notranslate"><span class="pre">compute_properties()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_properties_1phase"><code class="docutils literal notranslate"><span class="pre">compute_properties_1phase()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_properties_2phase"><code class="docutils literal notranslate"><span class="pre">compute_properties_2phase()</span></code></a></li>
@@ -639,6 +642,27 @@ If the fluid is in the supercritical region, the function will return NaN for th
 </dl>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.compute_gruneisen">
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_gruneisen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_du</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_gruneisen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_gruneisen" title="Link to this definition">#</a></dt>
+<dd><p>Compute Gruneisen parameter Γ = (1/rho) * (∂p/∂e)_rho
+using finite differences.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.compute_isothermal_joule_thomson">
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_isothermal_joule_thomson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_dp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_isothermal_joule_thomson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_isothermal_joule_thomson" title="Link to this definition">#</a></dt>
+<dd><p>Compute isothermal Joule-Thomson coefficient μ_T = (∂h/∂p)_T
+using finite differences.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.compute_joule_thomson">
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_joule_thomson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_dp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_joule_thomson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_joule_thomson" title="Link to this definition">#</a></dt>
+<dd><p>Compute Joule-Thomson coefficient μ_JT = (∂T/∂p)_h
+using finite differences.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -938,6 +962,9 @@ The following table summarizes the expressions for various properties:</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_supersaturation"><code class="docutils literal notranslate"><span class="pre">calculate_supersaturation()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_trimmed_quality"><code class="docutils literal notranslate"><span class="pre">calculate_trimmed_quality()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_dsdp_q"><code class="docutils literal notranslate"><span class="pre">compute_dsdp_q()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_gruneisen"><code class="docutils literal notranslate"><span class="pre">compute_gruneisen()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_isothermal_joule_thomson"><code class="docutils literal notranslate"><span class="pre">compute_isothermal_joule_thomson()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_joule_thomson"><code class="docutils literal notranslate"><span class="pre">compute_joule_thomson()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_properties"><code class="docutils literal notranslate"><span class="pre">compute_properties()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_properties_1phase"><code class="docutils literal notranslate"><span class="pre">compute_properties_1phase()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.compute_properties_2phase"><code class="docutils literal notranslate"><span class="pre">compute_properties_2phase()</span></code></a></li>
