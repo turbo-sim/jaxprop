@@ -370,8 +370,8 @@ document.write(`
     <span class="n">kappa_s</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">K_s</span>
     <span class="n">K_T</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">kappa_T</span>
     <span class="n">gruneisen</span> <span class="o">=</span> <span class="n">alpha_p</span> <span class="o">/</span> <span class="p">(</span><span class="n">kappa_T</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">cv</span><span class="p">)</span>
-    <span class="n">mu_T</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_p</span> <span class="o">*</span> <span class="n">T</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="n">cp</span><span class="p">)</span>
-    <span class="n">mu_JT</span> <span class="o">=</span> <span class="o">-</span><span class="n">mu_T</span> <span class="o">/</span> <span class="n">cp</span>
+    <span class="n">mu_JT</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_p</span> <span class="o">*</span> <span class="n">T</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="n">cp</span><span class="p">)</span>
+    <span class="n">mu_T</span> <span class="o">=</span> <span class="o">-</span><span class="n">mu_JT</span> <span class="o">*</span> <span class="n">cp</span>
 
     <span class="c1"># --- transport properties</span>
     <span class="n">mu</span> <span class="o">=</span> <span class="n">get_viscosity</span><span class="p">(</span><span class="n">AS</span><span class="p">)</span>
@@ -403,10 +403,8 @@ document.write(`
         <span class="s2">&quot;isentropic_compressibility&quot;</span><span class="p">:</span> <span class="n">kappa_s</span><span class="p">,</span>
         <span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">:</span> <span class="n">K_T</span><span class="p">,</span>
         <span class="s2">&quot;gruneisen&quot;</span><span class="p">:</span> <span class="n">gruneisen</span><span class="p">,</span>
-        <span class="c1"># &quot;isothermal_joule_thomson&quot;: mu_T,</span>
-        <span class="c1"># &quot;joule_thomson&quot;: mu_JT,</span>
-        <span class="s2">&quot;isothermal_joule_thomson&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-        <span class="s2">&quot;joule_thomson&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;isothermal_joule_thomson&quot;</span><span class="p">:</span> <span class="n">mu_T</span><span class="p">,</span>
+        <span class="s2">&quot;joule_thomson&quot;</span><span class="p">:</span> <span class="n">mu_JT</span><span class="p">,</span>
         <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="n">mu</span><span class="p">,</span>
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
         <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">q_mass</span><span class="p">,</span>
@@ -740,6 +738,11 @@ document.write(`
     <span class="c1"># Grüneisen</span>
     <span class="n">gruneisen</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_p</span> <span class="o">/</span> <span class="n">kappa_T</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="n">cv</span><span class="p">)</span>
 
+    <span class="c1"># Joule-Thomson</span>
+    <span class="n">mu_JT</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_p</span> <span class="o">*</span> <span class="n">T</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="n">cp</span><span class="p">)</span>
+    <span class="n">mu_T</span> <span class="o">=</span> <span class="o">-</span><span class="n">mu_JT</span> <span class="o">*</span> <span class="n">cp</span>
+
+
     <span class="c1"># Canonical dict</span>
     <span class="n">props</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
@@ -759,8 +762,8 @@ document.write(`
         <span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">:</span> <span class="n">kappa_T</span><span class="p">,</span>
         <span class="s2">&quot;isobaric_expansion_coefficient&quot;</span><span class="p">:</span> <span class="n">alpha_p</span><span class="p">,</span>
         <span class="s2">&quot;gruneisen&quot;</span><span class="p">:</span> <span class="n">gruneisen</span><span class="p">,</span>
-        <span class="s2">&quot;isothermal_joule_thomson&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-        <span class="s2">&quot;joule_thomson&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;isothermal_joule_thomson&quot;</span><span class="p">:</span> <span class="n">mu_T</span><span class="p">,</span>
+        <span class="s2">&quot;joule_thomson&quot;</span><span class="p">:</span> <span class="n">mu_JT</span><span class="p">,</span>
         <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="n">mu</span><span class="p">,</span>
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
         <span class="s2">&quot;surface_tension&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
@@ -1844,26 +1847,26 @@ document.write(`
         <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="n">quality_volume</span><span class="p">,</span>
         <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">],</span>
         <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span>
-        <span class="s2">&quot;rhomass&quot;</span><span class="p">:</span> <span class="n">rho</span><span class="p">,</span>
-        <span class="s2">&quot;hmass&quot;</span><span class="p">:</span> <span class="n">hmass</span><span class="p">,</span>
+        <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="n">rho</span><span class="p">,</span>
+        <span class="s2">&quot;enthalpy&quot;</span><span class="p">:</span> <span class="n">hmass</span><span class="p">,</span>
         <span class="s2">&quot;umass&quot;</span><span class="p">:</span> <span class="n">umass</span><span class="p">,</span>
         <span class="s2">&quot;smass&quot;</span><span class="p">:</span> <span class="n">smass</span><span class="p">,</span>
         <span class="s2">&quot;cvmass&quot;</span><span class="p">:</span> <span class="n">cv</span><span class="p">,</span>
-        <span class="s2">&quot;cpmass&quot;</span><span class="p">:</span> <span class="n">cp</span><span class="p">,</span>
+        <span class="s2">&quot;isobaric_heat_capacity&quot;</span><span class="p">:</span> <span class="n">cp</span><span class="p">,</span>
         <span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">:</span> <span class="n">isothermal_compressibility</span><span class="p">,</span>
         <span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">:</span> <span class="n">isothermal_bulk_modulus</span><span class="p">,</span>
         <span class="s2">&quot;isentropic_compressibility&quot;</span><span class="p">:</span> <span class="n">isentropic_compressibility</span><span class="p">,</span>
         <span class="s2">&quot;isentropic_bulk_modulus&quot;</span><span class="p">:</span> <span class="n">isentropic_bulk_modulus</span><span class="p">,</span>
-        <span class="s2">&quot;speed_sound&quot;</span><span class="p">:</span> <span class="n">speed_sound</span><span class="p">,</span>
+        <span class="s2">&quot;speed_of_sound&quot;</span><span class="p">:</span> <span class="n">speed_sound</span><span class="p">,</span>
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">conductivity</span><span class="p">,</span>
         <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="n">viscosity</span><span class="p">,</span>
         <span class="s2">&quot;viscosity_kinematic&quot;</span><span class="p">:</span> <span class="n">viscosity</span> <span class="o">/</span> <span class="n">rho</span><span class="p">,</span>
         <span class="s2">&quot;dhdp_T&quot;</span><span class="p">:</span> <span class="n">dhdp_T</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="c1"># Add properties as aliases (if property exists)</span>
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">PROPERTY_ALIASES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">props</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+    <span class="c1"># # Add properties as aliases (if property exists)</span>
+    <span class="c1"># for key, value in PROPERTY_ALIASES.items():</span>
+    <span class="c1">#     props[key] = props.get(value, np.nan)</span>
 
     <span class="k">return</span> <span class="n">props</span></div>
 
