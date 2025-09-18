@@ -67,8 +67,8 @@ def compute_properties_1phase(
     kappa_s = 1.0 / K_s
     K_T = 1.0 / kappa_T
     gruneisen = alpha_p / (kappa_T * rho * cv)
-    mu_T = (alpha_p * T - 1.0) / (rho * cp)
-    mu_JT = -mu_T / cp
+    mu_JT = (alpha_p * T - 1.0) / (rho * cp)
+    mu_T = -mu_JT * cp
 
     # --- transport properties
     mu = get_viscosity(AS)
@@ -100,10 +100,8 @@ def compute_properties_1phase(
         "isentropic_compressibility": kappa_s,
         "isothermal_bulk_modulus": K_T,
         "gruneisen": gruneisen,
-        # "isothermal_joule_thomson": mu_T,
-        # "joule_thomson": mu_JT,
-        "isothermal_joule_thomson": np.nan,
-        "joule_thomson": np.nan,
+        "isothermal_joule_thomson": mu_T,
+        "joule_thomson": mu_JT,
         "viscosity": mu,
         "conductivity": k,
         "quality_mass": q_mass,
@@ -428,6 +426,11 @@ def compute_properties_metastable_rhoT(
     # Grüneisen
     gruneisen = (alpha_p / kappa_T) / (rho * cv)
 
+    # Joule-Thomson
+    mu_JT = (alpha_p * T - 1.0) / (rho * cp)
+    mu_T = -mu_JT * cp
+
+
     # Canonical dict
     props = {
         "temperature": T,
@@ -447,8 +450,8 @@ def compute_properties_metastable_rhoT(
         "isothermal_compressibility": kappa_T,
         "isobaric_expansion_coefficient": alpha_p,
         "gruneisen": gruneisen,
-        "isothermal_joule_thomson": np.nan,
-        "joule_thomson": np.nan,
+        "isothermal_joule_thomson": mu_T,
+        "joule_thomson": mu_JT,
         "viscosity": mu,
         "conductivity": k,
         "surface_tension": np.nan,
@@ -1505,25 +1508,25 @@ def calculate_mixture_properties(props_1, props_2, y_1, y_2):
         "quality_volume": quality_volume,
         "pressure": props_1['p'],
         "temperature": props_1['T'],
-        "rhomass": rho,
-        "hmass": hmass,
+        "density": rho,
+        "enthalpy": hmass,
         "umass": umass,
         "smass": smass,
         "cvmass": cv,
-        "cpmass": cp,
+        "isobaric_heat_capacity": cp,
         "isothermal_compressibility": isothermal_compressibility,
         "isothermal_bulk_modulus": isothermal_bulk_modulus,
         "isentropic_compressibility": isentropic_compressibility,
         "isentropic_bulk_modulus": isentropic_bulk_modulus,
-        "speed_sound": speed_sound,
+        "speed_of_sound": speed_sound,
         "conductivity": conductivity,
         "viscosity": viscosity,
         "viscosity_kinematic": viscosity / rho,
         "dhdp_T": dhdp_T,
     }
 
-    # Add properties as aliases (if property exists)
-    for key, value in PROPERTY_ALIASES.items():
-        props[key] = props.get(value, np.nan)
+    # # Add properties as aliases (if property exists)
+    # for key, value in PROPERTY_ALIASES.items():
+    #     props[key] = props.get(value, np.nan)
 
     return props

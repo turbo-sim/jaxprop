@@ -87,7 +87,7 @@ class FluidState(eqx.Module):
         """Return dict of numeric properties, with optional aliases."""
         skip = {"fluid_name", "identifier"}
         out = {
-            k: v for k, v in self.__dict__.items() if v is not None and k not in skip
+            k: jnp.asarray(v) for k, v in self.__dict__.items() if v is not None and k not in skip
         }
 
         if include_aliases:
@@ -153,10 +153,10 @@ PROPERTY_ALIASES = {
     # --- basic thermodynamic properties
     "pressure": ["p", "P"],
     "temperature": ["T"],
-    "density": ["rho", "d", "rhomass", "dmass", "density"],
+    "density": ["rho", "d", "rhomass", "dmass", "density"],  # add "D" when fixing nozzle overwrite
     "enthalpy": ["h", "hmass", "enthalpy", "H"],
     "entropy": ["s", "smass", "entropy"],
-    "internal_energy": ["u", "umass", "energy", "internal_energy"],
+    "internal_energy": ["e", "u", "umass", "energy", "internal_energy"],
     # --- heat capacities & ratios
     "isobaric_heat_capacity": ["cp", "cpmass"],
     "isochoric_heat_capacity": ["cv", "cvmass"],
@@ -178,7 +178,7 @@ PROPERTY_ALIASES = {
     "joule_thomson": ["mu_JT"],
     # --- two-phase
     "is_two_phase": [],
-    "quality_mass": ["vapor_quality", "x", "Q", "q"],
+    "quality_mass": ["vapor_quality", "Q", "q"],  # add "x" when fixing nozzle overwrite
     "quality_volume": ["void_fraction", "alpha"],
     "surface_tension": ["sigma"],
     "pressure_saturation": [],

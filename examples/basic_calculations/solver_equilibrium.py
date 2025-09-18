@@ -21,7 +21,6 @@ properties_pT = fluid.get_state_equilibrium(
     prop_2_value=state.T,
     rhoT_guess=rhoT_guess,
     print_convergence=True,
-
 )
 
 # h-p function call
@@ -45,7 +44,15 @@ properties_hs = fluid.get_state_equilibrium(
 )
 
 # Print properties
-print(f"Air density is {state.rho:0.4f} kg/m3 at p={state.p:0.4f} Pa and T={state.T:0.4f} K")
-print(f"Air density is {properties_pT['rho']:0.4f} kg/m3 at p={properties_pT['p']:0.4f} Pa and T={properties_pT['T']:0.4f} K")
-print(f"Air density is {properties_hp['rho']:0.4f} kg/m3 at p={properties_hp['p']:0.4f} Pa and T={properties_hp['T']:0.4f} K")
-print(f"Air density is {properties_hs['rho']:0.4f} kg/m3 at p={properties_hs['p']:0.4f} Pa and T={properties_hs['T']:0.4f} K")
+print(
+    f"Air density is {state.rho:0.4f} kg/m3 at p={state.p:0.4f} Pa and T={state.T:0.4f} K"
+)
+print(
+    f"Air density is {properties_pT['rho']:0.4f} kg/m3 at p={properties_pT['p']:0.4f} Pa and T={properties_pT['T']:0.4f} K"
+)
+print(
+    f"Air density is {properties_hp['rho']:0.4f} kg/m3 at p={properties_hp['p']:0.4f} Pa and T={properties_hp['T']:0.4f} K"
+)
+print(
+    f"Air density is {properties_hs['rho']:0.4f} kg/m3 at p={properties_hs['p']:0.4f} Pa and T={properties_hs['T']:0.4f} K"
+)

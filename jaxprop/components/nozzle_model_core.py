@@ -128,6 +128,16 @@ def nozzle_single_phase_autonomous(tau, Y, args):
         "N": N,
     }
 
+
+
+    # A = {**out, **state.to_dict(include_aliases=True)}
+
+    # print("Contents of A:")
+    # for k, v in A.items():
+
+    #     print(f"{k}: {type(v)} = {v}")
+
+
     return {**out, **state.to_dict(include_aliases=True)}
     # return {**out, **state}
 
