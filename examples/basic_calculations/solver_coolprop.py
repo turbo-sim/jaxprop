@@ -8,12 +8,16 @@ import jaxprop.coolprop as jxp
 # State calculation
 fluid = jxp.Fluid(name="Water", backend="HEOS")
 state = fluid.get_state(jxp.PT_INPUTS, 101325, 300)
-print(f"Water density is {state.rho:0.2f} kg/m3 at p={state.p:0.2f} Pa and T={state.T:0.2f} K")
+print(
+    f"Water density is {state.rho:0.2f} kg/m3 at p={state.p:0.2f} Pa and T={state.T:0.2f} K"
+)
 
 # State calculation
 fluid = jxp.Fluid(name="Air", backend="HEOS")
 state = fluid.get_state(jxp.PT_INPUTS, 101325, 300)
-print(f"Air heat capacity ratio is {state.gamma:0.2f} at p={state.p:0.2f} Pa and T={state.T:0.2f} K")
+print(
+    f"Air heat capacity ratio is {state.gamma:0.2f} at p={state.p:0.2f} Pa and T={state.T:0.2f} K"
+)
 
 # Properties of liquid water
 fluid = jxp.Fluid("Water", backend="HEOS")

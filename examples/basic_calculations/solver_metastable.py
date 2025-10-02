@@ -11,6 +11,7 @@ import os
 import matplotlib.pyplot as plt
 
 import jaxprop.coolprop as jxp
+
 jxp.set_plot_options(grid=False)
 
 # Create fluid
@@ -47,7 +48,9 @@ state_rhoT = fluid.get_state_metastable(
     prop_2="T",
     prop_2_value=state.T,
 )
-ax.plot(state_rhoT[prop_x], state_rhoT[prop_y], "o", markersize=8, label="HEOS rho-T call")
+ax.plot(
+    state_rhoT[prop_x], state_rhoT[prop_y], "o", markersize=8, label="HEOS rho-T call"
+)
 
 
 # Compute state with a (p,T) call to the HEOS
@@ -79,10 +82,14 @@ ax.plot(state_hs[prop_x], state_hs[prop_y], "+", label="HEOS h-s call")
 fig.tight_layout(pad=1)
 
 # Compare different function calls
-print(f"{'Property':>15} {'CoolProp':>15} {'rho-T call':>15} {'p-T call':>15} {'h-s call':>15}")
+print(
+    f"{'Property':>15} {'CoolProp':>15} {'rho-T call':>15} {'p-T call':>15} {'h-s call':>15}"
+)
 props = ["p", "T", "rho", "h", "s", "cp", "speed_sound"]
 for prop in props:
-    print(f"{prop:>15} {state[prop]:15.04e} {state_rhoT[prop]:15.04e} {state_pT[prop]:15.04e} {state_hs[prop]:15.04e}")
+    print(
+        f"{prop:>15} {state[prop]:15.04e} {state_rhoT[prop]:15.04e} {state_pT[prop]:15.04e} {state_hs[prop]:15.04e}"
+    )
 
 # Show figures
 if not os.environ.get("DISABLE_PLOTS"):

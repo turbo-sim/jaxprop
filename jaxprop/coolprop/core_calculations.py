@@ -67,8 +67,8 @@ def compute_properties_1phase(
     kappa_s = 1.0 / K_s
     K_T = 1.0 / kappa_T
     gruneisen = alpha_p / (kappa_T * rho * cv)
-    mu_T = (alpha_p * T - 1.0) / (rho * cp)
-    mu_JT = -mu_T / cp
+    mu_JT = (alpha_p * T - 1.0) / (rho * cp)
+    mu_T = -mu_JT * cp
 
     # --- transport properties
     mu = get_viscosity(AS)
@@ -100,10 +100,11 @@ def compute_properties_1phase(
         "isentropic_compressibility": kappa_s,
         "isothermal_bulk_modulus": K_T,
         "gruneisen": gruneisen,
-        # "isothermal_joule_thomson": mu_T,
-        # "joule_thomson": mu_JT,
-        "isothermal_joule_thomson": np.nan,
-        "joule_thomson": np.nan,
+        "isothermal_joule_thomson": mu_T,
+        "joule_thomson": mu_JT,
+        # "gruneisen": compute_gruneisen(AS),
+        # "isothermal_joule_thomson": compute_isothermal_joule_thomson(AS),
+        # "joule_thomson": compute_joule_thomson(AS),
         "viscosity": mu,
         "conductivity": k,
         "quality_mass": q_mass,
@@ -113,6 +114,8 @@ def compute_properties_1phase(
         "subcooling": np.nan,
         "superheating": np.nan,
     }
+
+    # Note: behavior of quality and void fraction in the single phase region should produce a behavior that is consistent with the two-phase values to ensure barotropy polynomials are well posed.
 
     # --- extra saturation departures
     if supersaturation:
@@ -126,42 +129,6 @@ def compute_properties_1phase(
 # ------------------------------------------------------------------------------------ #
 # Equilibrium property calculations in the two-phase region
 # ------------------------------------------------------------------------------------ #
-def compute_dsdp_q(AS, pressure, quality, rel_dp=1e-4):
-    """
-    Compute ds/dp|q using analytic method if available, otherwise fall back to finite difference.
-
-    Parameters:
-        AS : CoolProp.AbstractState
-            AbstractState instance (already configured with fluid and backend)
-        pressure : float
-            Pressure [Pa]
-        quality : float
-            Vapor quality. 0.0 for saturated liquid, 1.0 for saturated vapor
-        rel_dp : float
-            Relative pressure perturbation for finite difference (default: 1e-4)
-
-    Returns:
-        dsdp : float or np.nan
-            Derivative of entropy with respect to pressure at constant quality
-    """
-    try:
-        # Try analytic saturation derivative
-        AS.update(CP.PQ_INPUTS, pressure, quality)
-        dsdp = AS.first_saturation_deriv(CP.iSmass, CP.iP)
-        return dsdp
-    except ValueError:
-        try:
-            # Fallback: finite difference
-            dp = rel_dp * pressure
-            AS.update(CP.PQ_INPUTS, pressure, quality)
-            s0 = AS.smass()
-            AS.update(CP.PQ_INPUTS, pressure + dp, quality)
-            s1 = AS.smass()
-            return (s1 - s0) / dp
-        except Exception:
-            return np.nan
-
-
 
 def compute_properties_2phase(abstract_state, supersaturation=False):
     """Compute two-phase fluid properties from CoolProp abstract state
@@ -254,9 +221,9 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
         "isothermal_bulk_modulus": np.nan,
         "isothermal_compressibility": np.nan,
         "isobaric_expansion_coefficient": np.nan,
-        "gruneisen": np.nan,
-        "isothermal_joule_thomson": np.nan,
-        "joule_thomson": np.nan,
+        "gruneisen": compute_gruneisen(AS),
+        "isothermal_joule_thomson": compute_isothermal_joule_thomson(AS),
+        "joule_thomson": compute_joule_thomson(AS),
         "viscosity": mu,
         "conductivity": k,
         "quality_mass": mfrac_V,
@@ -274,6 +241,104 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
 
     return props
 
+
+def compute_dsdp_q(AS, pressure, quality, rel_dp=1e-4):
+    """
+    Compute ds/dp|q using analytic method if available, otherwise fall back to finite difference.
+
+    Parameters:
+        AS : CoolProp.AbstractState
+            AbstractState instance (already configured with fluid and backend)
+        pressure : float
+            Pressure [Pa]
+        quality : float
+            Vapor quality. 0.0 for saturated liquid, 1.0 for saturated vapor
+        rel_dp : float
+            Relative pressure perturbation for finite difference (default: 1e-4)
+
+    Returns:
+        dsdp : float or np.nan
+            Derivative of entropy with respect to pressure at constant quality
+    """
+    try:
+        # Try analytic saturation derivative
+        AS.update(CP.PQ_INPUTS, pressure, quality)
+        dsdp = AS.first_saturation_deriv(CP.iSmass, CP.iP)
+        return dsdp
+    except ValueError:
+        try:
+            # Fallback: finite difference
+            dp = rel_dp * pressure
+            AS.update(CP.PQ_INPUTS, pressure, quality)
+            s0 = AS.smass()
+            AS.update(CP.PQ_INPUTS, pressure + dp, quality)
+            s1 = AS.smass()
+            return (s1 - s0) / dp
+        except Exception:
+            return np.nan
+
+
+def compute_gruneisen(AS, rel_du=1e-5):
+    """
+    Compute Gruneisen parameter Γ = (1/rho) * (∂p/∂e)_rho
+    using finite differences.
+    """
+    try:
+        rho = AS.rhomass()
+        u0 = AS.umass()
+        p0 = AS.p()
+        du = rel_du * abs(u0) if u0 != 0 else rel_du
+
+        # Perturb internal energy
+        AS.update(CP.DmassUmass_INPUTS, rho, u0 + du)
+        p1 = AS.p()
+
+        dpde = (p1 - p0) / du
+        Gamma = (1.0 / rho) * dpde
+        return Gamma
+    except Exception:
+        return np.nan
+
+def compute_joule_thomson(AS, rel_dp=1e-5):
+    """
+    Compute Joule-Thomson coefficient μ_JT = (∂T/∂p)_h
+    using finite differences.
+    """
+    try:
+        h = AS.hmass()
+        p0 = AS.p()
+        T0 = AS.T()
+        dp = rel_dp * p0
+
+        # Perturb pressure at constant enthalpy
+        AS.update(CP.HmassP_INPUTS, h, p0 + dp)
+        T1 = AS.T()
+
+        mu_JT = (T1 - T0) / dp
+        return mu_JT
+    except Exception:
+        return np.nan
+    
+
+def compute_isothermal_joule_thomson(AS, rel_dp=1e-5):
+    """
+    Compute isothermal Joule-Thomson coefficient μ_T = (∂h/∂p)_T
+    using finite differences.
+    """
+    try:
+        T = AS.T()
+        p0 = AS.p()
+        h0 = AS.hmass()
+        dp = rel_dp * p0
+
+        # Perturb pressure at constant T
+        AS.update(CP.PT_INPUTS, p0 + dp, T)
+        h1 = AS.hmass()
+
+        mu_T = (h1 - h0) / dp
+        return mu_T
+    except Exception:
+        return np.nan
 
 
 # ------------------------------------------------------------------------------------ #
@@ -428,6 +493,11 @@ def compute_properties_metastable_rhoT(
     # Grüneisen
     gruneisen = (alpha_p / kappa_T) / (rho * cv)
 
+    # Joule-Thomson
+    mu_JT = (alpha_p * T - 1.0) / (rho * cp)
+    mu_T = -mu_JT * cp
+
+
     # Canonical dict
     props = {
         "temperature": T,
@@ -447,8 +517,8 @@ def compute_properties_metastable_rhoT(
         "isothermal_compressibility": kappa_T,
         "isobaric_expansion_coefficient": alpha_p,
         "gruneisen": gruneisen,
-        "isothermal_joule_thomson": np.nan,
-        "joule_thomson": np.nan,
+        "isothermal_joule_thomson": mu_T,
+        "joule_thomson": mu_JT,
         "viscosity": mu,
         "conductivity": k,
         "surface_tension": np.nan,
@@ -1505,25 +1575,25 @@ def calculate_mixture_properties(props_1, props_2, y_1, y_2):
         "quality_volume": quality_volume,
         "pressure": props_1['p'],
         "temperature": props_1['T'],
-        "rhomass": rho,
-        "hmass": hmass,
+        "density": rho,
+        "enthalpy": hmass,
         "umass": umass,
         "smass": smass,
         "cvmass": cv,
-        "cpmass": cp,
+        "isobaric_heat_capacity": cp,
         "isothermal_compressibility": isothermal_compressibility,
         "isothermal_bulk_modulus": isothermal_bulk_modulus,
         "isentropic_compressibility": isentropic_compressibility,
         "isentropic_bulk_modulus": isentropic_bulk_modulus,
-        "speed_sound": speed_sound,
+        "speed_of_sound": speed_sound,
         "conductivity": conductivity,
         "viscosity": viscosity,
         "viscosity_kinematic": viscosity / rho,
         "dhdp_T": dhdp_T,
     }
 
-    # Add properties as aliases (if property exists)
-    for key, value in PROPERTY_ALIASES.items():
-        props[key] = props.get(value, np.nan)
+    # # Add properties as aliases (if property exists)
+    # for key, value in PROPERTY_ALIASES.items():
+    #     props[key] = props.get(value, np.nan)
 
     return props
