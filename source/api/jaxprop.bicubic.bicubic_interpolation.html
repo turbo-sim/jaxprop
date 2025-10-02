@@ -358,7 +358,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.bicubic_interpolation.calculate_props"><code class="docutils literal notranslate"><span class="pre">calculate_props()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.bicubic_interpolation.compute_coefficients"><code class="docutils literal notranslate"><span class="pre">compute_coefficients()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_hp"><code class="docutils literal notranslate"><span class="pre">interpolate_bicubic_hp()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_xy"><code class="docutils literal notranslate"><span class="pre">interpolate_bicubic_xy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_hx"><code class="docutils literal notranslate"><span class="pre">interpolate_bicubic_hx()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_xP"><code class="docutils literal notranslate"><span class="pre">interpolate_bicubic_xP()</span></code></a></li>
 </ul>
             </nav>
         </div>
@@ -496,11 +497,12 @@ Always returns arrays.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.bicubic.bicubic_interpolation.calculate_props">
 <span class="sig-prename descclassname"><span class="pre">jaxprop.bicubic.bicubic_interpolation.</span></span><span class="sig-name descname"><span class="pre">calculate_props</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/bicubic_interpolation.html#calculate_props"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.bicubic_interpolation.calculate_props" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Dispatches to the correct bicubic interpolation method based on input pair.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.bicubic.bicubic_interpolation.compute_coefficients">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.bicubic.bicubic_interpolation.</span></span><span class="sig-name descname"><span class="pre">compute_coefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_hp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_logP</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/bicubic_interpolation.html#compute_coefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.bicubic_interpolation.compute_coefficients" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.bicubic.bicubic_interpolation.</span></span><span class="sig-name descname"><span class="pre">compute_coefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_logp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_logph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_logP</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/bicubic_interpolation.html#compute_coefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.bicubic_interpolation.compute_coefficients" title="Link to this definition">#</a></dt>
 <dd><p>Compute bicubic interpolation coefficients for one property on a uniform (h, logP) grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -554,35 +556,14 @@ where m is the power of x (h-direction) and n is the power of y (logP-direction)
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_xy">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.bicubic.bicubic_interpolation.</span></span><span class="sig-name descname"><span class="pre">interpolate_bicubic_xy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coarse_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/bicubic_interpolation.html#interpolate_bicubic_xy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_xy" title="Link to this definition">#</a></dt>
-<dd><p>Invert the bicubic interpolant for a given input pair.
-Finds (h, p) such that interpolate_bicubic_hp(h, p, table)
-matches the target values.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>input_pair</strong><span class="classifier">int</span></dt><dd><p>Identifier for the input pair (e.g. jxp.HmassSmass_INPUTS).</p>
-</dd>
-<dt><strong>val1, val2</strong><span class="classifier">float</span></dt><dd><p>Target values for the two properties.</p>
-</dd>
-<dt><strong>table</strong><span class="classifier">dict</span></dt><dd><p>Property table with bicubic coefficients and node values.</p>
-</dd>
-<dt><strong>coarse_step</strong><span class="classifier">int, optional</span></dt><dd><p>Step for coarse grid scan (default: 5).</p>
-</dd>
-<dt><strong>scale</strong><span class="classifier">float, optional</span></dt><dd><p>Scaling factor for optimization variables (default: 1).
-Both h and p are mapped into [0, scale].</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>dict</dt><dd><p>Interpolated fluid properties at the recovered (h, p).</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<dt class="sig sig-object py" id="jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_hx">
+<span class="sig-prename descclassname"><span class="pre">jaxprop.bicubic.bicubic_interpolation.</span></span><span class="sig-name descname"><span class="pre">interpolate_bicubic_hx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/bicubic_interpolation.html#interpolate_bicubic_hx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_hx" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_xP">
+<span class="sig-prename descclassname"><span class="pre">jaxprop.bicubic.bicubic_interpolation.</span></span><span class="sig-name descname"><span class="pre">interpolate_bicubic_xP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/bicubic_interpolation.html#interpolate_bicubic_xP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_xP" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 </section>
 
@@ -632,7 +613,8 @@ Both h and p are mapped into [0, scale].</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.bicubic_interpolation.calculate_props"><code class="docutils literal notranslate"><span class="pre">calculate_props()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.bicubic_interpolation.compute_coefficients"><code class="docutils literal notranslate"><span class="pre">compute_coefficients()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_hp"><code class="docutils literal notranslate"><span class="pre">interpolate_bicubic_hp()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_xy"><code class="docutils literal notranslate"><span class="pre">interpolate_bicubic_xy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_hx"><code class="docutils literal notranslate"><span class="pre">interpolate_bicubic_hx()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_xP"><code class="docutils literal notranslate"><span class="pre">interpolate_bicubic_xP()</span></code></a></li>
 </ul>
   </nav></div>
 

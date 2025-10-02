@@ -298,6 +298,7 @@ document.write(`
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jaxprop.coolprop</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jxp</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">equinox</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">eqx</span>
@@ -305,8 +306,10 @@ document.write(`
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">examples.bicubic_interpolation.demo_bisection</span><span class="w"> </span><span class="kn">import</span> <span class="n">bisection_root_scalar</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">..coolprop</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fluid</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">helpers_props</span> <span class="k">as</span> <span class="n">jxp</span>
+<span class="c1"># from .. import helpers_props as jxp</span>
 
 
 
@@ -464,7 +467,8 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_generate_property_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a property table on an enthalpy–pressure grid.&quot;&quot;&quot;</span>
-        <span class="n">fluid</span> <span class="o">=</span> <span class="n">Fluid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">)</span>
+        <span class="c1"># fluid = Fluid(self.fluid_name, self.backend)</span>
+        <span class="n">fluid</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidJAX</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">)</span>
         <span class="n">h_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h_min</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">h_max</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">)</span>
         <span class="n">logPvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_min</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_max</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)</span>
 
@@ -489,7 +493,9 @@ document.write(`
                 <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
                 <span class="s2">&quot;grad_h&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
                 <span class="s2">&quot;grad_p&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
+                <span class="s2">&quot;grad_logp&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
                 <span class="s2">&quot;grad_ph&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
+                <span class="s2">&quot;grad_logph&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">)),</span>
                 <span class="s2">&quot;coeffs&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">)),</span>
             <span class="p">}</span>
 
@@ -512,10 +518,10 @@ document.write(`
                     <span class="n">eps_p</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1e-6</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">delta_logP</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span>
 
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="n">f_0</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
-                        <span class="n">f_h</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
-                        <span class="n">f_p</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">)</span>
-                        <span class="n">f_ph</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">)</span>
+                        <span class="n">f_0</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_props</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+                        <span class="n">f_h</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_props</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+                        <span class="n">f_p</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_props</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">)</span>
+                        <span class="n">f_ph</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_props</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">)</span>
                         <span class="n">success_count</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                         <span class="k">pass</span>
@@ -532,17 +538,22 @@ document.write(`
                         <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                         <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_h&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">grad_h</span>
                         <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_p&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">grad_p</span>
+                        <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_logp&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">grad_p</span> <span class="o">*</span> <span class="n">p</span>
                         <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_ph&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">grad_ph</span>
+                        <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_logph&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">grad_ph</span> <span class="o">*</span> <span class="n">p</span>
 
                     <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># Compute coefficients after filling values and derivatives for all i,j</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;enthalpy&quot;</span><span class="p">,</span> <span class="s2">&quot;pressure&quot;</span><span class="p">]:</span>
+                <span class="k">continue</span>
+
             <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;coeffs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_coefficients</span><span class="p">(</span>
                 <span class="n">value</span><span class="o">=</span><span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
                 <span class="n">grad_h</span><span class="o">=</span><span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_h&quot;</span><span class="p">],</span>
-                <span class="n">grad_p</span><span class="o">=</span><span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_p&quot;</span><span class="p">],</span>
-                <span class="n">grad_hp</span><span class="o">=</span><span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_ph&quot;</span><span class="p">],</span>
+                <span class="n">grad_logp</span><span class="o">=</span><span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_logp&quot;</span><span class="p">],</span>
+                <span class="n">grad_logph</span><span class="o">=</span><span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_logph&quot;</span><span class="p">],</span>
                 <span class="n">delta_h</span><span class="o">=</span><span class="n">delta_h</span><span class="p">,</span>
                 <span class="n">delta_logP</span><span class="o">=</span><span class="n">delta_logP</span><span class="p">,</span>
             <span class="p">)</span>
@@ -602,7 +613,7 @@ document.write(`
 <span class="c1"># TODO: it seems that having jax.lax.cond slows things a lot!</span>
 <span class="c1"># A better aproach could be to do the mapping like in perect gas</span>
 
-<span class="c1"># Taken from perfect gas</span>
+<span class="c1"># TODO Taken from perfect gas</span>
 <span class="c1"># PROPERTY_CALCULATORS = {</span>
 <span class="c1">#     jxp.PT_INPUTS: calculate_properties_PT,</span>
 <span class="c1">#     jxp.HmassSmass_INPUTS: calculate_properties_hs,</span>
@@ -612,19 +623,50 @@ document.write(`
 <span class="c1">#     jxp.DmassP_INPUTS: calculate_properties_rhop,</span>
 <span class="c1"># }</span>
 
-
+<span class="c1"># def get_props(self, input_pair: str, x: float, y: float):</span>
+<span class="c1">#     &quot;&quot;&quot;Evaluate thermodynamic state for a perfect gas.&quot;&quot;&quot;</span>
+<span class="c1">#     props = PROPERTY_CALCULATORS[input_pair](x, y, self.constants)</span>
+<span class="c1">#     return jxp.FluidState(</span>
+<span class="c1">#         fluid_name=self.fluid_name,</span>
+<span class="c1">#         identifier=self.identifier,</span>
+<span class="c1">#         **props,</span>
+<span class="c1">#     )</span>
+    
+    <span class="c1"># https://docs.kidger.site/optimistix/api/root_find/</span>
 
 <span class="c1"># Unified entry point</span>
+<span class="c1"># def calculate_props(input_pair, x, y, table):</span>
+<span class="c1">#     # return interpolate_bicubic_hp(x, y, table)</span>
+<span class="c1">#     return jax.lax.cond(</span>
+<span class="c1">#         input_pair == jxp.HmassP_INPUTS,</span>
+<span class="c1">#         lambda _: interpolate_bicubic_hp(x, y, table),</span>
+<span class="c1">#         lambda _: interpolate_bicubic_xy(input_pair, x, y, table),</span>
+<span class="c1">#         operand=None,</span>
+<span class="c1">#     )</span>
+
 <div class="viewcode-block" id="calculate_props">
 <a class="viewcode-back" href="../../../source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.calculate_props">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_props</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
-    <span class="c1"># return interpolate_bicubic_hp(x, y, table)</span>
-    <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">cond</span><span class="p">(</span>
-        <span class="n">input_pair</span> <span class="o">==</span> <span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span>
-        <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">interpolate_bicubic_hp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">table</span><span class="p">),</span>
-        <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">interpolate_bicubic_xy</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">table</span><span class="p">),</span>
-        <span class="n">operand</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dispatches to the correct bicubic interpolation method based on input pair.&quot;&quot;&quot;</span>
+    <span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">INPUT_PAIR_MAP</span><span class="p">[</span><span class="n">input_pair</span><span class="p">]</span>
+    <span class="n">prop1</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">ALIAS_TO_CANONICAL</span><span class="p">[</span><span class="n">prop1</span><span class="p">]</span>
+    <span class="n">prop2</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">ALIAS_TO_CANONICAL</span><span class="p">[</span><span class="n">prop2</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">prop1</span> <span class="o">==</span> <span class="s2">&quot;enthalpy&quot;</span> <span class="ow">and</span> <span class="n">prop2</span> <span class="o">==</span> <span class="s2">&quot;pressure&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">interpolate_bicubic_hp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">prop1</span> <span class="o">==</span> <span class="s2">&quot;pressure&quot;</span> <span class="ow">and</span> <span class="n">prop2</span> <span class="o">==</span> <span class="s2">&quot;enthalpy&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">interpolate_bicubic_hp</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">prop1</span> <span class="o">==</span> <span class="s2">&quot;enthalpy&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">interpolate_bicubic_hx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">prop2</span> <span class="o">==</span> <span class="s2">&quot;enthalpy&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">interpolate_bicubic_hx</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">prop2</span> <span class="o">==</span> <span class="s2">&quot;pressure&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">interpolate_bicubic_xP</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">prop1</span> <span class="o">==</span> <span class="s2">&quot;pressure&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">interpolate_bicubic_xP</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported input pair: </span><span class="si">{</span><span class="n">input_pair</span><span class="si">}</span><span class="s2"> → (</span><span class="si">{</span><span class="n">prop1</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">prop2</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span></div>
+
 
 
 
@@ -654,7 +696,7 @@ document.write(`
 
 <div class="viewcode-block" id="compute_coefficients">
 <a class="viewcode-back" href="../../../source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.compute_coefficients">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_coefficients</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">grad_h</span><span class="p">,</span> <span class="n">grad_p</span><span class="p">,</span> <span class="n">grad_hp</span><span class="p">,</span> <span class="n">delta_h</span><span class="p">,</span> <span class="n">delta_logP</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_coefficients</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">grad_h</span><span class="p">,</span> <span class="n">grad_logp</span><span class="p">,</span> <span class="n">grad_logph</span><span class="p">,</span> <span class="n">delta_h</span><span class="p">,</span> <span class="n">delta_logP</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute bicubic interpolation coefficients for one property on a uniform (h, logP) grid.</span>
 
@@ -681,7 +723,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">Nh</span><span class="p">,</span> <span class="n">Np</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span>
-    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Nh</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Np</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Nh</span><span class="p">,</span> <span class="n">Np</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="c1"># delta_logP = np.exp(delta_logP)  # TODO: what should be the delta_p used in this function?</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nh</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
@@ -697,14 +739,14 @@ document.write(`
                     <span class="n">grad_h</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_h</span><span class="p">,</span>
                     <span class="n">grad_h</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_h</span><span class="p">,</span>
                     <span class="n">grad_h</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_h</span><span class="p">,</span>
-                    <span class="n">grad_p</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
-                    <span class="n">grad_p</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
-                    <span class="n">grad_p</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
-                    <span class="n">grad_p</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
-                    <span class="n">grad_hp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_h</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
-                    <span class="n">grad_hp</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_h</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
-                    <span class="n">grad_hp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_h</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
-                    <span class="n">grad_hp</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_h</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
+                    <span class="n">grad_logp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
+                    <span class="n">grad_logp</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
+                    <span class="n">grad_logp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
+                    <span class="n">grad_logp</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
+                    <span class="n">grad_logph</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_h</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
+                    <span class="n">grad_logph</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_h</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
+                    <span class="n">grad_logph</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_h</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
+                    <span class="n">grad_logph</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_h</span> <span class="o">*</span> <span class="n">delta_logP</span><span class="p">,</span>
                 <span class="p">],</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
             <span class="p">)</span>
@@ -780,12 +822,15 @@ document.write(`
     <span class="c1"># Compute uniform grid spacing</span>
     <span class="n">h_min</span><span class="p">,</span> <span class="n">h_max</span> <span class="o">=</span> <span class="n">h_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">h_vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">logPmin</span><span class="p">,</span> <span class="n">logPmax</span> <span class="o">=</span> <span class="n">logPvals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">logPvals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">delta_h</span> <span class="o">=</span> <span class="p">(</span><span class="n">h_max</span> <span class="o">-</span> <span class="n">h_min</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Nh</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">delta_logP</span> <span class="o">=</span> <span class="p">(</span><span class="n">logPmax</span> <span class="o">-</span> <span class="n">logPmin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Np</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># delta_h = (h_max - h_min) / (Nh - 1)</span>
+    <span class="c1"># delta_logP = (logPmax - logPmin) / (Np - 1)</span>
+    <span class="n">delta_h</span> <span class="o">=</span> <span class="n">h_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">h_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">delta_logP</span> <span class="o">=</span> <span class="n">logPvals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">logPvals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
 
     <span class="c1"># Convert query point (h, logP) into continuous indices in grid space</span>
-    <span class="n">ii</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">h_min</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta_h</span>
-    <span class="n">jj</span> <span class="o">=</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">logPmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta_logP</span>
+    <span class="n">ii</span> <span class="o">=</span> <span class="p">((</span><span class="n">h</span> <span class="o">-</span> <span class="n">h_min</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">h_max</span> <span class="o">-</span> <span class="n">h_min</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Nh</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">jj</span> <span class="o">=</span> <span class="p">((</span><span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">logPmin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">logPmax</span> <span class="o">-</span> <span class="n">logPmin</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Np</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
 
     <span class="c1"># Clamp values to prevent extrapolation</span>
     <span class="c1"># Select lower-left cell index, clamped to table bounds</span>
@@ -811,118 +856,224 @@ document.write(`
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span>
     <span class="p">}</span>
 
+    <span class="c1"># TODO separate basic thermodynamic propoerties from derived ones. DO the jax.grad for derivative properties</span>
+
     <span class="k">return</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidState</span><span class="p">(</span><span class="o">**</span><span class="n">props</span><span class="p">)</span></div>
 
 
 
+<span class="c1"># TODO Split into 2 functions</span>
 
+<span class="c1"># def interpolate_bicubic_xy(input_pair, val1, val2, table, coarse_step=1, scale=1.0):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Invert the bicubic interpolant for a given input pair.</span>
+<span class="c1">#     Finds (h, p) such that interpolate_bicubic_hp(h, p, table)</span>
+<span class="c1">#     matches the target values.</span>
 
-<div class="viewcode-block" id="interpolate_bicubic_xy">
-<a class="viewcode-back" href="../../../source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_xy">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">interpolate_bicubic_xy</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">coarse_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Invert the bicubic interpolant for a given input pair.</span>
-<span class="sd">    Finds (h, p) such that interpolate_bicubic_hp(h, p, table)</span>
-<span class="sd">    matches the target values.</span>
+<span class="c1">#     Parameters</span>
+<span class="c1">#     ----------</span>
+<span class="c1">#     input_pair : int</span>
+<span class="c1">#         Identifier for the input pair (e.g. jxp.HmassSmass_INPUTS).</span>
+<span class="c1">#     val1, val2 : float</span>
+<span class="c1">#         Target values for the two properties.</span>
+<span class="c1">#     table : dict</span>
+<span class="c1">#         Property table with bicubic coefficients and node values.</span>
+<span class="c1">#     coarse_step : int, optional</span>
+<span class="c1">#         Step for coarse grid scan (default: 5).</span>
+<span class="c1">#     scale : float, optional</span>
+<span class="c1">#         Scaling factor for optimization variables (default: 1).</span>
+<span class="c1">#         Both h and p are mapped into [0, scale].</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    input_pair : int</span>
-<span class="sd">        Identifier for the input pair (e.g. jxp.HmassSmass_INPUTS).</span>
-<span class="sd">    val1, val2 : float</span>
-<span class="sd">        Target values for the two properties.</span>
-<span class="sd">    table : dict</span>
-<span class="sd">        Property table with bicubic coefficients and node values.</span>
-<span class="sd">    coarse_step : int, optional</span>
-<span class="sd">        Step for coarse grid scan (default: 5).</span>
-<span class="sd">    scale : float, optional</span>
-<span class="sd">        Scaling factor for optimization variables (default: 1).</span>
-<span class="sd">        Both h and p are mapped into [0, scale].</span>
+<span class="c1">#     Returns</span>
+<span class="c1">#     -------</span>
+<span class="c1">#     dict</span>
+<span class="c1">#         Interpolated fluid properties at the recovered (h, p).</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     # TODO: Fix this function as it does not have a reliable convergence behavior</span>
+<span class="c1">#     # The initial step with a Newton solver is too aggresive and crashes the problem</span>
+<span class="c1">#     # Should we change to a different solution strategy in 1D for more reliable convergence?</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    dict</span>
-<span class="sd">        Interpolated fluid properties at the recovered (h, p).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO: Fix this function as it does not have a reliable convergence behavior</span>
-    <span class="c1"># The initial step with a Newton solver is too aggresive and crashes the problem</span>
-    <span class="c1"># Should we change to a different solution strategy in 1D for more reliable convergence?</span>
+<span class="c1">#     # Map input_pair to property names</span>
+<span class="c1">#     prop1, prop2 = jxp.INPUT_PAIR_MAP[input_pair]</span>
+<span class="c1">#     prop1 = jxp.ALIAS_TO_CANONICAL[prop1]</span>
+<span class="c1">#     prop2 = jxp.ALIAS_TO_CANONICAL[prop2]</span>
 
-    <span class="c1"># Map input_pair to property names</span>
+<span class="c1">#     # axis limits</span>
+<span class="c1">#     h_axis = table[&quot;h_vals&quot;]          # (Nh,)</span>
+<span class="c1">#     p_axis = table[&quot;p_vals&quot;]          # (Np,)</span>
+<span class="c1">#     h_min, h_max = h_axis[0], h_axis[-1]</span>
+<span class="c1">#     p_min, p_max = p_axis[0], p_axis[-1]</span>
+
+<span class="c1">#     # transforms</span>
+<span class="c1">#     def to_scaled(h, p):</span>
+<span class="c1">#         h_scaled = (h - h_min) / (h_max - h_min) * scale</span>
+<span class="c1">#         p_scaled = (p - p_min) / (p_max - p_min) * scale</span>
+<span class="c1">#         return h_scaled, p_scaled</span>
+
+<span class="c1">#     def from_scaled(h_scaled, p_scaled):</span>
+<span class="c1">#         h = (h_scaled / scale) * (h_max - h_min) + h_min</span>
+<span class="c1">#         p = (p_scaled / scale) * (p_max - p_min) + p_min</span>
+<span class="c1">#         return h, p</span>
+
+<span class="c1">#     # --- coarse grid scan for initial guess ---</span>
+<span class="c1">#     H_field = table[&quot;enthalpy&quot;][&quot;value&quot;][::coarse_step, ::coarse_step]</span>
+<span class="c1">#     P_field = table[&quot;pressure&quot;][&quot;value&quot;][::coarse_step, ::coarse_step]</span>
+<span class="c1">#     prop1_field = table[prop1][&quot;value&quot;][::coarse_step, ::coarse_step]</span>
+<span class="c1">#     prop2_field = table[prop2][&quot;value&quot;][::coarse_step, ::coarse_step]</span>
+
+<span class="c1">#     # scale by property ranges for consistency</span>
+<span class="c1">#     rng1 = jnp.maximum(table[prop1][&quot;value&quot;].ptp(), 1.0)</span>
+<span class="c1">#     rng2 = jnp.maximum(table[prop2][&quot;value&quot;].ptp(), 1.0)</span>
+<span class="c1">#     errs = ((prop1_field - val1)/rng1)**2 + ((prop2_field - val2)/rng2)**2</span>
+
+<span class="c1">#     idx = jnp.argmin(errs)</span>
+<span class="c1">#     i, j = jnp.unravel_index(idx, errs.shape)</span>
+<span class="c1">#     h0_node, p0_node = H_field[i, j], P_field[i, j]</span>
+<span class="c1">#     x0 = jnp.array(to_scaled(h0_node, p0_node))</span>
+
+<span class="c1">#     # --- residual in unit variables ---</span>
+<span class="c1">#     def residual(x, _):</span>
+<span class="c1">#         h, p = from_scaled(*x)</span>
+<span class="c1">#         props = interpolate_bicubic_hp(h, p, table)</span>
+
+<span class="c1">#         r1 = (props[prop1] - val1) / rng1</span>
+<span class="c1">#         r2 = (props[prop2] - val2) / rng2</span>
+<span class="c1">#         r = jnp.array([r1, r2])</span>
+
+<span class="c1">#         jax.debug.print(</span>
+<span class="c1">#             &quot;residual(h={:.6e}, p={:.6e})\n&quot;</span>
+<span class="c1">#             &quot;  {p1}: props={:.6e}, target={:.6e}, normdiff={:.3e}\n&quot;</span>
+<span class="c1">#             &quot;  {p2}: props={:.6e}, target={:.6e}, normdiff={:.3e}&quot;,</span>
+<span class="c1">#             h, p,</span>
+<span class="c1">#             props[prop1], val1, r1,</span>
+<span class="c1">#             props[prop2], val2, r2,</span>
+<span class="c1">#             p1=prop1, p2=prop2</span>
+<span class="c1">#         )</span>
+<span class="c1">#         # return jnp.linalg.norm(r)</span>
+<span class="c1">#         return r</span>
+
+<span class="c1">#     # BFGS least-squares solver</span>
+<span class="c1">#     # TODO: this does not work well for Newton solver. Investigate why</span>
+<span class="c1">#     solver = optx.BFGS(rtol=1e-8, atol=1e-8)</span>
+<span class="c1">#     sol = optx.least_squares(residual, solver, x0, throw=True)</span>
+
+<span class="c1">#     # solver = optx.Newton(rtol=1e-8, atol=1e-8)</span>
+<span class="c1">#     # sol = optx.root_find(residual, solver, x0, throw=True)</span>
+
+<span class="c1">#     h_scaled, p_scaled = sol.value</span>
+<span class="c1">#     h, p = from_scaled(h_scaled, p_scaled)</span>
+<span class="c1">#     return interpolate_bicubic_hp(h, p, table)</span>
+
+<div class="viewcode-block" id="interpolate_bicubic_hx">
+<a class="viewcode-back" href="../../../source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_hx">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">interpolate_bicubic_hx</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">x_val</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+    <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-8</span>
     <span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">INPUT_PAIR_MAP</span><span class="p">[</span><span class="n">input_pair</span><span class="p">]</span>
-    <span class="n">prop1</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">ALIAS_TO_CANONICAL</span><span class="p">[</span><span class="n">prop1</span><span class="p">]</span>
-    <span class="n">prop2</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">ALIAS_TO_CANONICAL</span><span class="p">[</span><span class="n">prop2</span><span class="p">]</span>
+    <span class="n">x_prop</span> <span class="o">=</span> <span class="n">prop1</span> <span class="k">if</span> <span class="n">prop2</span> <span class="o">==</span> <span class="s2">&quot;enthalpy&quot;</span> <span class="k">else</span> <span class="n">prop2</span>
+    <span class="n">x_prop</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">ALIAS_TO_CANONICAL</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]</span>
 
-    <span class="c1"># axis limits</span>
-    <span class="n">h_axis</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;h_vals&quot;</span><span class="p">]</span>          <span class="c1"># (Nh,)</span>
-    <span class="n">p_axis</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;p_vals&quot;</span><span class="p">]</span>          <span class="c1"># (Np,)</span>
-    <span class="n">h_min</span><span class="p">,</span> <span class="n">h_max</span> <span class="o">=</span> <span class="n">h_axis</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">h_axis</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">p_min</span><span class="p">,</span> <span class="n">p_max</span> <span class="o">=</span> <span class="n">p_axis</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p_axis</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">p_min</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;p_vals&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">p_max</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;p_vals&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">p_init</span> <span class="o">=</span> <span class="n">p_min</span>
 
-    <span class="c1"># transforms</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_scaled</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-        <span class="n">h_scaled</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">h_min</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">h_max</span> <span class="o">-</span> <span class="n">h_min</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span>
-        <span class="n">p_scaled</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">p_min</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">p_max</span> <span class="o">-</span> <span class="n">p_min</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span>
-        <span class="k">return</span> <span class="n">h_scaled</span><span class="p">,</span> <span class="n">p_scaled</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="n">h_</span> <span class="o">=</span> <span class="n">h</span> <span class="k">if</span> <span class="n">h</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">P_</span> <span class="o">=</span> <span class="n">P</span> <span class="k">if</span> <span class="n">P</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="n">interpolate_bicubic_hp</span><span class="p">(</span><span class="n">h_</span><span class="p">,</span> <span class="n">P_</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]</span> <span class="p">,</span> <span class="n">x_val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">props</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]</span> <span class="o">-</span> <span class="n">x_val</span>
+    
+    <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+            <span class="n">P_mid</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">P_min</span> <span class="o">+</span> <span class="n">P_max</span><span class="p">)</span>
+            <span class="n">f_mid</span> <span class="o">=</span> <span class="n">residual</span><span class="p">(</span><span class="n">P_mid</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f_mid</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">interpolate_bicubic_hp</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">P_mid</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+            <span class="n">f_lo</span> <span class="o">=</span> <span class="n">residual</span><span class="p">(</span><span class="n">P_min</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">f_lo</span> <span class="o">*</span> <span class="n">f_mid</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">P_max</span> <span class="o">=</span> <span class="n">P_mid</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">P_min</span> <span class="o">=</span> <span class="n">P_mid</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[hx] Bisection failed for h=</span><span class="si">{</span><span class="n">h</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">x_prop</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">x_target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_scaled</span><span class="p">(</span><span class="n">h_scaled</span><span class="p">,</span> <span class="n">p_scaled</span><span class="p">):</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="p">(</span><span class="n">h_scaled</span> <span class="o">/</span> <span class="n">scale</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">h_max</span> <span class="o">-</span> <span class="n">h_min</span><span class="p">)</span> <span class="o">+</span> <span class="n">h_min</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">p_scaled</span> <span class="o">/</span> <span class="n">scale</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">p_max</span> <span class="o">-</span> <span class="n">p_min</span><span class="p">)</span> <span class="o">+</span> <span class="n">p_min</span>
-        <span class="k">return</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span>
+    
+    <span class="c1"># Optional: precheck root bracketing</span>
+    <span class="c1"># f_lo = residual(p_min)</span>
+    <span class="c1"># f_hi = residual(p_max)</span>
+    <span class="c1"># if f_lo * f_hi &gt; 0:</span>
+    <span class="c1">#     raise ValueError(</span>
+    <span class="c1">#         f&quot;[hx] Bisection error: residual does not change sign &quot;</span>
+    <span class="c1">#         f&quot;over [p_min={p_min}, p_max={p_max}]. &quot;</span>
+    <span class="c1">#         f&quot;f(p_min)={f_lo}, f(p_max)={f_hi}&quot;</span>
+    <span class="c1">#     )</span>
 
-    <span class="c1"># --- coarse grid scan for initial guess ---</span>
-    <span class="n">H_field</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;enthalpy&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][::</span><span class="n">coarse_step</span><span class="p">,</span> <span class="p">::</span><span class="n">coarse_step</span><span class="p">]</span>
-    <span class="n">P_field</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;pressure&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][::</span><span class="n">coarse_step</span><span class="p">,</span> <span class="p">::</span><span class="n">coarse_step</span><span class="p">]</span>
-    <span class="n">prop1_field</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">prop1</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][::</span><span class="n">coarse_step</span><span class="p">,</span> <span class="p">::</span><span class="n">coarse_step</span><span class="p">]</span>
-    <span class="n">prop2_field</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">prop2</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][::</span><span class="n">coarse_step</span><span class="p">,</span> <span class="p">::</span><span class="n">coarse_step</span><span class="p">]</span>
+    <span class="c1"># Use a scalar root finder (brentq, newton, or jax-based)</span>
+    <span class="c1"># result = optx.root_find(residual, optx.Bisection(rtol=1e-6, atol=1e-8, expand_if_necessary=False), y0=jnp.array(p_init), options={&quot;lower&quot;: p_min, &quot;upper&quot;: p_max},)</span>
+    <span class="c1"># result = optx.root_find(residual, optx.Newton(rtol=1e-6, atol=1e-8), y0=jnp.array(p_init),)</span>
+    <span class="c1"># result = optx.root_find(residual, optx.BFGS(rtol=1e-6, atol=1e-8), y0=jnp.array(p_init),)</span>
 
-    <span class="c1"># scale by property ranges for consistency</span>
-    <span class="n">rng1</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">prop1</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">ptp</span><span class="p">(),</span> <span class="mf">1.0</span><span class="p">)</span>
-    <span class="n">rng2</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">prop2</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">ptp</span><span class="p">(),</span> <span class="mf">1.0</span><span class="p">)</span>
-    <span class="n">errs</span> <span class="o">=</span> <span class="p">((</span><span class="n">prop1_field</span> <span class="o">-</span> <span class="n">val1</span><span class="p">)</span><span class="o">/</span><span class="n">rng1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">((</span><span class="n">prop2_field</span> <span class="o">-</span> <span class="n">val2</span><span class="p">)</span><span class="o">/</span><span class="n">rng2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="c1"># result = bisection_root_scalar(residual, p_min, p_max)</span>
+    <span class="c1"># p_sol = result.value</span>
+    <span class="c1"># p_sol = result</span>
 
-    <span class="n">idx</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">errs</span><span class="p">)</span>
-    <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">errs</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-    <span class="n">h0_node</span><span class="p">,</span> <span class="n">p0_node</span> <span class="o">=</span> <span class="n">H_field</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="n">P_field</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
-    <span class="n">x0</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">to_scaled</span><span class="p">(</span><span class="n">h0_node</span><span class="p">,</span> <span class="n">p0_node</span><span class="p">))</span>
+    <span class="c1"># return interpolate_bicubic_hp(h, p_sol, table)</span>
 
-    <span class="c1"># --- residual in unit variables ---</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-        <span class="n">h</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">from_scaled</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
-        <span class="n">props</span> <span class="o">=</span> <span class="n">interpolate_bicubic_hp</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+<div class="viewcode-block" id="interpolate_bicubic_xP">
+<a class="viewcode-back" href="../../../source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.interpolate_bicubic_xP">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">interpolate_bicubic_xP</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+    <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-8</span>
+    <span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">INPUT_PAIR_MAP</span><span class="p">[</span><span class="n">input_pair</span><span class="p">]</span>
+    <span class="n">x_prop</span> <span class="o">=</span> <span class="n">prop1</span> <span class="k">if</span> <span class="n">prop2</span> <span class="o">==</span> <span class="s2">&quot;pressure&quot;</span> <span class="k">else</span> <span class="n">prop2</span>
+    <span class="n">x_prop</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">ALIAS_TO_CANONICAL</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]</span>
 
-        <span class="n">r1</span> <span class="o">=</span> <span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="n">prop1</span><span class="p">]</span> <span class="o">-</span> <span class="n">val1</span><span class="p">)</span> <span class="o">/</span> <span class="n">rng1</span>
-        <span class="n">r2</span> <span class="o">=</span> <span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="n">prop2</span><span class="p">]</span> <span class="o">-</span> <span class="n">val2</span><span class="p">)</span> <span class="o">/</span> <span class="n">rng2</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">])</span>
+    <span class="n">h_min</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;h_vals&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">h_max</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;h_vals&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">h_init</span> <span class="o">=</span> <span class="n">h_min</span>
 
-        <span class="n">jax</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
-            <span class="s2">&quot;residual(h=</span><span class="si">{:.6e}</span><span class="s2">, p=</span><span class="si">{:.6e}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;  </span><span class="si">{p1}</span><span class="s2">: props=</span><span class="si">{:.6e}</span><span class="s2">, target=</span><span class="si">{:.6e}</span><span class="s2">, normdiff=</span><span class="si">{:.3e}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;  </span><span class="si">{p2}</span><span class="s2">: props=</span><span class="si">{:.6e}</span><span class="s2">, target=</span><span class="si">{:.6e}</span><span class="s2">, normdiff=</span><span class="si">{:.3e}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span>
-            <span class="n">props</span><span class="p">[</span><span class="n">prop1</span><span class="p">],</span> <span class="n">val1</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span>
-            <span class="n">props</span><span class="p">[</span><span class="n">prop2</span><span class="p">],</span> <span class="n">val2</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span>
-            <span class="n">p1</span><span class="o">=</span><span class="n">prop1</span><span class="p">,</span> <span class="n">p2</span><span class="o">=</span><span class="n">prop2</span>
-        <span class="p">)</span>
-        <span class="c1"># return jnp.linalg.norm(r)</span>
-        <span class="k">return</span> <span class="n">r</span>
+    <span class="c1"># def residual(h, _):</span>
+    <span class="c1">#     props = interpolate_bicubic_hp(h.item(), P.item(), table)</span>
+    <span class="c1">#     return props[x_prop] - x_val</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="n">h_</span> <span class="o">=</span> <span class="n">h</span> <span class="k">if</span> <span class="n">h</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">P_</span> <span class="o">=</span> <span class="n">P</span> <span class="k">if</span> <span class="n">P</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="n">interpolate_bicubic_hp</span><span class="p">(</span><span class="n">h_</span><span class="p">,</span> <span class="n">P_</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">props</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]</span> <span class="o">-</span> <span class="n">x_val</span>
+    
+    <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+            <span class="n">h_mid</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">h_min</span> <span class="o">+</span> <span class="n">h_max</span><span class="p">)</span>
+            <span class="n">f_mid</span> <span class="o">=</span> <span class="n">residual</span><span class="p">(</span><span class="n">h_mid</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f_mid</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">interpolate_bicubic_hp</span><span class="p">(</span><span class="n">h_mid</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+            <span class="n">f_lo</span> <span class="o">=</span> <span class="n">residual</span><span class="p">(</span><span class="n">h_lo</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">f_lo</span> <span class="o">*</span> <span class="n">f_mid</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">h_max</span> <span class="o">=</span> <span class="n">h_mid</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">h_min</span> <span class="o">=</span> <span class="n">h_mid</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[xP] Bisection failed for P=</span><span class="si">{</span><span class="n">P</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">x_prop</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">x_target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-    <span class="c1"># BFGS least-squares solver</span>
-    <span class="c1"># TODO: this does not work well for Newton solver. Investigate why</span>
-    <span class="n">solver</span> <span class="o">=</span> <span class="n">optx</span><span class="o">.</span><span class="n">BFGS</span><span class="p">(</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
-    <span class="n">sol</span> <span class="o">=</span> <span class="n">optx</span><span class="o">.</span><span class="n">least_squares</span><span class="p">(</span><span class="n">residual</span><span class="p">,</span> <span class="n">solver</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">throw</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="c1"># Optional: precheck root bracketing</span>
+    <span class="c1"># f_lo = residual(h_min)</span>
+    <span class="c1"># f_hi = residual(h_max)</span>
 
-    <span class="c1"># solver = optx.Newton(rtol=1e-8, atol=1e-8)</span>
-    <span class="c1"># sol = optx.root_find(residual, solver, x0, throw=True)</span>
+    <span class="c1"># if f_lo * f_hi &gt; 0:</span>
+    <span class="c1">#     raise ValueError(</span>
+    <span class="c1">#         f&quot;[hx] Bisection error: residual does not change sign &quot;</span>
+    <span class="c1">#         f&quot;over [p_min={h_min}, p_max={h_max}]. &quot;</span>
+    <span class="c1">#         f&quot;f(p_min)={f_lo}, f(p_max)={f_hi}&quot;</span>
+    <span class="c1">#     )</span>
 
-    <span class="n">h_scaled</span><span class="p">,</span> <span class="n">p_scaled</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">h</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">from_scaled</span><span class="p">(</span><span class="n">h_scaled</span><span class="p">,</span> <span class="n">p_scaled</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">interpolate_bicubic_hp</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span></div>
+    <span class="c1"># result = optx.root_find(residual, optx.Bisection(rtol=1e-6, atol=1e-8, expand_if_necessary=False), y0=jnp.array(h_init), options={&quot;lower&quot;: h_min, &quot;upper&quot;: h_max},)</span>
+    <span class="c1"># result = optx.root_find(residual, optx.Newton(rtol=1e-6, atol=1e-8), y0=jnp.array(h_init))</span>
+    <span class="c1"># result = optx.root_find(residual, optx.BFGS(rtol=1e-6, atol=1e-8), y0=jnp.array(h_init),)</span>
 
+    <span class="c1"># result = bisection_root_scalar(residual, h_min, h_max)</span>
+    <span class="c1"># h_sol = result.value</span>
+    <span class="c1"># h_sol = result</span>
 
-
-
-
+    <span class="c1"># return interpolate_bicubic_hp(h_sol, P, table)</span>
 
 
 
