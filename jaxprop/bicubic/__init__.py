@@ -1,2 +1,2 @@
-from .bicubic_interpolation import *
+from .bicubic_interpolation_update2 import *
 

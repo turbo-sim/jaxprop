@@ -153,9 +153,9 @@ PROPERTY_ALIASES = {
     # --- basic thermodynamic properties
     "pressure": ["p", "P"],
     "temperature": ["T"],
-    "density": ["rho", "d", "rhomass", "dmass", "density"],
+    "density": ["rho", "d", "rhomass", "dmass", "density", "D"],
     "enthalpy": ["h", "hmass", "enthalpy", "H"],
-    "entropy": ["s", "smass", "entropy"],
+    "entropy": ["s", "smass", "entropy", "S"],
     "internal_energy": ["u", "umass", "energy", "internal_energy"],
     # --- heat capacities & ratios
     "isobaric_heat_capacity": ["cp", "cpmass"],
