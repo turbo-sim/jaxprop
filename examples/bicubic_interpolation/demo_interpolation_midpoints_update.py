@@ -10,28 +10,22 @@ import jaxprop as jxp
 # ---------------------------
 # Configuration
 # ---------------------------
+outdir = "fluid_tables"
 fluid_name = "CO2"
-hmin_ = 200e3     # J/kg
-h_max = 600e3     # J/kg
-p_min = 2e6       # Pa
-p_max = 20e6      # Pa
+h_min = 200e3  # J/kg
+h_max = 600e3  # J/kg
+p_min = 2e6    # Pa
+p_max = 20e6   # Pa
 N = 80
-N_p = 40
-SAVE_FIGURES = False
 
-# ---------------------------
-# Build bicubic fluid object
-# ---------------------------
 fluid_bicubic = jxp.FluidBicubic(
     fluid_name=fluid_name,
-    # backend="HEOS",
-    h_min=hmin_,
+    h_min=h_min,
     h_max=h_max,
     p_min=p_min,
     p_max=p_max,
     N=N,
-    # N_p=N_p,
-    table_dir="fluid_tables",
+    table_dir=outdir,
 )
 
 # Reference CoolProp fluid
@@ -40,28 +34,18 @@ fluid_cp = jxp.FluidJAX(fluid_name)
 # ---------------------------
 # Midpoint grid
 # ---------------------------
-# h_nodes = jnp.linspace(hmin_, h_max, N_h)
-h_nodes = jnp.linspace(hmin_, h_max, N)
-# p_nodes = jnp.exp(jnp.linspace(jnp.log(p_min), jnp.log(p_max), N_p))
+h_nodes = jnp.linspace(h_min, h_max, N)
 p_nodes = jnp.exp(jnp.linspace(jnp.log(p_min), jnp.log(p_max), N))
 
 h_vals = 0.5 * (h_nodes[:-1] + h_nodes[1:])
 p_vals = 0.5 * (p_nodes[:-1] + p_nodes[1:])
 
-# h_vals = h_nodes
-# p_vals = p_nodes 
-H_mesh, P_mesh = jnp.meshgrid(h_vals, p_vals, indexing="ij")
+H_mesh, P_mesh = np.meshgrid(h_vals, p_vals, indexing="ij")
 
 # ---------------------------
 # Properties to test
 # ---------------------------
-# Bicubic interpolation (vectorized)
-interp_props = fluid_bicubic.get_props(jxp.HmassP_INPUTS, H_mesh, P_mesh)
-
-# Reference CoolProp values (vectorized via FluidJAX)
-coolprop_props = fluid_cp.get_props(jxp.HmassP_INPUTS, H_mesh, P_mesh)
-
-properties = ["p", "h", "a", "T", "mu", "d"]
+properties = ["p", "h", "T", "mu", "d"]
 
 # ---------------------------
 # Loop over properties
@@ -69,10 +53,27 @@ properties = ["p", "h", "a", "T", "mu", "d"]
 for prop in properties:
     print(f"\nTesting: {prop}")
 
-    interp_grid = interp_props[prop]
-    true_grid = coolprop_props[prop]
+    interp_grid = np.zeros_like(H_mesh)
+    true_grid = np.zeros_like(H_mesh)
 
-    # Relative error
+    for i in range(H_mesh.shape[0]):
+        for j in range(H_mesh.shape[1]):
+            h = float(H_mesh[i, j])
+            P = float(P_mesh[i, j])
+
+            try:
+                interp_props = fluid_bicubic.get_props(jxp.HmassP_INPUTS, h, P)
+                interp_val = interp_props[prop]
+
+                cp_props = fluid_cp.get_props(jxp.HmassP_INPUTS, h, P)
+                true_val = cp_props[prop]
+
+                interp_grid[i, j] = interp_val
+                true_grid[i, j] = true_val
+            except Exception:
+                interp_grid[i, j] = np.nan
+                true_grid[i, j] = np.nan
+
     rel_error = np.abs((interp_grid - true_grid) / true_grid)
     percent_error = rel_error * 100
 
@@ -85,7 +86,9 @@ for prop in properties:
     # Plot error contour
     # ---------------------------
     fig, ax = plt.subplots(figsize=(8, 5))
-    fluid_cp.fluid.plot_phase_diagram(x_prop="enthalpy", y_prop="pressure", axes=ax)
+    fluid_cp.fluid.plot_phase_diagram(
+        x_prop="enthalpy", y_prop="pressure", axes=ax, x_scale="linear", y_scale="log"
+    )
 
     levels = np.logspace(-6, 2, 9)
     masked_error = np.clip(percent_error, levels[0], levels[-1])
@@ -103,16 +106,7 @@ for prop in properties:
     cbar.set_label("Percentage error [%] (log scale)")
 
     ax.set_xlabel("Enthalpy [J/kg]")
-    ax.set_ylabel("Pressure [bar]")
+    ax.set_ylabel("Pressure [Pa]")
     ax.set_title(f"Percentage Error (Midpoints): {prop}")
     fig.tight_layout(pad=1)
     plt.show()
-        # # Save or show
-    # if SAVE_FIGURES:
-    #     os.makedirs("verification_figures", exist_ok=True)
-    #     fig_path = os.path.join("verification_figures", f"{prop}_midpoint_interp_error_contour.png")
-    #     plt.savefig(fig_path, dpi=300)
-    #     print(f"Saved figure: {fig_path}")
-    #     plt.close()
-    # else:
-plt.show()
