@@ -224,8 +224,8 @@ if __name__ == "__main__":
 
     # Define base inputs
     fluid_name_1 = "water"
-    fluid_name_2 = "nitrogen"
-    T_in = 300.0             # K
+    fluid_name_2 = "air"
+    T_in = 25 + 273.15            # K
     p_out = 1e5              # Pa
     efficiency = 0.8
     process_type = "expansion"
@@ -233,9 +233,12 @@ if __name__ == "__main__":
     A_throat_mm2 = 250
     A_throat = A_throat_mm2 / 1e6  # mm² -> m²
 
+    efficiency_pump = 0.7
+    compressor_specific_power = 0.126  # kW/(m3/hr)
+
     # sensitivity parameters
-    p_in_list = [13e5]           # Pa
-    R_list = [10, 25, 50, 100, 250, 500]      # mass ratio
+    p_in_list = [7e5, 13e5]           # Pa
+    R_list = [20, 30, 40, 50, 100, 150, 200, 300, 400, 500]      # mass ratio
 
     # containers
     results = []
@@ -264,11 +267,17 @@ if __name__ == "__main__":
             idx_throat = np.argmin(np.abs(states["Mach"] - 1.0))
             rho_throat = states["density"][idx_throat]
             u_throat = states["velocity"][idx_throat]
+            mu_throat = states["viscosity"][idx_throat]
+            Re_throat = u_throat*rho_throat*np.sqrt(A_throat)/mu_throat
             m_dot = rho_throat * u_throat * A_throat
+
 
             # component mass flows
             m_dot_water = m_dot * states["mass_frac_1"][-1]
-            m_dot_nitrogen = m_dot * states["mass_frac_2"][-1]
+            m_dot_air = m_dot * states["mass_frac_2"][-1]
+            V_dot_air = m_dot_air / states["density_2"][-1]
+            V_dot_water = m_dot_water / states["density_1"][0]
+            power_pump = V_dot_water * (p_in - p_out) / efficiency_pump
 
             # outlet conditions
             v_out = states["velocity"][-1]
@@ -280,27 +289,31 @@ if __name__ == "__main__":
             n_blades = 4.
             aspect_ratio = 3.0
             gauge_angle = 50*np.pi/180
-
             spacing_to_chord = 1.1
             area_out = m_dot / states["velocity"][-1] /  states["density"][-1]
-
             chord = np.sqrt(area_out / (spacing_to_chord *  np.cos(gauge_angle) * aspect_ratio * n_blades))*1e3
 
+            Re_blades = states["velocity"][-1]*states["density"][-1]*chord/states["viscosity"][-1]
 
             # store table data
             results.append({
                 "T_in [degC]": T_in - 273.15,
                 "p_in [bar]": p_in / 1e5,
                 "R [-]": R,
-                "A_throat [mm2]": A_throat_mm2,
-                "mdot [kg/s]": m_dot,
-                "mdot_water [kg/s]": m_dot_water,
-                "mdot_nitrogen [kg/s]": m_dot_nitrogen,
+                "mass_frac_air [%]": 1/(1+R)*100,
+                "vol_frac_in [%]": vol_frac_in*100,
+                "vol_frac_out [%]": vol_frac_out*100,
+                # "A_throat [mm2]": A_throat_mm2,
+                "m_total [kg/min]": m_dot*60,
+                "V_water [m3/h]": V_dot_water*3600,
+                "W_pump [kW]": power_pump/1000,
+                "V_air [m3/h]": V_dot_air*3600,
+                "W_comp [kW]": V_dot_air*3600 * compressor_specific_power,
+                "thrust [N]": m_dot * v_out,
                 "v_out [m/s]": v_out,
                 "Ma_out [-]": Ma_out,
-                "vol_frac_in [-]": vol_frac_in,
-                "vol_frac_out [-]": vol_frac_out,
-                "chord [mm]": chord
+                "Re_throat": Re_throat/1e6,
+                "Re_blades": Re_blades/1e6,
             })
 
             # store curve data for plots
@@ -314,15 +327,43 @@ if __name__ == "__main__":
                 "Mach": states["Mach"],
             })
 
-    # ---- Print table ----
+    # ---- Print report ----
+
+    # Input parameters table
+    inputs = [
+        ("Fluid 1", fluid_name_1, "-"),
+        ("Fluid 2", fluid_name_2, "-"),
+        ("Nozzle inlet temperature", T_in - 273.15, "degC"),
+        ("Nozzle inlet pressure", p_in_list[0]/1e5, "bar"),
+        ("Nozle outlet pressure", p_out/1e5, "bar"),
+        ("Nozzle throat area", A_throat_mm2, "mm2"),
+        ("Nozzle efficiency", efficiency, "-"),
+        ("Pump efficiency", efficiency_pump, "-"),
+        ("Compressor specific power", compressor_specific_power, "kW/(m3/h)"),
+    ]
+
+    df_inputs = pd.DataFrame(inputs, columns=["Parameter", "Value", "Unit"])
+
+    print("=============================================================")
+    print("=================== Case input parameters ===================")
+    print("=============================================================")
+    with pd.option_context('display.max_rows', None, 'display.max_colwidth', None):
+        print(df_inputs.to_string(index=False))
+
+    # Results table
     df = pd.DataFrame(results)
-    print(df.to_string(index=False))
+
+    print("")
+    print("=============================================================")
+    print("==================== Case output results ====================")
+    print("=============================================================")
+    with pd.option_context('display.float_format', '{:.3f}'.format):
+        print(df.to_string(index=False))
 
     # ---- Plot results ----
     fig, axs = plt.subplots(2, 2, figsize=(10, 6), sharex=True)
     
     # define cyclers
-    
     linestyle_cycler = itertools.cycle(['-', '--', '-.', ':'])
 
     # unique sets
@@ -361,5 +402,6 @@ if __name__ == "__main__":
 
     axs[0, 0].legend(fontsize=8, ncol=1)
 
-    plt.tight_layout()
+    plt.tight_layout(pad=1)
+    plt.savefig("results.png", dpi=300)
     plt.show()
