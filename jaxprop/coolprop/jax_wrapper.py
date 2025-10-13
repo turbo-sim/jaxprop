@@ -17,16 +17,42 @@ def _make_template(shape):
     return {k: jax.ShapeDtypeStruct(shape, jnp.float64) for k in jxp.PROPERTIES_CANONICAL}
 
 
+# def _get_props_python(input_pair, x, y, fluid):
+#     """Host-side evaluation. Accepts scalars or arrays and returns dict of ndarrays."""
+#     x, y = np.broadcast_arrays(np.asarray(x), np.asarray(y))
+#     results = {name: np.empty(x.shape, dtype=np.float64) for name in jxp.PROPERTIES_CANONICAL}
+
+#     for i in np.ndindex(x.shape):
+#         state = fluid.get_state(input_pair, float(x[i]), float(y[i])).to_dict()
+#         for name in jxp.PROPERTIES_CANONICAL:
+#             val = state.get(name)
+#             results[name][i] = np.float64(val) if np.isfinite(val) else np.nan
+
+#     return results
+
 def _get_props_python(input_pair, x, y, fluid):
-    """Host-side evaluation. Accepts scalars or arrays and returns dict of ndarrays."""
+    """Host-side evaluation. Accepts scalars or arrays and returns dict of ndarrays.
+    If the state is None or a property is missing/non-finite, fills with np.nan.
+    """
     x, y = np.broadcast_arrays(np.asarray(x), np.asarray(y))
     results = {name: np.empty(x.shape, dtype=np.float64) for name in jxp.PROPERTIES_CANONICAL}
 
     for i in np.ndindex(x.shape):
-        state = fluid.get_state(input_pair, float(x[i]), float(y[i])).to_dict()
-        for name in jxp.PROPERTIES_CANONICAL:
-            val = state.get(name)
-            results[name][i] = np.float64(val) if np.isfinite(val) else np.nan
+        state = fluid.get_state(input_pair, float(x[i]), float(y[i]))
+        if state is None:
+            # Fill all properties with NaN if state is invalid
+            for name in jxp.PROPERTIES_CANONICAL:
+                results[name][i] = np.nan
+        else:
+            state_dict = state.to_dict()
+            for name in jxp.PROPERTIES_CANONICAL:
+                val = state_dict.get(name, np.nan)
+                # Convert only if it's a finite number; otherwise force NaN
+                try:
+                    val_f = np.float64(val)
+                    results[name][i] = val_f if np.isfinite(val_f) else np.nan
+                except Exception:
+                    results[name][i] = np.nan
 
     return results
 
@@ -98,12 +124,14 @@ class FluidJAX(eqx.Module):
     name: str = eqx.field(static=True)
     backend: str = eqx.field(static=True)
     fluid: object = eqx.field(static=True)  # raw CoolProp.AbstractState object
+    exceptions: bool = eqx.field(static=True)
 
-    def __init__(self, name: str, backend: str = "HEOS"):
+    def __init__(self, name: str, backend: str="HEOS", exceptions: bool=True):
         from .fluid_properties import Fluid
         self.name = name
         self.backend = backend
-        self.fluid = Fluid(name=name, backend=backend)
+        self.exceptions = exceptions
+        self.fluid = Fluid(name=name, backend=backend, exceptions=exceptions)
 
     @eqx.filter_jit
     def get_state(self, input_pair, x, y):

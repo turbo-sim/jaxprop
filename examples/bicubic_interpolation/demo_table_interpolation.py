@@ -11,8 +11,8 @@ h_min = 200e3  # J/kg
 h_max = 600e3  # J/kg
 p_min = 2e6  # Pa
 p_max = 20e6  # Pa
-N_p = 100  # Grid size for quick test
-N_h = 100
+N_p = 30  # Grid size for quick test
+N_h = 30
 
 fluid_bicubic = jxp.FluidBicubic(
     fluid_name=fluid_name,
@@ -30,10 +30,10 @@ fluid_bicubic = jxp.FluidBicubic(
 # ---------------------------
 # Step 2: Interpolate at (h, P)
 # ---------------------------
-# test_h = 500e3   # Test enthalpy [J/kg]
-# test_P = 12e6     # Test pressure [Pa]
-test_h = 315e3  # Test enthalpy [J/kg]
-test_P = 5e6  # Test pressure [Pa]
+test_h = 500e3   # Test enthalpy [J/kg]
+test_P = 12e6     # Test pressure [Pa]
+# test_h = 315e3  # Test enthalpy [J/kg]
+# test_P = 5e6  # Test pressure [Pa]
 props_bicubic = fluid_bicubic.get_state(jxp.HmassP_INPUTS, test_h, test_P)
 
 # -----------------------------------
