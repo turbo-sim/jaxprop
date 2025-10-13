@@ -73,7 +73,7 @@ def test_perfect_gas_consistency(input_type, case):
     else:
         pytest.skip(f"unhandled input_type: {input_type}")
 
-    test_vals = fluid.get_props(input_type, v1, v2)
+    test_vals = fluid.get_state(input_type, v1, v2)
 
     for k in PROP_KEYS:
         value_calc = np.asarray(test_vals[k])
@@ -117,7 +117,7 @@ def test_perfect_gas_derivatives(input_type, case):
     for k in PROP_KEYS:
         # differentiable wrapper to get property k
         def prop_fun(x):
-            out = fluid.get_props(input_type, x[0], x[1])
+            out = fluid.get_state(input_type, x[0], x[1])
             return out[k]
 
         # JAX forward-mode gradient

@@ -35,6 +35,8 @@ class FluidBicubic(eqx.Module):
         Min/max pressure [Pa].
     N_h, N_p : int
         Number of grid points in h and p.
+    coarse_step : int
+        Number of points to skip when determining the initial guess during 2D inverse interpolations
     table_name : str, optional
         Name of the table pickle file (default: "{fluid_name}_{N_h}x{N_p}").
     table_dir : str, optional
@@ -58,6 +60,7 @@ class FluidBicubic(eqx.Module):
     p_max: float = eqx.field(static=True)
     N_h: int = eqx.field(static=True)
     N_p: int = eqx.field(static=True)
+    coarse_step: int = eqx.field(static=True)
     delta_h: float = eqx.field(static=True)
     delta_logP: float = eqx.field(static=True)
     h_vals: jnp.ndarray = eqx.field(static=False)
@@ -78,6 +81,7 @@ class FluidBicubic(eqx.Module):
         p_max: float,
         N_h: int,
         N_p: int,
+        coarse_step: int = 10,
         gradient_method: str = "central",
         identifier: str = None,
         table_name: str = None,
@@ -92,6 +96,7 @@ class FluidBicubic(eqx.Module):
         self.table_name = table_name or f"{fluid_name}_{N_h}x{N_p}"
         self.table_dir = table_dir
         self.grad_method = gradient_method
+        self.coarse_step = coarse_step
 
         # Initialize table dictionary
         self.h_vals = jnp.linspace(self.h_min, self.h_max, self.N_h)
@@ -101,7 +106,6 @@ class FluidBicubic(eqx.Module):
 
         # Create the table if it does not exist
         self.table = self._load_or_generate_table()
-
 
     # ------------------ Table generation ------------------
     def _load_or_generate_table(self):
@@ -180,7 +184,7 @@ class FluidBicubic(eqx.Module):
                             raise ValueError(f"Unknown gradient scheme: {m}")
                     except Exception:
                         continue
-                    
+
                     # Store gradients and values in table
                     for k, (val, grad_h, grad_p, grad_hp) in grads.items():
                         table[k]["value"][i, j] = val
@@ -203,7 +207,6 @@ class FluidBicubic(eqx.Module):
                     self.delta_h,
                     self.delta_logP,
                 )
-
 
         # Print table generation report
         frac_success = success_count / total_points * 100
@@ -276,9 +279,11 @@ class FluidBicubic(eqx.Module):
         jxp.PSmass_INPUTS: lambda self, p, s: self._interp_x_p(p, s, "entropy"),
         jxp.HmassSmass_INPUTS: lambda self, h, s: self._interp_h_y(h, s, "entropy"),
         jxp.DmassHmass_INPUTS: lambda self, d, h: self._interp_h_y(h, d, "density"),
-        jxp.DmassT_INPUTS: lambda self, d, T: self._interp_x_y(jxp.DmassT_INPUTS, d, T),
+        jxp.DmassT_INPUTS: lambda self, d, T: self._interp_x_y(
+            jxp.DmassT_INPUTS, d, T, coarse_step=self.coarse_step
+        ),
         jxp.DmassSmass_INPUTS: lambda self, d, s: self._interp_x_y(
-            jxp.DmassSmass_INPUTS, d, s
+            jxp.DmassSmass_INPUTS, d, s, coarse_step=self.coarse_step
         ),
     }
 
@@ -333,9 +338,7 @@ class FluidBicubic(eqx.Module):
         val1, val2 = jnp.broadcast_arrays(val1, val2)
 
         # Define vectorized mapping explicitly using jax.vmap
-        batched_fn = jax.vmap(
-            lambda v1, v2: self._get_state_scalar(input_type, v1, v2)
-        )
+        batched_fn = jax.vmap(lambda v1, v2: self._get_state_scalar(input_type, v1, v2))
 
         # Apply to flattened arrays
         props_batched = batched_fn(val1.ravel(), val2.ravel())
@@ -345,14 +348,12 @@ class FluidBicubic(eqx.Module):
 
         return props
 
-
     @eqx.filter_jit
     def _get_state_scalar(self, input_type, val1, val2):
         """
         Compute a single FluidState for the given input pair (scalar inputs).
         """
         return self.PROPERTY_CALCULATORS.get(input_type)(self, val1, val2)
-
 
     def _interp_h_p(self, h, p):
         """
@@ -415,7 +416,7 @@ class FluidBicubic(eqx.Module):
 
         return jxp.FluidState(fluid_name=self.fluid_name, **props)
 
-    def _interp_h_y(self, h, y_value, y_name, tol=1e-12, max_steps=512):
+    def _interp_h_y(self, h, y_value, y_name, tol=1e-10, max_steps=64):
         """
         Solve for pressure at fixed enthalpy such that the specified property
         matches a target value, using Newton's method with a table-based initial guess.
@@ -430,7 +431,7 @@ class FluidBicubic(eqx.Module):
             val = self._interp_h_p(h, p)[y_name] - y_value
             # jax.debug.print("[_interp_h_y] p={:.6e}, residual={:.3e}", p, val)
             return val
-        
+
         # Solve root-finding problem
         solver = optx.Newton(rtol=tol, atol=tol)
         solution = optx.root_find(
@@ -442,7 +443,7 @@ class FluidBicubic(eqx.Module):
 
         return self._interp_h_p(h, solution.value)
 
-    def _interp_x_p(self, p, x_value, x_name, tol=1e-12, max_steps=512):
+    def _interp_x_p(self, p, x_value, x_name, tol=1e-10, max_steps=64):
         """
         Solve for enthalpy at fixed pressure such that the specified property
         matches a target value, using Newton's method with a table-based initial guess.
@@ -457,7 +458,7 @@ class FluidBicubic(eqx.Module):
             val = self._interp_h_p(h, p)[x_name] - x_value
             # jax.debug.print("[_interp_x_p] h={:.6e}, residual={:.3e}", h, val)
             return val
-        
+
         # Solve root-finding problem
         solver = optx.Newton(rtol=tol, atol=tol)
         solution = optx.root_find(

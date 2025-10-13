@@ -31,10 +31,3 @@ props = fluid.get_state(jxp.QT_INPUTS, 0.5, 300)
 print("\nProperties of water/steam mixture")
 print(props)
 
-# Get subset of properties for meanline code
-props = fluid.compute_properties_meanline(jxp.QT_INPUTS, 0.5, 300)
-print()
-print("Properties for the meanline code")
-print(f"{'Property':15} {'value':6}")
-for key, value in props.items():
-    print(f"{key:15} {value:.6e}")

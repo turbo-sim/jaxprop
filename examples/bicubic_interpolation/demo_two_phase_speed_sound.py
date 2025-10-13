@@ -29,8 +29,6 @@ fluid_bicubic = jxp.FluidBicubic(
     table_dir=outdir,
 )
 
-
-
 # ---------------------------
 # Step 2: Interpolate at (h, P)
 # ---------------------------

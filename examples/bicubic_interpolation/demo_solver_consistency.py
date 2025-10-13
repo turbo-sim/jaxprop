@@ -35,8 +35,8 @@ h_min = 500e3  # J/kg
 h_max = 1500e3  # J/kg
 p_min = 2e6  # Pa
 p_max = 20e6  # Pa
-N_h = 64
-N_p = 64
+N_h = 32
+N_p = 32
 
 fluid = jxp.FluidBicubic(
     fluid_name=fluid_name,
@@ -48,6 +48,7 @@ fluid = jxp.FluidBicubic(
     N_h=N_h,
     N_p=N_p,
     table_dir=outdir,
+    table_name="solver_consistency"
 )
 
 # ---------------------------
@@ -195,4 +196,8 @@ fig, ax = fluid.plot_phase_diagram(
 )
 ax.scatter(state_ref[x_prop], state_ref[y_prop], s=5, c="tab:orange")
 fig.tight_layout(pad=1)
-plt.show()
+
+
+# Show figures
+if not os.environ.get("DISABLE_PLOTS"):
+    plt.show()

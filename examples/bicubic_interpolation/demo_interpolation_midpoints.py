@@ -17,8 +17,8 @@ h_min = 200e3  # J/kg
 h_max = 600e3  # J/kg
 p_min = 2e6    # Pa
 p_max = 20e6   # Pa
-N_h = 200
-N_p = 200
+N_h = 32
+N_p = 32
 
 # ---------------------------
 # Build models
@@ -30,6 +30,7 @@ fluid_bicubic = jxp.FluidBicubic(
     p_min=p_min, p_max=p_max,
     N_h=N_h, N_p=N_p,
     table_dir=outdir,
+    table_name="interpolation_midpoints"
 )
 
 fluid_cp = jxp.FluidJAX(fluid_name, exceptions=False)  # Mind exceptions!
@@ -140,4 +141,8 @@ for i in range(len(properties), total_axes):
     fig.delaxes(fig.add_subplot(gs[r, c]))
 
 plt.tight_layout(pad=1)
-plt.show()
+
+
+# Show figures
+if not os.environ.get("DISABLE_PLOTS"):
+    plt.show()
