@@ -599,13 +599,16 @@ document.write(`
         <span class="n">rho</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">rhomass</span><span class="p">()</span>
         <span class="n">u0</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">umass</span><span class="p">()</span>
         <span class="n">p0</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">p</span><span class="p">()</span>
-        <span class="n">du</span> <span class="o">=</span> <span class="n">rel_du</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">u0</span><span class="p">)</span> <span class="k">if</span> <span class="n">u0</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">rel_du</span>
+        <span class="n">du</span> <span class="o">=</span> <span class="n">rel_du</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">u0</span><span class="p">)</span>
 
         <span class="c1"># Perturb internal energy</span>
-        <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassUmass_INPUTS</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">u0</span> <span class="o">+</span> <span class="n">du</span><span class="p">)</span>
+        <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassUmass_INPUTS</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">u0</span> <span class="o">-</span> <span class="n">du</span><span class="p">)</span>
         <span class="n">p1</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">p</span><span class="p">()</span>
 
-        <span class="n">dpde</span> <span class="o">=</span> <span class="p">(</span><span class="n">p1</span> <span class="o">-</span> <span class="n">p0</span><span class="p">)</span> <span class="o">/</span> <span class="n">du</span>
+        <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassUmass_INPUTS</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">u0</span> <span class="o">+</span> <span class="n">du</span><span class="p">)</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">AS</span><span class="o">.</span><span class="n">p</span><span class="p">()</span>
+
+        <span class="n">dpde</span> <span class="o">=</span> <span class="p">(</span><span class="n">p2</span> <span class="o">-</span> <span class="n">p1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">du</span><span class="p">)</span>
         <span class="n">Gamma</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">rho</span><span class="p">)</span> <span class="o">*</span> <span class="n">dpde</span>
         <span class="k">return</span> <span class="n">Gamma</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>

@@ -633,10 +633,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
 
-<div class="viewcode-block" id="FluidPerfectGas.get_props">
-<a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_props">[docs]</a>
+<div class="viewcode-block" id="FluidPerfectGas.get_state">
+<a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state">[docs]</a>
     <span class="nd">@eqx</span><span class="o">.</span><span class="n">filter_jit</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_props</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate thermodynamic state for a perfect gas.&quot;&quot;&quot;</span>
         <span class="n">props</span> <span class="o">=</span> <span class="n">PROPERTY_CALCULATORS</span><span class="p">[</span><span class="n">input_pair</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidState</span><span class="p">(</span>

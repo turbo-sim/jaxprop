@@ -341,8 +341,9 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX"><code class="docutils literal notranslate"><span class="pre">FluidJAX</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.backend"><code class="docutils literal notranslate"><span class="pre">FluidJAX.backend</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.exceptions"><code class="docutils literal notranslate"><span class="pre">FluidJAX.exceptions</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.fluid"><code class="docutils literal notranslate"><span class="pre">FluidJAX.fluid</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_props"><code class="docutils literal notranslate"><span class="pre">FluidJAX.get_props()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state"><code class="docutils literal notranslate"><span class="pre">FluidJAX.get_state()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.name"><code class="docutils literal notranslate"><span class="pre">FluidJAX.name</span></code></a></li>
 </ul>
 </li>
@@ -361,12 +362,12 @@ document.write(`
 <span id="jaxprop-coolprop-jax-wrapper-module"></span><h1>jaxprop.coolprop.jax_wrapper module<a class="headerlink" href="#module-jaxprop.coolprop.jax_wrapper" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.jax_wrapper.</span></span><span class="sig-name descname"><span class="pre">FluidJAX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HEOS'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/jax_wrapper.html#FluidJAX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.jax_wrapper.</span></span><span class="sig-name descname"><span class="pre">FluidJAX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HEOS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exceptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/jax_wrapper.html#FluidJAX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_props" title="jaxprop.coolprop.jax_wrapper.FluidJAX.get_props"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_props</span></code></a>(input_pair, x, y)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state" title="jaxprop.coolprop.jax_wrapper.FluidJAX.get_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state</span></code></a>(input_pair, x, y)</p></td>
 <td><p>Return a CoolPropState with fields shaped like broadcast(x, y).</p></td>
 </tr>
 </tbody>
@@ -378,13 +379,18 @@ document.write(`
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.exceptions">
+<span class="sig-name descname"><span class="pre">exceptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.exceptions" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.fluid">
 <span class="sig-name descname"><span class="pre">fluid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">object</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.fluid" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.get_props">
-<span class="sig-name descname"><span class="pre">get_props</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/jax_wrapper.html#FluidJAX.get_props"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_props" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.get_state">
+<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/jax_wrapper.html#FluidJAX.get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state" title="Link to this definition">#</a></dt>
 <dd><p>Return a CoolPropState with fields shaped like broadcast(x, y).</p>
 </dd></dl>
 
@@ -444,8 +450,9 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX"><code class="docutils literal notranslate"><span class="pre">FluidJAX</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.backend"><code class="docutils literal notranslate"><span class="pre">FluidJAX.backend</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.exceptions"><code class="docutils literal notranslate"><span class="pre">FluidJAX.exceptions</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.fluid"><code class="docutils literal notranslate"><span class="pre">FluidJAX.fluid</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_props"><code class="docutils literal notranslate"><span class="pre">FluidJAX.get_props()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state"><code class="docutils literal notranslate"><span class="pre">FluidJAX.get_state()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.name"><code class="docutils literal notranslate"><span class="pre">FluidJAX.name</span></code></a></li>
 </ul>
 </li>

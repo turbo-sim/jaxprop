@@ -342,7 +342,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.constants"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.constants</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.fluid_name</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_props"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.get_props()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.get_state()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.identifier"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.identifier</span></code></a></li>
 </ul>
 </li>
@@ -405,7 +405,7 @@ document.write(`
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_props" title="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_props"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_props</span></code></a>(input_pair, x, y)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state" title="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state</span></code></a>(input_pair, x, y)</p></td>
 <td><p>Evaluate thermodynamic state for a perfect gas.</p></td>
 </tr>
 </tbody>
@@ -422,8 +422,8 @@ document.write(`
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_props">
-<span class="sig-name descname"><span class="pre">get_props</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pair</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#FluidPerfectGas.get_props"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_props" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state">
+<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pair</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#FluidPerfectGas.get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state" title="Link to this definition">#</a></dt>
 <dd><p>Evaluate thermodynamic state for a perfect gas.</p>
 </dd></dl>
 
@@ -693,7 +693,7 @@ Each entry: grads[prop] = jnp.array([∂prop/∂x, ∂prop/∂y])</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.constants"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.constants</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.fluid_name</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_props"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.get_props()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.get_state()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.identifier"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.identifier</span></code></a></li>
 </ul>
 </li>
