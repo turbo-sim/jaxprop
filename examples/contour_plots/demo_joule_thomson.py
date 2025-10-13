@@ -21,7 +21,7 @@ titles = [r"Joule–Thomson $\mu_{JT} = (\partial T/\partial p)_h$",
 
 for ax, z_prop, title in zip(axes, props_to_plot, titles):
     # compute properties
-    states = fluid.get_props(jxp.HmassP_INPUTS, x_grid, y_grid)
+    states = fluid.get_state(jxp.HmassP_INPUTS, x_grid, y_grid)
     
     # contour plot
     levels = 12

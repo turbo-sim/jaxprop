@@ -221,10 +221,10 @@ class FluidBicubic(eqx.Module):
                     eps_p = max(1e-6 * abs(p), 1e-3 * (np.exp(delta_logP) - 1.0) * p)
 
                     try:
-                        f_0 = fluid.get_props(jxp.HmassP_INPUTS, h, p)
-                        f_h = fluid.get_props(jxp.HmassP_INPUTS, h + eps_h, p)
-                        f_p = fluid.get_props(jxp.HmassP_INPUTS, h, p + eps_p)
-                        f_ph = fluid.get_props(jxp.HmassP_INPUTS, h + eps_h, p + eps_p)
+                        f_0 = fluid.get_state(jxp.HmassP_INPUTS, h, p)
+                        f_h = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p)
+                        f_p = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p)
+                        f_ph = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p + eps_p)
                         success_count += 1
                     except Exception:
                         pass
@@ -749,15 +749,15 @@ def interpolate_bicubic_xP(x_val, P, input_pair, table):
     #         f"f(p_min)={f_lo}, f(p_max)={f_hi}"
     #     )
 
-    # result = optx.root_find(residual, optx.Bisection(rtol=1e-6, atol=1e-8, expand_if_necessary=False), y0=jnp.array(h_init), options={"lower": h_min, "upper": h_max},)
-    # result = optx.root_find(residual, optx.Newton(rtol=1e-6, atol=1e-8), y0=jnp.array(h_init))
-    # result = optx.root_find(residual, optx.BFGS(rtol=1e-6, atol=1e-8), y0=jnp.array(h_init),)
+    result = optx.root_find(residual, optx.Bisection(rtol=1e-6, atol=1e-8, expand_if_necessary=False), y0=jnp.array(h_init), options={"lower": h_min, "upper": h_max},)
+    result = optx.root_find(residual, optx.Newton(rtol=1e-6, atol=1e-8), y0=jnp.array(h_init))
+    result = optx.root_find(residual, optx.BFGS(rtol=1e-6, atol=1e-8), y0=jnp.array(h_init),)
 
-    # result = bisection_root_scalar(residual, h_min, h_max)
-    # h_sol = result.value
-    # h_sol = result
+    result = bisection_root_scalar(residual, h_min, h_max)
+    h_sol = result.value
+    h_sol = result
 
-    # return interpolate_bicubic_hp(h_sol, P, table)
+    return interpolate_bicubic_hp(h_sol, P, table)
 
 
 

@@ -280,7 +280,7 @@ class FluidPerfectGas(eqx.Module):
         self.identifier = identifier
 
     @eqx.filter_jit
-    def get_props(self, input_pair: str, x: float, y: float):
+    def get_state(self, input_pair: str, x: float, y: float):
         """Evaluate thermodynamic state for a perfect gas."""
         props = PROPERTY_CALCULATORS[input_pair](x, y, self.constants)
         return jxp.FluidState(

@@ -170,10 +170,10 @@ class FluidBicubic(eqx.Module):
                     # fp  = tf.get_props_custom_jvp(fluid, cp.HmassP_INPUTS, h, P+eps_P)
                     # fhp = tf.get_props_custom_jvp(fluid, cp.HmassP_INPUTS, h+eps_h, P+eps_P)
 
-                    f0 = fluid.get_props(jxp.HmassP_INPUTS, h, P)
-                    fh = fluid.get_props(jxp.HmassP_INPUTS, h + eps_h, P)
-                    fp = fluid.get_props(jxp.HmassP_INPUTS, h, P + eps_P)
-                    fhp = fluid.get_props(jxp.HmassP_INPUTS, h + eps_h, P + eps_P)
+                    f0 = fluid.get_state(jxp.HmassP_INPUTS, h, P)
+                    fh = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, P)
+                    fp = fluid.get_state(jxp.HmassP_INPUTS, h, P + eps_P)
+                    fhp = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, P + eps_P)
 
                 except Exception:
                     continue

@@ -106,7 +106,7 @@ class FluidJAX(eqx.Module):
         self.fluid = Fluid(name=name, backend=backend)
 
     @eqx.filter_jit
-    def get_props(self, input_pair, x, y):
+    def get_state(self, input_pair, x, y):
         """Return a CoolPropState with fields shaped like broadcast(x, y)."""
         raw = get_props(input_pair, x, y, self.fluid)
         return jxp.FluidState(**{k: raw[k] for k in jxp.PROPERTIES_CANONICAL})

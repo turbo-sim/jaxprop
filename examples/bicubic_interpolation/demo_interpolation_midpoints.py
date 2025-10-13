@@ -1,118 +1,145 @@
 import os
 import numpy as np
 import jax.numpy as jnp
-import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm
-import CoolProp.CoolProp as cp
-
 import jaxprop as jxp
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+from matplotlib.colors import LogNorm
 
-# ---------------------------
-# Configuration
-# ---------------------------
-fluid_name = "CO2"
-hmin_ = 200e3     # J/kg
-h_max = 600e3     # J/kg
-p_min = 2e6       # Pa
-p_max = 20e6      # Pa
-N = 80
-N_p = 40
-SAVE_FIGURES = False
+jxp.set_plot_options()
 
-# ---------------------------
-# Build bicubic fluid object
-# ---------------------------
-fluid_bicubic = jxp.FluidBicubic(
-    fluid_name=fluid_name,
-    # backend="HEOS",
-    h_min=hmin_,
-    h_max=h_max,
-    p_min=p_min,
-    p_max=p_max,
-    N=N,
-    # N_p=N_p,
-    table_dir="fluid_tables",
-)
+print(jnp.linalg.norm(jxp.bicubic.A2- jxp.bicubic.A_MAT))
 
-# Reference CoolProp fluid
-fluid_cp = jxp.FluidJAX(fluid_name)
+# # ---------------------------
+# # Configuration
+# # ---------------------------
+# outdir = "fluid_tables"
+# fluid_name = "CO2"
+# h_min = 200e3  # J/kg
+# h_max = 600e3  # J/kg
+# p_min = 2e6    # Pa
+# p_max = 20e6   # Pa
+# N_h = 51
+# N_p = 51
 
-# ---------------------------
-# Midpoint grid
-# ---------------------------
-# h_nodes = jnp.linspace(hmin_, h_max, N_h)
-h_nodes = jnp.linspace(hmin_, h_max, N)
+# # ---------------------------
+# # Build models
+# # ---------------------------
+# fluid_bicubic = jxp.FluidBicubic(
+#     fluid_name=fluid_name,
+#     backend="HEOS",
+#     h_min=h_min, h_max=h_max,
+#     p_min=p_min, p_max=p_max,
+#     N_h=N_h, N_p=N_p,
+#     table_dir=outdir,
+# )
+
+# fluid_cp = jxp.FluidJAX(fluid_name)
+
+# # ---------------------------
+# # Midpoint grid (evaluation points)
+# # ---------------------------
+# h_nodes = jnp.linspace(h_min, h_max, N_h)
 # p_nodes = jnp.exp(jnp.linspace(jnp.log(p_min), jnp.log(p_max), N_p))
-p_nodes = jnp.exp(jnp.linspace(jnp.log(p_min), jnp.log(p_max), N))
+# h_vals = 0.5 * (h_nodes[:-1] + h_nodes[1:])
+# p_vals = 0.5 * (p_nodes[:-1] + p_nodes[1:])
+# H_mesh, P_mesh = np.meshgrid(h_vals, p_vals, indexing="ij")
 
-h_vals = 0.5 * (h_nodes[:-1] + h_nodes[1:])
-p_vals = 0.5 * (p_nodes[:-1] + p_nodes[1:])
+# # ---------------------------
+# # Evaluate states once (vectorized)
+# # ---------------------------
+# interp_grid = fluid_bicubic.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
+# true_grid   = fluid_cp.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
 
-# h_vals = h_nodes
-# p_vals = p_nodes 
-H_mesh, P_mesh = jnp.meshgrid(h_vals, p_vals, indexing="ij")
+# # ---------------------------
+# # Collect error statistics
+# # ---------------------------
+# error_summary = []
+# properties = [ "T", "d", "e", "s", "a", "G"]
 
-# ---------------------------
-# Properties to test
-# ---------------------------
-# Bicubic interpolation (vectorized)
-interp_props = fluid_bicubic.get_props(jxp.HmassP_INPUTS, H_mesh, P_mesh)
+# for prop in properties:
+#     interp_val = np.array(interp_grid[prop])
+#     true_val   = np.array(true_grid[prop])
 
-# Reference CoolProp values (vectorized via FluidJAX)
-coolprop_props = fluid_cp.get_props(jxp.HmassP_INPUTS, H_mesh, P_mesh)
+#     abs_err = np.abs(interp_val - true_val)
+#     rel_err = abs_err / np.maximum(np.abs(true_val), 1e-30) * 100.0  # %
 
-properties = ["p", "h", "a", "T", "mu", "d"]
+#     error_summary.append({
+#         "property": prop,
+#         "abs_min": np.nanmin(abs_err),
+#         "abs_max": np.nanmax(abs_err),
+#         "rel_min": np.nanmin(rel_err),
+#         "rel_max": np.nanmax(rel_err),
+#         "rel_mean": np.nanmean(rel_err),
+#         "field": rel_err,
+#     })
 
-# ---------------------------
-# Loop over properties
-# ---------------------------
-for prop in properties:
-    print(f"\nTesting: {prop}")
+# # ---------------------------
+# # Print error summary table
+# # ---------------------------
+# print("\nProperty interpolation error summary (evaluated at cell midpoints):")
+# print(f"{'Prop':<5} {'| Abs min':>12} {'Abs max':>12} {'% min':>12} {'% max':>12} {'% mean':>12}")
+# print("-" * 70)
+# for e in error_summary:
+#     print(f"{e['property']:<5} | {e['abs_min']:>12.3e} {e['abs_max']:>12.3e} "
+#           f"{e['rel_min']:>12.3e} {e['rel_max']:>12.3e} {e['rel_mean']:>12.3e}")
 
-    interp_grid = interp_props[prop]
-    true_grid = coolprop_props[prop]
 
-    # Relative error
-    rel_error = np.abs((interp_grid - true_grid) / true_grid)
-    percent_error = rel_error * 100
 
-    print(f"   - Abs error: min={np.nanmin(np.abs(interp_grid - true_grid)):.3e}, "
-          f"max={np.nanmax(np.abs(interp_grid - true_grid)):.3e}")
-    print(f"   - % error: min={np.nanmin(percent_error):.3e}%, "
-          f"max={np.nanmax(percent_error):.3e}%, mean={np.nanmean(percent_error):.3e}%")
+# # ---------------------------
+# # Plot subplot grid for selected properties
+# # ---------------------------
+# n_props = len(properties)
+# ncols = 3
+# nrows = int(np.ceil(n_props / ncols))
 
-    # ---------------------------
-    # Plot error contour
-    # ---------------------------
-    fig, ax = plt.subplots(figsize=(8, 5))
-    fluid_cp.fluid.plot_phase_diagram(x_prop="enthalpy", y_prop="pressure", axes=ax)
+# # Use GridSpec to reserve a narrow column for the colorbar
+# fig = plt.figure(figsize=(4*ncols, 3*nrows))
+# gs = gridspec.GridSpec(nrows, ncols+1, width_ratios=[1]*ncols + [0.05], figure=fig)
 
-    levels = np.logspace(-6, 2, 9)
-    masked_error = np.clip(percent_error, levels[0], levels[-1])
+# axes = []
+# for i in range(n_props):
+#     r, c = divmod(i, ncols)
+#     ax = fig.add_subplot(gs[r, c])
+#     axes.append(ax)
 
-    contour = ax.contourf(
-        H_mesh, P_mesh, masked_error,
-        levels=levels,
-        norm=LogNorm(vmin=levels[0], vmax=levels[-1]),
-        cmap="viridis", extend="both"
-    )
+# # Color levels
+# levels = np.logspace(-6, 2, 9)
 
-    cbar = fig.colorbar(contour, ax=ax)
-    cbar.set_ticks(levels)
-    cbar.set_ticklabels([f"$10^{{{int(np.log10(l))}}}$" for l in levels])
-    cbar.set_label("Percentage error [%] (log scale)")
+# # Plot each property
+# for ax, prop in zip(axes, properties):
+#     e = next(x for x in error_summary if x["property"] == prop)
+#     rel_err_field = np.clip(e["field"], levels[0], levels[-1])
 
-    ax.set_xlabel("Enthalpy [J/kg]")
-    ax.set_ylabel("Pressure [bar]")
-    ax.set_title(f"Percentage Error (Midpoints): {prop}")
-    fig.tight_layout(pad=1)
-    plt.show()
-        # # Save or show
-    # if SAVE_FIGURES:
-    #     os.makedirs("verification_figures", exist_ok=True)
-    #     fig_path = os.path.join("verification_figures", f"{prop}_midpoint_interp_error_contour.png")
-    #     plt.savefig(fig_path, dpi=300)
-    #     print(f"Saved figure: {fig_path}")
-    #     plt.close()
-    # else:
-plt.show()
+#     # Phase diagram background
+#     fluid_cp.fluid.plot_phase_diagram(
+#         x_prop="enthalpy", y_prop="pressure", axes=ax,
+#         x_scale="linear", y_scale="log"
+#     )
+
+#     # Contour
+#     c = ax.contourf(
+#         H_mesh, P_mesh, rel_err_field,
+#         levels=levels,
+#         norm=LogNorm(vmin=levels[0], vmax=levels[-1]),
+#         cmap="viridis", extend="both"
+#     )
+
+#     ax.set_title(f"{prop} [% error]", fontsize=11)
+#     ax.set_xlabel("Enthalpy [J/kg]")
+#     ax.set_ylabel("Pressure [Pa]")
+
+# # Colorbar axis on the right
+# cax = fig.add_subplot(gs[:, -1])
+# cb = fig.colorbar(c, cax=cax)
+# cb.set_ticks(levels)
+# cb.set_label("Relative error [%] (log scale)")
+
+# # Remove unused axes (if any)
+# total_axes = nrows * ncols
+# for i in range(len(properties), total_axes):
+#     r, c = divmod(i, ncols)
+#     fig.delaxes(fig.add_subplot(gs[r, c]))
+
+# plt.tight_layout(pad=1)
+# plt.show()

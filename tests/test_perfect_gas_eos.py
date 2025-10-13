@@ -40,7 +40,7 @@ def case(request):
     fluid = jxp.FluidPerfectGas(name=c["fluid"], T_ref=c["T"], p_ref=c["p"])
 
     # sanity: force the baseline to exactly this PT
-    ref = fluid.get_props(jxp.PT_INPUTS, c["p"], c["T"])
+    ref = fluid.get_state(jxp.PT_INPUTS, c["p"], c["T"])
 
     return {
         "metadata": c,           # id, fluid name, T, p

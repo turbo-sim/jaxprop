@@ -10,7 +10,7 @@ p = 101325.0  # Pa
 
 # base state
 fluid = jxp.FluidPerfectGas("air", T_ref=298.15, p_ref=101325.0)
-base = fluid.get_props(input_pair, h, p)
+base = fluid.get_state(input_pair, h, p)
 print("base state:")
 print(f"  T   : {float(base['T']):+0.6f} K")
 print(f"  p   : {float(base['p']):+0.6f} Pa")

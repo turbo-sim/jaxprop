@@ -10,10 +10,10 @@ import jaxprop as jxp
 fluid_name = "CO2"
 h_min = 200e3  # J/kg
 h_max = 600e3  # J/kg
-p_min = 2e6    # Pa
-p_max = 20e6   # Pa
-N_p = 80       # Number of pressure points
-N_h = 80       # Number of enthalpy points
+p_min = 2e6  # Pa
+p_max = 20e6  # Pa
+N_p = 80  # Number of pressure points
+N_h = 80  # Number of enthalpy points
 
 
 # ---------------------------
@@ -41,6 +41,7 @@ fluid = jxp.FluidBicubic(
 )
 end = time.time()
 print(f"FluidBicubic init took {end - start:.3f} s")
+print()
 
 
 # ---------------------------
@@ -60,4 +61,3 @@ fluid = jxp.FluidBicubic(
 )
 end = time.time()
 print(f"FluidBicubic init took {end - start:.3f} s")
-

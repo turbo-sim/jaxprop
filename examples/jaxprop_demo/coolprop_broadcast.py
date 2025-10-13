@@ -26,13 +26,13 @@ for n in sizes:
     temperatures = T0 * (1.0 + 0.1 * jax.random.normal(kT, (n,)))
 
     t0 = time.perf_counter()
-    state_pg = fluid_perfect_gas.get_props(jxp.PT_INPUTS, pressures, temperatures)
+    state_pg = fluid_perfect_gas.get_state(jxp.PT_INPUTS, pressures, temperatures)
     _ = state_pg.rho.block_until_ready()
     t1 = time.perf_counter()
     time_pg = (t1 - t0) * 1000.0
 
     t0 = time.perf_counter()
-    state_cp = fluid_coolprop.get_props(jxp.PT_INPUTS, pressures, temperatures)
+    state_cp = fluid_coolprop.get_state(jxp.PT_INPUTS, pressures, temperatures)
     _ = state_cp.rho.block_until_ready()
     t1 = time.perf_counter()
     time_cp = (t1 - t0) * 1000.0
@@ -49,13 +49,13 @@ for n in sizes:
     T_scalar = jnp.asarray(T0)
 
     t0 = time.perf_counter()
-    state_pg = fluid_perfect_gas.get_props(jxp.PT_INPUTS, pressures, T_scalar)
+    state_pg = fluid_perfect_gas.get_state(jxp.PT_INPUTS, pressures, T_scalar)
     _ = state_pg.rho.block_until_ready()
     t1 = time.perf_counter()
     time_pg = (t1 - t0) * 1000.0
 
     t0 = time.perf_counter()
-    state_cp = fluid_coolprop.get_props(jxp.PT_INPUTS, pressures, T_scalar)
+    state_cp = fluid_coolprop.get_state(jxp.PT_INPUTS, pressures, T_scalar)
     _ = state_cp.rho.block_until_ready()
     t1 = time.perf_counter()
     time_cp = (t1 - t0) * 1000.0

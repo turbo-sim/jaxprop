@@ -63,19 +63,19 @@ timings_cp = []
 for i, (h, p) in enumerate(zip(h_samples, p_samples), 1):
     # Perfect gas
     t0 = time.perf_counter()
-    _ = fluid_perfect.get_props(jxp.HmassP_INPUTS, h, p)
+    _ = fluid_perfect.get_state(jxp.HmassP_INPUTS, h, p)
     t1 = time.perf_counter()
     dt_pg = (t1 - t0) * 1e3  # ms
 
     # Bicubic
     t0 = time.perf_counter()
-    _ = fluid_bicubic.get_props(jxp.HmassP_INPUTS, h, p)
+    _ = fluid_bicubic.get_state(jxp.HmassP_INPUTS, h, p)
     t1 = time.perf_counter()
     dt_bi = (t1 - t0) * 1e3  # ms
 
     # CoolProp
     t0 = time.perf_counter()
-    _ = fluid_coolprop.get_props(jxp.HmassP_INPUTS, h, p)
+    _ = fluid_coolprop.get_state(jxp.HmassP_INPUTS, h, p)
     t1 = time.perf_counter()
     dt_cp = (t1 - t0) * 1e3  # ms
 
