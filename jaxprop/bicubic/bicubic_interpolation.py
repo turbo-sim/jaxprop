@@ -1,77 +1,20 @@
 import os
+import time
+import tqdm
 import pickle
-
+import numpy as np
 import jax
 import jax.numpy as jnp
-import jaxprop.coolprop as jxp
-import numpy as np
-
 import equinox as eqx
 import optimistix as optx
-
-from tqdm import tqdm
-
-from examples.bicubic_interpolation.demo_bisection import bisection_root_scalar
-
-from ..coolprop import Fluid
-# from .. import helpers_props as jxp
+import jaxprop.coolprop as jxp
 
 
-
-# -------------------------------------------------------------------------
-# 
-# FluidBicubic: main features and implementation choices
-#
-# - Encapsulated in an Equinox module: handles table generation, loading,
-#   and interpolation, with static vs dynamic fields separated.
-# 
-# - Uses NumPy for table generation and JAX for interpolation (JIT, autodiff, vmap).
-# 
-# - Table management: loads from pickle if available, otherwise generates
-#   and saves to ./fluid_tables/{fluid_name}_{Nh}x{Np}.pkl (default path).
-# 
-# - Grid: uniform in enthalpy and log(pressure), enabling direct index
-#   lookup without search for p-h function calls
-# 
-# - Properties stored in a table dictionary with:
-#     value   : property value
-#     grad_h  : df/dh (finite diff, forward)
-#     grad_p  : df/dp w.r.t actual P (not logP)
-#     grad_ph : mixed derivative d2f/(dhdP)
-#     coeffs  : 16 bicubic coefficients per grid cell
-# 
-# - Derivatives computed via small adaptive steps (eps_h, eps_p).
-# 
-# - Progress bar shown during table generation (tqdm).
-# 
-# - Bicubic coefficients computed in one vectorized step using the fixed
-#   16x16 transformation matrix A_MAT.
-# 
-# - Interpolation:
-#     * Input (h, p) mapped to fractional indices in (h, logP) space.
-#     * Basis = outer product of x-powers and y-powers.
-#     * Dot product with stored coefficients gives interpolated values.
-# 
-# - Vectorization: scalar interpolant wrapped in jax.vmap for batch queries;
-#   h and p broadcast to common shape.
-# 
-# - get_props returns a FluidState object with all canonical properties
-#   (NaN if unavailable).
-# 
-# - Error handling:
-#     * Failed table points are NaNs (no errors are raised), success rate reported.
-#     * Out-of-bounds queries currently clipped.
-#
-# TODOs / open points:
-# - Explain why interpolated pressure is not exact but enthalpy is.
-# - Consider support for other input pairs (e.g. P-T, ρ-h) via root-finding
-#   or a more general 2D search.
-# 
-# -------------------------------------------------------------------------
-
-
+# ================================================================
+# FluidBicubic class
+# ================================================================
 class FluidBicubic(eqx.Module):
-    """
+    r"""
     Fluid model using bicubic property interpolation on an enthalpy-pressure grid.
 
     Workflow:
@@ -92,6 +35,8 @@ class FluidBicubic(eqx.Module):
         Min/max pressure [Pa].
     N_h, N_p : int
         Number of grid points in h and p.
+    coarse_step : int
+        Number of points to skip when determining the initial guess during 2D inverse interpolations
     table_name : str, optional
         Name of the table pickle file (default: "{fluid_name}_{N_h}x{N_p}").
     table_dir : str, optional
@@ -105,6 +50,7 @@ class FluidBicubic(eqx.Module):
       derivatives with adaptive step size.
     * Currently supports only HmassP_INPUTS as input pair.
     """
+
     # Attributes
     fluid_name: str = eqx.field(static=True)
     backend: str = eqx.field(static=True)
@@ -114,18 +60,17 @@ class FluidBicubic(eqx.Module):
     p_max: float = eqx.field(static=True)
     N_h: int = eqx.field(static=True)
     N_p: int = eqx.field(static=True)
+    coarse_step: int = eqx.field(static=True)
+    delta_h: float = eqx.field(static=True)
+    delta_logP: float = eqx.field(static=True)
+    h_vals: jnp.ndarray = eqx.field(static=False)
+    logP_vals: jnp.ndarray = eqx.field(static=False)
     table_name: str = eqx.field(static=True)
     table_dir: str = eqx.field(static=True)
     table: dict = eqx.field(static=False)
     identifier: str = eqx.field(static=True)
+    grad_method: str = eqx.field(static=True)
 
-    # New field: store batched interpolation function
-    _batched_interp: callable = eqx.field(static=True)
-
-
-    # ---------------------------
-    # Constructor
-    # ---------------------------
     def __init__(
         self,
         fluid_name: str,
@@ -136,6 +81,8 @@ class FluidBicubic(eqx.Module):
         p_max: float,
         N_h: int,
         N_p: int,
+        coarse_step: int = 10,
+        gradient_method: str = "central",
         identifier: str = None,
         table_name: str = None,
         table_dir: str = "fluid_tables",
@@ -148,14 +95,19 @@ class FluidBicubic(eqx.Module):
         self.identifier = identifier or fluid_name
         self.table_name = table_name or f"{fluid_name}_{N_h}x{N_p}"
         self.table_dir = table_dir
+        self.grad_method = gradient_method
+        self.coarse_step = coarse_step
+
+        # Initialize table dictionary
+        self.h_vals = jnp.linspace(self.h_min, self.h_max, self.N_h)
+        self.logP_vals = jnp.linspace(np.log(self.p_min), np.log(self.p_max), self.N_p)
+        self.delta_h = float(self.h_vals[1] - self.h_vals[0])
+        self.delta_logP = float(self.logP_vals[1] - self.logP_vals[0])
 
         # Create the table if it does not exist
         self.table = self._load_or_generate_table()
-        self._batched_interp = jax.vmap(calculate_props, in_axes=(None, 0, 0, None))
 
-    # ---------------------------
-    # Table generation
-    # ---------------------------
+    # ------------------ Table generation ------------------
     def _load_or_generate_table(self):
         pkl_path = os.path.join(self.table_dir, f"{self.table_name}.pkl")
 
@@ -169,25 +121,23 @@ class FluidBicubic(eqx.Module):
         return self._generate_property_table()
 
     def _generate_property_table(self):
-        """Generate a property table on an enthalpy–pressure grid."""
-        # fluid = Fluid(self.fluid_name, self.backend)
-        fluid = jxp.FluidJAX(self.fluid_name, self.backend)
-        h_vals = np.linspace(self.h_min, self.h_max, self.N_h)
-        logPvals = np.linspace(np.log(self.p_min), np.log(self.p_max), self.N_p)
+        # Initialize fluid
+        # Using jxp.Fluid is faster than jxp.FluidJAX
+        fluid = jxp.Fluid(self.fluid_name, self.backend)
 
-        delta_h = h_vals[1] - h_vals[0]
-        delta_logP = logPvals[1] - logPvals[0]
-
+        # Initialize interpolation table
         table = {
-            "h_vals": h_vals,
-            "p_vals": np.exp(logPvals),
             "metadata": dict(
                 fluid=self.fluid_name,
                 backend=self.backend,
-                h_range=(self.h_min, self.h_max),
-                p_range=(self.p_min, self.p_max),
+                h_min=self.h_min,
+                h_max=self.h_max,
+                p_min=self.p_min,
+                p_max=self.p_max,
                 N_h=self.N_h,
                 N_p=self.N_p,
+                delta_h=self.delta_h,
+                delta_logP=self.delta_logP,
             ),
         }
 
@@ -196,85 +146,85 @@ class FluidBicubic(eqx.Module):
                 "value": np.empty((self.N_h, self.N_p)),
                 "grad_h": np.empty((self.N_h, self.N_p)),
                 "grad_p": np.empty((self.N_h, self.N_p)),
-                "grad_logp": np.zeros((self.N_h, self.N_p)),
+                "grad_logP": np.empty((self.N_h, self.N_p)),
                 "grad_ph": np.empty((self.N_h, self.N_p)),
-                "grad_logph": np.zeros((self.N_h, self.N_p)),
+                "grad_hlogP": np.empty((self.N_h, self.N_p)),
                 "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16)),
             }
 
+        # Start property calculations
         total_points = self.N_h * self.N_p
         success_count = 0
-        os.makedirs(self.table_dir, exist_ok=True)
-
-        with tqdm(
+        start_time = time.perf_counter()
+        with tqdm.tqdm(
             total=total_points,
             desc="Generating property table",
             ascii=True,
             ncols=80,
             bar_format="{l_bar}{bar}|",
         ) as pbar:
-            for i, h in enumerate(h_vals):
-                for j, logP in enumerate(logPvals):
-                    # TODO: Ask Simone about pressure spacing
+            for i, h in enumerate(self.h_vals):
+                for j, logP in enumerate(self.logP_vals):
+
+                    # Define finite difference step size
                     p = np.exp(logP)
-                    eps_h = max(1e-6 * abs(h), 1e-3 * delta_h)
-                    eps_p = max(1e-6 * abs(p), 1e-3 * (np.exp(delta_logP) - 1.0) * p)
+                    eps_h = 1e-5 * abs(h)
+                    eps_p = 1e-5 * abs(p)
 
+                    # Compute gradients according to specific method
                     try:
-                        f_0 = fluid.get_props(jxp.HmassP_INPUTS, h, p)
-                        f_h = fluid.get_props(jxp.HmassP_INPUTS, h + eps_h, p)
-                        f_p = fluid.get_props(jxp.HmassP_INPUTS, h, p + eps_p)
-                        f_ph = fluid.get_props(jxp.HmassP_INPUTS, h + eps_h, p + eps_p)
-                        success_count += 1
+                        if self.grad_method == "forward":
+                            grads = self._gradients_forward(fluid, h, p, eps_h, eps_p)
+                            success_count += 1
+                        elif self.grad_method == "central":
+                            grads = self._gradients_central(fluid, h, p, eps_h, eps_p)
+                            success_count += 1
+                        else:
+                            m = self.grad_method
+                            raise ValueError(f"Unknown gradient scheme: {m}")
                     except Exception:
-                        pass
-                        # f_0 = np.nan
-                        # f_h = np.nan
-                        # f_p = np.nan
-                        # f_ph = np.nan
+                        continue
 
-                    for k in jxp.PROPERTIES_CANONICAL:
-                        value = f_0[k]
-                        grad_h = (f_h[k] - f_0[k]) / eps_h
-                        grad_p = (f_p[k] - f_0[k]) / eps_p
-                        grad_ph = (f_ph[k] - f_h[k] - f_p[k] + f_0[k]) / (eps_h * eps_p)
-                        table[k]["value"][i, j] = value
+                    # Store gradients and values in table
+                    for k, (val, grad_h, grad_p, grad_hp) in grads.items():
+                        table[k]["value"][i, j] = val
                         table[k]["grad_h"][i, j] = grad_h
                         table[k]["grad_p"][i, j] = grad_p
-                        table[k]["grad_logp"][i, j] = grad_p * p
-                        table[k]["grad_ph"][i, j] = grad_ph
-                        table[k]["grad_logph"][i, j] = grad_ph * p
+                        table[k]["grad_logP"][i, j] = grad_p * p
+                        table[k]["grad_ph"][i, j] = grad_hp
+                        table[k]["grad_hlogP"][i, j] = grad_hp * p
 
+                    # Update progress bar
                     pbar.update(1)
 
-        # Compute coefficients after filling values and derivatives for all i,j
-        for k in jxp.PROPERTIES_CANONICAL:
-            if k in ["enthalpy", "pressure"]:
-                continue
+            # Compute polynomial coefficients ONLY AFTER computing all table values
+            for k in jxp.PROPERTIES_CANONICAL:
+                table[k]["coeffs"] = compute_coefficients(
+                    table[k]["value"],
+                    table[k]["grad_h"],
+                    table[k]["grad_logP"],
+                    table[k]["grad_hlogP"],
+                    self.delta_h,
+                    self.delta_logP,
+                )
 
-            table[k]["coeffs"] = compute_coefficients(
-                value=table[k]["value"],
-                grad_h=table[k]["grad_h"],
-                grad_logp=table[k]["grad_logp"],
-                grad_logph=table[k]["grad_logph"],
-                delta_h=delta_h,
-                delta_logP=delta_logP,
-            )
-
+        # Print table generation report
         frac_success = success_count / total_points * 100
+        end_time = time.perf_counter()
+        elapsed = end_time - start_time
         print(
             f"Successfully evaluated {success_count}/{total_points} points "
             f"({frac_success:.2f} %)"
         )
+        print(f"Total table generation time: {elapsed:.2f} s")
 
-        # Convert all lists to jnp arrays
-        table["h_vals"] = jnp.array(table["h_vals"])
-        table["p_vals"] = jnp.array(table["p_vals"])
+        # Convert all numpy arrays to jax.numpy
         for k in jxp.PROPERTIES_CANONICAL:
             for sub in ["value", "grad_h", "grad_p", "grad_ph", "coeffs"]:
                 table[k][sub] = jnp.array(table[k][sub])
 
-        # save to pickle
+        # Save to pickle file
+        os.makedirs(self.table_dir, exist_ok=True)
         pkl_path = os.path.join(self.table_dir, f"{self.table_name}.pkl")
         with open(pkl_path, "wb") as f:
             pickle.dump(table, f)
@@ -282,88 +232,422 @@ class FluidBicubic(eqx.Module):
 
         return table
 
+    @staticmethod
+    def _gradients_forward(fluid, h, p, eps_h, eps_p):
+        """First-order forward finite differences for h and p gradients."""
+        f0 = fluid.get_state(jxp.HmassP_INPUTS, h, p)
+        fh = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p)
+        fp = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p)
+        fhp = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p + eps_p)
 
-    # ---------------------------
-    # Table interpolation
-    # ---------------------------
+        grads = {}
+        for k in jxp.PROPERTIES_CANONICAL:
+            val = f0[k]
+            grad_h = (fh[k] - f0[k]) / eps_h
+            grad_p = (fp[k] - f0[k]) / eps_p
+            grad_hp = (fhp[k] - fh[k] - fp[k] + f0[k]) / (eps_h * eps_p)
+            grads[k] = (val, grad_h, grad_p, grad_hp)
+        return grads
+
+    @staticmethod
+    def _gradients_central(fluid, h, p, eps_h, eps_p):
+        """Second-order central finite differences for h and p gradients."""
+        f0 = fluid.get_state(jxp.HmassP_INPUTS, h, p)
+        fhp = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p)
+        fhm = fluid.get_state(jxp.HmassP_INPUTS, h - eps_h, p)
+        fph = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p)
+        fpm = fluid.get_state(jxp.HmassP_INPUTS, h, p - eps_p)
+        fh_p = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p + eps_p)
+        fh_m = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p - eps_p)
+        fm_p = fluid.get_state(jxp.HmassP_INPUTS, h - eps_h, p + eps_p)
+        fm_m = fluid.get_state(jxp.HmassP_INPUTS, h - eps_h, p - eps_p)
+
+        grads = {}
+        for k in jxp.PROPERTIES_CANONICAL:
+            val = f0[k]
+            grad_h = (fhp[k] - fhm[k]) / (2 * eps_h)
+            grad_p = (fph[k] - fpm[k]) / (2 * eps_p)
+            grad_hp = (fh_p[k] - fh_m[k] - fm_p[k] + fm_m[k]) / (4 * eps_h * eps_p)
+            grads[k] = (val, grad_h, grad_p, grad_hp)
+        return grads
+
+    # ------------------ Bicubic property interpolation ------------------
+    PROPERTY_CALCULATORS = {
+        jxp.HmassP_INPUTS: lambda self, h, p: self._interp_h_p(h, p),
+        jxp.PT_INPUTS: lambda self, p, T: self._interp_x_p(p, T, "temperature"),
+        jxp.DmassP_INPUTS: lambda self, d, p: self._interp_x_p(p, d, "density"),
+        jxp.PSmass_INPUTS: lambda self, p, s: self._interp_x_p(p, s, "entropy"),
+        jxp.HmassSmass_INPUTS: lambda self, h, s: self._interp_h_y(h, s, "entropy"),
+        jxp.DmassHmass_INPUTS: lambda self, d, h: self._interp_h_y(h, d, "density"),
+        jxp.DmassT_INPUTS: lambda self, d, T: self._interp_x_y(
+            jxp.DmassT_INPUTS, d, T, coarse_step=self.coarse_step
+        ),
+        jxp.DmassSmass_INPUTS: lambda self, d, s: self._interp_x_y(
+            jxp.DmassSmass_INPUTS, d, s, coarse_step=self.coarse_step
+        ),
+    }
+
     @eqx.filter_jit
-    def get_props(self, input_pair: str, h, p) -> jxp.FluidState:
-        """Return interpolated property state at (h, p).
-        Supports scalar or broadcastable JAX arrays.
-        Always returns arrays.
+    def get_state(self, input_type, val1, val2):
+        """
+        Compute thermodynamic states from any supported input pair using bicubic interpolation.
+
+        This is the main user-facing entry point. It accepts either scalar or array
+        inputs for `val1` and `val2`, automatically broadcasting them to a common shape
+        and evaluating the corresponding fluid state at each point in a vectorized
+        manner. Internally, the method selects one of several solvers depending on the
+        specified `input_type`:
+
+          • For `(h, p)` inputs, properties are obtained directly through bicubic
+            interpolation on the enthalpy-log(pressure) grid.
+
+          • For 1D inversion problems (e.g. `P,T` or `D,p`), a Newton root finder is
+            used to solve for either enthalpy or pressure, using the closest table node
+            as the initial guess.
+
+          • For 2D inversion problems (e.g. `D, T`), a Newton solver in normalized
+            `(h, p)` space is used to recover the unique thermodynamic state that
+            matches both input properties simultaneously.
+
+        All computations are compatible with JAX transformations such as `jit`, `vmap`,
+        and automatic differentiation. Vectorization is handled internally using
+        `vmap` over the scalar solver/interpolator. The output is a `FluidState`
+        object containing all thermodynamic and transport properties defined in the
+        table, either for a single point (scalar inputs) or for each element of the
+        broadcasted input arrays.
+
+        Parameters
+        ----------
+        input_type : int
+            Identifier of the input pair (e.g. `jxp.HmassP_INPUTS`, `jxp.PT_INPUTS`).
+        val1 : float or array_like
+            First input variable (e.g. enthalpy, pressure, density).
+        val2 : float or array_like
+            Second input variable (e.g. pressure, temperature, entropy).
+
+        Returns
+        -------
+        FluidState
+            Interpolated fluid state(s) corresponding to the specified input pair.
+            If inputs are arrays, each property is returned as an array with the
+            broadcasted shape of `val1` and `val2`.
+        """
+        # Broadcast h and p to the same shape
+        val1 = jnp.asarray(val1)
+        val2 = jnp.asarray(val2)
+        val1, val2 = jnp.broadcast_arrays(val1, val2)
+
+        # Define vectorized mapping explicitly using jax.vmap
+        batched_fn = jax.vmap(lambda v1, v2: self._get_state_scalar(input_type, v1, v2))
+
+        # Apply to flattened arrays
+        props_batched = batched_fn(val1.ravel(), val2.ravel())
+
+        # Reshape each leaf in the pytree to the broadcasted shape
+        props = jax.tree.map(lambda x: x.reshape(val1.shape), props_batched)
+
+        return props
+
+    @eqx.filter_jit
+    def _get_state_scalar(self, input_type, val1, val2):
+        """
+        Compute a single FluidState for the given input pair (scalar inputs).
+        """
+        return self.PROPERTY_CALCULATORS.get(input_type)(self, val1, val2)
+
+    def _interp_h_p(self, h, p):
+        """
+        Interpolate all fluid properties at a given (h, p) state using
+        bicubic interpolation on a uniform enthalpy-log(pressure) grid.
+
+        The method evaluates a bicubic polynomial for each property using
+        precomputed coefficients stored in the table. The input enthalpy and
+        pressure are first converted to continuous indices within the table
+        grid. Their fractional coordinates are then used to construct local
+        cubic basis vectors in both directions, and the property values are
+        obtained through a dot product with the corresponding coefficients.
+
+        The returned state contains thermodynamic and transport properties
+        at the specified (h, p) point. Input enthalpy and pressure are enforced
+        exactly in the output. Grid indices are clamped to the valid range, so
+        queries outside the table will snap to the nearest valid cell rather
+        than extrapolating.
+
+        Parameters
+        ----------
+        h : float
+            Enthalpy [J/kg] at which to interpolate.
+        p : float
+            Pressure [Pa] at which to interpolate.
+
+        Returns
+        -------
+        FluidState
+            Interpolated fluid state containing thermodynamic and transport
+            properties at the specified (h, p).
         """
 
-        # Broadcast h and p to the same shape
-        h_arr, p_arr = jnp.broadcast_arrays(h, p)
+        # Convert (h,p) to grid indices
+        ii = (h - self.h_min) / self.delta_h
+        jj = (jnp.log(p) - jnp.log(self.p_min)) / self.delta_logP
 
-        # Vectorized version of the scalar interpolant
-        props = self._batched_interp(input_pair, h_arr.ravel(), p_arr.ravel(), self.table)
+        # Clamp indices
+        i = jnp.clip(jnp.floor(ii).astype(int), 0, self.N_h - 2)
+        j = jnp.clip(jnp.floor(jj).astype(int), 0, self.N_p - 2)
 
-        # Reshape back to broadcasted shape
-        props = {k: v.reshape(h_arr.shape) for k, v in props.items()}
+        # Fractional coords
+        x = ii - i
+        y = jj - j
 
-        return jxp.FluidState(
-            fluid_name=self.fluid_name,
-            identifier=self.identifier,
-            **props,
+        # Basis vectors
+        xm = jnp.array([1.0, x, x * x, x * x * x])
+        ym = jnp.array([1.0, y, y * y, y * y * y])
+        basis = jnp.kron(ym, xm)
+
+        # Interpolate all properties
+        props = {
+            name: jnp.dot(self.table[name]["coeffs"][i, j], basis)
+            for name in jxp.PROPERTIES_CANONICAL
+        }
+
+        # Enforce exact inputs
+        props["enthalpy"] = h
+        props["pressure"] = p
+
+        return jxp.FluidState(fluid_name=self.fluid_name, **props)
+
+    def _interp_h_y(self, h, y_value, y_name, tol=1e-10, max_steps=64):
+        """
+        Solve for pressure at fixed enthalpy such that the specified property
+        matches a target value, using Newton's method with a table-based initial guess.
+        """
+        # Use closest table value as initial guess
+        i0 = jnp.argmin(jnp.abs(self.h_vals - h))
+        j0 = jnp.argmin(jnp.abs(self.table[y_name]["value"][i0, :] - y_value))
+        p0 = self.table["pressure"]["value"][i0, j0]
+
+        # Define residual
+        def residual(p, args):
+            val = self._interp_h_p(h, p)[y_name] - y_value
+            # jax.debug.print("[_interp_h_y] p={:.6e}, residual={:.3e}", p, val)
+            return val
+
+        # Solve root-finding problem
+        solver = optx.Newton(rtol=tol, atol=tol)
+        solution = optx.root_find(
+            residual,
+            solver,
+            y0=p0,
+            options={"lower": self.p_min, "upper": self.p_max, "max_steps": max_steps},
         )
 
+        return self._interp_h_p(h, solution.value)
 
-# TODO: it seems that having jax.lax.cond slows things a lot!
-# A better aproach could be to do the mapping like in perect gas
+    def _interp_x_p(self, p, x_value, x_name, tol=1e-10, max_steps=64):
+        """
+        Solve for enthalpy at fixed pressure such that the specified property
+        matches a target value, using Newton's method with a table-based initial guess.
+        """
+        # Use closest table value as initial guess
+        j0 = jnp.argmin(jnp.abs(self.logP_vals - jnp.log(p)))
+        i0 = jnp.argmin(jnp.abs(self.table[x_name]["value"][:, j0] - x_value))
+        h0 = self.table["enthalpy"]["value"][i0, j0]
 
-# TODO Taken from perfect gas
-# PROPERTY_CALCULATORS = {
-#     jxp.PT_INPUTS: calculate_properties_PT,
-#     jxp.HmassSmass_INPUTS: calculate_properties_hs,
-#     jxp.HmassP_INPUTS: calculate_properties_hP,
-#     jxp.PSmass_INPUTS: calculate_properties_Ps,
-#     jxp.DmassHmass_INPUTS: calculate_properties_rhoh,
-#     jxp.DmassP_INPUTS: calculate_properties_rhop,
-# }
+        # Define residual
+        def residual(h, args):
+            val = self._interp_h_p(h, p)[x_name] - x_value
+            # jax.debug.print("[_interp_x_p] h={:.6e}, residual={:.3e}", h, val)
+            return val
 
-# def get_props(self, input_pair: str, x: float, y: float):
-#     """Evaluate thermodynamic state for a perfect gas."""
-#     props = PROPERTY_CALCULATORS[input_pair](x, y, self.constants)
-#     return jxp.FluidState(
-#         fluid_name=self.fluid_name,
-#         identifier=self.identifier,
-#         **props,
-#     )
-    
-    # https://docs.kidger.site/optimistix/api/root_find/
+        # Solve root-finding problem
+        solver = optx.Newton(rtol=tol, atol=tol)
+        solution = optx.root_find(
+            residual,
+            solver,
+            y0=h0,
+            options={"lower": self.h_min, "upper": self.h_max, "max_steps": max_steps},
+        )
 
-# Unified entry point
-# def calculate_props(input_pair, x, y, table):
-#     # return interpolate_bicubic_hp(x, y, table)
-#     return jax.lax.cond(
-#         input_pair == jxp.HmassP_INPUTS,
-#         lambda _: interpolate_bicubic_hp(x, y, table),
-#         lambda _: interpolate_bicubic_xy(input_pair, x, y, table),
-#         operand=None,
-#     )
+        return self._interp_h_p(solution.value, p)
 
-def calculate_props(input_pair, x, y, table):
-    """Dispatches to the correct bicubic interpolation method based on input pair."""
-    prop1, prop2 = jxp.INPUT_PAIR_MAP[input_pair]
-    prop1 = jxp.ALIAS_TO_CANONICAL[prop1]
-    prop2 = jxp.ALIAS_TO_CANONICAL[prop2]
+    def _interp_x_y(self, input_pair, x, y, coarse_step=8, tol=1e-12):
+        r"""
+        Solve for (h, p) corresponding to a given input pair (x, y) by inverting
+        the bicubic enthalpy-pressure property interpolant.
 
-    if prop1 == "enthalpy" and prop2 == "pressure":
-        return interpolate_bicubic_hp(x, y, table)
-    elif prop1 == "pressure" and prop2 == "enthalpy":
-        return interpolate_bicubic_hp(y, x, table)
-    elif prop1 == "enthalpy":
-        return interpolate_bicubic_hx(x, y, input_pair, table)
-    elif prop2 == "enthalpy":
-        return interpolate_bicubic_hx(y, x, input_pair, table)
-    elif prop2 == "pressure":
-        return interpolate_bicubic_xP(x, y, input_pair, table)
-    elif prop1 == "pressure":
-        return interpolate_bicubic_xP(y, x, input_pair, table)
-    else:
-        raise NotImplementedError(f"Unsupported input pair: {input_pair} → ({prop1}, {prop2})")
+        This function finds the enthalpy and pressure that simultaneously match
+        two target property values (e.g. density-temperature, pressure-entropy).
+        It performs a coarse table scan to initialize the search, followed by a
+        Newton root-finding on scaled variables.
 
+        The solver operates in nomalized p-h variables (0-1) to avoid ill-conditioning
+        due to large enthalpy/pressure magnitudes. The residuals are normalized by the
+        property ranges to improve solver conditioning.
+
+        Parameters
+        ----------
+        input_pair : int
+            Identifier for the input property pair (e.g. jxp.HmassSmass_INPUTS).
+        x : float
+            Target value of the first property.
+        y : float
+            Target value of the second property.
+        coarse_step : int, optional
+            Subsampling step used for the coarse grid scan to obtain an initial
+            guess (default: 1, i.e. use all nodes).
+        tol : float, optional
+            Absolute and relative tolerance for the Newton solver (default: 1e-8).
+
+        Returns
+        -------
+        FluidState
+            Interpolated fluid state corresponding to the recovered (h, p).
+
+        """
+        # Map input_pair to property names
+        prop1, prop2 = jxp.INPUT_PAIR_MAP[input_pair]
+        prop1 = jxp.ALIAS_TO_CANONICAL[prop1]
+        prop2 = jxp.ALIAS_TO_CANONICAL[prop2]
+
+        # transforms
+        def to_scaled(h, p):
+            h_scaled = (h - self.h_min) / (self.h_max - self.h_min)
+            p_scaled = (p - self.p_min) / (self.p_max - self.p_min)
+            return h_scaled, p_scaled
+
+        def from_scaled(h_scaled, p_scaled):
+            h = h_scaled * (self.h_max - self.h_min) + self.h_min
+            p = p_scaled * (self.p_max - self.p_min) + self.p_min
+            return h, p
+
+        # Scan the table to identify a suitable initial guess
+        h_table = self.table["enthalpy"]["value"][::coarse_step, ::coarse_step]
+        p_table = self.table["pressure"]["value"][::coarse_step, ::coarse_step]
+        val_x = self.table[prop1]["value"][::coarse_step, ::coarse_step]
+        val_y = self.table[prop2]["value"][::coarse_step, ::coarse_step]
+        range_x = jnp.ptp(self.table[prop1]["value"])
+        range_y = jnp.ptp(self.table[prop2]["value"])
+        errors = ((val_x - x) / range_x) ** 2 + ((val_y - y) / range_y) ** 2
+        idx = jnp.argmin(errors)
+        i, j = jnp.unravel_index(idx, errors.shape)
+        h0_node, p0_node = h_table[i, j], p_table[i, j]
+        x0 = jnp.array(to_scaled(h0_node, p0_node))
+
+        # Define residual function
+        def residual(xy, _):
+            h, p = from_scaled(*xy)
+            props = self._interp_h_p(h, p)
+            res_x = (props[prop1] - x) / range_x
+            res_y = (props[prop2] - y) / range_y
+            # jax.debug.print(
+            #     "[_interp_x_y] h={:.6e}, p={:.6e}, res_x={:.3e}, res_y={:.3e}",
+            #     h, p, res_x, res_y
+            # )
+            return jnp.array([res_x, res_y])
+
+        # Solve root-finding problem
+        solver = optx.Newton(rtol=tol, atol=tol)
+        solution = optx.root_find(residual, solver, x0, throw=True)
+
+        # Return the computed state
+        h_scaled, p_scaled = solution.value
+        h, p = from_scaled(h_scaled, p_scaled)
+
+        return self._interp_h_p(h, p)
+
+
+# ================================================================
+# Bicubic coefficient computation
+# ================================================================
+
+
+def compute_coefficients(value, grad_h, grad_logP, grad_hlogP, delta_h, delta_logP):
+    """
+    Compute bicubic interpolation coefficients for one property on a uniform (h, logP) grid.
+
+    Parameters
+    ----------
+    value : ndarray of shape (Nh, Np)
+        Property values f(h, P) evaluated on the grid.
+    grad_h : ndarray of shape (Nh, Np)
+        Partial derivative with respect to enthalpy evaluated on the grid.
+    grad_logP : ndarray of shape (Nh, Np)
+        Partial derivative with respect to pressure evaluated on the grid (with respect to P, not logP).
+    grad_hlogP : ndarray of shape (Nh, Np)
+        Mixed derivative with respect to enthalpy and pressure evaluated on the grid.
+    delta_h : float
+        Uniform grid spacing in h.
+    delta_logP : float
+        Uniform grid spacing in logP.
+
+    Returns
+    -------
+    coeffs : ndarray of shape (Nh-1, Np-1, 16)
+        Bicubic coefficients for each cell. The ordering is c[4*n + m],
+        where m is the power of x (h-direction) and n is the power of y (logP-direction).
+    """
+    # Assemble the 16 basis values for each cell:
+    # [f00, f10, f01, f11, fx00, fx10, fx01, fx11,
+    #  fy00, fy10, fy01, fy11, fxy00, fxy10, fxy01, fxy11]
+    XX = np.stack(
+        [
+            value[:-1, :-1],
+            value[1:, :-1],
+            value[:-1, 1:],
+            value[1:, 1:],
+            grad_h[:-1, :-1] * delta_h,
+            grad_h[1:, :-1] * delta_h,
+            grad_h[:-1, 1:] * delta_h,
+            grad_h[1:, 1:] * delta_h,
+            grad_logP[:-1, :-1] * delta_logP,
+            grad_logP[1:, :-1] * delta_logP,
+            grad_logP[:-1, 1:] * delta_logP,
+            grad_logP[1:, 1:] * delta_logP,
+            grad_hlogP[:-1, :-1] * delta_h * delta_logP,
+            grad_hlogP[1:, :-1] * delta_h * delta_logP,
+            grad_hlogP[:-1, 1:] * delta_h * delta_logP,
+            grad_hlogP[1:, 1:] * delta_h * delta_logP,
+        ],
+        axis=-1,
+    )
+
+    # Multiply by the fixed 16x16 matrix A_MAT to get coefficients
+    # einsum: 'ab,ijb->ija' → sum over b, output shape (Nh-1, Np-1, 16)
+    coeffs = np.einsum("ab,ijb->ija", A_MAT, XX)
+    return coeffs
+
+    # Alternative equivalent calculation with a double for-loop (slower)
+    # Nh, Np = value.shape
+    # coeffs = np.zeros((Nh, Np, 16), dtype=np.float64)
+    # for i in range(Nh - 1):
+    #     for j in range(Np - 1):
+    #         # Assemble the 16 basis values for this cell
+    #         xx = np.array(
+    #             [
+    #                 value[i, j],
+    #                 value[i + 1, j],
+    #                 value[i, j + 1],
+    #                 value[i + 1, j + 1],
+    #                 grad_h[i, j] * delta_h,
+    #                 grad_h[i + 1, j] * delta_h,
+    #                 grad_h[i, j + 1] * delta_h,
+    #                 grad_h[i + 1, j + 1] * delta_h,
+    #                 grad_logP[i, j] * delta_logP,
+    #                 grad_logP[i + 1, j] * delta_logP,
+    #                 grad_logP[i, j + 1] * delta_logP,
+    #                 grad_logP[i + 1, j + 1] * delta_logP,
+    #                 grad_hlogP[i, j] * delta_h * delta_logP,
+    #                 grad_hlogP[i + 1, j] * delta_h * delta_logP,
+    #                 grad_hlogP[i, j + 1] * delta_h * delta_logP,
+    #                 grad_hlogP[i + 1, j + 1] * delta_h * delta_logP,
+    #             ],
+    #             dtype=np.float64,
+    #         )
+
+    #         # Dense matvec multiplication
+    #         coeffs[i, j, :] = A_MAT @ xx
+
+    # return coeffs
 
 
 # fmt: off
@@ -388,498 +672,3 @@ A_MAT = np.array([
     [+4.0, -4.0, -4.0, +4.0, +2.0, +2.0, -2.0, -2.0, +2.0, -2.0, +2.0, -2.0, +1.0, +1.0, +1.0, +1.0],
 ], dtype=np.float64)
 # fmt: on
-
-
-def compute_coefficients(value, grad_h, grad_logp, grad_logph, delta_h, delta_logP):
-    """
-    Compute bicubic interpolation coefficients for one property on a uniform (h, logP) grid.
-
-    Parameters
-    ----------
-    value : ndarray of shape (Nh, Np)
-        Property values f(h, P) evaluated on the grid.
-    grad_h : ndarray of shape (Nh, Np)
-        Partial derivative with respect to enthalpy evaluated on the grid.
-    grad_p : ndarray of shape (Nh, Np)
-        Partial derivative with respect to pressure evaluated on the grid (with respect to P, not logP).
-    grad_hp : ndarray of shape (Nh, Np)
-        Mixed derivative with respect to enthalpy and pressure evaluated on the grid.
-    delta_h : float
-        Uniform grid spacing in h.
-    delta_logP : float
-        Uniform grid spacing in logP.
-
-    Returns
-    -------
-    coeffs : ndarray of shape (Nh-1, Np-1, 16)
-        Bicubic coefficients for each cell. The ordering is c[4*n + m],
-        where m is the power of x (h-direction) and n is the power of y (logP-direction).
-    """
-
-    Nh, Np = value.shape
-    coeffs = np.zeros((Nh, Np, 16), dtype=np.float64)
-    # delta_logP = np.exp(delta_logP)  # TODO: what should be the delta_p used in this function?
-
-    for i in range(Nh - 1):
-        for j in range(Np - 1):
-            # Assemble the 16 basis values for this cell
-            xx = np.array(
-                [
-                    value[i, j],
-                    value[i + 1, j],
-                    value[i, j + 1],
-                    value[i + 1, j + 1],
-                    grad_h[i, j] * delta_h,
-                    grad_h[i + 1, j] * delta_h,
-                    grad_h[i, j + 1] * delta_h,
-                    grad_h[i + 1, j + 1] * delta_h,
-                    grad_logp[i, j] * delta_logP,
-                    grad_logp[i + 1, j] * delta_logP,
-                    grad_logp[i, j + 1] * delta_logP,
-                    grad_logp[i + 1, j + 1] * delta_logP,
-                    grad_logph[i, j] * delta_h * delta_logP,
-                    grad_logph[i + 1, j] * delta_h * delta_logP,
-                    grad_logph[i, j + 1] * delta_h * delta_logP,
-                    grad_logph[i + 1, j + 1] * delta_h * delta_logP,
-                ],
-                dtype=np.float64,
-            )
-
-            # Dense matvec multiplication
-            coeffs[i, j, :] = A_MAT @ xx
-
-    return coeffs
-
-    # # Alternative vectorized form with similar execution time
-    # # Assemble the 16 basis values for each cell:
-    # # [f00, f10, f01, f11, fx00, fx10, fx01, fx11,
-    # #  fy00, fy10, fy01, fy11, fxy00, fxy10, fxy01, fxy11]
-    # XX = np.stack(
-    #     [
-    #         value[:-1, :-1],
-    #         value[1:, :-1],
-    #         value[:-1, 1:],
-    #         value[1:, 1:],
-    #         grad_h[:-1, :-1] * delta_h,
-    #         grad_h[1:, :-1] * delta_h,
-    #         grad_h[:-1, 1:] * delta_h,
-    #         grad_h[1:, 1:] * delta_h,
-    #         grad_p[:-1, :-1] * delta_logP,
-    #         grad_p[1:, :-1] * delta_logP,
-    #         grad_p[:-1, 1:] * delta_logP,
-    #         grad_p[1:, 1:] * delta_logP,
-    #         grad_hp[:-1, :-1] * delta_h * delta_logP,
-    #         grad_hp[1:, :-1] * delta_h * delta_logP,
-    #         grad_hp[:-1, 1:] * delta_h * delta_logP,
-    #         grad_hp[1:, 1:] * delta_h * delta_logP,
-    #     ],
-    #     axis=-1,
-    # )
-
-    # # Multiply by the fixed 16x16 matrix A_MAT to get coefficients
-    # # einsum: 'ab,ijb->ija' → sum over b, output shape (Nh-1, Np-1, 16)
-    # coeffs = np.einsum("ab,ijb->ija", A_MAT, XX)
-    # return coeffs
-
-
-
-def interpolate_bicubic_hp(h, p, table):
-    """
-    Bicubic interpolation for a single (h, p) query.
-
-    Parameters
-    ----------
-    h : float
-        Enthalpy [J/kg].
-    p : float
-        Pressure [Pa].
-    table : dict
-        Property table with fields "h_vals", "p_vals", and per-property coeffs.
-
-    Returns
-    -------
-    dict
-        Dictionary of interpolated property values at (h, p).
-    """
-             
-    # Extract uniform enthalpy and pressure grids from table
-    h_vals = table["h_vals"]          # (Nh,) enthalpy grid
-    p_vals = table["p_vals"]          # (Np,) pressure grid
-    logPvals = jnp.log(p_vals)       # work in logP for smoother interpolation
-
-    Nh = h_vals.shape[0]
-    Np = logPvals.shape[0]
-
-    # Compute uniform grid spacing
-    h_min, h_max = h_vals[0], h_vals[-1]
-    logPmin, logPmax = logPvals[0], logPvals[-1]
-    # delta_h = (h_max - h_min) / (Nh - 1)
-    # delta_logP = (logPmax - logPmin) / (Np - 1)
-    delta_h = h_vals[1] - h_vals[0]
-    delta_logP = logPvals[1] - logPvals[0]
-
-
-    # Convert query point (h, logP) into continuous indices in grid space
-    ii = ((h - h_min) / (h_max - h_min) * (Nh - 1))
-    jj = ((jnp.log(p) - logPmin) / (logPmax - logPmin) * (Np - 1))
-
-    # Clamp values to prevent extrapolation
-    # Select lower-left cell index, clamped to table bounds
-    # TODO: Decide and implement extrapolation behavior
-    i = jnp.clip(jnp.floor(ii).astype(int), 0, Nh - 2)
-    j = jnp.clip(jnp.floor(jj).astype(int), 0, Np - 2)
-
-    # Compute fractional coordinates inside the cell
-    x = ii - i   # [0,1) in enthalpy direction
-    y = jj - j   # [0,1) in logP direction
-
-    # Build cubic basis vectors in both directions
-    xm = jnp.array([1.0, x, x*x, x*x*x])   # powers of x
-    ym = jnp.array([1.0, y, y*y, y*y*y])   # powers of y
-
-    # Outer product flattened into (16,) basis vector
-    # Ordering: basis[4*n + m] = x^m * y^n
-    basis = jnp.kron(ym, xm)
-
-    # Evaluate bicubic polynomial for each property
-    props = {
-        name: jnp.dot(table[name]["coeffs"][i, j], basis)
-        for name in jxp.PROPERTIES_CANONICAL
-    }
-
-    # TODO separate basic thermodynamic propoerties from derived ones. DO the jax.grad for derivative properties
-
-    return jxp.FluidState(**props)
-
-
-# TODO Split into 2 functions
-
-# def interpolate_bicubic_xy(input_pair, val1, val2, table, coarse_step=1, scale=1.0):
-#     """
-#     Invert the bicubic interpolant for a given input pair.
-#     Finds (h, p) such that interpolate_bicubic_hp(h, p, table)
-#     matches the target values.
-
-#     Parameters
-#     ----------
-#     input_pair : int
-#         Identifier for the input pair (e.g. jxp.HmassSmass_INPUTS).
-#     val1, val2 : float
-#         Target values for the two properties.
-#     table : dict
-#         Property table with bicubic coefficients and node values.
-#     coarse_step : int, optional
-#         Step for coarse grid scan (default: 5).
-#     scale : float, optional
-#         Scaling factor for optimization variables (default: 1).
-#         Both h and p are mapped into [0, scale].
-
-#     Returns
-#     -------
-#     dict
-#         Interpolated fluid properties at the recovered (h, p).
-#     """
-#     # TODO: Fix this function as it does not have a reliable convergence behavior
-#     # The initial step with a Newton solver is too aggresive and crashes the problem
-#     # Should we change to a different solution strategy in 1D for more reliable convergence?
-
-#     # Map input_pair to property names
-#     prop1, prop2 = jxp.INPUT_PAIR_MAP[input_pair]
-#     prop1 = jxp.ALIAS_TO_CANONICAL[prop1]
-#     prop2 = jxp.ALIAS_TO_CANONICAL[prop2]
-
-#     # axis limits
-#     h_axis = table["h_vals"]          # (Nh,)
-#     p_axis = table["p_vals"]          # (Np,)
-#     h_min, h_max = h_axis[0], h_axis[-1]
-#     p_min, p_max = p_axis[0], p_axis[-1]
-
-#     # transforms
-#     def to_scaled(h, p):
-#         h_scaled = (h - h_min) / (h_max - h_min) * scale
-#         p_scaled = (p - p_min) / (p_max - p_min) * scale
-#         return h_scaled, p_scaled
-
-#     def from_scaled(h_scaled, p_scaled):
-#         h = (h_scaled / scale) * (h_max - h_min) + h_min
-#         p = (p_scaled / scale) * (p_max - p_min) + p_min
-#         return h, p
-
-#     # --- coarse grid scan for initial guess ---
-#     H_field = table["enthalpy"]["value"][::coarse_step, ::coarse_step]
-#     P_field = table["pressure"]["value"][::coarse_step, ::coarse_step]
-#     prop1_field = table[prop1]["value"][::coarse_step, ::coarse_step]
-#     prop2_field = table[prop2]["value"][::coarse_step, ::coarse_step]
-
-#     # scale by property ranges for consistency
-#     rng1 = jnp.maximum(table[prop1]["value"].ptp(), 1.0)
-#     rng2 = jnp.maximum(table[prop2]["value"].ptp(), 1.0)
-#     errs = ((prop1_field - val1)/rng1)**2 + ((prop2_field - val2)/rng2)**2
-
-#     idx = jnp.argmin(errs)
-#     i, j = jnp.unravel_index(idx, errs.shape)
-#     h0_node, p0_node = H_field[i, j], P_field[i, j]
-#     x0 = jnp.array(to_scaled(h0_node, p0_node))
-
-#     # --- residual in unit variables ---
-#     def residual(x, _):
-#         h, p = from_scaled(*x)
-#         props = interpolate_bicubic_hp(h, p, table)
-
-#         r1 = (props[prop1] - val1) / rng1
-#         r2 = (props[prop2] - val2) / rng2
-#         r = jnp.array([r1, r2])
-
-#         jax.debug.print(
-#             "residual(h={:.6e}, p={:.6e})\n"
-#             "  {p1}: props={:.6e}, target={:.6e}, normdiff={:.3e}\n"
-#             "  {p2}: props={:.6e}, target={:.6e}, normdiff={:.3e}",
-#             h, p,
-#             props[prop1], val1, r1,
-#             props[prop2], val2, r2,
-#             p1=prop1, p2=prop2
-#         )
-#         # return jnp.linalg.norm(r)
-#         return r
-
-#     # BFGS least-squares solver
-#     # TODO: this does not work well for Newton solver. Investigate why
-#     solver = optx.BFGS(rtol=1e-8, atol=1e-8)
-#     sol = optx.least_squares(residual, solver, x0, throw=True)
-
-#     # solver = optx.Newton(rtol=1e-8, atol=1e-8)
-#     # sol = optx.root_find(residual, solver, x0, throw=True)
-
-#     h_scaled, p_scaled = sol.value
-#     h, p = from_scaled(h_scaled, p_scaled)
-#     return interpolate_bicubic_hp(h, p, table)
-
-def interpolate_bicubic_hx(h, x_val, input_pair, table):
-    max_iter = 100
-    tol = 1e-8
-    prop1, prop2 = jxp.INPUT_PAIR_MAP[input_pair]
-    x_prop = prop1 if prop2 == "enthalpy" else prop2
-    x_prop = jxp.ALIAS_TO_CANONICAL[x_prop]
-
-    p_min = table["p_vals"][0]
-    p_max = table["p_vals"][-1]
-    p_init = p_min
-
-    def residual(P, _):
-        h_ = h if h.ndim == 0 else h[0]
-        P_ = P if P.ndim == 0 else P[0]
-        props = interpolate_bicubic_hp(h_, P_, table)
-        print(props[x_prop] , x_val)
-        return props[x_prop] - x_val
-    
-    for it in range(max_iter):
-            P_mid = 0.5*(P_min + P_max)
-            f_mid = residual(P_mid)
-            if abs(f_mid) < tol:
-                return interpolate_bicubic_hp(h, P_mid, table)
-            f_lo = residual(P_min)
-            if f_lo * f_mid < 0:
-                P_max = P_mid
-            else:
-                P_min = P_mid
-    raise RuntimeError(f"[hx] Bisection failed for h={h}, {x_prop}={x_target}")
-    
-    # Optional: precheck root bracketing
-    # f_lo = residual(p_min)
-    # f_hi = residual(p_max)
-    # if f_lo * f_hi > 0:
-    #     raise ValueError(
-    #         f"[hx] Bisection error: residual does not change sign "
-    #         f"over [p_min={p_min}, p_max={p_max}]. "
-    #         f"f(p_min)={f_lo}, f(p_max)={f_hi}"
-    #     )
-
-    # Use a scalar root finder (brentq, newton, or jax-based)
-    # result = optx.root_find(residual, optx.Bisection(rtol=1e-6, atol=1e-8, expand_if_necessary=False), y0=jnp.array(p_init), options={"lower": p_min, "upper": p_max},)
-    # result = optx.root_find(residual, optx.Newton(rtol=1e-6, atol=1e-8), y0=jnp.array(p_init),)
-    # result = optx.root_find(residual, optx.BFGS(rtol=1e-6, atol=1e-8), y0=jnp.array(p_init),)
-
-    # result = bisection_root_scalar(residual, p_min, p_max)
-    # p_sol = result.value
-    # p_sol = result
-
-    # return interpolate_bicubic_hp(h, p_sol, table)
-
-def interpolate_bicubic_xP(x_val, P, input_pair, table):
-    max_iter = 100
-    tol = 1e-8
-    prop1, prop2 = jxp.INPUT_PAIR_MAP[input_pair]
-    x_prop = prop1 if prop2 == "pressure" else prop2
-    x_prop = jxp.ALIAS_TO_CANONICAL[x_prop]
-
-    h_min = table["h_vals"][0]
-    h_max = table["h_vals"][-1]
-    h_init = h_min
-
-    # def residual(h, _):
-    #     props = interpolate_bicubic_hp(h.item(), P.item(), table)
-    #     return props[x_prop] - x_val
-    
-    def residual(h, _):
-        h_ = h if h.ndim == 0 else h[0]
-        P_ = P if P.ndim == 0 else P[0]
-        props = interpolate_bicubic_hp(h_, P_, table)
-        return props[x_prop] - x_val
-    
-    for it in range(max_iter):
-            h_mid = 0.5*(h_min + h_max)
-            f_mid = residual(h_mid)
-            if abs(f_mid) < tol:
-                return interpolate_bicubic_hp(h_mid, P, table)
-            f_lo = residual(h_lo)
-            if f_lo * f_mid < 0:
-                h_max = h_mid
-            else:
-                h_min = h_mid
-    raise RuntimeError(f"[xP] Bisection failed for P={P}, {x_prop}={x_target}")
-    
-    # Optional: precheck root bracketing
-    # f_lo = residual(h_min)
-    # f_hi = residual(h_max)
-
-    # if f_lo * f_hi > 0:
-    #     raise ValueError(
-    #         f"[hx] Bisection error: residual does not change sign "
-    #         f"over [p_min={h_min}, p_max={h_max}]. "
-    #         f"f(p_min)={f_lo}, f(p_max)={f_hi}"
-    #     )
-
-    # result = optx.root_find(residual, optx.Bisection(rtol=1e-6, atol=1e-8, expand_if_necessary=False), y0=jnp.array(h_init), options={"lower": h_min, "upper": h_max},)
-    # result = optx.root_find(residual, optx.Newton(rtol=1e-6, atol=1e-8), y0=jnp.array(h_init))
-    # result = optx.root_find(residual, optx.BFGS(rtol=1e-6, atol=1e-8), y0=jnp.array(h_init),)
-
-    # result = bisection_root_scalar(residual, h_min, h_max)
-    # h_sol = result.value
-    # h_sol = result
-
-    # return interpolate_bicubic_hp(h_sol, P, table)
-
-
-
-# # @jax.jit
-# def inverse_interpolant_scalar_hD(h, D):
-#     # Find the real(float) index
-#     ii = (h - hmin) / (hmax - hmin) * (N - 1)
-#     # The integer part is the cell index
-#     i = ii.astype(int)
-#     # The remainder (for numerical stability better to use the difference)
-#     # is instead the position within our interpolation cell.
-#     x = ii - i
-#     # find interval that contains the solution
-#     xth = jnp.ones_like(h)  # initialize x to the 0th power
-#     # First we compute the nodal values, that is the values of D(h,P) where
-#     # h is the actual enthalpy and P are grid values.
-#     # TODO: instead of computing all the nodal values and then use sortedsearch
-#     # to find the correct interval, we could do a binary search. This would
-#     # constraint M to be a power of 2.
-#     # Possible example (to be refined) to compute the node. Start with the node
-#     # corresponding to j=M/2, then compute new index j=j+M/4*(2*(Dj>D)-1)
-#     # then j=j+M/8*(2*(Dj>D)-1) and so on ...
-#     # after log2(M) iteration we converged to the index j.
-#     D_nodal = jnp.zeros(M)
-#     for m in range(4):
-#         D_nodal += bicubic_coefficients[i, :, m] * xth
-#         xth = xth * x
-#     # We search more efficiently in which interval we have the solution
-#     # if we assume a sorted vector.
-#     # TODO: This assumes that P has a monotonic trend with respect to D
-#     # at fixed h. This causes some problems and needs further investigation
-#     if iD == cp.iSmass:
-#         j = jax.numpy.searchsorted(-D_nodal, -D).astype(int) - 1
-#     else:
-#         j = jax.numpy.searchsorted(D_nodal, D).astype(int) - 1
-
-#     # After we are in the unit square, that is for known i and j
-#     # compute 1D cubic coefficients (as complex numbers to avoid promotion)
-#     # Each coefficient is bj=sum(aij*x**i)
-#     # Leading to the equation D=b0 + b1*y + b2*y**2 + b3*y**3
-#     xth = jnp.ones_like(h)
-#     b0 = jnp.zeros_like(h, dtype=complex128)
-#     b1 = jnp.zeros_like(h, dtype=complex128)
-#     b2 = jnp.zeros_like(h, dtype=complex128)
-#     b3 = jnp.zeros_like(h, dtype=complex128)
-#     for m in range(4):
-#         b0 += bicubic_coefficients[i, j, 4 * 0 + m] * xth
-#         b1 += bicubic_coefficients[i, j, 4 * 1 + m] * xth
-#         b2 += bicubic_coefficients[i, j, 4 * 2 + m] * xth
-#         b3 += bicubic_coefficients[i, j, 4 * 3 + m] * xth
-#         xth = xth * x
-#     # solve cubic equation - all three solutions
-#     # TODO: if necessary, add solution for degenerate (quadratic and linear)
-#     # For more information:https://en.wikipedia.org/wiki/Cubic_equation#General_cubic_formula
-#     D0 = b2 * b2 - 3 * b3 * b1
-#     D1 = 2 * b2 * b2 * b2 - 9 * b3 * b2 * b1 + 27 * b3 * b3 * (b0 - D)
-#     C = ((D1 + (D1 * D1 - 4 * D0 * D0 * D0) ** 0.5) / 2) ** (1 / 3)
-#     D0C = jax.lax.select(C == (0 + 0j), 0 + 0j, D0 / C)
-#     z = jnp.array([1, -0.5 + 0.8660254037844386j, -0.5 - 0.8660254037844386j])
-#     y = -1 / (3 * b3) * (b2 + C * z + D0C / z)
-#     # To find our solution we have two criteria:
-#     #   -0 imaginary part
-#     #   -real part between 0 and 1, that are the bounds of our cell
-#     # We define a "badness" as the deviation from these critera, and pick the
-#     # solution with the lowest badness
-#     badness = jax.nn.relu(4 * (jnp.real(y) - 0.5) ** 2 - 1) + jnp.imag(y) ** 2
-#     yreal = jnp.real(y[jnp.argmin(badness)])
-#     jj = j + yreal
-#     L = Lmin + jj * (Lmax - Lmin) / (M - 1)
-#     P = jnp.exp(L)
-#     return P
-
-
-# # @jax.jit
-# def inverse_interpolant_scalar_DP(D, P):
-#     # Convert pressure to log space
-#     L = jnp.log(P)
-
-#     # Compute index along pressure grid
-#     jj = (L - Lmin) / (Lmax - Lmin) * (M - 1)
-#     j = jj.astype(int)
-#     y = jj - j  # fractional position in pressure direction
-
-#     # Compute nodal D(h) values at fixed pressure (we'll search h index now)
-#     yth = jnp.ones_like(D)
-#     D_nodal = jnp.zeros(N)
-#     for m in range(4):
-#         D_nodal += bicubic_coefficients[:, j, m] * yth
-#         yth = yth * y
-
-#     # Search h-direction to find which cell to use
-#     if iD == cp.iSmass:
-#         i = jnp.searchsorted(-D_nodal, -D).astype(int) - 1
-#     else:
-#         i = jnp.searchsorted(D_nodal, D).astype(int) - 1
-
-#     # Now build 1D cubic in x (h-direction) at fixed j
-#     yth = jnp.ones_like(D)
-#     b0 = jnp.zeros_like(D, dtype=complex128)
-#     b1 = jnp.zeros_like(D, dtype=complex128)
-#     b2 = jnp.zeros_like(D, dtype=complex128)
-#     b3 = jnp.zeros_like(D, dtype=complex128)
-#     for m in range(4):
-#         b0 += bicubic_coefficients[i, j, m + 4 * 0] * yth
-#         b1 += bicubic_coefficients[i, j, m + 4 * 1] * yth
-#         b2 += bicubic_coefficients[i, j, m + 4 * 2] * yth
-#         b3 += bicubic_coefficients[i, j, m + 4 * 3] * yth
-#         yth = yth * y
-
-#     # Solve cubic: D = b0 + b1*x + b2*x^2 + b3*x^3
-#     D0 = b2 * b2 - 3 * b3 * b1
-#     D1 = 2 * b2**3 - 9 * b3 * b2 * b1 + 27 * b3**2 * (b0 - D)
-#     C = ((D1 + jnp.sqrt(D1**2 - 4 * D0**3)) / 2) ** (1 / 3)
-#     D0C = jax.lax.select(C == 0, 0 + 0j, D0 / C)
-#     z = jnp.array([1, -0.5 + 0.8660254037844386j, -0.5 - 0.8660254037844386j])
-#     x = -1 / (3 * b3) * (b2 + C * z + D0C / z)
-
-#     # Pick root with lowest badness
-#     badness = jax.nn.relu(4 * (jnp.real(x) - 0.5) ** 2 - 1) + jnp.imag(x) ** 2
-#     xreal = jnp.real(x[jnp.argmin(badness)])
-
-#     # Final result: compute h from i + x
-#     ii = i + xreal
-#     h = hmin + ii * (hmax - hmin) / (N - 1)
-#     return h

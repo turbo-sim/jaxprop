@@ -155,8 +155,8 @@ PROPERTY_ALIASES = {
     "temperature": ["T"],
     "density": ["rho", "d", "rhomass", "dmass", "density", "D"],  # add "D" when fixing nozzle overwrite
     "enthalpy": ["h", "hmass", "enthalpy", "H"],
-    "entropy": ["s", "smass", "entropy", "S"],
-    "internal_energy": ["e", "u", "umass", "energy", "internal_energy"],
+    "entropy": ["s", "smass", "entropy"],
+    "internal_energy": ["u", "umass", "e", "energy", "internal_energy"],
     # --- heat capacities & ratios
     "isobaric_heat_capacity": ["cp", "cpmass"],
     "isochoric_heat_capacity": ["cv", "cvmass"],

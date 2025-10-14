@@ -19,7 +19,7 @@ p_min = 2e6    # Pa
 p_max = 20e6   # Pa
 N_p = 30       # Grid size for table
 N_h = 30
-N_samples = 100  # number of LHS samples
+N_samples = 1000  # number of LHS samples
 
 # ---------------------------
 # Build fluids
@@ -53,9 +53,9 @@ p_samples = scaled_samples[:, 1]
 # Warmup (to trigger JIT compilation)
 # ---------------------------
 print("Warming up JIT for all solvers...")
-_ = fluid_perfect.get_props(jxp.HmassP_INPUTS, h_samples, p_samples)
-_ = fluid_bicubic.get_props(jxp.HmassP_INPUTS, h_samples, p_samples)
-_ = fluid_coolprop.get_props(jxp.HmassP_INPUTS, h_samples, p_samples)
+_ = fluid_perfect.get_state(jxp.HmassP_INPUTS, h_samples, p_samples)
+_ = fluid_bicubic.get_state(jxp.HmassP_INPUTS, h_samples, p_samples)
+_ = fluid_coolprop.get_state(jxp.HmassP_INPUTS, h_samples, p_samples)
 
 
 # ---------------------------
@@ -64,13 +64,13 @@ _ = fluid_coolprop.get_props(jxp.HmassP_INPUTS, h_samples, p_samples)
 print("Evaluating samples in batch...")
 
 t0 = time.perf_counter()
-interp_props = fluid_bicubic.get_props(jxp.HmassP_INPUTS, h_samples, p_samples)
+interp_props = fluid_bicubic.get_state(jxp.HmassP_INPUTS, h_samples, p_samples)
 t1 = time.perf_counter()
 
-coolprop_props = fluid_coolprop.get_props(jxp.HmassP_INPUTS, h_samples, p_samples)
+coolprop_props = fluid_coolprop.get_state(jxp.HmassP_INPUTS, h_samples, p_samples)
 t2 = time.perf_counter()
 
-pg_props = fluid_perfect.get_props(jxp.HmassP_INPUTS, h_samples, p_samples)
+pg_props = fluid_perfect.get_state(jxp.HmassP_INPUTS, h_samples, p_samples)
 t3 = time.perf_counter()
 
 # ---------------------------

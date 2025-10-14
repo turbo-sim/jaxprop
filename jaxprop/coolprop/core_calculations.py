@@ -287,13 +287,16 @@ def compute_gruneisen(AS, rel_du=1e-5):
         rho = AS.rhomass()
         u0 = AS.umass()
         p0 = AS.p()
-        du = rel_du * abs(u0) if u0 != 0 else rel_du
+        du = rel_du * abs(u0)
 
         # Perturb internal energy
-        AS.update(CP.DmassUmass_INPUTS, rho, u0 + du)
+        AS.update(CP.DmassUmass_INPUTS, rho, u0 - du)
         p1 = AS.p()
 
-        dpde = (p1 - p0) / du
+        AS.update(CP.DmassUmass_INPUTS, rho, u0 + du)
+        p2 = AS.p()
+
+        dpde = (p2 - p1) / (2. * du)
         Gamma = (1.0 / rho) * dpde
         return Gamma
     except Exception:

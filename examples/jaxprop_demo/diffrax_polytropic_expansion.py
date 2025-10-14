@@ -126,7 +126,7 @@ def _polytropic_odefun(t, y, args):
 def postprocess_ode(t, y, args):
     """compute derived outputs at save times"""
     p, h = t, y
-    state = fluid.get_props(jxp.HmassP_INPUTS, h, p)
+    state = fluid.get_state(jxp.HmassP_INPUTS, h, p)
     return state
 
 # -----------------------------------------------------------------------------
@@ -187,7 +187,7 @@ if __name__ == "__main__":
 
     # Group model parameters
     params = {
-        "h_in": fluid.get_props(jxp.PT_INPUTS, p_in, T_in)["h"],
+        "h_in": fluid.get_state(jxp.PT_INPUTS, p_in, T_in)["h"],
         "p_in": p_in,
         "p_out": p_out,
         "efficiency": efficiency,
