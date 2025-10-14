@@ -10,7 +10,7 @@ import jaxprop as jxp
 # ---------------------------
 # Configuration
 # ---------------------------
-fluid_name = "CO2"
+fluid_name = "CO2" 
 hmin_ = 200e3     # J/kg
 h_max = 600e3     # J/kg
 p_min = 2e6       # Pa
