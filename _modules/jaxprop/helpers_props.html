@@ -420,6 +420,78 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="FluidState.flipped">
+<a class="viewcode-back" href="../../source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.flipped">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">flipped</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluidState&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a new FluidState where all array-valued fields are reversed in order.</span>
+
+<span class="sd">        Scalars and 0-D arrays are left unchanged, while 1-D or N-D arrays are flipped</span>
+<span class="sd">        along their first axis. Metadata fields (``fluid_name``, ``identifier``) are</span>
+<span class="sd">        copied unchanged.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flipped_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Keep metadata unchanged</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;fluid_name&quot;</span><span class="p">,</span> <span class="s2">&quot;identifier&quot;</span><span class="p">):</span>
+                <span class="n">flipped_data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Convert to array</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+            <span class="c1"># Handle None, scalar, or NaN values</span>
+            <span class="k">if</span> <span class="n">arr</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">arr</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">flipped_data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Flip along first axis</span>
+                <span class="n">flipped_data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="o">**</span><span class="n">flipped_data</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="FluidState.at_index">
+<a class="viewcode-back" href="../../source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.at_index">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">at_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluidState&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract a single FluidState at the given index from a batched FluidState.</span>
+
+<span class="sd">        This returns a new FluidState with the same `fluid_name` and `identifier`,</span>
+<span class="sd">        and each property reduced to the element at position `idx` along the first axis.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        idx : int</span>
+<span class="sd">            Index along the first dimension to extract.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        FluidState</span>
+<span class="sd">            A new FluidState representing the state at the specified index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;fluid_name&quot;</span><span class="p">,</span> <span class="s2">&quot;identifier&quot;</span><span class="p">):</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">continue</span>
+
+            <span class="n">arr</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+            <span class="c1"># Handle scalars or 0-D arrays</span>
+            <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Extract along first axis</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="c1"># In case array is shorter or malformed</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="FluidState.stack">
 <a class="viewcode-back" href="../../source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.stack">[docs]</a>
     <span class="nd">@classmethod</span>
@@ -455,10 +527,31 @@ document.write(`
                 <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">arrs</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">fluid_name</span><span class="o">=</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span></div>
-</div>
 
 
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;FluidState&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluidState&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Concatenate two FluidState objects along their first dimension.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">FluidState</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">fluid_name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">identifier</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot combine FluidState objects with different fluid_name or identifier.&quot;</span><span class="p">)</span>
+
+        <span class="n">merged</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">val_self</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;fluid_name&quot;</span><span class="p">,</span> <span class="s2">&quot;identifier&quot;</span><span class="p">):</span>
+                <span class="n">merged</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">val_self</span>
+                <span class="k">continue</span>
+
+            <span class="n">val_other</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+            <span class="n">arr_self</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">val_self</span><span class="p">)</span>
+            <span class="n">arr_other</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">val_other</span><span class="p">)</span>
+            <span class="n">merged</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">arr_self</span><span class="p">,</span> <span class="n">arr_other</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="o">**</span><span class="n">merged</span><span class="p">)</span></div>
+
+    
+    
 <span class="n">PROPERTY_ALIASES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># --- metadata</span>
     <span class="c1"># &quot;fluid_name&quot;: [],</span>

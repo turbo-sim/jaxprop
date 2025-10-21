@@ -1136,7 +1136,7 @@ document.write(`
             <span class="n">solver_max_iterations</span><span class="o">=</span><span class="n">solver_max_iterations</span><span class="p">,</span>
             <span class="n">print_convergence</span><span class="o">=</span><span class="n">print_convergence</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">props_meta</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.00</span> <span class="k">if</span> <span class="n">phase_change</span> <span class="o">==</span> <span class="s2">&quot;condensation&quot;</span> <span class="k">else</span> <span class="mf">0.00</span>
+        <span class="n">props_meta</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.00</span> <span class="k">if</span> <span class="n">phase_change</span> <span class="o">==</span> <span class="s2">&quot;condensation&quot;</span> <span class="k">else</span> <span class="mf">0.00</span>
 
         <span class="c1"># Blend properties</span>
         <span class="n">props_blended</span> <span class="o">=</span> <span class="n">blend_properties</span><span class="p">(</span>
@@ -1281,7 +1281,7 @@ document.write(`
         <span class="c1"># Compute residual</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">compute_residual</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">target_value</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="n">prop_name</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">prop_name</span> <span class="o">==</span> <span class="s2">&quot;Q&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">prop_name</span> <span class="o">==</span> <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">value</span> <span class="o">-</span> <span class="n">target_value</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">value</span> <span class="o">/</span> <span class="n">target_value</span>
@@ -1358,8 +1358,8 @@ document.write(`
             <span class="n">props_blended</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
             
     <span class="c1"># Add additional properties</span>
-    <span class="n">props_blended</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
-    <span class="n">props_blended</span><span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
+    <span class="c1"># props_blended[&quot;x&quot;] = x</span>
+    <span class="c1"># props_blended[&quot;sigma&quot;] = sigma</span>
 
     <span class="k">return</span> <span class="n">props_blended</span></div>
 

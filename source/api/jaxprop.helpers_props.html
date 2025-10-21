@@ -340,11 +340,13 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState"><code class="docutils literal notranslate"><span class="pre">FluidState</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.at_index"><code class="docutils literal notranslate"><span class="pre">FluidState.at_index()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.compressibility_factor"><code class="docutils literal notranslate"><span class="pre">FluidState.compressibility_factor</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.conductivity"><code class="docutils literal notranslate"><span class="pre">FluidState.conductivity</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.density"><code class="docutils literal notranslate"><span class="pre">FluidState.density</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.enthalpy"><code class="docutils literal notranslate"><span class="pre">FluidState.enthalpy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.entropy"><code class="docutils literal notranslate"><span class="pre">FluidState.entropy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.flipped"><code class="docutils literal notranslate"><span class="pre">FluidState.flipped()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidState.fluid_name</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.gruneisen"><code class="docutils literal notranslate"><span class="pre">FluidState.gruneisen</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.heat_capacity_ratio"><code class="docutils literal notranslate"><span class="pre">FluidState.heat_capacity_ratio</span></code></a></li>
@@ -409,6 +411,12 @@ document.write(`
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.helpers_props.FluidState.at_index" title="jaxprop.helpers_props.FluidState.at_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">at_index</span></code></a>(idx)</p></td>
+<td><p>Extract a single FluidState at the given index from a batched FluidState.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jaxprop.helpers_props.FluidState.flipped" title="jaxprop.helpers_props.FluidState.flipped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flipped</span></code></a>()</p></td>
+<td><p>Return a new FluidState where all array-valued fields are reversed in order.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.helpers_props.FluidState.items" title="jaxprop.helpers_props.FluidState.items"><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code></a>()</p></td>
 <td><p>Dict-style iteration</p></td>
 </tr>
@@ -427,6 +435,28 @@ document.write(`
 </tbody>
 </table>
 </div>
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.at_index">
+<span class="sig-name descname"><span class="pre">at_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jaxprop.helpers_props.FluidState" title="jaxprop.helpers_props.FluidState"><span class="pre">FluidState</span></a></span></span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#FluidState.at_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.FluidState.at_index" title="Link to this definition">#</a></dt>
+<dd><p>Extract a single FluidState at the given index from a batched FluidState.</p>
+<p>This returns a new FluidState with the same <cite>fluid_name</cite> and <cite>identifier</cite>,
+and each property reduced to the element at position <cite>idx</cite> along the first axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>idx</strong><span class="classifier">int</span></dt><dd><p>Index along the first dimension to extract.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>FluidState</dt><dd><p>A new FluidState representing the state at the specified index.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.compressibility_factor">
 <span class="sig-name descname"><span class="pre">compressibility_factor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.FluidState.compressibility_factor" title="Link to this definition">#</a></dt>
@@ -451,6 +481,15 @@ document.write(`
 <dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.entropy">
 <span class="sig-name descname"><span class="pre">entropy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.FluidState.entropy" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.flipped">
+<span class="sig-name descname"><span class="pre">flipped</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jaxprop.helpers_props.FluidState" title="jaxprop.helpers_props.FluidState"><span class="pre">FluidState</span></a></span></span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#FluidState.flipped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.FluidState.flipped" title="Link to this definition">#</a></dt>
+<dd><p>Return a new FluidState where all array-valued fields are reversed in order.</p>
+<p>Scalars and 0-D arrays are left unchanged, while 1-D or N-D arrays are flipped
+along their first axis. Metadata fields (<code class="docutils literal notranslate"><span class="pre">fluid_name</span></code>, <code class="docutils literal notranslate"><span class="pre">identifier</span></code>) are
+copied unchanged.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.fluid_name">
@@ -659,11 +698,13 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState"><code class="docutils literal notranslate"><span class="pre">FluidState</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.at_index"><code class="docutils literal notranslate"><span class="pre">FluidState.at_index()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.compressibility_factor"><code class="docutils literal notranslate"><span class="pre">FluidState.compressibility_factor</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.conductivity"><code class="docutils literal notranslate"><span class="pre">FluidState.conductivity</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.density"><code class="docutils literal notranslate"><span class="pre">FluidState.density</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.enthalpy"><code class="docutils literal notranslate"><span class="pre">FluidState.enthalpy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.entropy"><code class="docutils literal notranslate"><span class="pre">FluidState.entropy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.flipped"><code class="docutils literal notranslate"><span class="pre">FluidState.flipped()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidState.fluid_name</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.gruneisen"><code class="docutils literal notranslate"><span class="pre">FluidState.gruneisen</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.heat_capacity_ratio"><code class="docutils literal notranslate"><span class="pre">FluidState.heat_capacity_ratio</span></code></a></li>

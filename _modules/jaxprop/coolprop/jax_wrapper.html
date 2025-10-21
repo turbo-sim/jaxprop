@@ -312,20 +312,7 @@ document.write(`
     <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">ShapeDtypeStruct</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">}</span>
 
 
-<span class="c1"># def _get_props_python(input_pair, x, y, fluid):</span>
-<span class="c1">#     &quot;&quot;&quot;Host-side evaluation. Accepts scalars or arrays and returns dict of ndarrays.&quot;&quot;&quot;</span>
-<span class="c1">#     x, y = np.broadcast_arrays(np.asarray(x), np.asarray(y))</span>
-<span class="c1">#     results = {name: np.empty(x.shape, dtype=np.float64) for name in jxp.PROPERTIES_CANONICAL}</span>
-
-<span class="c1">#     for i in np.ndindex(x.shape):</span>
-<span class="c1">#         state = fluid.get_state(input_pair, float(x[i]), float(y[i])).to_dict()</span>
-<span class="c1">#         for name in jxp.PROPERTIES_CANONICAL:</span>
-<span class="c1">#             val = state.get(name)</span>
-<span class="c1">#             results[name][i] = np.float64(val) if np.isfinite(val) else np.nan</span>
-
-<span class="c1">#     return results</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_props_python</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fluid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_props_python</span><span class="p">(</span><span class="n">input_type</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fluid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Host-side evaluation. Accepts scalars or arrays and returns dict of ndarrays.</span>
 <span class="sd">    If the state is None or a property is missing/non-finite, fills with np.nan.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -333,7 +320,7 @@ document.write(`
     <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">}</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">input_type</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
         <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Fill all properties with NaN if state is invalid</span>
             <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">:</span>
@@ -352,7 +339,7 @@ document.write(`
     <span class="k">return</span> <span class="n">results</span>
 
 <span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">custom_jvp</span><span class="p">,</span> <span class="n">nondiff_argnums</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_props</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fluid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fluid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    JAX-callable wrapper around CoolProp returning a dictionary of properties</span>
 
@@ -374,8 +361,8 @@ document.write(`
     <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">pure_callback</span><span class="p">(</span><span class="n">local_eval</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">vmap_method</span><span class="o">=</span><span class="s2">&quot;broadcast_all&quot;</span><span class="p">)</span>
 
 
-<span class="nd">@get_props</span><span class="o">.</span><span class="n">defjvp</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_props_jvp</span><span class="p">(</span><span class="n">input_state</span><span class="p">,</span> <span class="n">fluid</span><span class="p">,</span> <span class="n">primals</span><span class="p">,</span> <span class="n">tangents</span><span class="p">):</span>
+<span class="nd">@get_state</span><span class="o">.</span><span class="n">defjvp</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_state_jvp</span><span class="p">(</span><span class="n">input_state</span><span class="p">,</span> <span class="n">fluid</span><span class="p">,</span> <span class="n">primals</span><span class="p">,</span> <span class="n">tangents</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom JVP rule for get_props() using finite differences.</span>
 
 <span class="sd">    Approximates partial derivatives of each state property with respect</span>
@@ -435,7 +422,7 @@ document.write(`
     <span class="nd">@eqx</span><span class="o">.</span><span class="n">filter_jit</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a CoolPropState with fields shaped like broadcast(x, y).&quot;&quot;&quot;</span>
-        <span class="n">raw</span> <span class="o">=</span> <span class="n">get_props</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">get_state</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidState</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">raw</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">})</span></div>
 </div>
 

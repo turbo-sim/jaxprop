@@ -305,6 +305,31 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">jaxprop.coolprop</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jxp</span>
 
 
+
+<span class="c1"># TODO Add saturation curves look-up:</span>
+<span class="c1"># # JAX-compatible cubic Hermite interpolation</span>
+<span class="c1"># def jax_cubic_spline(x, x_vals, y_vals):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Piecewise cubic Hermite spline approximation (JAX-compatible)</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     # Find interval indices (clip to valid range)</span>
+<span class="c1">#     idx = jnp.clip(jnp.searchsorted(x_vals, x) - 1, 0, len(x_vals)-2)</span>
+   
+<span class="c1">#     x0 = x_vals[idx]</span>
+<span class="c1">#     x1 = x_vals[idx+1]</span>
+<span class="c1">#     y0 = y_vals[idx]</span>
+<span class="c1">#     y1 = y_vals[idx+1]</span>
+   
+<span class="c1">#     # Linear slope (simple Hermite approximation)</span>
+<span class="c1">#     m = (y1 - y0) / (x1 - x0 + 1e-12)  # avoid div by zero</span>
+<span class="c1">#     t = (x - x0) / (x1 - x0 + 1e-12)</span>
+   
+<span class="c1">#     # Cubic Hermite polynomial: h00 = 2t^3 - 3t^2 + 1, h10 = t^3 - 2t^2 + t</span>
+<span class="c1">#     h00 = 2*t**3 - 3*t**2 + 1</span>
+<span class="c1">#     h10 = t**3 - 2*t**2 + t</span>
+   
+<span class="c1">#     return h00*y0 + (x1 - x0)*h10*m + (1 - h00)*y1</span>
+
 <span class="c1"># ================================================================</span>
 <span class="c1"># FluidBicubic class</span>
 <span class="c1"># ================================================================</span>
@@ -413,6 +438,8 @@ document.write(`
                 <span class="n">table</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded property table from: </span><span class="si">{</span><span class="n">pkl_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">table</span>
+
+            <span class="c1"># TODO do a check that all metadate of the loaded table matches, an dif it changes print message and recompute table</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No existing table found, generating new one...&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_property_table</span><span class="p">()</span>
