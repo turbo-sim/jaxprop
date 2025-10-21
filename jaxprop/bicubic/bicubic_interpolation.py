@@ -10,6 +10,31 @@ import optimistix as optx
 import jaxprop.coolprop as jxp
 
 
+
+# TODO Add saturation curves look-up:
+# # JAX-compatible cubic Hermite interpolation
+# def jax_cubic_spline(x, x_vals, y_vals):
+#     """
+#     Piecewise cubic Hermite spline approximation (JAX-compatible)
+#     """
+#     # Find interval indices (clip to valid range)
+#     idx = jnp.clip(jnp.searchsorted(x_vals, x) - 1, 0, len(x_vals)-2)
+   
+#     x0 = x_vals[idx]
+#     x1 = x_vals[idx+1]
+#     y0 = y_vals[idx]
+#     y1 = y_vals[idx+1]
+   
+#     # Linear slope (simple Hermite approximation)
+#     m = (y1 - y0) / (x1 - x0 + 1e-12)  # avoid div by zero
+#     t = (x - x0) / (x1 - x0 + 1e-12)
+   
+#     # Cubic Hermite polynomial: h00 = 2t^3 - 3t^2 + 1, h10 = t^3 - 2t^2 + t
+#     h00 = 2*t**3 - 3*t**2 + 1
+#     h10 = t**3 - 2*t**2 + t
+   
+#     return h00*y0 + (x1 - x0)*h10*m + (1 - h00)*y1
+
 # ================================================================
 # FluidBicubic class
 # ================================================================
@@ -116,6 +141,8 @@ class FluidBicubic(eqx.Module):
                 table = pickle.load(f)
             print(f"Loaded property table from: {pkl_path}")
             return table
+
+            # TODO do a check that all metadate of the loaded table matches, an dif it changes print message and recompute table
 
         print("No existing table found, generating new one...")
         return self._generate_property_table()

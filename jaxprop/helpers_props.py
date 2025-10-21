@@ -111,6 +111,72 @@ class FluidState(eqx.Module):
         """Dict-style iteration"""
         return self.to_dict().items()
 
+    def flipped(self) -> "FluidState":
+        """
+        Return a new FluidState where all array-valued fields are reversed in order.
+
+        Scalars and 0-D arrays are left unchanged, while 1-D or N-D arrays are flipped
+        along their first axis. Metadata fields (``fluid_name``, ``identifier``) are
+        copied unchanged.
+        """
+        flipped_data = {}
+
+        for field, value in self.__dict__.items():
+            # Keep metadata unchanged
+            if field in ("fluid_name", "identifier"):
+                flipped_data[field] = value
+                continue
+
+            # Convert to array
+            arr = jnp.asarray(value)
+
+            # Handle None, scalar, or NaN values
+            if arr is None or arr.size <= 1:
+                flipped_data[field] = arr
+            else:
+                # Flip along first axis
+                flipped_data[field] = jnp.flip(arr, axis=0)
+
+        return type(self)(**flipped_data)
+    
+    def at_index(self, idx: int) -> "FluidState":
+        """
+        Extract a single FluidState at the given index from a batched FluidState.
+
+        This returns a new FluidState with the same `fluid_name` and `identifier`,
+        and each property reduced to the element at position `idx` along the first axis.
+
+        Parameters
+        ----------
+        idx : int
+            Index along the first dimension to extract.
+
+        Returns
+        -------
+        FluidState
+            A new FluidState representing the state at the specified index.
+        """
+        data = {}
+        for field, value in self.__dict__.items():
+            if field in ("fluid_name", "identifier"):
+                data[field] = value
+                continue
+
+            arr = jnp.asarray(value)
+
+            # Handle scalars or 0-D arrays
+            if arr.size <= 1:
+                data[field] = arr
+            else:
+                # Extract along first axis
+                try:
+                    data[field] = arr[idx]
+                except Exception:
+                    # In case array is shorter or malformed
+                    data[field] = jnp.nan
+
+        return type(self)(**data)
+
     @classmethod
     def stack(cls, states: list["FluidState"]) -> "FluidState":
         """Combine a list of FluidState into a batched FluidState (values stacked into arrays)."""
@@ -145,7 +211,28 @@ class FluidState(eqx.Module):
 
         return cls(fluid_name=fluid_name, identifier=identifier, **data)
 
+    def __add__(self, other: "FluidState") -> "FluidState":
+        """Concatenate two FluidState objects along their first dimension."""
+        if not isinstance(other, FluidState):
+            return NotImplemented
 
+        if self.fluid_name != other.fluid_name or self.identifier != other.identifier:
+            raise ValueError("Cannot combine FluidState objects with different fluid_name or identifier.")
+
+        merged = {}
+        for field, val_self in self.__dict__.items():
+            if field in ("fluid_name", "identifier"):
+                merged[field] = val_self
+                continue
+
+            val_other = getattr(other, field)
+            arr_self = jnp.atleast_1d(val_self)
+            arr_other = jnp.atleast_1d(val_other)
+            merged[field] = jnp.concatenate([arr_self, arr_other])
+
+        return type(self)(**merged)
+    
+    
 PROPERTY_ALIASES = {
     # --- metadata
     # "fluid_name": [],
