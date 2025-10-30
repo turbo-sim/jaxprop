@@ -303,7 +303,7 @@ class FluidBicubic(eqx.Module):
         jxp.HmassP_INPUTS: lambda self, h, p: self._interp_h_p(h, p),
         jxp.PT_INPUTS: lambda self, p, T: self._interp_x_p(p, T, "temperature"),
         jxp.DmassP_INPUTS: lambda self, d, p: self._interp_x_p(p, d, "density"),
-        jxp.PSmass_INPUTS: lambda self, p, s: self._interp_x_p(p, s, "entropy"),
+        # jxp.PSmass_INPUTS: lambda self, p, s: self._interp_x_p(p, s, "entropy"),
         jxp.HmassSmass_INPUTS: lambda self, h, s: self._interp_h_y(h, s, "entropy"),
         jxp.DmassHmass_INPUTS: lambda self, d, h: self._interp_h_y(h, d, "density"),
         jxp.DmassT_INPUTS: lambda self, d, T: self._interp_x_y(
@@ -311,6 +311,9 @@ class FluidBicubic(eqx.Module):
         ),
         jxp.DmassSmass_INPUTS: lambda self, d, s: self._interp_x_y(
             jxp.DmassSmass_INPUTS, d, s, coarse_step=self.coarse_step
+        ),
+        jxp.PSmass_INPUTS: lambda self, p, s: self._interp_x_y(
+            jxp.PSmass_INPUTS, p, s, coarse_step=self.coarse_step
         ),
     }
 
