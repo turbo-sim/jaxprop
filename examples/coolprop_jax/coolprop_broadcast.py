@@ -6,11 +6,11 @@ import jaxprop as jxp
 # ---------------------------------------------------------------------
 # reference state and fluids
 # ---------------------------------------------------------------------
-p0 = 101325.0   # Pa
-T0 = 300.0      # K
+p0 = 101325.0  # Pa
+T0 = 300.0  # K
 
 fluid_perfect_gas = jxp.FluidPerfectGas(name="air", T_ref=T0, p_ref=p0)
-fluid_coolprop    = jxp.FluidJAX(name="air")  # requires broadcast-aware get_props
+fluid_coolprop = jxp.FluidJAX(name="air")  # requires broadcast-aware get_props
 
 # sizes to test (compilation time included; no warmup)
 sizes = [10, 10, 10, 100, 100, 100, 1000, 1000, 1000]

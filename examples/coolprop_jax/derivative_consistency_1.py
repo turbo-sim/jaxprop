@@ -6,25 +6,27 @@
 import jax
 import jaxprop.coolprop as jxp
 
+
 def rel_err(val, ref):
     denom = max(1e-6, abs(ref))
     return (abs(val) - abs(ref)) / denom
 
+
 # setup state: CO2
 # fluid = fluid.Fluid(name="CO2", backend="HEOS")
 fluid = jxp.FluidJAX(name="CO2", backend="HEOS")
-p0 = 100e5      # Pa
-T0 = 400.0      # K
+p0 = 100e5  # Pa
+T0 = 400.0  # K
 st = fluid.get_state(jxp.PT_INPUTS, p0, T0)
-print(st)
+# print(st)
 
 rho0 = st["d"]
-s0   = st["s"]
-cp0  = st["cp"]
-cv0  = st["cv"]
-a0   = st["a"]
-v0   = 1.0 / rho0
-a2   = a0**2
+s0 = st["s"]
+cp0 = st["cp"]
+cv0 = st["cv"]
+a0 = st["a"]
+v0 = 1.0 / rho0
+a2 = a0**2
 
 print("base state (CO2):")
 print(f"  T   : {T0:+0.6e} K")
@@ -50,9 +52,15 @@ p_of_rho_at_s = lambda rho: fluid.get_state(jxp.DmassSmass_INPUTS, rho, s0)["p"]
 dpdrho_s = jax.jacfwd(p_of_rho_at_s)(rho0)
 
 print("\nchecks (value, expected, rel. error):")
-print(f"  cp=(dh/dT)|p   : {dhdT_p:+0.6e}  {cp0:+0.6e}  {rel_err(dhdT_p, cp0):+0.6e}   J/(kg K)")
-print(f"  cv=(du/dT)|rho : {dudT_rho:+0.6e}  {cv0:+0.6e}  {rel_err(dudT_rho, cv0):+0.6e}   J/(kg K) ")
-print(f"  c2=(dp/drho)|s : {dpdrho_s:+0.6e}  {a2:+0.6e}  {rel_err(dpdrho_s, a2):+0.6e}   m^2/s^2")
+print(
+    f"  cp=(dh/dT)|p   : {dhdT_p:+0.6e}  {cp0:+0.6e}  {rel_err(dhdT_p, cp0):+0.6e}   J/(kg K)"
+)
+print(
+    f"  cv=(du/dT)|rho : {dudT_rho:+0.6e}  {cv0:+0.6e}  {rel_err(dudT_rho, cv0):+0.6e}   J/(kg K) "
+)
+print(
+    f"  c2=(dp/drho)|s : {dpdrho_s:+0.6e}  {a2:+0.6e}  {rel_err(dpdrho_s, a2):+0.6e}   m^2/s^2"
+)
 
 
 # -------------------- exact differential identities -------------------- #
@@ -80,10 +88,18 @@ v_from_state = 1.0 / fluid.get_state(jxp.PSmass_INPUTS, p0, s0)["d"]
 
 
 print("\nchecks (value, expected, rel. error):")
-print(f"  T = +(du/ds)|v  : {du_ds_at_v:+0.6e}  {T_from_u:+0.6e}  {rel_err(du_ds_at_v, T_from_u):+0.6e}   K")
-print(f"  p = -(du/dv)|s  : {du_dv_at_s:+0.6e}  {-p_from_state:+0.6e}  {rel_err(du_dv_at_s, -p_from_state):+0.6e}   Pa")
-print(f"  T = +(dh/ds)|p  : {dh_ds_at_p:+0.6e}  {T_from_h:+0.6e}  {rel_err(dh_ds_at_p, T_from_h):+0.6e}   K")
-print(f"  v = +(dh/dp)|s  : {dh_dp_at_s:+0.6e}  {v_from_state:+0.6e}  {rel_err(dh_dp_at_s, v_from_state):+0.6e}   m^3/kg")
+print(
+    f"  T = +(du/ds)|v  : {du_ds_at_v:+0.6e}  {T_from_u:+0.6e}  {rel_err(du_ds_at_v, T_from_u):+0.6e}   K"
+)
+print(
+    f"  p = -(du/dv)|s  : {du_dv_at_s:+0.6e}  {-p_from_state:+0.6e}  {rel_err(du_dv_at_s, -p_from_state):+0.6e}   Pa"
+)
+print(
+    f"  T = +(dh/ds)|p  : {dh_ds_at_p:+0.6e}  {T_from_h:+0.6e}  {rel_err(dh_ds_at_p, T_from_h):+0.6e}   K"
+)
+print(
+    f"  v = +(dh/dp)|s  : {dh_dp_at_s:+0.6e}  {v_from_state:+0.6e}  {rel_err(dh_dp_at_s, v_from_state):+0.6e}   m^3/kg"
+)
 
 
 # --------------------------- Maxwell relations --------------------------- #
@@ -113,3 +129,28 @@ print("\nMaxwell 2: (ds/dv)|T = (dp/dT)|v   ->   (ds/drho)|T = -(1/rho^2)(dp/dT)
 print(f"  (ds/drho)|T      : {ds_drho_T:+0.6e} J/(kg K) / (kg/m^3)")
 print(f"  RHS              : {rhs:+0.6e} J/(kg K) / (kg/m^3)")
 print(f"  rel. error       : {rel_err(ds_drho_T, rhs):+0.6e}")
+
+
+# --------------------------- error check summary --------------------------- #
+THRESHOLD = 1e-5
+error_list = [
+    ("cp = (dh/dT)|p", rel_err(dhdT_p, cp0)),
+    ("cv = (du/dT)|rho", rel_err(dudT_rho, cv0)),
+    ("a² = (dp/drho)|s", rel_err(dpdrho_s, a2)),
+    ("T = (du/ds)|v", rel_err(du_ds_at_v, T_from_u)),
+    ("p = -(du/dv)|s", rel_err(du_dv_at_s, -p_from_state)),
+    ("T = (dh/ds)|p", rel_err(dh_ds_at_p, T_from_h)),
+    ("v = (dh/dp)|s", rel_err(dh_dp_at_s, v_from_state)),
+    ("Maxwell 1", rel_err(ds_dp_T, -dv_dT_p)),
+    ("Maxwell 2", rel_err(ds_drho_T, rhs)),
+]
+
+violations = [(name, err) for name, err in error_list if abs(err) > THRESHOLD]
+
+if violations:
+    msg_lines = ["The following derivative checks exceed the relative error threshold:"]
+    for name, err in violations:
+        msg_lines.append(f"  - {name:<25} rel err = {err:.3e}")
+    raise ValueError("\n".join(msg_lines))
+else:
+    print(f"\nAll derivative checks passed (relative errors ≤ {THRESHOLD:.1e}).")
