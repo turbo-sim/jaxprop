@@ -25,7 +25,6 @@ print(fluid.constants)
 
 
 # -------------------------- basic evaluations ----------------------- #
-
 # Property calculation using (p, T)
 P0 = 101_325.0  # Pa
 T0 = 300.0      # K
@@ -34,45 +33,72 @@ print(f"\nState from PT (p = {P0:.0f} Pa, T = {T0:.2f} K)")
 print(state_PT)
 
 # Property calculation using (h, s)
-H = state_PT["h"]
-S = state_PT["s"]
-state_hs = fluid.get_state(jxp.HmassSmass_INPUTS, H, S)
+state_hs = fluid.get_state(jxp.HmassSmass_INPUTS, state_PT.h, state_PT.s)
 print("\nState from HmassSmass (h, s)")
 print(state_hs)
 
 # Property calculation using (h, p)
-state_hP = fluid.get_state(jxp.HmassP_INPUTS, H, P0)
+state_hP = fluid.get_state(jxp.HmassP_INPUTS, state_PT.h, state_PT.p)
 print("\nState from HmassP (h, p)")
 print(state_hP)
 
 # Property calculation using (p, s)
-state_Ps = fluid.get_state(jxp.PSmass_INPUTS, P0, S)
+state_Ps = fluid.get_state(jxp.PSmass_INPUTS, state_PT.p, state_PT.s)
 print("\nState from PSmass (p, s)")
 print(state_Ps)
 
 # Property calculation using (rho, h)
-rho0 = state_PT["rho"]
-state_rhoh = fluid.get_state(jxp.DmassHmass_INPUTS, rho0, H)
+state_rhoh = fluid.get_state(jxp.DmassHmass_INPUTS, state_PT.d, state_PT.h)
 print("\nState from DmassHmass (rho, h)")
 print(state_rhoh)
 
-# ------------------- vectorized calculations and plotting ---------------- #
 
-# Compute viscosity over the temperature range
-T_range = np.linspace(300.0, 1000.0, 200)
-mu_vals = pg.viscosity_from_T(T_range, fluid.constants)
+# --------------------------- state consistency checks --------------------------- #
+import numpy as np
 
-# Create figure
-fig, ax = plt.subplots(figsize=(6, 5))
-ax.grid(False)
-ax.set_xlabel("Temperature [K]")
-ax.set_ylabel("Dynamic viscosity [Pa·s]")
-ax.set_xlim([T_range.min(), T_range.max()])
+def rel_err(a, b):
+    denom = max(1e-14, abs(b))
+    return abs(a - b) / denom
 
-# Plot viscosity
-ax.plot(T_range, mu_vals)
-plt.tight_layout(pad=1)
+# Collect states
+states = {
+    "PT": state_PT,
+    "hs": state_hs,
+    "hP": state_hP,
+    "Ps": state_Ps,
+    "rhoh": state_rhoh,
+}
 
-# Show plot if not disabled
-if not os.environ.get("DISABLE_PLOTS"):
-    plt.show()
+# Choose reference
+ref_state = state_PT
+tol = 1e-16
+props_to_check = jxp.PROPERTIES_CANONICAL
+
+violations = []
+
+for name, state in states.items():
+    for prop in props_to_check:
+
+        # Get values
+        val_ref = ref_state[prop]
+        val = state[prop]
+
+        # Skip if reference value is NaN → nothing to check
+        if np.isnan(val_ref):
+            continue
+
+        # Check error
+        err = rel_err(val, val_ref)
+        if err > tol:
+            violations.append((name, prop, err))
+
+if violations:
+    msg_lines = ["The following state property checks failed:"]
+    for name, prop, err in violations:
+        if err == "NaN":
+            msg_lines.append(f"  - {name}: {prop} is NaN but reference is not")
+        else:
+            msg_lines.append(f"  - {name}: {prop} relative error = {err:.3e}")
+    raise ValueError("\n".join(msg_lines))
+else:
+    print(f"\nAll states are thermodynamically consistent (relative errors < {tol:.1e}).")

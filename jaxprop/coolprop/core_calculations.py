@@ -809,7 +809,7 @@ def compute_properties(
             solver_max_iterations=solver_max_iterations,
             print_convergence=print_convergence,
         )
-        props_meta["Q"] = 1.00 if phase_change == "condensation" else 0.00
+        props_meta["quality_mass"] = 1.00 if phase_change == "condensation" else 0.00
 
         # Blend properties
         props_blended = blend_properties(
@@ -953,7 +953,7 @@ class _FlashCalculationResidual(psv.NonlinearSystemProblem):
         # Compute residual
         def compute_residual(prop_name, target_value):
             value = props[prop_name]
-            if prop_name == "Q":
+            if prop_name == "quality_mass":
                 return value - target_value
             else:
                 return 1.0 - value / target_value
@@ -1028,8 +1028,8 @@ def blend_properties(
             props_blended[key] = None
             
     # Add additional properties
-    props_blended["x"] = x
-    props_blended["sigma"] = sigma
+    # props_blended["x"] = x
+    # props_blended["sigma"] = sigma
 
     return props_blended
 

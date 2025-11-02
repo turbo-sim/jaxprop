@@ -17,20 +17,7 @@ def _make_template(shape):
     return {k: jax.ShapeDtypeStruct(shape, jnp.float64) for k in jxp.PROPERTIES_CANONICAL}
 
 
-# def _get_props_python(input_pair, x, y, fluid):
-#     """Host-side evaluation. Accepts scalars or arrays and returns dict of ndarrays."""
-#     x, y = np.broadcast_arrays(np.asarray(x), np.asarray(y))
-#     results = {name: np.empty(x.shape, dtype=np.float64) for name in jxp.PROPERTIES_CANONICAL}
-
-#     for i in np.ndindex(x.shape):
-#         state = fluid.get_state(input_pair, float(x[i]), float(y[i])).to_dict()
-#         for name in jxp.PROPERTIES_CANONICAL:
-#             val = state.get(name)
-#             results[name][i] = np.float64(val) if np.isfinite(val) else np.nan
-
-#     return results
-
-def _get_props_python(input_pair, x, y, fluid):
+def _get_props_python(input_type, x, y, fluid):
     """Host-side evaluation. Accepts scalars or arrays and returns dict of ndarrays.
     If the state is None or a property is missing/non-finite, fills with np.nan.
     """
@@ -38,7 +25,7 @@ def _get_props_python(input_pair, x, y, fluid):
     results = {name: np.empty(x.shape, dtype=np.float64) for name in jxp.PROPERTIES_CANONICAL}
 
     for i in np.ndindex(x.shape):
-        state = fluid.get_state(input_pair, float(x[i]), float(y[i]))
+        state = fluid.get_state(input_type, float(x[i]), float(y[i]))
         if state is None:
             # Fill all properties with NaN if state is invalid
             for name in jxp.PROPERTIES_CANONICAL:
@@ -57,7 +44,7 @@ def _get_props_python(input_pair, x, y, fluid):
     return results
 
 @partial(jax.custom_jvp, nondiff_argnums=(0, 3))
-def get_props(input_pair, x, y, fluid):
+def get_state(input_pair, x, y, fluid):
     """
     JAX-callable wrapper around CoolProp returning a dictionary of properties
 
@@ -79,8 +66,8 @@ def get_props(input_pair, x, y, fluid):
     return jax.pure_callback(local_eval, template, x, y, vmap_method="broadcast_all")
 
 
-@get_props.defjvp
-def _get_props_jvp(input_state, fluid, primals, tangents):
+@get_state.defjvp
+def _get_state_jvp(input_state, fluid, primals, tangents):
     """Custom JVP rule for get_props() using finite differences.
 
     Approximates partial derivatives of each state property with respect
@@ -136,5 +123,5 @@ class FluidJAX(eqx.Module):
     @eqx.filter_jit
     def get_state(self, input_pair, x, y):
         """Return a CoolPropState with fields shaped like broadcast(x, y)."""
-        raw = get_props(input_pair, x, y, self.fluid)
+        raw = get_state(input_pair, x, y, self.fluid)
         return jxp.FluidState(**{k: raw[k] for k in jxp.PROPERTIES_CANONICAL})

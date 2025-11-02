@@ -18,7 +18,7 @@ def rho_out_polytropic(x, fluid):
     eta_p = eta_p / 100
     exponent = (gamma - 1.0) / (gamma * eta_p)  # compressor form
     T_out = T_in * jnp.power(pr, exponent)
-    d_out = fluid.get_props(jxp.PT_INPUTS, p_out, T_out)["d"]
+    d_out = fluid.get_state(jxp.PT_INPUTS, p_out, T_out)["d"]
     return d_out
 
 # Inputs
@@ -64,7 +64,7 @@ grad_fd = approx_derivative(
     fun=rho_out_polytropic,
     x0=x0,
     method="2-point",
-    rel_step=1e-6,
+    rel_step=1e-7,
     args=(fluid,),
 )
 
@@ -109,3 +109,31 @@ for m_idx, m_name in enumerate(out_names):
     for i, ri in enumerate(names):
         row = "".join(f"{H_multi[m_idx, i, j]:+16.6e}" for j in range(len(names)))
         print(f"{ri:>10s} {row}")
+
+
+
+# --------------------------- final verification --------------------------- #
+TOL = 1e-6
+violations = []
+
+names = ["T_in", "p_in", "p_out", "eta_p"]
+for i, name in enumerate(names):
+    fwd_val = float(grad_fwd[i])
+    rev_val = float(grad_rev[i])
+    fd_val  = float(grad_fd[i])
+
+    err_fwd_rev = abs(fwd_val - rev_val) / max(1e-14, abs(rev_val))
+    err_fwd_fd  = abs(fwd_val - fd_val) / max(1e-14, abs(fd_val))
+
+    if err_fwd_rev > TOL:
+        violations.append((name, "fwd vs rev", err_fwd_rev))
+    if err_fwd_fd > TOL:
+        violations.append((name, "fwd vs fd", err_fwd_fd))
+
+if violations:
+    msg_lines = ["The following gradient checks failed:"]
+    for name, kind, err in violations:
+        msg_lines.append(f"  - {name}: {kind} relative error = {err:.3e}")
+    raise ValueError("\n".join(msg_lines))
+else:
+    print(f"\nAll gradient checks passed (relative errors < {TOL:.1e}).")

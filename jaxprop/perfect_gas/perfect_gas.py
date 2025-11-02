@@ -299,7 +299,7 @@ def get_props_gradient(fluid, input_pair, x, y, method="auto", eps_rel=1e-6, eps
     Each entry: grads[prop] = jnp.array([∂prop/∂x, ∂prop/∂y])
     """
     def f(vec):
-        return fluid.get_props(input_pair, vec[0], vec[1])
+        return fluid.get_state(input_pair, vec[0], vec[1])
 
     # JAX autodiff path
     if method in ("auto", "jax"):

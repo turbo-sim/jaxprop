@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jaxprop"
-version = "0.4.1"
+version = "0.4.3"
 description = "JAX-compatible thermodynamic property calculations."
 authors = ["Roberto Agromayor"]
 license = "MIT"
