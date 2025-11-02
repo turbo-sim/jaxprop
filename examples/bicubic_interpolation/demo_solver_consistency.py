@@ -30,17 +30,17 @@ CONSISTENCY_TOLERANCE = 1e-12
 # ---------------------------
 outdir = "fluid_tables"
 fluid_name = "CO2"
-backend = "HEOS"
-h_min = 500e3  # J/kg
-h_max = 1500e3  # J/kg
-p_min = 2e6  # Pa
-p_max = 20e6  # Pa
-N_h = 32
-N_p = 32
+h_min = 100e3  # J/kg
+h_max = 600e3  # J/kg
+p_min = 2e6    # Pa
+p_max = 20e6   # Pa
+N_h = 80
+N_p = 80
+
 
 fluid = jxp.FluidBicubic(
     fluid_name=fluid_name,
-    backend=backend,
+    backend="HEOS",
     h_min=h_min,
     h_max=h_max,
     p_min=p_min,

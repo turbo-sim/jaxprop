@@ -12,11 +12,19 @@ jxp.set_plot_options()
 # Configuration
 # ---------------------------
 outdir = "fluid_tables"
-fluid_name = "CO2"
-h_min = 200e3  # J/kg
+# fluid_name = "CO2"
+# h_min = 200e3  # J/kg
+# h_max = 600e3  # J/kg
+# p_min = 2e6    # Pa
+# p_max = 20e6   # Pa
+# N_h = 32
+# N_p = 32
+
+fluid_name = "air"
+h_min = 50e3  # J/kg
 h_max = 600e3  # J/kg
-p_min = 2e6    # Pa
-p_max = 20e6   # Pa
+p_min = 0.6e5    # Pa
+p_max = 1.5e5   # Pa
 N_h = 32
 N_p = 32
 

@@ -416,7 +416,7 @@ class FluidBicubic(eqx.Module):
 
         return jxp.FluidState(fluid_name=self.fluid_name, **props)
 
-    def _interp_h_y(self, h, y_value, y_name, tol=1e-10, max_steps=64):
+    def _interp_h_y(self, h, y_value, y_name, tol=1e-6, max_steps=1000):
         """
         Solve for pressure at fixed enthalpy such that the specified property
         matches a target value, using Newton's method with a table-based initial guess.
@@ -443,7 +443,7 @@ class FluidBicubic(eqx.Module):
 
         return self._interp_h_p(h, solution.value)
 
-    def _interp_x_p(self, p, x_value, x_name, tol=1e-10, max_steps=64):
+    def _interp_x_p(self, p, x_value, x_name, tol=1e-6, max_steps=1000):
         """
         Solve for enthalpy at fixed pressure such that the specified property
         matches a target value, using Newton's method with a table-based initial guess.
