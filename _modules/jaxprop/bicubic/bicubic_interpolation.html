@@ -746,7 +746,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidState</span><span class="p">(</span><span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span> <span class="o">**</span><span class="n">props</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_interp_h_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">y_value</span><span class="p">,</span> <span class="n">y_name</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="mi">64</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_interp_h_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">y_value</span><span class="p">,</span> <span class="n">y_name</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Solve for pressure at fixed enthalpy such that the specified property</span>
 <span class="sd">        matches a target value, using Newton&#39;s method with a table-based initial guess.</span>
@@ -773,7 +773,7 @@ document.write(`
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp_h_p</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">solution</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_interp_x_p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">x_value</span><span class="p">,</span> <span class="n">x_name</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="mi">64</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_interp_x_p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">x_value</span><span class="p">,</span> <span class="n">x_name</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Solve for enthalpy at fixed pressure such that the specified property</span>
 <span class="sd">        matches a target value, using Newton&#39;s method with a table-based initial guess.</span>
