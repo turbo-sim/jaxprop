@@ -1,13 +1,27 @@
 import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.integrate._ivp.ivp import METHODS as ODE_METHODS
-import jaxprop as props
+import jaxprop as jxp
 import matplotlib.pyplot as plt
 import pandas as pd
 import itertools
-import matplotlib as mpl
-props.set_plot_options(grid=True)
 
+jxp.set_plot_options(grid=True)
+
+
+def flatten_state_dict(prefix, data, out):
+    """
+    Recursively flattens a dict or BaseState into 'out'.
+    Keys become 'prefix.key'.
+    """
+    if isinstance(data, dict):
+        for k, v in data.items():
+            flat_key = f"{prefix}.{k}" if prefix else k
+            flatten_state_dict(flat_key, v, out)
+        return
+
+    # Base case: scalar/array -> store directly
+    out[prefix] = data
 
 
 def postprocess_ode(t, y, ode_handle):
@@ -38,21 +52,30 @@ def postprocess_ode(t, y, ode_handle):
         A dictionary where each key corresponds to a state variable and each value
         is a numpy array containing the values of that state variable at each integration step.
     """
-    # Initialize ode_out as a dictionary
+    # return ode_out
     ode_out = {}
-    for t_i, y_i in zip(t, y.T):
-        _, out = ode_handle(t_i, y_i)
 
-        for key, value in out.items():
-            # Initialize with an empty list
+    for t_i, y_i in zip(t, y.T):
+        _, out_raw = ode_handle(t_i, y_i)
+
+        # flatten nested dict/BaseState
+        flat_out = {}
+        for key, value in out_raw.items():
+            flatten_state_dict(key, value, flat_out)
+
+        # accumulate time series
+        for key, value in flat_out.items():
             if key not in ode_out:
                 ode_out[key] = []
-            # Append the value to list of current key
             ode_out[key].append(value)
 
-    # Convert lists to numpy arrays
+    # convert lists to numpy arrays where possible
     for key in ode_out:
-        ode_out[key] = np.array(ode_out[key])
+        try:
+            ode_out[key] = np.array(ode_out[key])
+        except Exception:
+            # fallback: keep as list of objects
+            ode_out[key] = np.array(ode_out[key], dtype=object)
 
     return ode_out
 
@@ -153,46 +176,29 @@ def barotropic_model_two_component(
             f"Invalid process_type='{process_type}'. Must be 'expansion' or 'compression'."
         )
 
-    # Calculate mass fractions of each component (constant values)
-    y_1 = mixture_ratio / (1 + mixture_ratio)
-    y_2 = 1 / (1 + mixture_ratio)
-
     # Initialize fluid and compute inlet state
-    fluid_1 = props.Fluid(name=fluid_name_1, backend=backend, exceptions=True)
-    fluid_2 = props.Fluid(name=fluid_name_2, backend=backend, exceptions=True)
+    fluid_1 = jxp.Fluid(name=fluid_name_1, backend=backend, exceptions=True)
+    fluid_2 = jxp.Fluid(name=fluid_name_2, backend=backend, exceptions=True)
 
     # Compute the inlet enthalpy of the mixture (ODE initial value)
-    props_in_1 = fluid_1.get_state(props.PT_INPUTS, p_in, T_in)
-    props_in_2 = fluid_2.get_state(props.PT_INPUTS, p_in, T_in)
-    h_in = y_1 * props_in_1.h + y_2 * props_in_2.h
+    state_in = jxp.get_mixture_state(fluid_1, fluid_2, p_in, T_in, mixture_ratio)
+    h_in = state_in.enthalpy
 
     # Define the ODE system
     def odefun(t, y):
 
-        # Rename arguments
+        # Compute mixture thermodynamic properties
         p = t
         h, T = y
+        state = jxp.get_mixture_state(fluid_1, fluid_2, p, T, mixture_ratio).to_dict()
 
-        # Compute fluid states
-        state_1 = fluid_1.get_state(props.PT_INPUTS, p, T)
-        state_2 = fluid_2.get_state(props.PT_INPUTS, p, T)
-
-        # Compute mixture thermodynamic properties
-        state = props.coolprop.calculate_mixture_properties(state_1, state_2, y_1, y_2)
-
-        # Add individual phases to the mixture properties
-        for key, value in state_1.items():
-            state[f"{key}_1"] = value
-        for key, value in state_2.items():
-            state[f"{key}_2"] = value
-
+        # Compute derived properties
         state["velocity"] = np.sqrt(2*(h_in - state["enthalpy"] + 1e-6))
         state["Mach"] = state["velocity"] / state["speed_of_sound"]
 
         # Compute right-hand-side of the ODE
         dhdp = efficiency / state["density"]
-        dTdp = (dhdp - state["dhdp_T"]) / state["isobaric_heat_capacity"]
-
+        dTdp = dhdp / state["isobaric_heat_capacity"] - state["joule_thomson"]
         return [dhdp, dTdp], state
 
     # Solve polytropic expansion differential equation
@@ -213,12 +219,6 @@ def barotropic_model_two_component(
 
     return states, ode_sol
 
-
-
-
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
 
@@ -271,19 +271,18 @@ if __name__ == "__main__":
             Re_throat = u_throat*rho_throat*np.sqrt(A_throat)/mu_throat
             m_dot = rho_throat * u_throat * A_throat
 
-
             # component mass flows
-            m_dot_water = m_dot * states["mass_frac_1"][-1]
-            m_dot_air = m_dot * states["mass_frac_2"][-1]
-            V_dot_air = m_dot_air / states["density_2"][-1]
-            V_dot_water = m_dot_water / states["density_1"][0]
+            m_dot_water = m_dot * states["mass_fraction_1"][-1]
+            m_dot_air = m_dot * states["mass_fraction_2"][-1]
+            V_dot_air = m_dot_air / states["component_2.density"][-1]
+            V_dot_water = m_dot_water / states["component_1.density"][0]
             power_pump = V_dot_water * (p_in - p_out) / efficiency_pump
 
             # outlet conditions
             v_out = states["velocity"][-1]
             Ma_out = states["Mach"][-1]
-            vol_frac_in = states["vol_frac_2"][0]
-            vol_frac_out = states["vol_frac_2"][-1]
+            vol_frac_in = states["volume_fraction_2"][0]
+            vol_frac_out = states["volume_fraction_2"][-1]
 
             # 4 stationary blades
             n_blades = 4.
@@ -322,7 +321,7 @@ if __name__ == "__main__":
                 "R": R,
                 "p_bar": p_bar,
                 "density": states["density"],
-                "vol_frac_2": states["vol_frac_2"],
+                "volume_fraction_2": states["volume_fraction_2"],
                 "speed_of_sound": states["speed_of_sound"],
                 "Mach": states["Mach"],
             })
@@ -385,7 +384,7 @@ if __name__ == "__main__":
         label = f"Mass ratio = {c['R']}"
 
         axs[0, 0].plot(c["p_bar"], c["density"], color=color, ls=linestyle, label=label)
-        axs[0, 1].plot(c["p_bar"], c["vol_frac_2"], color=color, ls=linestyle)
+        axs[0, 1].plot(c["p_bar"], c["volume_fraction_2"], color=color, ls=linestyle)
         axs[1, 0].plot(c["p_bar"], c["speed_of_sound"], color=color, ls=linestyle)
         axs[1, 1].plot(c["p_bar"], c["Mach"], color=color, ls=linestyle)
 
