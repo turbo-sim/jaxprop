@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.helpers_props &#8212; jaxprop v0.5.0 documentation</title>
+    <title>jaxprop.helpers_props &#8212; jaxprop v0.5.1 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=91ffe994"></script>
+    <script src="../../_static/documentation_options.js?v=2a036b89"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.0 documentation</p>
+    <p class="title logo__title">jaxprop v0.5.1 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -433,8 +433,8 @@ document.write(`
     <span class="c1"># &quot;dhdp_T&quot;: [],</span>
     <span class="c1"># --- two-phase</span>
     <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;vapor_quality&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="s2">&quot;q&quot;</span><span class="p">],</span>  <span class="c1"># add &quot;x&quot; when fixing nozzle overwrite</span>
-    <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;void_fraction&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;vapor_quality&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="s2">&quot;q&quot;</span><span class="p">],</span>  <span class="c1"># add &quot;x&quot; when fixing nozzle overwrite</span>
+    <span class="s2">&quot;void_fraction&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;quality_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha&quot;</span><span class="p">],</span>
     <span class="s2">&quot;surface_tension&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">],</span>
     <span class="s2">&quot;pressure_saturation&quot;</span><span class="p">:</span> <span class="p">[],</span>
     <span class="s2">&quot;temperature_saturation&quot;</span><span class="p">:</span> <span class="p">[],</span>
@@ -760,8 +760,8 @@ document.write(`
 
     <span class="c1"># --- two-phase properties</span>
     <span class="n">is_two_phase</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
-    <span class="n">quality_mass</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
-    <span class="n">quality_volume</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">vapor_quality</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">void_fraction</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
     <span class="n">surface_tension</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
     <span class="n">subcooling</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
     <span class="n">superheating</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>

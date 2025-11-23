@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.coolprop.core_calculations &#8212; jaxprop v0.5.0 documentation</title>
+    <title>jaxprop.coolprop.core_calculations &#8212; jaxprop v0.5.1 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=91ffe994"></script>
+    <script src="../../../_static/documentation_options.js?v=2a036b89"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.0 documentation</p>
+    <p class="title logo__title">jaxprop v0.5.1 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -410,9 +410,9 @@ document.write(`
         <span class="c1"># &quot;joule_thomson&quot;: compute_joule_thomson(AS),</span>
         <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="n">mu</span><span class="p">,</span>
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
-        <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">q_mass</span><span class="p">,</span>
+        <span class="s2">&quot;vapor_quality&quot;</span><span class="p">:</span> <span class="n">q_mass</span><span class="p">,</span>
         <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="n">q_vol</span><span class="p">,</span>
+        <span class="s2">&quot;void_fraction&quot;</span><span class="p">:</span> <span class="n">q_vol</span><span class="p">,</span>
         <span class="s2">&quot;surface_tension&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;subcooling&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;superheating&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
@@ -532,8 +532,8 @@ document.write(`
         <span class="s2">&quot;joule_thomson&quot;</span><span class="p">:</span> <span class="n">compute_joule_thomson</span><span class="p">(</span><span class="n">AS</span><span class="p">),</span>
         <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="n">mu</span><span class="p">,</span>
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
-        <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">mfrac_V</span><span class="p">,</span>
-        <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="n">vfrac_V</span><span class="p">,</span>
+        <span class="s2">&quot;vapor_quality&quot;</span><span class="p">:</span> <span class="n">mfrac_V</span><span class="p">,</span>
+        <span class="s2">&quot;void_fraction&quot;</span><span class="p">:</span> <span class="n">vfrac_V</span><span class="p">,</span>
         <span class="s2">&quot;surface_tension&quot;</span><span class="p">:</span> <span class="n">surface_tension</span><span class="p">,</span>
         <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="s2">&quot;subcooling&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
@@ -848,8 +848,8 @@ document.write(`
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
         <span class="s2">&quot;surface_tension&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># always for Helmholtz EoS</span>
-        <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-        <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;vapor_quality&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;void_fraction&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;subcooling&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;superheating&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;pressure_saturation&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
@@ -865,8 +865,8 @@ document.write(`
     <span class="c1"># Quality handling</span>
     <span class="k">if</span> <span class="n">generalize_quality</span><span class="p">:</span>
         <span class="n">q_mass</span> <span class="o">=</span> <span class="n">calculate_generalized_quality</span><span class="p">(</span><span class="n">AS</span><span class="p">)</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">q_mass</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;vapor_quality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">q_mass</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;void_fraction&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_two_phase&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># crude check vs critical entropy</span>
@@ -875,8 +875,8 @@ document.write(`
         <span class="n">cloned_AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">rho_crit</span><span class="p">,</span> <span class="n">T_crit</span><span class="p">)</span>
         <span class="n">s_crit</span> <span class="o">=</span> <span class="n">cloned_AS</span><span class="o">.</span><span class="n">smass</span><span class="p">()</span>
         <span class="n">frac_mass</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">AS</span><span class="o">.</span><span class="n">smass</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">s_crit</span> <span class="k">else</span> <span class="mf">0.0</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_mass</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_mass</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;vapor_quality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_mass</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;void_fraction&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_mass</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_two_phase&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">return</span> <span class="n">props</span></div>
@@ -1137,7 +1137,7 @@ document.write(`
             <span class="n">solver_max_iterations</span><span class="o">=</span><span class="n">solver_max_iterations</span><span class="p">,</span>
             <span class="n">print_convergence</span><span class="o">=</span><span class="n">print_convergence</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">props_meta</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.00</span> <span class="k">if</span> <span class="n">phase_change</span> <span class="o">==</span> <span class="s2">&quot;condensation&quot;</span> <span class="k">else</span> <span class="mf">0.00</span>
+        <span class="n">props_meta</span><span class="p">[</span><span class="s2">&quot;vapor_quality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.00</span> <span class="k">if</span> <span class="n">phase_change</span> <span class="o">==</span> <span class="s2">&quot;condensation&quot;</span> <span class="k">else</span> <span class="mf">0.00</span>
 
         <span class="c1"># Blend properties</span>
         <span class="n">props_blended</span> <span class="o">=</span> <span class="n">blend_properties</span><span class="p">(</span>
@@ -1282,7 +1282,7 @@ document.write(`
         <span class="c1"># Compute residual</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">compute_residual</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">target_value</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="n">prop_name</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">prop_name</span> <span class="o">==</span> <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">prop_name</span> <span class="o">==</span> <span class="s2">&quot;vapor_quality&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">value</span> <span class="o">-</span> <span class="n">target_value</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">value</span> <span class="o">/</span> <span class="n">target_value</span>
@@ -1894,8 +1894,8 @@ document.write(`
 <span class="c1">#     rho = 1 / (y_1 / props_1[&#39;rho&#39;] + y_2 / props_2[&#39;rho&#39;])</span>
 <span class="c1">#     vol_1 = y_1 * rho/props_1[&#39;rhomass&#39;]</span>
 <span class="c1">#     vol_2 = y_2 * rho/props_2[&#39;rhomass&#39;]</span>
-<span class="c1">#     quality_mass = y_1 if props_1[&#39;rho&#39;] &lt; props_2[&#39;rho&#39;] else vol_2</span>
-<span class="c1">#     quality_volume = vol_1 if props_1[&#39;rho&#39;] &lt; props_2[&#39;rho&#39;] else vol_2</span>
+<span class="c1">#     vapor_quality = y_1 if props_1[&#39;rho&#39;] &lt; props_2[&#39;rho&#39;] else vol_2</span>
+<span class="c1">#     void_fraction = vol_1 if props_1[&#39;rho&#39;] &lt; props_2[&#39;rho&#39;] else vol_2</span>
     
 <span class="c1">#     # Isothermal compressibility</span>
 <span class="c1">#     betaT_1 = props_1[&quot;isothermal_compressibility&quot;]</span>
@@ -1921,8 +1921,8 @@ document.write(`
 <span class="c1">#         &quot;vol_frac_1&quot;: vol_1,</span>
 <span class="c1">#         &quot;vol_frac_2&quot;: vol_2,</span>
 <span class="c1">#         &quot;mixture_ratio&quot;: y_1 / y_2,</span>
-<span class="c1">#         &quot;quality_mass&quot;: quality_mass,</span>
-<span class="c1">#         &quot;quality_volume&quot;: quality_volume,</span>
+<span class="c1">#         &quot;vapor_quality&quot;: vapor_quality,</span>
+<span class="c1">#         &quot;void_fraction&quot;: void_fraction,</span>
 <span class="c1">#         &quot;pressure&quot;: props_1[&#39;p&#39;],</span>
 <span class="c1">#         &quot;temperature&quot;: props_1[&#39;T&#39;],</span>
 <span class="c1">#         &quot;density&quot;: rho,</span>
