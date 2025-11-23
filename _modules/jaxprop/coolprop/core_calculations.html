@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.coolprop.core_calculations &#8212; jaxprop v0.5.1 documentation</title>
+    <title>jaxprop.coolprop.core_calculations &#8212; jaxprop v0.5.2 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=2a036b89"></script>
+    <script src="../../../_static/documentation_options.js?v=3d77ebef"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.1 documentation</p>
+    <p class="title logo__title">jaxprop v0.5.2 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -1330,6 +1330,12 @@ document.write(`
     <span class="c1"># Map aliases to their respective phase change</span>
     <span class="n">normalized_phase_change</span> <span class="o">=</span> <span class="n">PHASE_CHANGE_ALIASES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">phase_change</span><span class="p">)</span>
 
+    <span class="c1"># Convert to dicts</span>
+    <span class="n">props_equilibrium</span> <span class="o">=</span> <span class="n">props_equilibrium</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="n">props_metastable</span> <span class="o">=</span> <span class="n">props_metastable</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="n">blending_variable</span> <span class="o">=</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="p">[</span><span class="n">blending_variable</span><span class="p">]</span>
+
+
     <span class="c1"># Validate the normalized phase change</span>
     <span class="k">if</span> <span class="n">normalized_phase_change</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
@@ -1353,14 +1359,15 @@ document.write(`
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">props_equilibrium</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">prop_equilibrium</span> <span class="o">=</span> <span class="n">props_equilibrium</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
         <span class="n">prop_metastable</span> <span class="o">=</span> <span class="n">props_metastable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_numeric</span><span class="p">(</span><span class="n">prop_equilibrium</span><span class="p">)</span> <span class="ow">and</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_numeric</span><span class="p">(</span><span class="n">prop_metastable</span><span class="p">):</span>
-            <span class="n">props_blended</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop_equilibrium</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sigma</span><span class="p">)</span> <span class="o">+</span> <span class="n">prop_metastable</span> <span class="o">*</span> <span class="n">sigma</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">props_blended</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">props_blended</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop_equilibrium</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sigma</span><span class="p">)</span> <span class="o">+</span> <span class="n">prop_metastable</span> <span class="o">*</span> <span class="n">sigma</span>
+        <span class="c1"># if utils.is_numeric(prop_equilibrium) and utils.is_numeric(prop_metastable):</span>
+            <span class="c1"># props_blended[key] = prop_equilibrium * (1 - sigma) + prop_metastable * sigma</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     props_blended[key] = None</span>
             
     <span class="c1"># Add additional properties</span>
-    <span class="c1"># props_blended[&quot;x&quot;] = x</span>
-    <span class="c1"># props_blended[&quot;sigma&quot;] = sigma</span>
+    <span class="n">props_blended</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="n">props_blended</span><span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
 
     <span class="k">return</span> <span class="n">props_blended</span></div>
 
