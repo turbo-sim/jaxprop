@@ -461,6 +461,7 @@ document.write(`
     <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="s2">&quot;Density (kg/m$^3$)&quot;</span><span class="p">,</span>
     <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="s2">&quot;Viscosity (Pa·s)&quot;</span><span class="p">,</span>
     <span class="s2">&quot;speed_sound&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed of sound (m/s)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;speed_of_sound&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed of sound (m/s)&quot;</span><span class="p">,</span>
     <span class="s2">&quot;void_fraction&quot;</span><span class="p">:</span> <span class="s2">&quot;Void fraction&quot;</span><span class="p">,</span>
     <span class="s2">&quot;vapor_quality&quot;</span><span class="p">:</span> <span class="s2">&quot;Vapor quality&quot;</span><span class="p">,</span>
     <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="s2">&quot;Pressure (Pa)&quot;</span><span class="p">,</span>
@@ -723,7 +724,6 @@ document.write(`
 
 
 
-
 <div class="viewcode-block" id="FluidState">
 <a class="viewcode-back" href="../../source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FluidState</span><span class="p">(</span><span class="n">BaseState</span><span class="p">):</span>
@@ -771,6 +771,7 @@ document.write(`
     <span class="n">supersaturation_ratio</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span></div>
 
 
+
 <div class="viewcode-block" id="MixtureState">
 <a class="viewcode-back" href="../../source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.MixtureState">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MixtureState</span><span class="p">(</span><span class="n">BaseState</span><span class="p">):</span>
@@ -809,8 +810,8 @@ document.write(`
     <span class="n">isobaric_heat_capacity</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
     <span class="n">compressibility_factor</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
     <span class="n">speed_of_sound</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
-    <span class="n">speed_sound_p</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
-    <span class="n">speed_sound_pT</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">speed_of_sound_p</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">speed_of_sound_pT</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
     <span class="n">isothermal_compressibility</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
     <span class="n">isentropic_compressibility</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
     <span class="n">isothermal_bulk_modulus</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
