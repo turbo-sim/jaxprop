@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath(".."))
 project = "jaxprop"
 copyright = "2025, Roberto Agromayor"
 author = ""
-release = "v0.5.2"
+release = "v0.5.3"
 
 # Define extensions
 extensions = [
