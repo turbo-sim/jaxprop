@@ -19,7 +19,7 @@ N_h = 80  # Number of enthalpy points
 # ---------------------------
 # Delete existing tables
 # ---------------------------
-outdir = "demo_table_generation"
+outdir = "fluid_tables"
 if os.path.exists(outdir):
     shutil.rmtree(outdir, ignore_errors=True)
 

@@ -61,7 +61,8 @@ environment.pickle
 
 # Environment directories
 .env
-venv/
+.venv/
+.pytest_cache/
 
 
 # Results folders
@@ -69,8 +70,4 @@ venv/
 **/output*/
 **/results/
 **/results*/
-
-**/assignments/
-
 **/fluid_tables/
-**/verification_figures/

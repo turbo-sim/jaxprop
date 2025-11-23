@@ -95,6 +95,7 @@ class FluidBicubic(eqx.Module):
     table: dict = eqx.field(static=False)
     identifier: str = eqx.field(static=True)
     grad_method: str = eqx.field(static=True)
+    metadata: dict = eqx.field(static=True)
 
     def __init__(
         self,
@@ -129,6 +130,20 @@ class FluidBicubic(eqx.Module):
         self.delta_h = float(self.h_vals[1] - self.h_vals[0])
         self.delta_logP = float(self.logP_vals[1] - self.logP_vals[0])
 
+        # Define metadata for the current table
+        self.metadata = dict(
+                fluid=self.fluid_name,
+                backend=self.backend,
+                h_min=self.h_min,
+                h_max=self.h_max,
+                p_min=self.p_min,
+                p_max=self.p_max,
+                N_h=self.N_h,
+                N_p=self.N_p,
+                delta_h=self.delta_h,
+                delta_logP=self.delta_logP,
+            )
+        
         # Create the table if it does not exist
         self.table = self._load_or_generate_table()
 
@@ -139,13 +154,38 @@ class FluidBicubic(eqx.Module):
         if os.path.exists(pkl_path):
             with open(pkl_path, "rb") as f:
                 table = pickle.load(f)
+
+            meta = table.get("metadata", {})
+            expected = self.metadata
+
+            mismatches = []
+            for k, val_expected in expected.items():
+                val_loaded = meta.get(k, None)
+                if val_loaded != val_expected:
+                    mismatches.append((k, val_loaded, val_expected))
+
+            if mismatches:
+                print(f"Existing table found at '{pkl_path}', but metadata mismatch detected:")
+                for k, old, new in mismatches:
+                    print(f"  - {k}: file={old}  expected={new}")
+                print("Regenerating property table...\n")
+                return self._generate_property_table()
+
             print(f"Loaded property table from: {pkl_path}")
             return table
 
-            # TODO do a check that all metadate of the loaded table matches, an dif it changes print message and recompute table
-
         print("No existing table found, generating new one...")
         return self._generate_property_table()
+
+
+
+        #     print(f"Loaded property table from: {pkl_path}")
+        #     return table
+
+        #     # TODO do a check that all metadate of the loaded table matches, an dif it changes print message and recompute table
+
+        # print("No existing table found, generating new one...")
+        # return self._generate_property_table()
 
     def _generate_property_table(self):
         # Initialize fluid
@@ -446,7 +486,7 @@ class FluidBicubic(eqx.Module):
 
         return jxp.FluidState(fluid_name=self.fluid_name, **props)
 
-    def _interp_h_y(self, h, y_value, y_name, tol=1e-10, max_steps=64):
+    def _interp_h_y(self, h, y_value, y_name, tol=1e-6, max_steps=1000):
         """
         Solve for pressure at fixed enthalpy such that the specified property
         matches a target value, using Newton's method with a table-based initial guess.
@@ -473,7 +513,7 @@ class FluidBicubic(eqx.Module):
 
         return self._interp_h_p(h, solution.value)
 
-    def _interp_x_p(self, p, x_value, x_name, tol=1e-10, max_steps=64):
+    def _interp_x_p(self, p, x_value, x_name, tol=1e-6, max_steps=1000):
         """
         Solve for enthalpy at fixed pressure such that the specified property
         matches a target value, using Newton's method with a table-based initial guess.

@@ -109,7 +109,7 @@ PROPERTY_ALIASES = {
     # --- basic thermodynamic properties
     "pressure": ["p", "P"],
     "temperature": ["T"],
-    "density": ["rho", "d", "rhomass", "dmass"],  # add "D" when fixing nozzle overwrite
+    "density": ["rho", "d", "rhomass", "dmass"],
     "enthalpy": ["h", "hmass", "H"],
     "entropy": ["s", "smass"],
     "internal_energy": ["u", "umass", "e", "energy"],
