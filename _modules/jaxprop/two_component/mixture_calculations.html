@@ -1,0 +1,489 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jaxprop.two_component.mixture_calculations &#8212; jaxprop v0.5.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=91ffe994"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/jaxprop/two_component/mixture_calculations';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">jaxprop v0.5.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/bibliography.html">Bibliography</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.components.html">jaxprop.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html">jaxprop.perfect_gas.perfect_gas module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.graphics.html">jaxprop.graphics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.math.html">jaxprop.math module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.utils.html">jaxprop.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for jaxprop.two_component.mixture_calculations</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">helpers_props</span> <span class="k">as</span> <span class="n">jxp</span>
+
+
+<span class="c1"># ------------------------------------------------------------------------------------ #</span>
+<span class="c1"># Compute the properties of a two-component mixture (e.g., water and nitrogen)</span>
+<span class="c1"># ------------------------------------------------------------------------------------ #</span>
+<div class="viewcode-block" id="get_mixture_state">
+<a class="viewcode-back" href="../../../source/api/jaxprop.two_component.mixture_calculations.html#jaxprop.two_component.mixture_calculations.get_mixture_state">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_mixture_state</span><span class="p">(</span><span class="n">fluid_1</span><span class="p">,</span> <span class="n">fluid_2</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jxp</span><span class="o">.</span><span class="n">MixtureState</span><span class="p">:</span>
+    <span class="n">state_1</span> <span class="o">=</span> <span class="n">fluid_1</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">state_2</span> <span class="o">=</span> <span class="n">fluid_2</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_mix_from_states</span><span class="p">(</span><span class="n">state_1</span><span class="p">,</span> <span class="n">state_2</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_mix_from_states</span><span class="p">(</span>
+    <span class="n">state_1</span><span class="p">:</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidState</span><span class="p">,</span> <span class="n">state_2</span><span class="p">:</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidState</span><span class="p">,</span> <span class="n">R</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jxp</span><span class="o">.</span><span class="n">MixtureState</span><span class="p">:</span>
+
+    <span class="c1"># --- mass-averaged thermodynamic properties</span>
+    <span class="n">y_1</span> <span class="o">=</span> <span class="n">R</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span>
+    <span class="n">y_2</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">y_1</span>
+    <span class="n">cv</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">state_1</span><span class="o">.</span><span class="n">isochoric_heat_capacity</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">state_2</span><span class="o">.</span><span class="n">isochoric_heat_capacity</span>
+    <span class="n">cp</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">state_1</span><span class="o">.</span><span class="n">isobaric_heat_capacity</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">state_2</span><span class="o">.</span><span class="n">isobaric_heat_capacity</span>
+    <span class="n">umass</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">state_1</span><span class="o">.</span><span class="n">internal_energy</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">state_2</span><span class="o">.</span><span class="n">internal_energy</span>
+    <span class="n">hmass</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">state_1</span><span class="o">.</span><span class="n">enthalpy</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">state_2</span><span class="o">.</span><span class="n">enthalpy</span>
+    <span class="n">smass</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">state_1</span><span class="o">.</span><span class="n">entropy</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">state_2</span><span class="o">.</span><span class="n">entropy</span>
+
+    <span class="c1"># --- Joule-Thomson coefficients</span>
+    <span class="c1"># k_P_1 = state_1.isobaric_expansion_coefficient</span>
+    <span class="c1"># k_P_2 = state_2.isobaric_expansion_coefficient</span>
+    <span class="c1"># dhdp_T_1 = (1 - state_1.temperature * k_P_1) / state_1.density</span>
+    <span class="c1"># dhdp_T_2 = (1 - state_2.temperature * k_P_2) / state_2.density</span>
+    <span class="c1"># dhdp_T = y_1 * dhdp_T_1 + y_2 * dhdp_T_2</span>
+    <span class="n">isothermal_joule_thomson</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">state_1</span><span class="o">.</span><span class="n">isothermal_joule_thomson</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">state_2</span><span class="o">.</span><span class="n">isothermal_joule_thomson</span>
+    <span class="n">joule_thomson</span> <span class="o">=</span> <span class="o">-</span> <span class="n">isothermal_joule_thomson</span> <span class="o">/</span> <span class="n">cp</span>
+
+    <span class="c1"># --- mixture density (harmonic mixture law)</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">y_1</span> <span class="o">/</span> <span class="n">state_1</span><span class="o">.</span><span class="n">density</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">/</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span><span class="p">)</span>
+
+    <span class="c1"># --- volume fractions</span>
+    <span class="n">vol_1</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">/</span> <span class="n">state_1</span><span class="o">.</span><span class="n">density</span>
+    <span class="n">vol_2</span> <span class="o">=</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">/</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span>
+
+    <span class="c1"># --- simple quality identifiers</span>
+    <span class="c1"># (use same criterion you had)</span>
+    <span class="n">quality_mass</span> <span class="o">=</span> <span class="n">y_1</span> <span class="k">if</span> <span class="n">state_1</span><span class="o">.</span><span class="n">density</span> <span class="o">&lt;</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span> <span class="k">else</span> <span class="n">y_2</span>
+    <span class="n">quality_volume</span> <span class="o">=</span> <span class="n">vol_1</span> <span class="k">if</span> <span class="n">state_1</span><span class="o">.</span><span class="n">density</span> <span class="o">&lt;</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span> <span class="k">else</span> <span class="n">vol_2</span>
+
+    <span class="c1"># --- isothermal compressibility</span>
+    <span class="n">k_T_1</span> <span class="o">=</span> <span class="n">state_1</span><span class="o">.</span><span class="n">isothermal_compressibility</span>
+    <span class="n">k_T_2</span> <span class="o">=</span> <span class="n">state_2</span><span class="o">.</span><span class="n">isothermal_compressibility</span>
+    <span class="n">isothermal_compressibility</span> <span class="o">=</span> <span class="n">vol_1</span> <span class="o">*</span> <span class="n">k_T_1</span> <span class="o">+</span> <span class="n">vol_2</span> <span class="o">*</span> <span class="n">k_T_2</span>
+    <span class="n">isothermal_bulk_modulus</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">isothermal_compressibility</span>
+
+    <span class="c1"># --- compute the speed of sound and related properties</span>
+    <span class="n">rho_1</span> <span class="o">=</span> <span class="n">state_1</span><span class="o">.</span><span class="n">density</span>
+    <span class="n">rho_2</span> <span class="o">=</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span>
+    <span class="n">a_1</span>   <span class="o">=</span> <span class="n">state_1</span><span class="o">.</span><span class="n">speed_of_sound</span>
+    <span class="n">a_2</span>   <span class="o">=</span> <span class="n">state_2</span><span class="o">.</span><span class="n">speed_of_sound</span>
+    <span class="n">Gamma_1</span> <span class="o">=</span> <span class="n">state_1</span><span class="o">.</span><span class="n">gruneisen</span>
+    <span class="n">Gamma_2</span> <span class="o">=</span> <span class="n">state_2</span><span class="o">.</span><span class="n">gruneisen</span>
+    <span class="n">cp_1</span> <span class="o">=</span> <span class="n">state_1</span><span class="o">.</span><span class="n">isobaric_heat_capacity</span>
+    <span class="n">cp_2</span> <span class="o">=</span> <span class="n">state_2</span><span class="o">.</span><span class="n">isobaric_heat_capacity</span>
+    <span class="n">C_1</span> <span class="o">=</span> <span class="n">rho_1</span> <span class="o">*</span> <span class="n">vol_1</span> <span class="o">*</span> <span class="n">cp_1</span>
+    <span class="n">C_2</span> <span class="o">=</span> <span class="n">rho_2</span> <span class="o">*</span> <span class="n">vol_2</span> <span class="o">*</span> <span class="n">cp_2</span>
+    <span class="n">inv_a2_p</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="n">vol_1</span> <span class="o">/</span> <span class="p">(</span><span class="n">rho_1</span> <span class="o">*</span> <span class="n">a_1</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span>
+        <span class="n">vol_2</span> <span class="o">/</span> <span class="p">(</span><span class="n">rho_2</span> <span class="o">*</span> <span class="n">a_2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">Z_pT</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">rho</span> <span class="o">*</span> <span class="n">state_1</span><span class="o">.</span><span class="n">temperature</span> <span class="o">*</span>
+        <span class="p">(</span><span class="n">C_1</span> <span class="o">*</span> <span class="n">C_2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">C_1</span> <span class="o">+</span> <span class="n">C_2</span><span class="p">)</span> <span class="o">*</span>
+        <span class="p">(</span><span class="n">Gamma_1</span><span class="o">/</span><span class="p">(</span><span class="n">rho_1</span> <span class="o">*</span> <span class="n">a_1</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">Gamma_2</span><span class="o">/</span><span class="p">(</span><span class="n">rho_2</span> <span class="o">*</span> <span class="n">a_2</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+    <span class="p">)</span>
+    <span class="n">inv_a2_pT</span> <span class="o">=</span> <span class="n">inv_a2_p</span> <span class="o">+</span> <span class="n">Z_pT</span>
+    <span class="n">speed_sound_p</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">inv_a2_p</span><span class="p">)</span>
+    <span class="n">speed_sound_pT</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">inv_a2_pT</span><span class="p">)</span>
+    <span class="n">speed_sound</span> <span class="o">=</span> <span class="n">speed_sound_pT</span>
+    <span class="n">isentropic_bulk_modulus</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">speed_sound</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">isentropic_compressibility</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">isentropic_bulk_modulus</span>
+
+    <span class="c1"># --- transport properties (volume-weighted)</span>
+    <span class="n">conductivity</span> <span class="o">=</span> <span class="n">vol_1</span> <span class="o">*</span> <span class="n">state_1</span><span class="o">.</span><span class="n">conductivity</span> <span class="o">+</span> <span class="n">vol_2</span> <span class="o">*</span> <span class="n">state_2</span><span class="o">.</span><span class="n">conductivity</span>
+    <span class="n">viscosity</span> <span class="o">=</span> <span class="n">vol_1</span> <span class="o">*</span> <span class="n">state_1</span><span class="o">.</span><span class="n">viscosity</span> <span class="o">+</span> <span class="n">vol_2</span> <span class="o">*</span> <span class="n">state_2</span><span class="o">.</span><span class="n">viscosity</span>
+
+    <span class="c1"># --- build the mixture state</span>
+    <span class="n">mix</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">MixtureState</span><span class="p">(</span>
+        <span class="n">fluid_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">state_1</span><span class="o">.</span><span class="n">fluid_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">state_2</span><span class="o">.</span><span class="n">fluid_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">identifier</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">state_1</span><span class="o">.</span><span class="n">fluid_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">state_2</span><span class="o">.</span><span class="n">fluid_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">component_1</span><span class="o">=</span><span class="n">state_1</span><span class="p">,</span>
+        <span class="n">component_2</span><span class="o">=</span><span class="n">state_2</span><span class="p">,</span>
+        <span class="c1"># composition</span>
+        <span class="n">mass_fraction_1</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_1</span><span class="p">),</span>
+        <span class="n">mass_fraction_2</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_2</span><span class="p">),</span>
+        <span class="n">volume_fraction_1</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">vol_1</span><span class="p">),</span>
+        <span class="n">volume_fraction_2</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">vol_2</span><span class="p">),</span>
+        <span class="c1"># mixture thermodynamic state</span>
+        <span class="n">pressure</span><span class="o">=</span><span class="n">state_1</span><span class="o">.</span><span class="n">pressure</span><span class="p">,</span>
+        <span class="n">temperature</span><span class="o">=</span><span class="n">state_1</span><span class="o">.</span><span class="n">temperature</span><span class="p">,</span>
+        <span class="n">density</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">rho</span><span class="p">),</span>
+        <span class="n">enthalpy</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">hmass</span><span class="p">),</span>
+        <span class="n">internal_energy</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">umass</span><span class="p">),</span>
+        <span class="n">entropy</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">smass</span><span class="p">),</span>
+        <span class="n">isochoric_heat_capacity</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">cv</span><span class="p">),</span>
+        <span class="n">isobaric_heat_capacity</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">cp</span><span class="p">),</span>
+        <span class="n">compressibility_factor</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="c1"># compressibilities</span>
+        <span class="n">isothermal_compressibility</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">isothermal_compressibility</span><span class="p">),</span>
+        <span class="n">isothermal_bulk_modulus</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">isothermal_bulk_modulus</span><span class="p">),</span>
+        <span class="n">isentropic_compressibility</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">isentropic_compressibility</span><span class="p">),</span>
+        <span class="n">isentropic_bulk_modulus</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">isentropic_bulk_modulus</span><span class="p">),</span>
+        <span class="c1"># wave propagation</span>
+        <span class="n">speed_of_sound</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">speed_sound</span><span class="p">),</span>
+        <span class="n">speed_sound_p</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">speed_sound_p</span><span class="p">),</span>
+        <span class="n">speed_sound_pT</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">speed_sound_pT</span><span class="p">),</span>
+        <span class="c1"># transport</span>
+        <span class="n">conductivity</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">conductivity</span><span class="p">),</span>
+        <span class="n">viscosity</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">viscosity</span><span class="p">),</span>
+        <span class="c1"># two-phase markers</span>
+        <span class="n">quality_mass</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">quality_mass</span><span class="p">),</span>
+        <span class="n">quality_volume</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">quality_volume</span><span class="p">),</span>
+        <span class="c1"># auxiliary derivative</span>
+        <span class="n">joule_thomson</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">joule_thomson</span><span class="p">),</span>
+        <span class="n">isothermal_joule_thomson</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">isothermal_joule_thomson</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mix</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Roberto Agromayor.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.bicubic.bicubic_interpolation &#8212; jaxprop v0.4.3 documentation</title>
+    <title>jaxprop.bicubic.bicubic_interpolation &#8212; jaxprop v0.5.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=7a515c1e"></script>
+    <script src="../../../_static/documentation_options.js?v=91ffe994"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.4.3 documentation</p>
+    <p class="title logo__title">jaxprop v0.5.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -392,6 +392,7 @@ document.write(`
     <span class="n">table</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">grad_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -426,6 +427,20 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">delta_h</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">h_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">delta_logP</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logP_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">logP_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
+        <span class="c1"># Define metadata for the current table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">fluid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span>
+                <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">,</span>
+                <span class="n">h_min</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">h_min</span><span class="p">,</span>
+                <span class="n">h_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">h_max</span><span class="p">,</span>
+                <span class="n">p_min</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p_min</span><span class="p">,</span>
+                <span class="n">p_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p_max</span><span class="p">,</span>
+                <span class="n">N_h</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">N_h</span><span class="p">,</span>
+                <span class="n">N_p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">N_p</span><span class="p">,</span>
+                <span class="n">delta_h</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_h</span><span class="p">,</span>
+                <span class="n">delta_logP</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_logP</span><span class="p">,</span>
+            <span class="p">)</span>
+        
         <span class="c1"># Create the table if it does not exist</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_or_generate_table</span><span class="p">()</span>
 
@@ -436,13 +451,38 @@ document.write(`
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pkl_path</span><span class="p">):</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pkl_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">table</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+            <span class="n">meta</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">expected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span>
+
+            <span class="n">mismatches</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">val_expected</span> <span class="ow">in</span> <span class="n">expected</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">val_loaded</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">val_loaded</span> <span class="o">!=</span> <span class="n">val_expected</span><span class="p">:</span>
+                    <span class="n">mismatches</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">val_loaded</span><span class="p">,</span> <span class="n">val_expected</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">mismatches</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Existing table found at &#39;</span><span class="si">{</span><span class="n">pkl_path</span><span class="si">}</span><span class="s2">&#39;, but metadata mismatch detected:&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="n">mismatches</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: file=</span><span class="si">{</span><span class="n">old</span><span class="si">}</span><span class="s2">  expected=</span><span class="si">{</span><span class="n">new</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Regenerating property table...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_property_table</span><span class="p">()</span>
+
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded property table from: </span><span class="si">{</span><span class="n">pkl_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">table</span>
 
-            <span class="c1"># TODO do a check that all metadate of the loaded table matches, an dif it changes print message and recompute table</span>
-
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No existing table found, generating new one...&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_property_table</span><span class="p">()</span>
+
+
+
+        <span class="c1">#     print(f&quot;Loaded property table from: {pkl_path}&quot;)</span>
+        <span class="c1">#     return table</span>
+
+        <span class="c1">#     # TODO do a check that all metadate of the loaded table matches, an dif it changes print message and recompute table</span>
+
+        <span class="c1"># print(&quot;No existing table found, generating new one...&quot;)</span>
+        <span class="c1"># return self._generate_property_table()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_generate_property_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Initialize fluid</span>

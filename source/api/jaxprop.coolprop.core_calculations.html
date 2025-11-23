@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>jaxprop.coolprop.core_calculations module &#8212; jaxprop v0.4.3 documentation</title>
+    <title>jaxprop.coolprop.core_calculations module &#8212; jaxprop v0.5.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=7a515c1e"></script>
+    <script src="../../_static/documentation_options.js?v=91ffe994"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -142,7 +142,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.4.3 documentation</p>
+    <p class="title logo__title">jaxprop v0.5.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -342,7 +342,6 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.blend_properties"><code class="docutils literal notranslate"><span class="pre">blend_properties()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_generalized_quality"><code class="docutils literal notranslate"><span class="pre">calculate_generalized_quality()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_mixture_properties"><code class="docutils literal notranslate"><span class="pre">calculate_mixture_properties()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_subcooling"><code class="docutils literal notranslate"><span class="pre">calculate_subcooling()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_superheating"><code class="docutils literal notranslate"><span class="pre">calculate_superheating()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_supersaturation"><code class="docutils literal notranslate"><span class="pre">calculate_supersaturation()</span></code></a></li>
@@ -423,33 +422,6 @@ the two-phase region by extrapolating entropy values.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>float</dt><dd><p>The calculated quality of the fluid.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.calculate_mixture_properties">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_mixture_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">props_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">props_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#calculate_mixture_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.calculate_mixture_properties" title="Link to this definition">#</a></dt>
-<dd><p>Calculate the thermodynamic properties of the mixture.</p>
-<p>TODO: add model equations and explanation</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>state_1</strong><span class="classifier">dict</span></dt><dd><p>Thermodynamic properties of fluid 1.</p>
-</dd>
-<dt><strong>state_2</strong><span class="classifier">dict</span></dt><dd><p>Thermodynamic properties of fluid 2.</p>
-</dd>
-<dt><strong>y_1</strong><span class="classifier">float</span></dt><dd><p>Mass fraction of fluid 1.</p>
-</dd>
-<dt><strong>y_2</strong><span class="classifier">float</span></dt><dd><p>Mass fraction of fluid 2.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>mixture_properties</strong><span class="classifier">dict</span></dt><dd><p>A dictionary containing the mixture’s properties.</p>
 </dd>
 </dl>
 </dd>
@@ -956,7 +928,6 @@ The following table summarizes the expressions for various properties:</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.blend_properties"><code class="docutils literal notranslate"><span class="pre">blend_properties()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_generalized_quality"><code class="docutils literal notranslate"><span class="pre">calculate_generalized_quality()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_mixture_properties"><code class="docutils literal notranslate"><span class="pre">calculate_mixture_properties()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_subcooling"><code class="docutils literal notranslate"><span class="pre">calculate_subcooling()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_superheating"><code class="docutils literal notranslate"><span class="pre">calculate_superheating()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.core_calculations.calculate_supersaturation"><code class="docutils literal notranslate"><span class="pre">calculate_supersaturation()</span></code></a></li>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>jaxprop.components.nozzle_model_core module &#8212; jaxprop v0.4.3 documentation</title>
+    <title>jaxprop.components.nozzle_model_core module &#8212; jaxprop v0.5.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=7a515c1e"></script>
+    <script src="../../_static/documentation_options.js?v=91ffe994"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -141,7 +141,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.4.3 documentation</p>
+    <p class="title logo__title">jaxprop v0.5.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -316,9 +316,7 @@ document.write(`
   </button>
 `);
 </script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</button>
+
 </div></div>
       
     </div>
@@ -334,19 +332,6 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> Contents </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.components.nozzle_model_core.get_friction_factor_haaland"><code class="docutils literal notranslate"><span class="pre">get_friction_factor_haaland()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.components.nozzle_model_core.get_heat_transfer_coefficient"><code class="docutils literal notranslate"><span class="pre">get_heat_transfer_coefficient()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.components.nozzle_model_core.get_wall_viscous_stress"><code class="docutils literal notranslate"><span class="pre">get_wall_viscous_stress()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.components.nozzle_model_core.nozzle_single_phase_autonomous"><code class="docutils literal notranslate"><span class="pre">nozzle_single_phase_autonomous()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.components.nozzle_model_core.nozzle_single_phase_core"><code class="docutils literal notranslate"><span class="pre">nozzle_single_phase_core()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.components.nozzle_model_core.symmetric_nozzle_geometry"><code class="docutils literal notranslate"><span class="pre">symmetric_nozzle_geometry()</span></code></a></li>
-</ul>
-            </nav>
         </div>
     </div>
 </div>
@@ -356,116 +341,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-jaxprop.components.nozzle_model_core">
-<span id="jaxprop-components-nozzle-model-core-module"></span><h1>jaxprop.components.nozzle_model_core module<a class="headerlink" href="#module-jaxprop.components.nozzle_model_core" title="Link to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.components.nozzle_model_core.get_friction_factor_haaland">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.components.nozzle_model_core.</span></span><span class="sig-name descname"><span class="pre">get_friction_factor_haaland</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Reynolds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roughness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diameter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/components/nozzle_model_core.html#get_friction_factor_haaland"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.components.nozzle_model_core.get_friction_factor_haaland" title="Link to this definition">#</a></dt>
-<dd><p>Computes the Darcy-Weisbach friction factor using the Haaland equation.</p>
-<p>The Haaland equation provides an explicit formulation for the friction factor
-that is simpler to use than the Colebrook equation, with an acceptable level
-of accuracy for most engineering applications.
-This function implements the Haaland equation as it is presented in many fluid
-mechanics textbooks, such as “Fluid Mechanics Fundamentals and Applications”
-by Cengel and Cimbala (equation 12-93).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>reynolds</strong><span class="classifier">float</span></dt><dd><p>The Reynolds number, dimensionless, indicating the flow regime.</p>
-</dd>
-<dt><strong>roughness</strong><span class="classifier">float</span></dt><dd><p>The absolute roughness of the pipe’s internal surface (m).</p>
-</dd>
-<dt><strong>diameter</strong><span class="classifier">float</span></dt><dd><p>The inner diameter of the pipe (m).</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>f</strong><span class="classifier">float</span></dt><dd><p>The computed friction factor, dimensionless.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.components.nozzle_model_core.get_heat_transfer_coefficient">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.components.nozzle_model_core.</span></span><span class="sig-name descname"><span class="pre">get_heat_transfer_coefficient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heat_capacity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">darcy_friction_factor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/components/nozzle_model_core.html#get_heat_transfer_coefficient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.components.nozzle_model_core.get_heat_transfer_coefficient" title="Link to this definition">#</a></dt>
-<dd><p>Estimates the heat transfer using the Reynolds analogy.</p>
-<p>This function is an adaptation of the Reynolds analogy which relates the heat transfer
-coefficient to the product of the Fanning friction factor, velocity, density, and heat
-capacity of the fluid. The Fanning friction factor one fourth of the Darcy friction factor.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>velocity</strong><span class="classifier">float</span></dt><dd><p>Velocity of the fluid (m/s).</p>
-</dd>
-<dt><strong>density</strong><span class="classifier">float</span></dt><dd><p>Density of the fluid (kg/m^3).</p>
-</dd>
-<dt><strong>heat_capacity</strong><span class="classifier">float</span></dt><dd><p>Specific heat capacity of the fluid at constant pressure (J/kg·K).</p>
-</dd>
-<dt><strong>darcy_friction_factor</strong><span class="classifier">float</span></dt><dd><p>Darcy friction factor, dimensionless.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>float</dt><dd><p>Estimated heat transfer coefficient (W/m^2·K).</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.components.nozzle_model_core.get_wall_viscous_stress">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.components.nozzle_model_core.</span></span><span class="sig-name descname"><span class="pre">get_wall_viscous_stress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">darcy_friction_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/components/nozzle_model_core.html#get_wall_viscous_stress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.components.nozzle_model_core.get_wall_viscous_stress" title="Link to this definition">#</a></dt>
-<dd><p>Wall shear stress from Darcy-Weisbach friction factor.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>darcy_friction_factor</strong><span class="classifier">float</span></dt><dd><p>Darcy-Weisbach friction factor (dimensionless).</p>
-</dd>
-<dt><strong>density</strong><span class="classifier">float</span></dt><dd><p>Fluid density (kg/m^3).</p>
-</dd>
-<dt><strong>velocity</strong><span class="classifier">float</span></dt><dd><p>Fluid velocity (m/s).</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>float</dt><dd><p>Wall shear stress (Pa).</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.components.nozzle_model_core.nozzle_single_phase_autonomous">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.components.nozzle_model_core.</span></span><span class="sig-name descname"><span class="pre">nozzle_single_phase_autonomous</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/components/nozzle_model_core.html#nozzle_single_phase_autonomous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.components.nozzle_model_core.nozzle_single_phase_autonomous" title="Link to this definition">#</a></dt>
-<dd><dl class="simple">
-<dt>Autonomous formulation of the nozzle equations:</dt><dd><p>dx/dt   = det(A)
-dy_i/dt = det(A with column i replaced by b)</p>
-</dd>
-</dl>
-<p>State vector: Y = [x, v, rho, p]</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.components.nozzle_model_core.nozzle_single_phase_core">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.components.nozzle_model_core.</span></span><span class="sig-name descname"><span class="pre">nozzle_single_phase_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/components/nozzle_model_core.html#nozzle_single_phase_core"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.components.nozzle_model_core.nozzle_single_phase_core" title="Link to this definition">#</a></dt>
-<dd><p>Wrapper that adapts from (t, y) to autonomous form.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.components.nozzle_model_core.symmetric_nozzle_geometry">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.components.nozzle_model_core.</span></span><span class="sig-name descname"><span class="pre">symmetric_nozzle_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_inlet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_throat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/components/nozzle_model_core.html#symmetric_nozzle_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.components.nozzle_model_core.symmetric_nozzle_geometry" title="Link to this definition">#</a></dt>
-<dd><p>Return A (m^2), dA/dx (m), perimeter (m), diameter (m) for a symmetric parabolic CD nozzle.
-x: position in m (scalar or array)
-L: total length in m (scalar)</p>
-</dd></dl>
-
+  <section id="jaxprop-components-nozzle-model-core-module">
+<h1>jaxprop.components.nozzle_model_core module<a class="headerlink" href="#jaxprop-components-nozzle-model-core-module" title="Link to this heading">#</a></h1>
 </section>
 
 
@@ -503,26 +380,6 @@ L: total length in m (scalar)</p>
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.components.nozzle_model_core.get_friction_factor_haaland"><code class="docutils literal notranslate"><span class="pre">get_friction_factor_haaland()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.components.nozzle_model_core.get_heat_transfer_coefficient"><code class="docutils literal notranslate"><span class="pre">get_heat_transfer_coefficient()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.components.nozzle_model_core.get_wall_viscous_stress"><code class="docutils literal notranslate"><span class="pre">get_wall_viscous_stress()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.components.nozzle_model_core.nozzle_single_phase_autonomous"><code class="docutils literal notranslate"><span class="pre">nozzle_single_phase_autonomous()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.components.nozzle_model_core.nozzle_single_phase_core"><code class="docutils literal notranslate"><span class="pre">nozzle_single_phase_core()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.components.nozzle_model_core.symmetric_nozzle_geometry"><code class="docutils literal notranslate"><span class="pre">symmetric_nozzle_geometry()</span></code></a></li>
-</ul>
-  </nav></div>
-
-</div></div>
               
             
           </div>

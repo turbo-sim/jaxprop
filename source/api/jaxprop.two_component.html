@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>jaxprop.utils module &#8212; jaxprop v0.5.0 documentation</title>
+    <title>jaxprop.two_component package &#8212; jaxprop v0.5.0 documentation</title>
   
   
   
@@ -49,10 +49,9 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'source/api/jaxprop.utils';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'source/api/jaxprop.two_component';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="prev" title="jaxprop.math module" href="jaxprop.math.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -115,6 +114,8 @@
       
       
       
+        
+      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -157,10 +158,10 @@
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="jaxprop.html">jaxprop package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
@@ -187,7 +188,7 @@
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.math.html">jaxprop.math module</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">jaxprop.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.utils.html">jaxprop.utils module</a></li>
 </ul>
 </details></li>
 </ul>
@@ -244,7 +245,7 @@
       
       
       
-      <li><a href="../../_sources/source/api/jaxprop.utils.rst" target="_blank"
+      <li><a href="../../_sources/source/api/jaxprop.two_component.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -328,7 +329,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>jaxprop.utils module</h1>
+    <h1>jaxprop.two_component package</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -338,11 +339,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.utils.check_lists_match"><code class="docutils literal notranslate"><span class="pre">check_lists_match()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.utils.is_float"><code class="docutils literal notranslate"><span class="pre">is_float()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.utils.is_numeric"><code class="docutils literal notranslate"><span class="pre">is_numeric()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.utils.print_dict"><code class="docutils literal notranslate"><span class="pre">print_dict()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.utils.print_object"><code class="docutils literal notranslate"><span class="pre">print_object()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 </ul>
             </nav>
         </div>
@@ -354,131 +351,19 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-jaxprop.utils">
-<span id="jaxprop-utils-module"></span><h1>jaxprop.utils module<a class="headerlink" href="#module-jaxprop.utils" title="Link to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.utils.check_lists_match">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.utils.</span></span><span class="sig-name descname"><span class="pre">check_lists_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/utils.html#check_lists_match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.utils.check_lists_match" title="Link to this definition">#</a></dt>
-<dd><p>Check if two lists contain the exact same elements, regardless of their order.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>list1</strong><span class="classifier">list</span></dt><dd><p>The first list for comparison.</p>
-</dd>
-<dt><strong>list2</strong><span class="classifier">list</span></dt><dd><p>The second list for comparison.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>bool</dt><dd><p>Returns True if the lists contain the exact same elements, regardless of their order.
-Returns False otherwise.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">check_lists_match</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="go">True</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">check_lists_match</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-<span class="go">False</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.utils.is_float">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.utils.</span></span><span class="sig-name descname"><span class="pre">is_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/jaxprop/utils.html#is_float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.utils.is_float" title="Link to this definition">#</a></dt>
-<dd><p>Check if the given element can be converted to a float.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>element</strong><span class="classifier">any</span></dt><dd><p>The element to be checked.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>bool</dt><dd><p>True if the element can be converted to a float, False otherwise.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.utils.is_numeric">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.utils.</span></span><span class="sig-name descname"><span class="pre">is_numeric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/utils.html#is_numeric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.utils.is_numeric" title="Link to this definition">#</a></dt>
-<dd><p>Check if a value is a numeric type, including both Python and NumPy numeric types.</p>
-<p>This function checks if the given value is a numeric type (int, float, complex)
-in the Python standard library or NumPy, while explicitly excluding boolean types.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>value</strong><span class="classifier">any type</span></dt><dd><p>The value to be checked for being a numeric type.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>bool</dt><dd><p>Returns True if the value is a numeric type (excluding booleans),
-otherwise False.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.utils.print_dict">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.utils.</span></span><span class="sig-name descname"><span class="pre">print_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/utils.html#print_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.utils.print_dict" title="Link to this definition">#</a></dt>
-<dd><p>Recursively prints nested dictionaries with indentation or returns the formatted string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data</strong><span class="classifier">dict</span></dt><dd><p>The dictionary to print.</p>
-</dd>
-<dt><strong>indent</strong><span class="classifier">int, optional</span></dt><dd><p>The initial level of indentation for the keys of the dictionary, by default 0.</p>
-</dd>
-<dt><strong>return_output</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, returns the formatted string instead of printing it.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>str or None</dt><dd><p>The formatted string representation of the dictionary if return_output is True, otherwise None.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jaxprop.utils.print_object">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.utils.</span></span><span class="sig-name descname"><span class="pre">print_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/utils.html#print_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.utils.print_object" title="Link to this definition">#</a></dt>
-<dd><p>Prints all attributes and methods of an object, sorted alphabetically.</p>
-<ul class="simple">
-<li><p>Methods are identified as callable and printed with the prefix ‘Method: ‘.</p></li>
-<li><p>Attributes are identified as non-callable and printed with the prefix ‘Attribute: ‘.</p></li>
+  <section id="module-jaxprop.two_component">
+<span id="jaxprop-two-component-package"></span><h1>jaxprop.two_component package<a class="headerlink" href="#module-jaxprop.two_component" title="Link to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="jaxprop.two_component.mixture_calculations.html">jaxprop.two_component.mixture_calculations module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.two_component.mixture_calculations.html#jaxprop.two_component.mixture_calculations.get_mixture_state"><code class="docutils literal notranslate"><span class="pre">get_mixture_state()</span></code></a></li>
 </ul>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>obj</strong><span class="classifier">object</span></dt><dd><p>The object whose attributes and methods are to be printed.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>None</dt><dd><p>This function does not return any value. It prints the attributes and methods of the given object.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
+</li>
+</ul>
+</div>
+</section>
 </section>
 
 
@@ -492,15 +377,6 @@ otherwise False.</p>
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="jaxprop.math.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">jaxprop.math module</p>
-      </div>
-    </a>
 </div>
                 </footer>
               
@@ -517,11 +393,7 @@ otherwise False.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.utils.check_lists_match"><code class="docutils literal notranslate"><span class="pre">check_lists_match()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.utils.is_float"><code class="docutils literal notranslate"><span class="pre">is_float()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.utils.is_numeric"><code class="docutils literal notranslate"><span class="pre">is_numeric()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.utils.print_dict"><code class="docutils literal notranslate"><span class="pre">print_dict()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.utils.print_object"><code class="docutils literal notranslate"><span class="pre">print_object()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 </ul>
   </nav></div>
 

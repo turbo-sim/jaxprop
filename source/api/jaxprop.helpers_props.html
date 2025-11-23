@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>jaxprop.helpers_props module &#8212; jaxprop v0.4.3 documentation</title>
+    <title>jaxprop.helpers_props module &#8212; jaxprop v0.5.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=7a515c1e"></script>
+    <script src="../../_static/documentation_options.js?v=91ffe994"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -141,7 +141,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.4.3 documentation</p>
+    <p class="title logo__title">jaxprop v0.5.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -339,14 +339,22 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState"><code class="docutils literal notranslate"><span class="pre">BaseState</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.at_index"><code class="docutils literal notranslate"><span class="pre">BaseState.at_index()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.flipped"><code class="docutils literal notranslate"><span class="pre">BaseState.flipped()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.items"><code class="docutils literal notranslate"><span class="pre">BaseState.items()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.keys"><code class="docutils literal notranslate"><span class="pre">BaseState.keys()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.stack"><code class="docutils literal notranslate"><span class="pre">BaseState.stack()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.to_dict"><code class="docutils literal notranslate"><span class="pre">BaseState.to_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.values"><code class="docutils literal notranslate"><span class="pre">BaseState.values()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState"><code class="docutils literal notranslate"><span class="pre">FluidState</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.at_index"><code class="docutils literal notranslate"><span class="pre">FluidState.at_index()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.compressibility_factor"><code class="docutils literal notranslate"><span class="pre">FluidState.compressibility_factor</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.conductivity"><code class="docutils literal notranslate"><span class="pre">FluidState.conductivity</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.density"><code class="docutils literal notranslate"><span class="pre">FluidState.density</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.enthalpy"><code class="docutils literal notranslate"><span class="pre">FluidState.enthalpy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.entropy"><code class="docutils literal notranslate"><span class="pre">FluidState.entropy</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.flipped"><code class="docutils literal notranslate"><span class="pre">FluidState.flipped()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidState.fluid_name</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.gruneisen"><code class="docutils literal notranslate"><span class="pre">FluidState.gruneisen</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.heat_capacity_ratio"><code class="docutils literal notranslate"><span class="pre">FluidState.heat_capacity_ratio</span></code></a></li>
@@ -361,15 +369,12 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.isothermal_bulk_modulus"><code class="docutils literal notranslate"><span class="pre">FluidState.isothermal_bulk_modulus</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.isothermal_compressibility"><code class="docutils literal notranslate"><span class="pre">FluidState.isothermal_compressibility</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.isothermal_joule_thomson"><code class="docutils literal notranslate"><span class="pre">FluidState.isothermal_joule_thomson</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.items"><code class="docutils literal notranslate"><span class="pre">FluidState.items()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.joule_thomson"><code class="docutils literal notranslate"><span class="pre">FluidState.joule_thomson</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.keys"><code class="docutils literal notranslate"><span class="pre">FluidState.keys()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.pressure"><code class="docutils literal notranslate"><span class="pre">FluidState.pressure</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.pressure_saturation"><code class="docutils literal notranslate"><span class="pre">FluidState.pressure_saturation</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.quality_mass"><code class="docutils literal notranslate"><span class="pre">FluidState.quality_mass</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.quality_volume"><code class="docutils literal notranslate"><span class="pre">FluidState.quality_volume</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.speed_of_sound"><code class="docutils literal notranslate"><span class="pre">FluidState.speed_of_sound</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.stack"><code class="docutils literal notranslate"><span class="pre">FluidState.stack()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.subcooling"><code class="docutils literal notranslate"><span class="pre">FluidState.subcooling</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.superheating"><code class="docutils literal notranslate"><span class="pre">FluidState.superheating</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.supersaturation_degree"><code class="docutils literal notranslate"><span class="pre">FluidState.supersaturation_degree</span></code></a></li>
@@ -377,9 +382,40 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.surface_tension"><code class="docutils literal notranslate"><span class="pre">FluidState.surface_tension</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.temperature"><code class="docutils literal notranslate"><span class="pre">FluidState.temperature</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.temperature_saturation"><code class="docutils literal notranslate"><span class="pre">FluidState.temperature_saturation</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.to_dict"><code class="docutils literal notranslate"><span class="pre">FluidState.to_dict()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.values"><code class="docutils literal notranslate"><span class="pre">FluidState.values()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.viscosity"><code class="docutils literal notranslate"><span class="pre">FluidState.viscosity</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState"><code class="docutils literal notranslate"><span class="pre">MixtureState</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.component_1"><code class="docutils literal notranslate"><span class="pre">MixtureState.component_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.component_2"><code class="docutils literal notranslate"><span class="pre">MixtureState.component_2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.compressibility_factor"><code class="docutils literal notranslate"><span class="pre">MixtureState.compressibility_factor</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.conductivity"><code class="docutils literal notranslate"><span class="pre">MixtureState.conductivity</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.density"><code class="docutils literal notranslate"><span class="pre">MixtureState.density</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.enthalpy"><code class="docutils literal notranslate"><span class="pre">MixtureState.enthalpy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.entropy"><code class="docutils literal notranslate"><span class="pre">MixtureState.entropy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.fluid_name"><code class="docutils literal notranslate"><span class="pre">MixtureState.fluid_name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.identifier"><code class="docutils literal notranslate"><span class="pre">MixtureState.identifier</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.internal_energy"><code class="docutils literal notranslate"><span class="pre">MixtureState.internal_energy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isentropic_bulk_modulus"><code class="docutils literal notranslate"><span class="pre">MixtureState.isentropic_bulk_modulus</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isentropic_compressibility"><code class="docutils literal notranslate"><span class="pre">MixtureState.isentropic_compressibility</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isobaric_heat_capacity"><code class="docutils literal notranslate"><span class="pre">MixtureState.isobaric_heat_capacity</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isochoric_heat_capacity"><code class="docutils literal notranslate"><span class="pre">MixtureState.isochoric_heat_capacity</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isothermal_bulk_modulus"><code class="docutils literal notranslate"><span class="pre">MixtureState.isothermal_bulk_modulus</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isothermal_compressibility"><code class="docutils literal notranslate"><span class="pre">MixtureState.isothermal_compressibility</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isothermal_joule_thomson"><code class="docutils literal notranslate"><span class="pre">MixtureState.isothermal_joule_thomson</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.joule_thomson"><code class="docutils literal notranslate"><span class="pre">MixtureState.joule_thomson</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.mass_fraction_1"><code class="docutils literal notranslate"><span class="pre">MixtureState.mass_fraction_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.mass_fraction_2"><code class="docutils literal notranslate"><span class="pre">MixtureState.mass_fraction_2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.pressure"><code class="docutils literal notranslate"><span class="pre">MixtureState.pressure</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.quality_mass"><code class="docutils literal notranslate"><span class="pre">MixtureState.quality_mass</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.quality_volume"><code class="docutils literal notranslate"><span class="pre">MixtureState.quality_volume</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.speed_of_sound"><code class="docutils literal notranslate"><span class="pre">MixtureState.speed_of_sound</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.speed_sound_p"><code class="docutils literal notranslate"><span class="pre">MixtureState.speed_sound_p</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.speed_sound_pT"><code class="docutils literal notranslate"><span class="pre">MixtureState.speed_sound_pT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.temperature"><code class="docutils literal notranslate"><span class="pre">MixtureState.temperature</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.viscosity"><code class="docutils literal notranslate"><span class="pre">MixtureState.viscosity</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.volume_fraction_1"><code class="docutils literal notranslate"><span class="pre">MixtureState.volume_fraction_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.volume_fraction_2"><code class="docutils literal notranslate"><span class="pre">MixtureState.volume_fraction_2</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.extract_vars"><code class="docutils literal notranslate"><span class="pre">extract_vars()</span></code></a></li>
@@ -397,9 +433,93 @@ document.write(`
   <section id="module-jaxprop.helpers_props">
 <span id="jaxprop-helpers-props-module"></span><h1>jaxprop.helpers_props module<a class="headerlink" href="#module-jaxprop.helpers_props" title="Link to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.helpers_props.</span></span><span class="sig-name descname"><span class="pre">FluidState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enthalpy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entropy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">internal_energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressibility_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isobaric_heat_capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isochoric_heat_capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heat_capacity_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed_of_sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isothermal_compressibility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isentropic_compressibility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isothermal_bulk_modulus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isentropic_bulk_modulus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isobaric_expansion_coefficient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isothermal_joule_thomson</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joule_thomson</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gruneisen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">viscosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conductivity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_two_phase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface_tension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subcooling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">superheating</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure_saturation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature_saturation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation_degree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#FluidState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.FluidState" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="jaxprop.helpers_props.BaseState">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.helpers_props.</span></span><span class="sig-name descname"><span class="pre">BaseState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_meta_fields</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">('fluid_name',</span> <span class="pre">'identifier',</span> <span class="pre">'_meta_fields')</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#BaseState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.BaseState" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>Base class for state-like objects.</p>
+<p>Intentionally mirrors FluidState behavior with minimal generalization:
+- metadata fields are configurable via _meta_fields
+- alias lookup uses _alias_to_canonical (defaults to global ALIAS_TO_CANONICAL)</p>
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.helpers_props.BaseState.at_index" title="jaxprop.helpers_props.BaseState.at_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">at_index</span></code></a>(idx)</p></td>
+<td><p>Extract a single state at the given index from a batched state.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jaxprop.helpers_props.BaseState.flipped" title="jaxprop.helpers_props.BaseState.flipped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flipped</span></code></a>()</p></td>
+<td><p>Return a new state where all array-valued fields are reversed in order.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.helpers_props.BaseState.items" title="jaxprop.helpers_props.BaseState.items"><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code></a>()</p></td>
+<td><p>Dict-style iteration</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jaxprop.helpers_props.BaseState.keys" title="jaxprop.helpers_props.BaseState.keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys</span></code></a>()</p></td>
+<td><p>Dict-style iteration</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.helpers_props.BaseState.stack" title="jaxprop.helpers_props.BaseState.stack"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stack</span></code></a>(states)</p></td>
+<td><p>Combine a list of states into a batched state (values stacked into arrays).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jaxprop.helpers_props.BaseState.to_dict" title="jaxprop.helpers_props.BaseState.to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dict</span></code></a>([include_aliases])</p></td>
+<td><p>Return dict of numeric properties, with optional aliases.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.helpers_props.BaseState.values" title="jaxprop.helpers_props.BaseState.values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">values</span></code></a>()</p></td>
+<td><p>Dict-style iteration</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.BaseState.at_index">
+<span class="sig-name descname"><span class="pre">at_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#BaseState.at_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.BaseState.at_index" title="Link to this definition">#</a></dt>
+<dd><p>Extract a single state at the given index from a batched state.</p>
+<p>This returns a new state with the same metadata,
+and each property reduced to the element at position <cite>idx</cite>
+along the first axis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.BaseState.flipped">
+<span class="sig-name descname"><span class="pre">flipped</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#BaseState.flipped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.BaseState.flipped" title="Link to this definition">#</a></dt>
+<dd><p>Return a new state where all array-valued fields are reversed in order.</p>
+<p>Scalars and 0-D arrays are left unchanged, while 1-D or N-D arrays are flipped
+along their first axis. Metadata fields are copied unchanged.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.BaseState.items">
+<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#BaseState.items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.BaseState.items" title="Link to this definition">#</a></dt>
+<dd><p>Dict-style iteration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.BaseState.keys">
+<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#BaseState.keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.BaseState.keys" title="Link to this definition">#</a></dt>
+<dd><p>Dict-style iteration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.BaseState.stack">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#BaseState.stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.BaseState.stack" title="Link to this definition">#</a></dt>
+<dd><p>Combine a list of states into a batched state (values stacked into arrays).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.BaseState.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_aliases</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#BaseState.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.BaseState.to_dict" title="Link to this definition">#</a></dt>
+<dd><p>Return dict of numeric properties, with optional aliases.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.BaseState.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#BaseState.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.BaseState.values" title="Link to this definition">#</a></dt>
+<dd><p>Dict-style iteration</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.helpers_props.</span></span><span class="sig-name descname"><span class="pre">FluidState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_meta_fields</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">('fluid_name',</span> <span class="pre">'identifier',</span> <span class="pre">'_meta_fields')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enthalpy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entropy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">internal_energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressibility_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isobaric_heat_capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isochoric_heat_capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heat_capacity_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed_of_sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isothermal_compressibility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isentropic_compressibility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isothermal_bulk_modulus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isentropic_bulk_modulus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isobaric_expansion_coefficient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isothermal_joule_thomson</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joule_thomson</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gruneisen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">viscosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conductivity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_two_phase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface_tension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subcooling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">superheating</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure_saturation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature_saturation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation_degree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#FluidState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.FluidState" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jaxprop.helpers_props.BaseState" title="jaxprop.helpers_props.BaseState"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseState</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -411,52 +531,30 @@ document.write(`
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.helpers_props.FluidState.at_index" title="jaxprop.helpers_props.FluidState.at_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">at_index</span></code></a>(idx)</p></td>
-<td><p>Extract a single FluidState at the given index from a batched FluidState.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">at_index</span></code>(idx)</p></td>
+<td><p>Extract a single state at the given index from a batched state.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#jaxprop.helpers_props.FluidState.flipped" title="jaxprop.helpers_props.FluidState.flipped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flipped</span></code></a>()</p></td>
-<td><p>Return a new FluidState where all array-valued fields are reversed in order.</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flipped</span></code>()</p></td>
+<td><p>Return a new state where all array-valued fields are reversed in order.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.helpers_props.FluidState.items" title="jaxprop.helpers_props.FluidState.items"><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code>()</p></td>
 <td><p>Dict-style iteration</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#jaxprop.helpers_props.FluidState.keys" title="jaxprop.helpers_props.FluidState.keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys</span></code></a>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys</span></code>()</p></td>
 <td><p>Dict-style iteration</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.helpers_props.FluidState.stack" title="jaxprop.helpers_props.FluidState.stack"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stack</span></code></a>(states)</p></td>
-<td><p>Combine a list of FluidState into a batched FluidState (values stacked into arrays).</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stack</span></code>(states)</p></td>
+<td><p>Combine a list of states into a batched state (values stacked into arrays).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#jaxprop.helpers_props.FluidState.to_dict" title="jaxprop.helpers_props.FluidState.to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dict</span></code></a>([include_aliases])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dict</span></code>([include_aliases])</p></td>
 <td><p>Return dict of numeric properties, with optional aliases.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.helpers_props.FluidState.values" title="jaxprop.helpers_props.FluidState.values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">values</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">values</span></code>()</p></td>
 <td><p>Dict-style iteration</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.at_index">
-<span class="sig-name descname"><span class="pre">at_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jaxprop.helpers_props.FluidState" title="jaxprop.helpers_props.FluidState"><span class="pre">FluidState</span></a></span></span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#FluidState.at_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.FluidState.at_index" title="Link to this definition">#</a></dt>
-<dd><p>Extract a single FluidState at the given index from a batched FluidState.</p>
-<p>This returns a new FluidState with the same <cite>fluid_name</cite> and <cite>identifier</cite>,
-and each property reduced to the element at position <cite>idx</cite> along the first axis.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>idx</strong><span class="classifier">int</span></dt><dd><p>Index along the first dimension to extract.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>FluidState</dt><dd><p>A new FluidState representing the state at the specified index.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.compressibility_factor">
 <span class="sig-name descname"><span class="pre">compressibility_factor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.FluidState.compressibility_factor" title="Link to this definition">#</a></dt>
@@ -481,15 +579,6 @@ and each property reduced to the element at position <cite>idx</cite> along the 
 <dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.entropy">
 <span class="sig-name descname"><span class="pre">entropy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.FluidState.entropy" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.flipped">
-<span class="sig-name descname"><span class="pre">flipped</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jaxprop.helpers_props.FluidState" title="jaxprop.helpers_props.FluidState"><span class="pre">FluidState</span></a></span></span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#FluidState.flipped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.FluidState.flipped" title="Link to this definition">#</a></dt>
-<dd><p>Return a new FluidState where all array-valued fields are reversed in order.</p>
-<p>Scalars and 0-D arrays are left unchanged, while 1-D or N-D arrays are flipped
-along their first axis. Metadata fields (<code class="docutils literal notranslate"><span class="pre">fluid_name</span></code>, <code class="docutils literal notranslate"><span class="pre">identifier</span></code>) are
-copied unchanged.</p>
-</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.fluid_name">
@@ -561,22 +650,10 @@ copied unchanged.</p>
 <span class="sig-name descname"><span class="pre">isothermal_joule_thomson</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.FluidState.isothermal_joule_thomson" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.items">
-<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#FluidState.items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.FluidState.items" title="Link to this definition">#</a></dt>
-<dd><p>Dict-style iteration</p>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.joule_thomson">
 <span class="sig-name descname"><span class="pre">joule_thomson</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.FluidState.joule_thomson" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.keys">
-<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#FluidState.keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.FluidState.keys" title="Link to this definition">#</a></dt>
-<dd><p>Dict-style iteration</p>
-</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.pressure">
@@ -602,12 +679,6 @@ copied unchanged.</p>
 <dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.speed_of_sound">
 <span class="sig-name descname"><span class="pre">speed_of_sound</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.FluidState.speed_of_sound" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.stack">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jaxprop.helpers_props.FluidState" title="jaxprop.helpers_props.FluidState"><span class="pre">FluidState</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jaxprop.helpers_props.FluidState" title="jaxprop.helpers_props.FluidState"><span class="pre">FluidState</span></a></span></span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#FluidState.stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.FluidState.stack" title="Link to this definition">#</a></dt>
-<dd><p>Combine a list of FluidState into a batched FluidState (values stacked into arrays).</p>
-</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.subcooling">
@@ -644,21 +715,208 @@ copied unchanged.</p>
 <span class="sig-name descname"><span class="pre">temperature_saturation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.FluidState.temperature_saturation" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_aliases</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#FluidState.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.FluidState.to_dict" title="Link to this definition">#</a></dt>
-<dd><p>Return dict of numeric properties, with optional aliases.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.values">
-<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#FluidState.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.FluidState.values" title="Link to this definition">#</a></dt>
-<dd><p>Dict-style iteration</p>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.helpers_props.FluidState.viscosity">
 <span class="sig-name descname"><span class="pre">viscosity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.FluidState.viscosity" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.helpers_props.</span></span><span class="sig-name descname"><span class="pre">MixtureState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_meta_fields</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">('fluid_name',</span> <span class="pre">'identifier',</span> <span class="pre">'_meta_fields')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jaxprop.helpers_props.FluidState" title="jaxprop.helpers_props.FluidState"><span class="pre">FluidState</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jaxprop.helpers_props.FluidState" title="jaxprop.helpers_props.FluidState"><span class="pre">FluidState</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass_fraction_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass_fraction_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume_fraction_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume_fraction_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enthalpy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">internal_energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entropy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isochoric_heat_capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isobaric_heat_capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressibility_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed_of_sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed_sound_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed_sound_pT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isothermal_compressibility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isentropic_compressibility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isothermal_bulk_modulus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isentropic_bulk_modulus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">viscosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conductivity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joule_thomson</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isothermal_joule_thomson</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/helpers_props.html#MixtureState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.helpers_props.MixtureState" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jaxprop.helpers_props.BaseState" title="jaxprop.helpers_props.BaseState"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseState</span></code></a></p>
+<p>Two-component mixture state.</p>
+<p>This class follows the same structure and behavior style as FluidState,
+but holds two nested FluidState objects for the components.
+Only <cite>stack</cite> requires an override because BaseState.stack assumes that
+each field is numeric, whereas <cite>component_1</cite> and <cite>component_2</cite>
+are FluidState objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>component_1</strong></dt><dd></dd>
+<dt><strong>component_2</strong></dt><dd></dd>
+<dt><strong>fluid_name</strong></dt><dd></dd>
+<dt><strong>identifier</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">at_index</span></code>(idx)</p></td>
+<td><p>Extract a single state at the given index from a batched state.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flipped</span></code>()</p></td>
+<td><p>Return a new state where all array-valued fields are reversed in order.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code>()</p></td>
+<td><p>Dict-style iteration</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys</span></code>()</p></td>
+<td><p>Dict-style iteration</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stack</span></code>(states)</p></td>
+<td><p>Combine a list of states into a batched state (values stacked into arrays).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dict</span></code>([include_aliases])</p></td>
+<td><p>Return dict of numeric properties, with optional aliases.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">values</span></code>()</p></td>
+<td><p>Dict-style iteration</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.component_1">
+<span class="sig-name descname"><span class="pre">component_1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jaxprop.helpers_props.FluidState" title="jaxprop.helpers_props.FluidState"><span class="pre">FluidState</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.component_1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.component_2">
+<span class="sig-name descname"><span class="pre">component_2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jaxprop.helpers_props.FluidState" title="jaxprop.helpers_props.FluidState"><span class="pre">FluidState</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.component_2" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.compressibility_factor">
+<span class="sig-name descname"><span class="pre">compressibility_factor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.compressibility_factor" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.conductivity">
+<span class="sig-name descname"><span class="pre">conductivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.conductivity" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.density">
+<span class="sig-name descname"><span class="pre">density</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.density" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.enthalpy">
+<span class="sig-name descname"><span class="pre">enthalpy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.enthalpy" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.entropy">
+<span class="sig-name descname"><span class="pre">entropy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.entropy" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.fluid_name">
+<span class="sig-name descname"><span class="pre">fluid_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.fluid_name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.identifier">
+<span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.identifier" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.internal_energy">
+<span class="sig-name descname"><span class="pre">internal_energy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.internal_energy" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.isentropic_bulk_modulus">
+<span class="sig-name descname"><span class="pre">isentropic_bulk_modulus</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.isentropic_bulk_modulus" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.isentropic_compressibility">
+<span class="sig-name descname"><span class="pre">isentropic_compressibility</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.isentropic_compressibility" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.isobaric_heat_capacity">
+<span class="sig-name descname"><span class="pre">isobaric_heat_capacity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.isobaric_heat_capacity" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.isochoric_heat_capacity">
+<span class="sig-name descname"><span class="pre">isochoric_heat_capacity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.isochoric_heat_capacity" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.isothermal_bulk_modulus">
+<span class="sig-name descname"><span class="pre">isothermal_bulk_modulus</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.isothermal_bulk_modulus" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.isothermal_compressibility">
+<span class="sig-name descname"><span class="pre">isothermal_compressibility</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.isothermal_compressibility" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.isothermal_joule_thomson">
+<span class="sig-name descname"><span class="pre">isothermal_joule_thomson</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.isothermal_joule_thomson" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.joule_thomson">
+<span class="sig-name descname"><span class="pre">joule_thomson</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.joule_thomson" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.mass_fraction_1">
+<span class="sig-name descname"><span class="pre">mass_fraction_1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.mass_fraction_1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.mass_fraction_2">
+<span class="sig-name descname"><span class="pre">mass_fraction_2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.mass_fraction_2" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.pressure">
+<span class="sig-name descname"><span class="pre">pressure</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.pressure" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.quality_mass">
+<span class="sig-name descname"><span class="pre">quality_mass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.quality_mass" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.quality_volume">
+<span class="sig-name descname"><span class="pre">quality_volume</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.quality_volume" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.speed_of_sound">
+<span class="sig-name descname"><span class="pre">speed_of_sound</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.speed_of_sound" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.speed_sound_p">
+<span class="sig-name descname"><span class="pre">speed_sound_p</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.speed_sound_p" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.speed_sound_pT">
+<span class="sig-name descname"><span class="pre">speed_sound_pT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.speed_sound_pT" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.temperature">
+<span class="sig-name descname"><span class="pre">temperature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.temperature" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.viscosity">
+<span class="sig-name descname"><span class="pre">viscosity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.viscosity" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.volume_fraction_1">
+<span class="sig-name descname"><span class="pre">volume_fraction_1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.volume_fraction_1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.helpers_props.MixtureState.volume_fraction_2">
+<span class="sig-name descname"><span class="pre">volume_fraction_2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">nan</span></em><a class="headerlink" href="#jaxprop.helpers_props.MixtureState.volume_fraction_2" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -697,14 +955,22 @@ copied unchanged.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState"><code class="docutils literal notranslate"><span class="pre">BaseState</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.at_index"><code class="docutils literal notranslate"><span class="pre">BaseState.at_index()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.flipped"><code class="docutils literal notranslate"><span class="pre">BaseState.flipped()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.items"><code class="docutils literal notranslate"><span class="pre">BaseState.items()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.keys"><code class="docutils literal notranslate"><span class="pre">BaseState.keys()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.stack"><code class="docutils literal notranslate"><span class="pre">BaseState.stack()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.to_dict"><code class="docutils literal notranslate"><span class="pre">BaseState.to_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.BaseState.values"><code class="docutils literal notranslate"><span class="pre">BaseState.values()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState"><code class="docutils literal notranslate"><span class="pre">FluidState</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.at_index"><code class="docutils literal notranslate"><span class="pre">FluidState.at_index()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.compressibility_factor"><code class="docutils literal notranslate"><span class="pre">FluidState.compressibility_factor</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.conductivity"><code class="docutils literal notranslate"><span class="pre">FluidState.conductivity</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.density"><code class="docutils literal notranslate"><span class="pre">FluidState.density</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.enthalpy"><code class="docutils literal notranslate"><span class="pre">FluidState.enthalpy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.entropy"><code class="docutils literal notranslate"><span class="pre">FluidState.entropy</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.flipped"><code class="docutils literal notranslate"><span class="pre">FluidState.flipped()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidState.fluid_name</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.gruneisen"><code class="docutils literal notranslate"><span class="pre">FluidState.gruneisen</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.heat_capacity_ratio"><code class="docutils literal notranslate"><span class="pre">FluidState.heat_capacity_ratio</span></code></a></li>
@@ -719,15 +985,12 @@ copied unchanged.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.isothermal_bulk_modulus"><code class="docutils literal notranslate"><span class="pre">FluidState.isothermal_bulk_modulus</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.isothermal_compressibility"><code class="docutils literal notranslate"><span class="pre">FluidState.isothermal_compressibility</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.isothermal_joule_thomson"><code class="docutils literal notranslate"><span class="pre">FluidState.isothermal_joule_thomson</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.items"><code class="docutils literal notranslate"><span class="pre">FluidState.items()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.joule_thomson"><code class="docutils literal notranslate"><span class="pre">FluidState.joule_thomson</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.keys"><code class="docutils literal notranslate"><span class="pre">FluidState.keys()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.pressure"><code class="docutils literal notranslate"><span class="pre">FluidState.pressure</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.pressure_saturation"><code class="docutils literal notranslate"><span class="pre">FluidState.pressure_saturation</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.quality_mass"><code class="docutils literal notranslate"><span class="pre">FluidState.quality_mass</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.quality_volume"><code class="docutils literal notranslate"><span class="pre">FluidState.quality_volume</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.speed_of_sound"><code class="docutils literal notranslate"><span class="pre">FluidState.speed_of_sound</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.stack"><code class="docutils literal notranslate"><span class="pre">FluidState.stack()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.subcooling"><code class="docutils literal notranslate"><span class="pre">FluidState.subcooling</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.superheating"><code class="docutils literal notranslate"><span class="pre">FluidState.superheating</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.supersaturation_degree"><code class="docutils literal notranslate"><span class="pre">FluidState.supersaturation_degree</span></code></a></li>
@@ -735,9 +998,40 @@ copied unchanged.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.surface_tension"><code class="docutils literal notranslate"><span class="pre">FluidState.surface_tension</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.temperature"><code class="docutils literal notranslate"><span class="pre">FluidState.temperature</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.temperature_saturation"><code class="docutils literal notranslate"><span class="pre">FluidState.temperature_saturation</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.to_dict"><code class="docutils literal notranslate"><span class="pre">FluidState.to_dict()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.values"><code class="docutils literal notranslate"><span class="pre">FluidState.values()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.FluidState.viscosity"><code class="docutils literal notranslate"><span class="pre">FluidState.viscosity</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState"><code class="docutils literal notranslate"><span class="pre">MixtureState</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.component_1"><code class="docutils literal notranslate"><span class="pre">MixtureState.component_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.component_2"><code class="docutils literal notranslate"><span class="pre">MixtureState.component_2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.compressibility_factor"><code class="docutils literal notranslate"><span class="pre">MixtureState.compressibility_factor</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.conductivity"><code class="docutils literal notranslate"><span class="pre">MixtureState.conductivity</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.density"><code class="docutils literal notranslate"><span class="pre">MixtureState.density</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.enthalpy"><code class="docutils literal notranslate"><span class="pre">MixtureState.enthalpy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.entropy"><code class="docutils literal notranslate"><span class="pre">MixtureState.entropy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.fluid_name"><code class="docutils literal notranslate"><span class="pre">MixtureState.fluid_name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.identifier"><code class="docutils literal notranslate"><span class="pre">MixtureState.identifier</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.internal_energy"><code class="docutils literal notranslate"><span class="pre">MixtureState.internal_energy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isentropic_bulk_modulus"><code class="docutils literal notranslate"><span class="pre">MixtureState.isentropic_bulk_modulus</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isentropic_compressibility"><code class="docutils literal notranslate"><span class="pre">MixtureState.isentropic_compressibility</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isobaric_heat_capacity"><code class="docutils literal notranslate"><span class="pre">MixtureState.isobaric_heat_capacity</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isochoric_heat_capacity"><code class="docutils literal notranslate"><span class="pre">MixtureState.isochoric_heat_capacity</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isothermal_bulk_modulus"><code class="docutils literal notranslate"><span class="pre">MixtureState.isothermal_bulk_modulus</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isothermal_compressibility"><code class="docutils literal notranslate"><span class="pre">MixtureState.isothermal_compressibility</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.isothermal_joule_thomson"><code class="docutils literal notranslate"><span class="pre">MixtureState.isothermal_joule_thomson</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.joule_thomson"><code class="docutils literal notranslate"><span class="pre">MixtureState.joule_thomson</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.mass_fraction_1"><code class="docutils literal notranslate"><span class="pre">MixtureState.mass_fraction_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.mass_fraction_2"><code class="docutils literal notranslate"><span class="pre">MixtureState.mass_fraction_2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.pressure"><code class="docutils literal notranslate"><span class="pre">MixtureState.pressure</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.quality_mass"><code class="docutils literal notranslate"><span class="pre">MixtureState.quality_mass</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.quality_volume"><code class="docutils literal notranslate"><span class="pre">MixtureState.quality_volume</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.speed_of_sound"><code class="docutils literal notranslate"><span class="pre">MixtureState.speed_of_sound</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.speed_sound_p"><code class="docutils literal notranslate"><span class="pre">MixtureState.speed_sound_p</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.speed_sound_pT"><code class="docutils literal notranslate"><span class="pre">MixtureState.speed_sound_pT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.temperature"><code class="docutils literal notranslate"><span class="pre">MixtureState.temperature</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.viscosity"><code class="docutils literal notranslate"><span class="pre">MixtureState.viscosity</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.volume_fraction_1"><code class="docutils literal notranslate"><span class="pre">MixtureState.volume_fraction_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.MixtureState.volume_fraction_2"><code class="docutils literal notranslate"><span class="pre">MixtureState.volume_fraction_2</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.helpers_props.extract_vars"><code class="docutils literal notranslate"><span class="pre">extract_vars()</span></code></a></li>

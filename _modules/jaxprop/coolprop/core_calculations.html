@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.coolprop.core_calculations &#8212; jaxprop v0.4.3 documentation</title>
+    <title>jaxprop.coolprop.core_calculations &#8212; jaxprop v0.5.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=7a515c1e"></script>
+    <script src="../../../_static/documentation_options.js?v=91ffe994"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.4.3 documentation</p>
+    <p class="title logo__title">jaxprop v0.5.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -666,7 +666,8 @@ document.write(`
 <span class="c1"># ------------------------------------------------------------------------------------ #</span>
 <span class="c1"># Property calculations using Helmholtz equations of state</span>
 <span class="c1"># ------------------------------------------------------------------------------------ #</span>
-
+<span class="k">def</span><span class="w"> </span><span class="nf">_to_scalar</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>      <span class="c1"># remove all length-1 dimensions</span>
 
 <div class="viewcode-block" id="compute_properties_metastable_rhoT">
 <a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.compute_properties_metastable_rhoT">[docs]</a>
@@ -756,7 +757,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Update CoolProp state</span>
     <span class="n">AS</span> <span class="o">=</span> <span class="n">abstract_state</span>
-    <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">_to_scalar</span><span class="p">(</span><span class="n">rho</span><span class="p">),</span> <span class="n">_to_scalar</span><span class="p">(</span><span class="n">T</span><span class="p">))</span>
 
     <span class="c1"># Fluid constants</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">GAS_CONSTANT</span>
@@ -1844,111 +1845,108 @@ document.write(`
 
 
 
-<span class="c1"># ------------------------------------------------------------------------------------ #</span>
-<span class="c1"># Properties of a two-component mixture (e.g., water and nitrogen)</span>
-<span class="c1"># ------------------------------------------------------------------------------------ #</span>
+<span class="c1"># # ------------------------------------------------------------------------------------ #</span>
+<span class="c1"># # Properties of a two-component mixture (e.g., water and nitrogen)</span>
+<span class="c1"># # ------------------------------------------------------------------------------------ #</span>
 
-<div class="viewcode-block" id="calculate_mixture_properties">
-<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.calculate_mixture_properties">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">calculate_mixture_properties</span><span class="p">(</span><span class="n">props_1</span><span class="p">,</span> <span class="n">props_2</span><span class="p">,</span> <span class="n">y_1</span><span class="p">,</span> <span class="n">y_2</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate the thermodynamic properties of the mixture.</span>
+<span class="c1"># def calculate_mixture_properties(props_1, props_2, y_1, y_2):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Calculate the thermodynamic properties of the mixture.</span>
 
-<span class="sd">    TODO: add model equations and explanation</span>
+<span class="c1">#     TODO: add model equations and explanation</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    state_1 : dict</span>
-<span class="sd">        Thermodynamic properties of fluid 1.</span>
-<span class="sd">    state_2 : dict</span>
-<span class="sd">        Thermodynamic properties of fluid 2.</span>
-<span class="sd">    y_1 : float</span>
-<span class="sd">        Mass fraction of fluid 1.</span>
-<span class="sd">    y_2 : float</span>
-<span class="sd">        Mass fraction of fluid 2.</span>
+<span class="c1">#     Parameters</span>
+<span class="c1">#     ----------</span>
+<span class="c1">#     state_1 : dict</span>
+<span class="c1">#         Thermodynamic properties of fluid 1.</span>
+<span class="c1">#     state_2 : dict</span>
+<span class="c1">#         Thermodynamic properties of fluid 2.</span>
+<span class="c1">#     y_1 : float</span>
+<span class="c1">#         Mass fraction of fluid 1.</span>
+<span class="c1">#     y_2 : float</span>
+<span class="c1">#         Mass fraction of fluid 2.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    mixture_properties : dict</span>
-<span class="sd">        A dictionary containing the mixture&#39;s properties.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="c1">#     Returns</span>
+<span class="c1">#     -------</span>
+<span class="c1">#     mixture_properties : dict</span>
+<span class="c1">#         A dictionary containing the mixture&#39;s properties.</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
 
-    <span class="c1"># Validate mass fractions</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_float</span><span class="p">(</span><span class="n">y_1</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_float</span><span class="p">(</span><span class="n">y_2</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_1</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-12</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The mass fractions must be floats and their sum must equal 1. Received y_1=</span><span class="si">{</span><span class="n">y_1</span><span class="si">}</span><span class="s2"> and y_2=</span><span class="si">{</span><span class="n">y_2</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="c1">#     # Validate mass fractions</span>
+<span class="c1">#     if not utils.is_float(y_1) or not utils.is_float(y_2) or np.abs(y_1 + y_2 - 1) &gt; 1e-12:</span>
+<span class="c1">#         raise ValueError(f&quot;The mass fractions must be floats and their sum must equal 1. Received y_1={y_1} and y_2={y_2}.&quot;)</span>
 
-    <span class="c1"># Mass-averaged properties</span>
-    <span class="n">cv</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;cvmass&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;cvmass&#39;</span><span class="p">]</span>
-    <span class="n">cp</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;cpmass&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;cpmass&#39;</span><span class="p">]</span>
-    <span class="n">umass</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;umass&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;umass&#39;</span><span class="p">]</span>
-    <span class="n">hmass</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;hmass&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;hmass&#39;</span><span class="p">]</span>
-    <span class="n">smass</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;smass&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;smass&#39;</span><span class="p">]</span>    
+<span class="c1">#     # Mass-averaged properties</span>
+<span class="c1">#     cv = y_1 * props_1[&#39;cvmass&#39;] + y_2 * props_2[&#39;cvmass&#39;]</span>
+<span class="c1">#     cp = y_1 * props_1[&#39;cpmass&#39;] + y_2 * props_2[&#39;cpmass&#39;]</span>
+<span class="c1">#     umass = y_1 * props_1[&#39;umass&#39;] + y_2 * props_2[&#39;umass&#39;]</span>
+<span class="c1">#     hmass = y_1 * props_1[&#39;hmass&#39;] + y_2 * props_2[&#39;hmass&#39;]</span>
+<span class="c1">#     smass = y_1 * props_1[&#39;smass&#39;] + y_2 * props_2[&#39;smass&#39;]    </span>
     
-    <span class="c1"># Enthalpy derivative for the two-component barotropic model</span>
-    <span class="n">alphaP_1</span> <span class="o">=</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;isobaric_expansion_coefficient&#39;</span><span class="p">]</span>
-    <span class="n">alphaP_2</span> <span class="o">=</span> <span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;isobaric_expansion_coefficient&#39;</span><span class="p">]</span>
-    <span class="n">dhdp_T_1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">alphaP_1</span><span class="p">)</span> <span class="o">/</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">]</span>
-    <span class="n">dhdp_T_2</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">alphaP_2</span><span class="p">)</span> <span class="o">/</span> <span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">]</span>
-    <span class="n">dhdp_T</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">dhdp_T_1</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">dhdp_T_2</span>
+<span class="c1">#     # Enthalpy derivative for the two-component barotropic model</span>
+<span class="c1">#     alphaP_1 = props_1[&#39;isobaric_expansion_coefficient&#39;]</span>
+<span class="c1">#     alphaP_2 = props_2[&#39;isobaric_expansion_coefficient&#39;]</span>
+<span class="c1">#     dhdp_T_1 = (1 - props_1[&#39;T&#39;] * alphaP_1) / props_1[&#39;rho&#39;]</span>
+<span class="c1">#     dhdp_T_2 = (1 - props_2[&#39;T&#39;] * alphaP_2) / props_2[&#39;rho&#39;]</span>
+<span class="c1">#     dhdp_T = y_1 * dhdp_T_1 + y_2 * dhdp_T_2</span>
 
-    <span class="c1"># Compute volume fractions and void fraction</span>
-    <span class="n">rho</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">y_1</span> <span class="o">/</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_2</span> <span class="o">/</span> <span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">])</span>
-    <span class="n">vol_1</span> <span class="o">=</span> <span class="n">y_1</span> <span class="o">*</span> <span class="n">rho</span><span class="o">/</span><span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;rhomass&#39;</span><span class="p">]</span>
-    <span class="n">vol_2</span> <span class="o">=</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">rho</span><span class="o">/</span><span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;rhomass&#39;</span><span class="p">]</span>
-    <span class="n">quality_mass</span> <span class="o">=</span> <span class="n">y_1</span> <span class="k">if</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">vol_2</span>
-    <span class="n">quality_volume</span> <span class="o">=</span> <span class="n">vol_1</span> <span class="k">if</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">vol_2</span>
+<span class="c1">#     # Compute volume fractions and void fraction</span>
+<span class="c1">#     rho = 1 / (y_1 / props_1[&#39;rho&#39;] + y_2 / props_2[&#39;rho&#39;])</span>
+<span class="c1">#     vol_1 = y_1 * rho/props_1[&#39;rhomass&#39;]</span>
+<span class="c1">#     vol_2 = y_2 * rho/props_2[&#39;rhomass&#39;]</span>
+<span class="c1">#     quality_mass = y_1 if props_1[&#39;rho&#39;] &lt; props_2[&#39;rho&#39;] else vol_2</span>
+<span class="c1">#     quality_volume = vol_1 if props_1[&#39;rho&#39;] &lt; props_2[&#39;rho&#39;] else vol_2</span>
     
-    <span class="c1"># Isothermal compressibility</span>
-    <span class="n">betaT_1</span> <span class="o">=</span> <span class="n">props_1</span><span class="p">[</span><span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">]</span>
-    <span class="n">betaT_2</span> <span class="o">=</span> <span class="n">props_2</span><span class="p">[</span><span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">]</span>
-    <span class="n">isothermal_compressibility</span> <span class="o">=</span> <span class="n">vol_1</span> <span class="o">*</span> <span class="n">betaT_1</span> <span class="o">+</span> <span class="n">vol_2</span> <span class="o">*</span> <span class="n">betaT_2</span>
-    <span class="n">isothermal_bulk_modulus</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">isothermal_compressibility</span>
+<span class="c1">#     # Isothermal compressibility</span>
+<span class="c1">#     betaT_1 = props_1[&quot;isothermal_compressibility&quot;]</span>
+<span class="c1">#     betaT_2 = props_2[&quot;isothermal_compressibility&quot;]</span>
+<span class="c1">#     isothermal_compressibility = vol_1 * betaT_1 + vol_2 * betaT_2</span>
+<span class="c1">#     isothermal_bulk_modulus = 1 / isothermal_compressibility</span>
 
-    <span class="c1"># Isentropic compressibility and speed of sound (Wood&#39;s formula)</span>
-    <span class="n">betaS_1</span> <span class="o">=</span> <span class="n">props_1</span><span class="p">[</span><span class="s2">&quot;isentropic_compressibility&quot;</span><span class="p">]</span>
-    <span class="n">betaS_2</span> <span class="o">=</span> <span class="n">props_2</span><span class="p">[</span><span class="s2">&quot;isentropic_compressibility&quot;</span><span class="p">]</span>
-    <span class="n">isentropic_compressibility</span> <span class="o">=</span> <span class="n">vol_1</span> <span class="o">*</span> <span class="n">betaS_1</span> <span class="o">+</span> <span class="n">vol_2</span> <span class="o">*</span> <span class="n">betaS_2</span>
-    <span class="n">isentropic_bulk_modulus</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">isentropic_compressibility</span>
-    <span class="n">speed_sound</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">isentropic_bulk_modulus</span> <span class="o">/</span> <span class="n">rho</span><span class="p">)</span>
+<span class="c1">#     # Isentropic compressibility and speed of sound (Wood&#39;s formula)</span>
+<span class="c1">#     betaS_1 = props_1[&quot;isentropic_compressibility&quot;]</span>
+<span class="c1">#     betaS_2 = props_2[&quot;isentropic_compressibility&quot;]</span>
+<span class="c1">#     isentropic_compressibility = vol_1 * betaS_1 + vol_2 * betaS_2</span>
+<span class="c1">#     isentropic_bulk_modulus = 1 / isentropic_compressibility</span>
+<span class="c1">#     speed_sound = np.sqrt(isentropic_bulk_modulus / rho)</span>
 
-    <span class="c1"># Transport properties as volume averages</span>
-    <span class="n">conductivity</span> <span class="o">=</span> <span class="n">vol_1</span> <span class="o">*</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;conductivity&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">vol_2</span> <span class="o">*</span> <span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;conductivity&#39;</span><span class="p">]</span>
-    <span class="n">viscosity</span> <span class="o">=</span> <span class="n">vol_1</span> <span class="o">*</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;viscosity&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">vol_2</span> <span class="o">*</span> <span class="n">props_2</span><span class="p">[</span><span class="s1">&#39;viscosity&#39;</span><span class="p">]</span>
+<span class="c1">#     # Transport properties as volume averages</span>
+<span class="c1">#     conductivity = vol_1 * props_1[&#39;conductivity&#39;] + vol_2 * props_2[&#39;conductivity&#39;]</span>
+<span class="c1">#     viscosity = vol_1 * props_1[&#39;viscosity&#39;] + vol_2 * props_2[&#39;viscosity&#39;]</span>
 
-    <span class="c1"># Group up mixture properties</span>
-    <span class="n">props</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;mass_frac_1&quot;</span><span class="p">:</span> <span class="n">y_1</span><span class="p">,</span>
-        <span class="s2">&quot;mass_frac_2&quot;</span><span class="p">:</span> <span class="n">y_2</span><span class="p">,</span>
-        <span class="s2">&quot;vol_frac_1&quot;</span><span class="p">:</span> <span class="n">vol_1</span><span class="p">,</span>
-        <span class="s2">&quot;vol_frac_2&quot;</span><span class="p">:</span> <span class="n">vol_2</span><span class="p">,</span>
-        <span class="s2">&quot;mixture_ratio&quot;</span><span class="p">:</span> <span class="n">y_1</span> <span class="o">/</span> <span class="n">y_2</span><span class="p">,</span>
-        <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">quality_mass</span><span class="p">,</span>
-        <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="n">quality_volume</span><span class="p">,</span>
-        <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">],</span>
-        <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">props_1</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span>
-        <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="n">rho</span><span class="p">,</span>
-        <span class="s2">&quot;enthalpy&quot;</span><span class="p">:</span> <span class="n">hmass</span><span class="p">,</span>
-        <span class="s2">&quot;umass&quot;</span><span class="p">:</span> <span class="n">umass</span><span class="p">,</span>
-        <span class="s2">&quot;smass&quot;</span><span class="p">:</span> <span class="n">smass</span><span class="p">,</span>
-        <span class="s2">&quot;cvmass&quot;</span><span class="p">:</span> <span class="n">cv</span><span class="p">,</span>
-        <span class="s2">&quot;isobaric_heat_capacity&quot;</span><span class="p">:</span> <span class="n">cp</span><span class="p">,</span>
-        <span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">:</span> <span class="n">isothermal_compressibility</span><span class="p">,</span>
-        <span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">:</span> <span class="n">isothermal_bulk_modulus</span><span class="p">,</span>
-        <span class="s2">&quot;isentropic_compressibility&quot;</span><span class="p">:</span> <span class="n">isentropic_compressibility</span><span class="p">,</span>
-        <span class="s2">&quot;isentropic_bulk_modulus&quot;</span><span class="p">:</span> <span class="n">isentropic_bulk_modulus</span><span class="p">,</span>
-        <span class="s2">&quot;speed_of_sound&quot;</span><span class="p">:</span> <span class="n">speed_sound</span><span class="p">,</span>
-        <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">conductivity</span><span class="p">,</span>
-        <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="n">viscosity</span><span class="p">,</span>
-        <span class="s2">&quot;viscosity_kinematic&quot;</span><span class="p">:</span> <span class="n">viscosity</span> <span class="o">/</span> <span class="n">rho</span><span class="p">,</span>
-        <span class="s2">&quot;dhdp_T&quot;</span><span class="p">:</span> <span class="n">dhdp_T</span><span class="p">,</span>
-    <span class="p">}</span>
+<span class="c1">#     # Group up mixture properties</span>
+<span class="c1">#     props = {</span>
+<span class="c1">#         &quot;mass_frac_1&quot;: y_1,</span>
+<span class="c1">#         &quot;mass_frac_2&quot;: y_2,</span>
+<span class="c1">#         &quot;vol_frac_1&quot;: vol_1,</span>
+<span class="c1">#         &quot;vol_frac_2&quot;: vol_2,</span>
+<span class="c1">#         &quot;mixture_ratio&quot;: y_1 / y_2,</span>
+<span class="c1">#         &quot;quality_mass&quot;: quality_mass,</span>
+<span class="c1">#         &quot;quality_volume&quot;: quality_volume,</span>
+<span class="c1">#         &quot;pressure&quot;: props_1[&#39;p&#39;],</span>
+<span class="c1">#         &quot;temperature&quot;: props_1[&#39;T&#39;],</span>
+<span class="c1">#         &quot;density&quot;: rho,</span>
+<span class="c1">#         &quot;enthalpy&quot;: hmass,</span>
+<span class="c1">#         &quot;umass&quot;: umass,</span>
+<span class="c1">#         &quot;smass&quot;: smass,</span>
+<span class="c1">#         &quot;cvmass&quot;: cv,</span>
+<span class="c1">#         &quot;isobaric_heat_capacity&quot;: cp,</span>
+<span class="c1">#         &quot;isothermal_compressibility&quot;: isothermal_compressibility,</span>
+<span class="c1">#         &quot;isothermal_bulk_modulus&quot;: isothermal_bulk_modulus,</span>
+<span class="c1">#         &quot;isentropic_compressibility&quot;: isentropic_compressibility,</span>
+<span class="c1">#         &quot;isentropic_bulk_modulus&quot;: isentropic_bulk_modulus,</span>
+<span class="c1">#         &quot;speed_of_sound&quot;: speed_sound,</span>
+<span class="c1">#         &quot;conductivity&quot;: conductivity,</span>
+<span class="c1">#         &quot;viscosity&quot;: viscosity,</span>
+<span class="c1">#         &quot;viscosity_kinematic&quot;: viscosity / rho,</span>
+<span class="c1">#         &quot;dhdp_T&quot;: dhdp_T,</span>
+<span class="c1">#     }</span>
 
-    <span class="c1"># # Add properties as aliases (if property exists)</span>
-    <span class="c1"># for key, value in PROPERTY_ALIASES.items():</span>
-    <span class="c1">#     props[key] = props.get(value, np.nan)</span>
+<span class="c1">#     # # Add properties as aliases (if property exists)</span>
+<span class="c1">#     # for key, value in PROPERTY_ALIASES.items():</span>
+<span class="c1">#     #     props[key] = props.get(value, np.nan)</span>
 
-    <span class="k">return</span> <span class="n">props</span></div>
-
+<span class="c1">#     return props</span>
 </pre></div>
 
                 </article>
