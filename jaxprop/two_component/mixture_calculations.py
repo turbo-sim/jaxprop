@@ -25,11 +25,6 @@ def _mix_from_states(
     smass = y_1 * state_1.entropy + y_2 * state_2.entropy
 
     # --- Joule-Thomson coefficients
-    # k_P_1 = state_1.isobaric_expansion_coefficient
-    # k_P_2 = state_2.isobaric_expansion_coefficient
-    # dhdp_T_1 = (1 - state_1.temperature * k_P_1) / state_1.density
-    # dhdp_T_2 = (1 - state_2.temperature * k_P_2) / state_2.density
-    # dhdp_T = y_1 * dhdp_T_1 + y_2 * dhdp_T_2
     isothermal_joule_thomson = y_1 * state_1.isothermal_joule_thomson + y_2 * state_2.isothermal_joule_thomson
     joule_thomson = - isothermal_joule_thomson / cp
 
@@ -41,7 +36,6 @@ def _mix_from_states(
     vol_2 = y_2 * rho / state_2.density
 
     # --- simple quality identifiers
-    # (use same criterion you had)
     vapor_quality = y_1 if state_1.density < state_2.density else y_2
     void_fraction = vol_1 if state_1.density < state_2.density else vol_2
 
@@ -60,8 +54,8 @@ def _mix_from_states(
     Gamma_2 = state_2.gruneisen
     cp_1 = state_1.isobaric_heat_capacity
     cp_2 = state_2.isobaric_heat_capacity
-    C_1 = rho_1 * vol_1 * cp_1
-    C_2 = rho_2 * vol_2 * cp_2
+    C_1 = vol_1 * rho_1 * cp_1
+    C_2 = vol_2 * rho_2 * cp_2
     inv_a2_p = rho * (
         vol_1 / (rho_1 * a_1**2) +
         vol_2 / (rho_2 * a_2**2)
@@ -72,10 +66,10 @@ def _mix_from_states(
         (Gamma_1/(rho_1 * a_1**2) - Gamma_2/(rho_2 * a_2**2))**2
     )
     inv_a2_pT = inv_a2_p + Z_pT
-    speed_sound_p = jnp.sqrt(1.0 / inv_a2_p)
-    speed_sound_pT = jnp.sqrt(1.0 / inv_a2_pT)
-    speed_sound = speed_sound_pT
-    isentropic_bulk_modulus = rho * speed_sound**2
+    speed_of_sound_p = jnp.sqrt(1.0 / inv_a2_p)
+    speed_of_sound_pT = jnp.sqrt(1.0 / inv_a2_pT)
+    speed_of_sound = speed_of_sound_pT
+    isentropic_bulk_modulus = rho * speed_of_sound**2
     isentropic_compressibility = 1.0 / isentropic_bulk_modulus
 
     # --- transport properties (volume-weighted)
@@ -109,9 +103,9 @@ def _mix_from_states(
         isentropic_compressibility=jnp.asarray(isentropic_compressibility),
         isentropic_bulk_modulus=jnp.asarray(isentropic_bulk_modulus),
         # wave propagation
-        speed_of_sound=jnp.asarray(speed_sound),
-        speed_sound_p=jnp.asarray(speed_sound_p),
-        speed_sound_pT=jnp.asarray(speed_sound_pT),
+        speed_of_sound=jnp.asarray(speed_of_sound),
+        speed_of_sound_p=jnp.asarray(speed_of_sound_p),
+        speed_of_sound_pT=jnp.asarray(speed_of_sound_pT),
         # transport
         conductivity=jnp.asarray(conductivity),
         viscosity=jnp.asarray(viscosity),

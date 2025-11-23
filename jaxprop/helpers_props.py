@@ -163,6 +163,7 @@ LABEL_MAPPING = {
     "density": "Density (kg/m$^3$)",
     "viscosity": "Viscosity (Pa·s)",
     "speed_sound": "Speed of sound (m/s)",
+    "speed_of_sound": "Speed of sound (m/s)",
     "void_fraction": "Void fraction",
     "vapor_quality": "Vapor quality",
     "p": "Pressure (Pa)",
@@ -401,7 +402,6 @@ class BaseState(eqx.Module):
         return type(self)(**merged)
 
 
-
 class FluidState(BaseState):
     # --- metadata
     fluid_name: str = eqx.field(static=True, default=None)
@@ -446,6 +446,7 @@ class FluidState(BaseState):
     supersaturation_degree: jnp.ndarray = jnp.nan
     supersaturation_ratio: jnp.ndarray = jnp.nan
 
+
 class MixtureState(BaseState):
     """
     Two-component mixture state.
@@ -482,8 +483,8 @@ class MixtureState(BaseState):
     isobaric_heat_capacity: jnp.ndarray = jnp.nan
     compressibility_factor: jnp.ndarray = jnp.nan
     speed_of_sound: jnp.ndarray = jnp.nan
-    speed_sound_p: jnp.ndarray = jnp.nan
-    speed_sound_pT: jnp.ndarray = jnp.nan
+    speed_of_sound_p: jnp.ndarray = jnp.nan
+    speed_of_sound_pT: jnp.ndarray = jnp.nan
     isothermal_compressibility: jnp.ndarray = jnp.nan
     isentropic_compressibility: jnp.ndarray = jnp.nan
     isothermal_bulk_modulus: jnp.ndarray = jnp.nan
