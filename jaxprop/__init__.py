@@ -31,7 +31,7 @@ from . import bicubic
 
 # Import API classes
 from .perfect_gas import FluidPerfectGas
-from .coolprop import Fluid, FluidJAX
+from .coolprop import Fluid, FluidJAX, compute_quality_grid, blend_properties
 from .bicubic import FluidBicubic
 from .two_component import get_mixture_state
 
