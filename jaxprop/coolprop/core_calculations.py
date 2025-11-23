@@ -107,9 +107,9 @@ def compute_properties_1phase(
         # "joule_thomson": compute_joule_thomson(AS),
         "viscosity": mu,
         "conductivity": k,
-        "quality_mass": q_mass,
+        "vapor_quality": q_mass,
         "is_two_phase": 0.0,
-        "quality_volume": q_vol,
+        "void_fraction": q_vol,
         "surface_tension": np.nan,
         "subcooling": np.nan,
         "superheating": np.nan,
@@ -226,8 +226,8 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
         "joule_thomson": compute_joule_thomson(AS),
         "viscosity": mu,
         "conductivity": k,
-        "quality_mass": mfrac_V,
-        "quality_volume": vfrac_V,
+        "vapor_quality": mfrac_V,
+        "void_fraction": vfrac_V,
         "surface_tension": surface_tension,
         "is_two_phase": 1.0,
         "subcooling": np.nan,
@@ -527,8 +527,8 @@ def compute_properties_metastable_rhoT(
         "conductivity": k,
         "surface_tension": np.nan,
         "is_two_phase": 0.0,  # always for Helmholtz EoS
-        "quality_mass": np.nan,
-        "quality_volume": np.nan,
+        "vapor_quality": np.nan,
+        "void_fraction": np.nan,
         "subcooling": np.nan,
         "superheating": np.nan,
         "pressure_saturation": np.nan,
@@ -544,8 +544,8 @@ def compute_properties_metastable_rhoT(
     # Quality handling
     if generalize_quality:
         q_mass = calculate_generalized_quality(AS)
-        props["quality_mass"] = q_mass
-        props["quality_volume"] = np.nan
+        props["vapor_quality"] = q_mass
+        props["void_fraction"] = np.nan
         props["is_two_phase"] = False
     else:
         # crude check vs critical entropy
@@ -554,8 +554,8 @@ def compute_properties_metastable_rhoT(
         cloned_AS.update(CP.DmassT_INPUTS, rho_crit, T_crit)
         s_crit = cloned_AS.smass()
         frac_mass = 1.0 if AS.smass() > s_crit else 0.0
-        props["quality_mass"] = frac_mass
-        props["quality_volume"] = frac_mass
+        props["vapor_quality"] = frac_mass
+        props["void_fraction"] = frac_mass
         props["is_two_phase"] = False
 
     return props
@@ -810,7 +810,7 @@ def compute_properties(
             solver_max_iterations=solver_max_iterations,
             print_convergence=print_convergence,
         )
-        props_meta["quality_mass"] = 1.00 if phase_change == "condensation" else 0.00
+        props_meta["vapor_quality"] = 1.00 if phase_change == "condensation" else 0.00
 
         # Blend properties
         props_blended = blend_properties(
@@ -954,7 +954,7 @@ class _FlashCalculationResidual(psv.NonlinearSystemProblem):
         # Compute residual
         def compute_residual(prop_name, target_value):
             value = props[prop_name]
-            if prop_name == "quality_mass":
+            if prop_name == "vapor_quality":
                 return value - target_value
             else:
                 return 1.0 - value / target_value
@@ -1548,8 +1548,8 @@ def calculate_supersaturation(abstract_state, props):
 #     rho = 1 / (y_1 / props_1['rho'] + y_2 / props_2['rho'])
 #     vol_1 = y_1 * rho/props_1['rhomass']
 #     vol_2 = y_2 * rho/props_2['rhomass']
-#     quality_mass = y_1 if props_1['rho'] < props_2['rho'] else vol_2
-#     quality_volume = vol_1 if props_1['rho'] < props_2['rho'] else vol_2
+#     vapor_quality = y_1 if props_1['rho'] < props_2['rho'] else vol_2
+#     void_fraction = vol_1 if props_1['rho'] < props_2['rho'] else vol_2
     
 #     # Isothermal compressibility
 #     betaT_1 = props_1["isothermal_compressibility"]
@@ -1575,8 +1575,8 @@ def calculate_supersaturation(abstract_state, props):
 #         "vol_frac_1": vol_1,
 #         "vol_frac_2": vol_2,
 #         "mixture_ratio": y_1 / y_2,
-#         "quality_mass": quality_mass,
-#         "quality_volume": quality_volume,
+#         "vapor_quality": vapor_quality,
+#         "void_fraction": void_fraction,
 #         "pressure": props_1['p'],
 #         "temperature": props_1['T'],
 #         "density": rho,

@@ -135,8 +135,8 @@ PROPERTY_ALIASES = {
     # "dhdp_T": [],
     # --- two-phase
     "is_two_phase": [],
-    "quality_mass": ["vapor_quality", "Q", "q"],  # add "x" when fixing nozzle overwrite
-    "quality_volume": ["void_fraction", "alpha"],
+    "vapor_quality": ["quality_mass", "Q", "q"],  # add "x" when fixing nozzle overwrite
+    "void_fraction": ["quality_volume", "alpha"],
     "surface_tension": ["sigma"],
     "pressure_saturation": [],
     "temperature_saturation": [],
@@ -436,8 +436,8 @@ class FluidState(BaseState):
 
     # --- two-phase properties
     is_two_phase: jnp.ndarray = jnp.nan
-    quality_mass: jnp.ndarray = jnp.nan
-    quality_volume: jnp.ndarray = jnp.nan
+    vapor_quality: jnp.ndarray = jnp.nan
+    void_fraction: jnp.ndarray = jnp.nan
     surface_tension: jnp.ndarray = jnp.nan
     subcooling: jnp.ndarray = jnp.nan
     superheating: jnp.ndarray = jnp.nan
