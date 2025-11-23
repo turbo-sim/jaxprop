@@ -340,8 +340,8 @@ document.write(`
 
     <span class="c1"># --- simple quality identifiers</span>
     <span class="c1"># (use same criterion you had)</span>
-    <span class="n">quality_mass</span> <span class="o">=</span> <span class="n">y_1</span> <span class="k">if</span> <span class="n">state_1</span><span class="o">.</span><span class="n">density</span> <span class="o">&lt;</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span> <span class="k">else</span> <span class="n">y_2</span>
-    <span class="n">quality_volume</span> <span class="o">=</span> <span class="n">vol_1</span> <span class="k">if</span> <span class="n">state_1</span><span class="o">.</span><span class="n">density</span> <span class="o">&lt;</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span> <span class="k">else</span> <span class="n">vol_2</span>
+    <span class="n">vapor_quality</span> <span class="o">=</span> <span class="n">y_1</span> <span class="k">if</span> <span class="n">state_1</span><span class="o">.</span><span class="n">density</span> <span class="o">&lt;</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span> <span class="k">else</span> <span class="n">y_2</span>
+    <span class="n">void_fraction</span> <span class="o">=</span> <span class="n">vol_1</span> <span class="k">if</span> <span class="n">state_1</span><span class="o">.</span><span class="n">density</span> <span class="o">&lt;</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span> <span class="k">else</span> <span class="n">vol_2</span>
 
     <span class="c1"># --- isothermal compressibility</span>
     <span class="n">k_T_1</span> <span class="o">=</span> <span class="n">state_1</span><span class="o">.</span><span class="n">isothermal_compressibility</span>
@@ -414,8 +414,8 @@ document.write(`
         <span class="n">conductivity</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">conductivity</span><span class="p">),</span>
         <span class="n">viscosity</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">viscosity</span><span class="p">),</span>
         <span class="c1"># two-phase markers</span>
-        <span class="n">quality_mass</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">quality_mass</span><span class="p">),</span>
-        <span class="n">quality_volume</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">quality_volume</span><span class="p">),</span>
+        <span class="n">vapor_quality</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">vapor_quality</span><span class="p">),</span>
+        <span class="n">void_fraction</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">void_fraction</span><span class="p">),</span>
         <span class="c1"># auxiliary derivative</span>
         <span class="n">joule_thomson</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">joule_thomson</span><span class="p">),</span>
         <span class="n">isothermal_joule_thomson</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">isothermal_joule_thomson</span><span class="p">),</span>
