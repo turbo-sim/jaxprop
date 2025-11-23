@@ -42,8 +42,8 @@ def _mix_from_states(
 
     # --- simple quality identifiers
     # (use same criterion you had)
-    quality_mass = y_1 if state_1.density < state_2.density else y_2
-    quality_volume = vol_1 if state_1.density < state_2.density else vol_2
+    vapor_quality = y_1 if state_1.density < state_2.density else y_2
+    void_fraction = vol_1 if state_1.density < state_2.density else vol_2
 
     # --- isothermal compressibility
     k_T_1 = state_1.isothermal_compressibility
@@ -116,8 +116,8 @@ def _mix_from_states(
         conductivity=jnp.asarray(conductivity),
         viscosity=jnp.asarray(viscosity),
         # two-phase markers
-        quality_mass=jnp.asarray(quality_mass),
-        quality_volume=jnp.asarray(quality_volume),
+        vapor_quality=jnp.asarray(vapor_quality),
+        void_fraction=jnp.asarray(void_fraction),
         # auxiliary derivative
         joule_thomson=jnp.asarray(joule_thomson),
         isothermal_joule_thomson=jnp.asarray(isothermal_joule_thomson),

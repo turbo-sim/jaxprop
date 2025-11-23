@@ -490,8 +490,8 @@ class MixtureState(BaseState):
     isentropic_bulk_modulus: jnp.ndarray = jnp.nan
     viscosity: jnp.ndarray = jnp.nan
     conductivity: jnp.ndarray = jnp.nan
-    quality_mass: jnp.ndarray = jnp.nan
-    quality_volume: jnp.ndarray = jnp.nan
+    vapor_quality: jnp.ndarray = jnp.nan
+    void_fraction: jnp.ndarray = jnp.nan
     joule_thomson: jnp.ndarray = jnp.nan
     isothermal_joule_thomson: jnp.ndarray = jnp.nan
     
