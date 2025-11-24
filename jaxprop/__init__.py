@@ -17,8 +17,6 @@ os.environ["JAX_PLATFORM_NAME"] = "cpu"
 import jax
 jax.config.update("jax_enable_x64", True)
 
-
-
 from .graphics import *
 from .utils import *
 from .helpers_jax import *
@@ -33,7 +31,7 @@ from . import bicubic
 from .perfect_gas import FluidPerfectGas
 from .coolprop import Fluid, FluidJAX, compute_quality_grid, blend_properties
 from .bicubic import FluidBicubic
-from .two_component import get_mixture_state
+from .two_component import FluidTwoComponent, get_mixture_state
 
 
 # Package info

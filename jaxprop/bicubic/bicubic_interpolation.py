@@ -48,6 +48,8 @@ class FluidBicubic(eqx.Module):
         saves it to disk, and stores it in memory.
       * On `get_props`, performs bicubic interpolation at the requested state.
 
+    Table generation uses forward finite differences for first and mixed derivatives 
+
     Parameters
     ----------
     fluid_name : str
@@ -69,11 +71,6 @@ class FluidBicubic(eqx.Module):
     identifier : str, optional
         Tag stored in the returned FluidState objects.
 
-    Notes
-    -----
-    * Table generation uses forward finite differences for first and mixed
-      derivatives with adaptive step size.
-    * Currently supports only HmassP_INPUTS as input pair.
     """
 
     # Attributes
@@ -177,15 +174,6 @@ class FluidBicubic(eqx.Module):
         print("No existing table found, generating new one...")
         return self._generate_property_table()
 
-
-
-        #     print(f"Loaded property table from: {pkl_path}")
-        #     return table
-
-        #     # TODO do a check that all metadate of the loaded table matches, an dif it changes print message and recompute table
-
-        # print("No existing table found, generating new one...")
-        # return self._generate_property_table()
 
     def _generate_property_table(self):
         # Initialize fluid

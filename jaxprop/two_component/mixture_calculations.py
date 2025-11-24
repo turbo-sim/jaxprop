@@ -2,6 +2,207 @@ import jax.numpy as jnp
 from .. import helpers_props as jxp
 
 
+
+
+import os
+import time
+import tqdm
+import pickle
+import numpy as np
+import jax
+import jax.numpy as jnp
+import equinox as eqx
+import optimistix as optx
+import jaxprop.coolprop as jxp
+
+
+# ================================================================
+# FluidTwoComponent class
+# ================================================================
+class FluidTwoComponent(eqx.Module):
+    r"""
+    Fluid model for a two-component mixture (i.e., water and nitrogen)
+
+    
+    Parameters
+    ----------
+    fluid_name_1, fluid_name_2 : str
+        Fluid identifiers for CoolProp.
+    backend_1, backend_2 : str
+        CoolProp backend strings.
+    identifier : str, optional
+        Tag stored in the returned FluidState objects.
+
+    """
+
+    # Attributes
+    fluid_1: jxp.FluidJAX = eqx.field(static=True)
+    fluid_2: jxp.FluidJAX = eqx.field(static=True)
+    fluid_name_1: str = eqx.field(static=True)
+    fluid_name_2: str = eqx.field(static=True)
+    backend_1: str = eqx.field(static=True)
+    backend_2: str = eqx.field(static=True)
+    identifier: str = eqx.field(static=True)
+
+    def __init__(
+        self,
+        fluid_name_1: str,
+        fluid_name_2: str,
+        backend_1: str = "HEOS",
+        backend_2: str = "HEOS",
+        identifier: str = None,
+    ):
+        # Initialize variables
+        self.fluid_name_1 = fluid_name_1
+        self.fluid_name_2 = fluid_name_2
+        self.backend_1 = backend_1
+        self.backend_2 = backend_2
+        self.identifier = identifier or fluid_name_1 + "_" + fluid_name_2
+
+        # Initialize fluid components
+        self.fluid_1 = jxp.FluidJAX(name=fluid_name_1, backend=backend_1)
+        self.fluid_2 = jxp.FluidJAX(name=fluid_name_2, backend=backend_2)
+
+
+
+    @eqx.filter_jit
+    def get_state(self, input_type, val1, val2, R):
+        """
+        Compute thermodynamic states from any supported input pair on a vectorized way.
+
+        This is the main user-facing entry point. It accepts either scalar or array
+        inputs for `val1` and `val2`, automatically broadcasting them to a common shape
+        and evaluating the corresponding fluid state at each point in a vectorized
+        manner. Internally, the metho a Newton solver in normalized `(p, T)` space 
+        to recover the unique thermodynamic state that matches both input properties simultaneously.
+
+        All computations are compatible with JAX transformations such as `jit`, `vmap`,
+        and automatic differentiation. Vectorization is handled internally using
+        `vmap` over the scalar solver/interpolator. The output is a `MixtureState`
+        object containing all thermodynamic and transport properties defined in the
+        table, either for a single point (scalar inputs) or for each element of the
+        broadcasted input arrays.
+
+        Parameters
+        ----------
+        input_type : int
+            Identifier of the input pair (e.g. `jxp.HmassP_INPUTS`, `jxp.PT_INPUTS`).
+        val1 : float or array_like
+            First input variable (e.g. enthalpy, pressure, density).
+        val2 : float or array_like
+            Second input variable (e.g. pressure, temperature, entropy).
+        R : float or array_like
+            Mixture ratio (mass of fluid 1 / mass of fluid 2).
+        Returns
+        -------
+        MixtureState
+            Interpolated fluid state(s) corresponding to the specified input pair.
+            If inputs are arrays, each property is returned as an array with the
+            broadcasted shape of `val1` and `val2`.
+        """
+        # Broadcast h and p to the same shape
+        val1 = jnp.asarray(val1)
+        val2 = jnp.asarray(val2)
+        R = jnp.asarray(R)
+        val1, val2, R = jnp.broadcast_arrays(val1, val2, R)
+
+        # Define vectorized mapping explicitly using jax.vmap
+        batched_fn = jax.vmap(lambda v1, v2, r: self._get_state_scalar(input_type, v1, v2, r))
+
+        # Apply to flattened arrays
+        props_batched = batched_fn(val1.ravel(), val2.ravel(), R.ravel())
+
+        # Reshape each leaf in the pytree to the broadcasted shape
+        props = jax.tree.map(lambda x: x.reshape(val1.shape), props_batched)
+
+        return props
+
+
+    @eqx.filter_jit
+    def _get_state_scalar(self, input_pair, x, y, R, p_guess=101325., T_guess=300.0, tol=1e-10):
+        r"""
+        Solve for (p, T) corresponding to a given input pair (x, y) by inverting
+        the the fluid property calculations
+
+        This function finds the pressure and temperature that simultaneously match
+        two target property values (e.g. density-temperature, pressure-entropy) using
+        a Newton root-finding algorithm. The solver uses initial guesses for pressure
+        and temperature provided by `p_guess` and `T_guess`.
+
+        Parameters
+        ----------
+        input_pair : int
+            Identifier for the input property pair (e.g. jxp.HmassSmass_INPUTS).
+        x : float
+            Target value of the first property.
+        y : float
+            Target value of the second property.
+        R : float
+            Mixture ratio (mass of fluid 1 / mass of fluid 2).
+        p_guess : float
+            Initial guess for the pressure.
+        T_guess : float
+            Initial guess for the temperature.  
+        tol : float, optional
+            Absolute and relative tolerance for the Newton solver (default: 1e-8).
+
+        Returns
+        -------
+        MixtureState
+            Interpolated fluid state corresponding to the recovered (p, T).
+
+        """
+        # Map input_pair to property names
+        prop1, prop2 = jxp.INPUT_PAIR_MAP[input_pair]
+        prop1 = jxp.ALIAS_TO_CANONICAL[prop1]
+        prop2 = jxp.ALIAS_TO_CANONICAL[prop2]
+
+        # Define initial guess
+    
+        state_guess = get_mixture_state(self.fluid_1, self.fluid_2, p_guess, T_guess, R)
+        x_ref = state_guess[prop1]
+        y_ref = state_guess[prop2]
+        x0 = jnp.array([1.0, 1.0])
+
+        # Define residual function
+        def residual(xy, _):
+            p_nd, T_nd = xy
+            p = p_nd * p_guess
+            T = T_nd * T_guess
+            mix_state = get_mixture_state(self.fluid_1, self.fluid_2, p, T, R)
+            res_x = (mix_state[prop1] - x) / x_ref
+            res_y = (mix_state[prop2] - y) / y_ref
+            # # debug print
+            # jax.debug.print(
+            #     """
+            #     residual eval:
+            #         p_nd = {p_nd}
+            #         T_nd = {T_nd}
+            #         p    = {p}
+            #         T    = {T}
+            #         mix_state[{prop1}] = {v1}
+            #         mix_state[{prop2}] = {v2}
+            #         res_x = {rx}
+            #         res_y = {ry}
+            #     """,
+            #     p_nd=p_nd, T_nd=T_nd,
+            #     p=p, T=T,
+            #     prop1=prop1, prop2=prop2,
+            #     v1=mix_state[prop1], v2=mix_state[prop2],
+            #     rx=res_x, ry=res_y
+            # )
+            return jnp.array([res_x, res_y])
+
+        # Solve root-finding problem
+        solver = optx.Newton(rtol=tol, atol=tol)
+        solution = optx.root_find(residual, solver, x0, throw=True)
+
+        # convert back to dimensional variables
+        p = solution.value[0] * p_guess
+        T = solution.value[1] * T_guess
+
+        return get_mixture_state(self.fluid_1, self.fluid_2, p, T, R)
+
 # ------------------------------------------------------------------------------------ #
 # Compute the properties of a two-component mixture (e.g., water and nitrogen)
 # ------------------------------------------------------------------------------------ #
@@ -36,8 +237,10 @@ def _mix_from_states(
     vol_2 = y_2 * rho / state_2.density
 
     # --- simple quality identifiers
-    vapor_quality = y_1 if state_1.density < state_2.density else y_2
-    void_fraction = vol_1 if state_1.density < state_2.density else vol_2
+    # vapor_quality = y_1 if state_1.density < state_2.density else y_2
+    # void_fraction = vol_1 if state_1.density < state_2.density else vol_2
+    vapor_quality = jnp.where(state_1.density < state_2.density, y_1, y_2)
+    void_fraction  = jnp.where(state_1.density < state_2.density, vol_1, vol_2)
 
     # --- isothermal compressibility
     k_T_1 = state_1.isothermal_compressibility
