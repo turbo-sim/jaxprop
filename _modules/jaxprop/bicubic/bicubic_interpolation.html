@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.bicubic.bicubic_interpolation &#8212; jaxprop v0.5.3 documentation</title>
+    <title>jaxprop.bicubic.bicubic_interpolation &#8212; jaxprop v0.5.4 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=868b69f2"></script>
+    <script src="../../../_static/documentation_options.js?v=139eeb23"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.3 documentation</p>
+    <p class="title logo__title">jaxprop v0.5.4 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -345,6 +345,8 @@ document.write(`
 <span class="sd">        saves it to disk, and stores it in memory.</span>
 <span class="sd">      * On `get_props`, performs bicubic interpolation at the requested state.</span>
 
+<span class="sd">    Table generation uses forward finite differences for first and mixed derivatives </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    fluid_name : str</span>
@@ -366,11 +368,6 @@ document.write(`
 <span class="sd">    identifier : str, optional</span>
 <span class="sd">        Tag stored in the returned FluidState objects.</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    * Table generation uses forward finite differences for first and mixed</span>
-<span class="sd">      derivatives with adaptive step size.</span>
-<span class="sd">    * Currently supports only HmassP_INPUTS as input pair.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Attributes</span>
@@ -474,15 +471,6 @@ document.write(`
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No existing table found, generating new one...&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_property_table</span><span class="p">()</span>
 
-
-
-        <span class="c1">#     print(f&quot;Loaded property table from: {pkl_path}&quot;)</span>
-        <span class="c1">#     return table</span>
-
-        <span class="c1">#     # TODO do a check that all metadate of the loaded table matches, an dif it changes print message and recompute table</span>
-
-        <span class="c1"># print(&quot;No existing table found, generating new one...&quot;)</span>
-        <span class="c1"># return self._generate_property_table()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_generate_property_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Initialize fluid</span>

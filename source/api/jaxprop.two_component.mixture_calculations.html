@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>jaxprop.two_component.mixture_calculations module &#8212; jaxprop v0.5.3 documentation</title>
+    <title>jaxprop.two_component.mixture_calculations module &#8212; jaxprop v0.5.4 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=868b69f2"></script>
+    <script src="../../_static/documentation_options.js?v=139eeb23"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -139,7 +139,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.3 documentation</p>
+    <p class="title logo__title">jaxprop v0.5.4 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -337,6 +337,17 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.backend_1"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.backend_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.backend_2"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.backend_2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_1"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.fluid_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_2"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.fluid_2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_name_1"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.fluid_name_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_name_2"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.fluid_name_2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.get_state"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.get_state()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.identifier"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.identifier</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.get_mixture_state"><code class="docutils literal notranslate"><span class="pre">get_mixture_state()</span></code></a></li>
 </ul>
             </nav>
@@ -351,6 +362,106 @@ document.write(`
                   
   <section id="module-jaxprop.two_component.mixture_calculations">
 <span id="jaxprop-two-component-mixture-calculations-module"></span><h1>jaxprop.two_component.mixture_calculations module<a class="headerlink" href="#module-jaxprop.two_component.mixture_calculations" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="jaxprop.two_component.mixture_calculations.FluidTwoComponent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.two_component.mixture_calculations.</span></span><span class="sig-name descname"><span class="pre">FluidTwoComponent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid_name_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid_name_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HEOS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HEOS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/two_component/mixture_calculations.html#FluidTwoComponent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>Fluid model for a two-component mixture (i.e., water and nitrogen)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fluid_name_1, fluid_name_2</strong><span class="classifier">str</span></dt><dd><p>Fluid identifiers for CoolProp.</p>
+</dd>
+<dt><strong>backend_1, backend_2</strong><span class="classifier">str</span></dt><dd><p>CoolProp backend strings.</p>
+</dd>
+<dt><strong>identifier</strong><span class="classifier">str, optional</span></dt><dd><p>Tag stored in the returned FluidState objects.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.get_state" title="jaxprop.two_component.mixture_calculations.FluidTwoComponent.get_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state</span></code></a>(input_type, val1, val2, R)</p></td>
+<td><p>Compute thermodynamic states from any supported input pair on a vectorized way.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.two_component.mixture_calculations.FluidTwoComponent.backend_1">
+<span class="sig-name descname"><span class="pre">backend_1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.backend_1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.two_component.mixture_calculations.FluidTwoComponent.backend_2">
+<span class="sig-name descname"><span class="pre">backend_2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.backend_2" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_1">
+<span class="sig-name descname"><span class="pre">fluid_1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX" title="jaxprop.coolprop.jax_wrapper.FluidJAX"><span class="pre">FluidJAX</span></a></em><a class="headerlink" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_2">
+<span class="sig-name descname"><span class="pre">fluid_2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX" title="jaxprop.coolprop.jax_wrapper.FluidJAX"><span class="pre">FluidJAX</span></a></em><a class="headerlink" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_2" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_name_1">
+<span class="sig-name descname"><span class="pre">fluid_name_1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_name_1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_name_2">
+<span class="sig-name descname"><span class="pre">fluid_name_2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_name_2" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.two_component.mixture_calculations.FluidTwoComponent.get_state">
+<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/two_component/mixture_calculations.html#FluidTwoComponent.get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.get_state" title="Link to this definition">#</a></dt>
+<dd><p>Compute thermodynamic states from any supported input pair on a vectorized way.</p>
+<p>This is the main user-facing entry point. It accepts either scalar or array
+inputs for <cite>val1</cite> and <cite>val2</cite>, automatically broadcasting them to a common shape
+and evaluating the corresponding fluid state at each point in a vectorized
+manner. Internally, the metho a Newton solver in normalized <cite>(p, T)</cite> space 
+to recover the unique thermodynamic state that matches both input properties simultaneously.</p>
+<p>All computations are compatible with JAX transformations such as <cite>jit</cite>, <cite>vmap</cite>,
+and automatic differentiation. Vectorization is handled internally using
+<cite>vmap</cite> over the scalar solver/interpolator. The output is a <cite>MixtureState</cite>
+object containing all thermodynamic and transport properties defined in the
+table, either for a single point (scalar inputs) or for each element of the
+broadcasted input arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_type</strong><span class="classifier">int</span></dt><dd><p>Identifier of the input pair (e.g. <cite>jxp.HmassP_INPUTS</cite>, <cite>jxp.PT_INPUTS</cite>).</p>
+</dd>
+<dt><strong>val1</strong><span class="classifier">float or array_like</span></dt><dd><p>First input variable (e.g. enthalpy, pressure, density).</p>
+</dd>
+<dt><strong>val2</strong><span class="classifier">float or array_like</span></dt><dd><p>Second input variable (e.g. pressure, temperature, entropy).</p>
+</dd>
+<dt><strong>R</strong><span class="classifier">float or array_like</span></dt><dd><p>Mixture ratio (mass of fluid 1 / mass of fluid 2).</p>
+</dd>
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+<dt><strong>MixtureState</strong></dt><dd><p>Interpolated fluid state(s) corresponding to the specified input pair.
+If inputs are arrays, each property is returned as an array with the
+broadcasted shape of <cite>val1</cite> and <cite>val2</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.two_component.mixture_calculations.FluidTwoComponent.identifier">
+<span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.identifier" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.two_component.mixture_calculations.get_mixture_state">
 <span class="sig-prename descclassname"><span class="pre">jaxprop.two_component.mixture_calculations.</span></span><span class="sig-name descname"><span class="pre">get_mixture_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="jaxprop.helpers_props.html#jaxprop.helpers_props.MixtureState" title="jaxprop.helpers_props.MixtureState"><span class="pre">MixtureState</span></a></span></span><a class="reference internal" href="../../_modules/jaxprop/two_component/mixture_calculations.html#get_mixture_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.two_component.mixture_calculations.get_mixture_state" title="Link to this definition">#</a></dt>
@@ -385,6 +496,17 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.backend_1"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.backend_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.backend_2"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.backend_2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_1"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.fluid_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_2"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.fluid_2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_name_1"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.fluid_name_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.fluid_name_2"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.fluid_name_2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.get_state"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.get_state()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.FluidTwoComponent.identifier"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent.identifier</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.two_component.mixture_calculations.get_mixture_state"><code class="docutils literal notranslate"><span class="pre">get_mixture_state()</span></code></a></li>
 </ul>
   </nav></div>

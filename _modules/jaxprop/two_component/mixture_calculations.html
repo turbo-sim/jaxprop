@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.two_component.mixture_calculations &#8212; jaxprop v0.5.3 documentation</title>
+    <title>jaxprop.two_component.mixture_calculations &#8212; jaxprop v0.5.4 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=868b69f2"></script>
+    <script src="../../../_static/documentation_options.js?v=139eeb23"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.3 documentation</p>
+    <p class="title logo__title">jaxprop v0.5.4 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -297,6 +297,213 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">helpers_props</span> <span class="k">as</span> <span class="n">jxp</span>
 
 
+
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tqdm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">equinox</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">eqx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">optimistix</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">optx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jaxprop.coolprop</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jxp</span>
+
+
+<span class="c1"># ================================================================</span>
+<span class="c1"># FluidTwoComponent class</span>
+<span class="c1"># ================================================================</span>
+<div class="viewcode-block" id="FluidTwoComponent">
+<a class="viewcode-back" href="../../../source/api/jaxprop.two_component.mixture_calculations.html#jaxprop.two_component.mixture_calculations.FluidTwoComponent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FluidTwoComponent</span><span class="p">(</span><span class="n">eqx</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fluid model for a two-component mixture (i.e., water and nitrogen)</span>
+
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fluid_name_1, fluid_name_2 : str</span>
+<span class="sd">        Fluid identifiers for CoolProp.</span>
+<span class="sd">    backend_1, backend_2 : str</span>
+<span class="sd">        CoolProp backend strings.</span>
+<span class="sd">    identifier : str, optional</span>
+<span class="sd">        Tag stored in the returned FluidState objects.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Attributes</span>
+    <span class="n">fluid_1</span><span class="p">:</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidJAX</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fluid_2</span><span class="p">:</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidJAX</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fluid_name_1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fluid_name_2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">backend_1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">backend_2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">fluid_name_1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">fluid_name_2</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">backend_1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;HEOS&quot;</span><span class="p">,</span>
+        <span class="n">backend_2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;HEOS&quot;</span><span class="p">,</span>
+        <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="c1"># Initialize variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fluid_name_1</span> <span class="o">=</span> <span class="n">fluid_name_1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fluid_name_2</span> <span class="o">=</span> <span class="n">fluid_name_2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_1</span> <span class="o">=</span> <span class="n">backend_1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_2</span> <span class="o">=</span> <span class="n">backend_2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span> <span class="ow">or</span> <span class="n">fluid_name_1</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">fluid_name_2</span>
+
+        <span class="c1"># Initialize fluid components</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fluid_1</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidJAX</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">fluid_name_1</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend_1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fluid_2</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidJAX</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">fluid_name_2</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend_2</span><span class="p">)</span>
+
+
+
+<div class="viewcode-block" id="FluidTwoComponent.get_state">
+<a class="viewcode-back" href="../../../source/api/jaxprop.two_component.mixture_calculations.html#jaxprop.two_component.mixture_calculations.FluidTwoComponent.get_state">[docs]</a>
+    <span class="nd">@eqx</span><span class="o">.</span><span class="n">filter_jit</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_type</span><span class="p">,</span> <span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute thermodynamic states from any supported input pair on a vectorized way.</span>
+
+<span class="sd">        This is the main user-facing entry point. It accepts either scalar or array</span>
+<span class="sd">        inputs for `val1` and `val2`, automatically broadcasting them to a common shape</span>
+<span class="sd">        and evaluating the corresponding fluid state at each point in a vectorized</span>
+<span class="sd">        manner. Internally, the metho a Newton solver in normalized `(p, T)` space </span>
+<span class="sd">        to recover the unique thermodynamic state that matches both input properties simultaneously.</span>
+
+<span class="sd">        All computations are compatible with JAX transformations such as `jit`, `vmap`,</span>
+<span class="sd">        and automatic differentiation. Vectorization is handled internally using</span>
+<span class="sd">        `vmap` over the scalar solver/interpolator. The output is a `MixtureState`</span>
+<span class="sd">        object containing all thermodynamic and transport properties defined in the</span>
+<span class="sd">        table, either for a single point (scalar inputs) or for each element of the</span>
+<span class="sd">        broadcasted input arrays.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        input_type : int</span>
+<span class="sd">            Identifier of the input pair (e.g. `jxp.HmassP_INPUTS`, `jxp.PT_INPUTS`).</span>
+<span class="sd">        val1 : float or array_like</span>
+<span class="sd">            First input variable (e.g. enthalpy, pressure, density).</span>
+<span class="sd">        val2 : float or array_like</span>
+<span class="sd">            Second input variable (e.g. pressure, temperature, entropy).</span>
+<span class="sd">        R : float or array_like</span>
+<span class="sd">            Mixture ratio (mass of fluid 1 / mass of fluid 2).</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MixtureState</span>
+<span class="sd">            Interpolated fluid state(s) corresponding to the specified input pair.</span>
+<span class="sd">            If inputs are arrays, each property is returned as an array with the</span>
+<span class="sd">            broadcasted shape of `val1` and `val2`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Broadcast h and p to the same shape</span>
+        <span class="n">val1</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span>
+        <span class="n">val2</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">val2</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+        <span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span><span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+
+        <span class="c1"># Define vectorized mapping explicitly using jax.vmap</span>
+        <span class="n">batched_fn</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_state_scalar</span><span class="p">(</span><span class="n">input_type</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span>
+
+        <span class="c1"># Apply to flattened arrays</span>
+        <span class="n">props_batched</span> <span class="o">=</span> <span class="n">batched_fn</span><span class="p">(</span><span class="n">val1</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">val2</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">R</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+
+        <span class="c1"># Reshape each leaf in the pytree to the broadcasted shape</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">val1</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">props_batched</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">props</span></div>
+
+
+
+    <span class="nd">@eqx</span><span class="o">.</span><span class="n">filter_jit</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_state_scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">p_guess</span><span class="o">=</span><span class="mf">101325.</span><span class="p">,</span> <span class="n">T_guess</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solve for (p, T) corresponding to a given input pair (x, y) by inverting</span>
+<span class="sd">        the the fluid property calculations</span>
+
+<span class="sd">        This function finds the pressure and temperature that simultaneously match</span>
+<span class="sd">        two target property values (e.g. density-temperature, pressure-entropy) using</span>
+<span class="sd">        a Newton root-finding algorithm. The solver uses initial guesses for pressure</span>
+<span class="sd">        and temperature provided by `p_guess` and `T_guess`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        input_pair : int</span>
+<span class="sd">            Identifier for the input property pair (e.g. jxp.HmassSmass_INPUTS).</span>
+<span class="sd">        x : float</span>
+<span class="sd">            Target value of the first property.</span>
+<span class="sd">        y : float</span>
+<span class="sd">            Target value of the second property.</span>
+<span class="sd">        R : float</span>
+<span class="sd">            Mixture ratio (mass of fluid 1 / mass of fluid 2).</span>
+<span class="sd">        p_guess : float</span>
+<span class="sd">            Initial guess for the pressure.</span>
+<span class="sd">        T_guess : float</span>
+<span class="sd">            Initial guess for the temperature.  </span>
+<span class="sd">        tol : float, optional</span>
+<span class="sd">            Absolute and relative tolerance for the Newton solver (default: 1e-8).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MixtureState</span>
+<span class="sd">            Interpolated fluid state corresponding to the recovered (p, T).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Map input_pair to property names</span>
+        <span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">INPUT_PAIR_MAP</span><span class="p">[</span><span class="n">input_pair</span><span class="p">]</span>
+        <span class="n">prop1</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">ALIAS_TO_CANONICAL</span><span class="p">[</span><span class="n">prop1</span><span class="p">]</span>
+        <span class="n">prop2</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">ALIAS_TO_CANONICAL</span><span class="p">[</span><span class="n">prop2</span><span class="p">]</span>
+
+        <span class="c1"># Define initial guess</span>
+    
+        <span class="n">state_guess</span> <span class="o">=</span> <span class="n">get_mixture_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid_2</span><span class="p">,</span> <span class="n">p_guess</span><span class="p">,</span> <span class="n">T_guess</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+        <span class="n">x_ref</span> <span class="o">=</span> <span class="n">state_guess</span><span class="p">[</span><span class="n">prop1</span><span class="p">]</span>
+        <span class="n">y_ref</span> <span class="o">=</span> <span class="n">state_guess</span><span class="p">[</span><span class="n">prop2</span><span class="p">]</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+
+        <span class="c1"># Define residual function</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+            <span class="n">p_nd</span><span class="p">,</span> <span class="n">T_nd</span> <span class="o">=</span> <span class="n">xy</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">p_nd</span> <span class="o">*</span> <span class="n">p_guess</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="n">T_nd</span> <span class="o">*</span> <span class="n">T_guess</span>
+            <span class="n">mix_state</span> <span class="o">=</span> <span class="n">get_mixture_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid_2</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+            <span class="n">res_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix_state</span><span class="p">[</span><span class="n">prop1</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">x_ref</span>
+            <span class="n">res_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix_state</span><span class="p">[</span><span class="n">prop2</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">y_ref</span>
+            <span class="c1"># # debug print</span>
+            <span class="c1"># jax.debug.print(</span>
+            <span class="c1">#     &quot;&quot;&quot;</span>
+            <span class="c1">#     residual eval:</span>
+            <span class="c1">#         p_nd = {p_nd}</span>
+            <span class="c1">#         T_nd = {T_nd}</span>
+            <span class="c1">#         p    = {p}</span>
+            <span class="c1">#         T    = {T}</span>
+            <span class="c1">#         mix_state[{prop1}] = {v1}</span>
+            <span class="c1">#         mix_state[{prop2}] = {v2}</span>
+            <span class="c1">#         res_x = {rx}</span>
+            <span class="c1">#         res_y = {ry}</span>
+            <span class="c1">#     &quot;&quot;&quot;,</span>
+            <span class="c1">#     p_nd=p_nd, T_nd=T_nd,</span>
+            <span class="c1">#     p=p, T=T,</span>
+            <span class="c1">#     prop1=prop1, prop2=prop2,</span>
+            <span class="c1">#     v1=mix_state[prop1], v2=mix_state[prop2],</span>
+            <span class="c1">#     rx=res_x, ry=res_y</span>
+            <span class="c1"># )</span>
+            <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">res_x</span><span class="p">,</span> <span class="n">res_y</span><span class="p">])</span>
+
+        <span class="c1"># Solve root-finding problem</span>
+        <span class="n">solver</span> <span class="o">=</span> <span class="n">optx</span><span class="o">.</span><span class="n">Newton</span><span class="p">(</span><span class="n">rtol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
+        <span class="n">solution</span> <span class="o">=</span> <span class="n">optx</span><span class="o">.</span><span class="n">root_find</span><span class="p">(</span><span class="n">residual</span><span class="p">,</span> <span class="n">solver</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">throw</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># convert back to dimensional variables</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">p_guess</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">T_guess</span>
+
+        <span class="k">return</span> <span class="n">get_mixture_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid_2</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span></div>
+
+
 <span class="c1"># ------------------------------------------------------------------------------------ #</span>
 <span class="c1"># Compute the properties of a two-component mixture (e.g., water and nitrogen)</span>
 <span class="c1"># ------------------------------------------------------------------------------------ #</span>
@@ -334,8 +541,10 @@ document.write(`
     <span class="n">vol_2</span> <span class="o">=</span> <span class="n">y_2</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">/</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span>
 
     <span class="c1"># --- simple quality identifiers</span>
-    <span class="n">vapor_quality</span> <span class="o">=</span> <span class="n">y_1</span> <span class="k">if</span> <span class="n">state_1</span><span class="o">.</span><span class="n">density</span> <span class="o">&lt;</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span> <span class="k">else</span> <span class="n">y_2</span>
-    <span class="n">void_fraction</span> <span class="o">=</span> <span class="n">vol_1</span> <span class="k">if</span> <span class="n">state_1</span><span class="o">.</span><span class="n">density</span> <span class="o">&lt;</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span> <span class="k">else</span> <span class="n">vol_2</span>
+    <span class="c1"># vapor_quality = y_1 if state_1.density &lt; state_2.density else y_2</span>
+    <span class="c1"># void_fraction = vol_1 if state_1.density &lt; state_2.density else vol_2</span>
+    <span class="n">vapor_quality</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">state_1</span><span class="o">.</span><span class="n">density</span> <span class="o">&lt;</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span><span class="p">,</span> <span class="n">y_1</span><span class="p">,</span> <span class="n">y_2</span><span class="p">)</span>
+    <span class="n">void_fraction</span>  <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">state_1</span><span class="o">.</span><span class="n">density</span> <span class="o">&lt;</span> <span class="n">state_2</span><span class="o">.</span><span class="n">density</span><span class="p">,</span> <span class="n">vol_1</span><span class="p">,</span> <span class="n">vol_2</span><span class="p">)</span>
 
     <span class="c1"># --- isothermal compressibility</span>
     <span class="n">k_T_1</span> <span class="o">=</span> <span class="n">state_1</span><span class="o">.</span><span class="n">isothermal_compressibility</span>
