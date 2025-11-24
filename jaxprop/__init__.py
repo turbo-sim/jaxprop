@@ -35,7 +35,7 @@ from .two_component import FluidTwoComponent, get_mixture_state
 
 
 # Package info
-__version__ = "0.5.3"
+__version__ = "0.5.4"
 PACKAGE_NAME = "jaxprop"
 URL_GITHUB = "https://github.com/turbo-sim/jaxprop"
 URL_DOCS = "https://turbo-sim.github.io/jaxprop/"
