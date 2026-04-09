@@ -1,6 +1,7 @@
 import numpy as np
 import CoolProp.CoolProp as CP
 import pysolver_view as psv
+from scipy.optimize import root_scalar, root
 
 from .. import math
 from .. import utils
@@ -909,6 +910,7 @@ def _perform_flash_calculation(
         max_iterations=solver_max_iterations,
         print_convergence=print_convergence,
         update_on="function",
+        lm_factor=0.05
     )
 
     # Define initial guess and solve the problem
@@ -1600,3 +1602,128 @@ def calculate_mixture_properties(props_1, props_2, y_1, y_2):
     #     props[key] = props.get(value, np.nan)
 
     return props
+
+
+
+def calculate_mixture_properties_hp(h_mix, p_mix, AS1, AS2, R):
+    """
+    Calculate the thermodynamic properties of the mixture with h-p calls.
+
+    TODO: add model equations and explanation
+
+    Parameters
+    ----------
+    state_1 : dict
+        Thermodynamic properties of fluid 1.
+    state_2 : dict
+        Thermodynamic properties of fluid 2.
+    y_1 : float
+        Mass fraction of fluid 1.
+    y_2 : float
+        Mass fraction of fluid 2.
+    R : float
+        Mixture ratio defined as m_dot_1/m_dot_2
+    Returns
+    -------
+    mixture_properties : dict
+        A dictionary containing the mixture's properties.
+    """
+
+    ### --- Find the h of each fluid ---
+    x1 = R / (R + 1)
+    x2 =  1 - x1
+
+    def residual_enthalpy(T, *args):
+        AS1.update(CP.PT_INPUTS, p_mix, T)
+        h1_guess = AS1.hmass()
+        AS2.update(CP.PT_INPUTS, p_mix, T)
+        h2_guess = AS2.hmass()
+        h_mix_guess = x1 * h1_guess + x2 * h2_guess
+        return h_mix - h_mix_guess
+    
+    # Temperature bounds (analogous to your JAX code)
+    T_low = max(AS1.Ttriple(), AS2.Ttriple())
+    T_high = min(AS1.T_critical(), AS2.T_critical()) * 5.0
+
+
+    # Solve using root_scalar with Brent method
+    sol_root = root_scalar(
+        residual_enthalpy,
+        args=(AS1, AS2, x1, x2),    # your parameters
+        method='brentq',
+        bracket=[T_low, T_high],
+        xtol=1e-12,         # tolerance for convergence
+        rtol=1e-12
+        )
+    
+    T_mix = sol_root.root
+
+    AS1.update(CP.PT_INPUTS, p_mix, T_mix)
+    AS2.update(CP.PT_INPUTS, p_mix, T_mix)
+    props_1 = compute_properties_1phase(AS1)
+    props_2 = compute_properties_1phase(AS2)
+
+    # Compute volume fractions and void fraction v2
+    vol_1 = 1 / (1 + ((x2 / x1) * (props_1["density"] / props_2["density"])))
+    vol_2 = 1 - vol_1
+    rho = vol_1 * props_1["density"] + vol_2 * props_2["density"]
+
+    # Mass-averaged properties
+    cv = x1 * props_1['isochoric_heat_capacity'] + x2 * props_2['isochoric_heat_capacity']
+    cp = x1 * props_1['isobaric_heat_capacity'] + x2 * props_2['isobaric_heat_capacity']
+    umass = x1 * props_1['internal_energy'] + x2 * props_2['internal_energy']
+    smass = x1 * props_1['entropy'] + x2 * props_2['entropy']
+
+    # Enthalpy derivative for the two-component barotropic model
+    kappaT_1 = props_1['isobaric_expansion_coefficient']
+    kappaT_2 = props_2['isobaric_expansion_coefficient']
+    kappaT = vol_1 * kappaT_1 + vol_2 * kappaT_2
+
+    # Isothermal compressibility
+    kappaP_1 = props_1["isothermal_compressibility"]
+    kappaP_2 = props_2["isothermal_compressibility"]
+    kappaP = vol_1 * kappaP_1 + vol_2 * kappaP_2
+    isothermal_bulk_modulus = 1 / kappaP
+
+
+    # Isentropic compressibility and speed of sound (Wood's formula)
+    betaS_1 = props_1["isentropic_compressibility"]
+    betaS_2 = props_2["isentropic_compressibility"]
+    isentropic_compressibility = x1 * betaS_1 + x2 * betaS_2 # TODO: to be checked
+    isentropic_bulk_modulus = 1 / isentropic_compressibility
+    speed_sound = (rho * kappaP - kappaT**2 * T_mix / cp) ** -0.5
+
+
+    # Transport properties as volume averages
+    conductivity = vol_1 * props_1['conductivity'] + vol_2 * props_2['conductivity']
+    viscosity = vol_1 * props_1['viscosity'] + vol_2 * props_2['viscosity']
+    
+    gruneisen = (rho * cp * kappaP / kappaT - T_mix * kappaT) ** -1
+
+    # Group up mixture properties
+    props_mix = {
+        "mass_frac_1": x1,
+        "mass_frac_2": x2,
+        "vol_frac_1": vol_1,
+        "vol_frac_2": vol_2,
+        "mixture_ratio": R,
+        "pressure": p_mix,
+        "temperature": T_mix,
+        "density": rho,
+        "enthalpy": h_mix,
+        "internal_energy": umass,
+        "entropy": smass,
+        "isochoric_heat_capacity": cv,
+        "isobaric_heat_capacity": cp,
+        "isothermal_compressibility": kappaP,
+        "isobaric_expansion_coefficient":kappaT,
+        "isothermal_bulk_modulus": isothermal_bulk_modulus,
+        "isentropic_compressibility": isentropic_compressibility,
+        "isentropic_bulk_modulus": isentropic_bulk_modulus,
+        "speed_of_sound": speed_sound,
+        "conductivity": conductivity,
+        "viscosity": viscosity,
+        "gruneisen":gruneisen,
+    }
+
+    return props_mix

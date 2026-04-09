@@ -9,7 +9,7 @@ from matplotlib.colors import LogNorm
 jxp.set_plot_options()
 
 # ---------------------------
-# Configuration
+# Configuration 
 # ---------------------------
 outdir = "fluid_tables"
 fluid_name = "CO2"
@@ -17,8 +17,8 @@ h_min = 200e3  # J/kg
 h_max = 600e3  # J/kg
 p_min = 2e6    # Pa
 p_max = 20e6   # Pa
-N_h = 32
-N_p = 32
+N_h = 100
+N_p = 100
 
 # ---------------------------
 # Build models
@@ -30,7 +30,6 @@ fluid_bicubic = jxp.FluidBicubic(
     p_min=p_min, p_max=p_max,
     N_h=N_h, N_p=N_p,
     table_dir=outdir,
-    table_name="interpolation_midpoints"
 )
 
 fluid_cp = jxp.FluidJAX(fluid_name, exceptions=False)  # Mind exceptions!
@@ -38,6 +37,12 @@ fluid_cp = jxp.FluidJAX(fluid_name, exceptions=False)  # Mind exceptions!
 # ---------------------------
 # Midpoint grid (evaluation points)
 # ---------------------------
+h_min = 100e3  # J/kg
+h_max = 600e3  # J/kg
+p_min = 1e6    # Pa
+p_max = 30e6   # Pa
+N_h = 50
+N_p = 50
 h_nodes = jnp.linspace(h_min, h_max, N_h)
 p_nodes = jnp.exp(jnp.linspace(jnp.log(p_min), jnp.log(p_max), N_p))
 h_vals = 0.5 * (h_nodes[:-1] + h_nodes[1:])
@@ -47,6 +52,8 @@ H_mesh, P_mesh = np.meshgrid(h_vals, p_vals, indexing="ij")
 # ---------------------------
 # Evaluate states once (vectorized)
 # ---------------------------
+test = fluid_bicubic.get_state(jxp.HmassP_INPUTS, 700e3, 5e6)
+print(test)
 interp_grid = fluid_bicubic.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
 true_grid   = fluid_cp.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
 

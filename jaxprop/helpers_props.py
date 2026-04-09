@@ -2,6 +2,7 @@ import CoolProp.CoolProp as CP
 import jax.numpy as jnp
 import equinox as eqx
 from dataclasses import fields
+import jax
 
 # Universal molar gas constant
 GAS_CONSTANT = 8.3144598
@@ -50,6 +51,16 @@ class FluidState(eqx.Module):
     temperature_saturation: jnp.ndarray = jnp.nan
     supersaturation_degree: jnp.ndarray = jnp.nan
     supersaturation_ratio: jnp.ndarray = jnp.nan
+
+    # --- mixture propreties
+    mixture_ratio: jnp.ndarray = jnp.nan
+    mass_frac_1: jnp.ndarray = jnp.nan
+    mass_frac_2: jnp.ndarray = jnp.nan
+    vol_frac_1: jnp.ndarray = jnp.nan
+    vol_frac_2: jnp.ndarray = jnp.nan
+    drho_dp: jnp.ndarray = jnp.nan
+    drho_dh: jnp.ndarray = jnp.nan
+    isobaric_expansion_coefficient: jnp.ndarray = jnp.nan
 
     # --- Access helpers
     def __getitem__(self, key: str):
@@ -187,6 +198,15 @@ PROPERTY_ALIASES = {
     "supersaturation_ratio": [],
     "subcooling": [],
     "superheating": [],
+    # --- mixture propreties
+    "mixture_ratio": [],
+    "mass_frac_1": [],
+    "mass_frac_2": [],
+    "vol_frac_1": [],
+    "vol_frac_2": [],
+    "drho_dp": [],
+    "drho_dh": [],
+    "isobaric_expansion_coefficient": [],
 }
 
 
