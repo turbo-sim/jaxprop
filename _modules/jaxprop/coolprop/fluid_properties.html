@@ -596,7 +596,7 @@
             <span class="o">**</span><span class="n">props</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-    
+
 <div class="viewcode-block" id="Fluid.get_state_metastable">
 <a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.get_state_metastable">[docs]</a>
     <span class="nd">@_handle_computation_exceptions</span>
@@ -609,7 +609,7 @@
         <span class="n">rhoT_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">supersaturation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">solver_algorithm</span><span class="o">=</span><span class="s2">&quot;hybr&quot;</span><span class="p">,</span>
+        <span class="n">solver_algorithm</span><span class="o">=</span><span class="s2">&quot;lm&quot;</span><span class="p">,</span> <span class="c1"># hybr</span>
         <span class="n">solver_tolerance</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
         <span class="n">solver_max_iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">print_convergence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -656,7 +656,7 @@
                 <span class="n">solver_max_iterations</span><span class="o">=</span><span class="n">solver_max_iterations</span><span class="p">,</span>
                 <span class="n">print_convergence</span><span class="o">=</span><span class="n">print_convergence</span><span class="p">,</span>
             <span class="p">)</span>
-        
+
         <span class="k">return</span> <span class="n">FluidState</span><span class="p">(</span>
             <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
@@ -722,7 +722,6 @@
             <span class="n">FluidState</span><span class="p">(</span><span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">equilibrium</span><span class="p">),</span>
             <span class="n">FluidState</span><span class="p">(</span><span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">metastable</span><span class="p">),</span>
         <span class="p">)</span></div>
-
 
     
 
@@ -793,8 +792,12 @@
                     <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">dT_crit</span><span class="o">=</span><span class="n">dT_crit</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">jnp</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spdl_liq</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">spdl_vap</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]])</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">jnp</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spdl_liq</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">spdl_vap</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]])</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">jnp</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spdl_liq</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">spdl_vap</span><span class="p">[</span><span class="n">x_prop</span><span class="p">]]</span>
+            <span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">jnp</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spdl_liq</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">spdl_vap</span><span class="p">[</span><span class="n">y_prop</span><span class="p">]]</span>
+            <span class="p">)</span>
             <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_label</span><span class="p">(</span><span class="s2">&quot;Spinodal line&quot;</span><span class="p">,</span> <span class="n">show_in_legend</span><span class="p">)</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
@@ -987,6 +990,133 @@
 <span class="c1"># ------------------------------------------------------------------------------------ #</span>
 
 
+<div class="viewcode-block" id="FluidMix">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidMix">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FluidMix</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a binary fluid mixture with thermodynamic properties</span>
+<span class="sd">    calculated using the `calculate_mixture_properties_hp()` function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Strip CoolProp AbstractStates to make the object pickleable.&quot;&quot;&quot;</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">&quot;_AS1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">&quot;_AS2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">state</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restore FluidMix without AbstractStates (can be rebuilt later).&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_AS1</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_AS2</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;HEOS&quot;</span><span class="p">,</span>
+        <span class="n">mixture_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the FluidMix object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Mixture name, e.g. &quot;water_nitrogen_mixture&quot;.</span>
+<span class="sd">        backend : str, optional</span>
+<span class="sd">            CoolProp backend, by default &quot;HEOS&quot;.</span>
+<span class="sd">        exceptions : bool, optional</span>
+<span class="sd">            Whether to raise exceptions, by default True.</span>
+<span class="sd">        identifier : str, optional</span>
+<span class="sd">            Optional user-specified identifier.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exceptions</span> <span class="o">=</span> <span class="n">exceptions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span> <span class="k">if</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converged_flag</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mixture_ratio</span> <span class="o">=</span> <span class="n">mixture_ratio</span>
+
+        <span class="c1"># Parse mixture name</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_mixture&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid mixture name &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;. Expected format like &#39;water_nitrogen_mixture&#39;.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Extract fluid component names</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_mixture&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Expected exactly two components for a binary mixture, got: </span><span class="si">{</span><span class="n">parts</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fluid_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid_2</span> <span class="o">=</span> <span class="n">parts</span>
+
+        <span class="c1"># Initialize AbstractStates for each component</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_AS1</span> <span class="o">=</span> <span class="n">try_initialize_fluid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_1</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_AS2</span> <span class="o">=</span> <span class="n">try_initialize_fluid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_2</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+
+        <span class="c1"># # Temperature and pressure limits (approximate from components)</span>
+        <span class="c1"># self.p_min = max(1.0, min(self._AS1.pmin(), self._AS2.pmin()))</span>
+        <span class="c1"># self.p_max = min(self._AS1.pmax(), self._AS2.pmax())</span>
+        <span class="c1"># self.T_min = max(self._AS1.Tmin(), self._AS2.Tmin())</span>
+        <span class="c1"># self.T_max = min(self._AS1.Tmax(), self._AS2.Tmax())</span>
+
+<div class="viewcode-block" id="FluidMix.get_state">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidMix.get_state">[docs]</a>
+    <span class="nd">@_handle_computation_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                <span class="n">input_type</span><span class="p">,</span>
+                <span class="n">prop_1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                <span class="n">prop_2</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the thermodynamic state of the mixture at given h and p.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        h_mix : float</span>
+<span class="sd">            Mixture specific enthalpy [J/kg].</span>
+<span class="sd">        p_mix : float</span>
+<span class="sd">            Mixture pressure [Pa].</span>
+<span class="sd">        R : float</span>
+<span class="sd">            Mixture mass flow ratio (m_dot_1 / m_dot_2).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        FluidState</span>
+<span class="sd">            Object containing the computed mixture thermodynamic properties.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">input_type</span> <span class="o">==</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Inputs rather than p-h are not supported yet&quot;</span><span class="p">)</span>
+
+        <span class="n">props_mix</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">calculate_mixture_properties_hp</span><span class="p">(</span>
+            <span class="n">h_mix</span><span class="o">=</span><span class="n">prop_1</span><span class="p">,</span>
+            <span class="n">p_mix</span><span class="o">=</span><span class="n">prop_2</span><span class="p">,</span>
+            <span class="n">AS1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_AS1</span><span class="p">,</span>
+            <span class="n">AS2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_AS2</span><span class="p">,</span>
+            <span class="n">R</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mixture_ratio</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">converged_flag</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># return props_mix</span>
+
+        <span class="k">return</span> <span class="n">FluidState</span><span class="p">(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">props_mix</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># ------------------------------------------------------------------------------------ #</span>
+<span class="c1"># ------------------------------------------------------------------------------------ #</span>
+<span class="c1"># ------------------------------------------------------------------------------------ #</span>
+
+
 <div class="viewcode-block" id="compute_saturation_line">
 <a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.compute_saturation_line">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_saturation_line</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">dT_crit</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
@@ -1031,6 +1161,7 @@
     <span class="n">saturation_vap</span> <span class="o">=</span> <span class="n">FluidState</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">vap_states</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">saturation_liq</span><span class="p">,</span> <span class="n">saturation_vap</span></div>
+
 
 
 <div class="viewcode-block" id="compute_pseudocritical_line">
@@ -1712,7 +1843,6 @@
     <span class="n">states_meta</span> <span class="o">=</span> <span class="n">states_to_dict_2d</span><span class="p">(</span><span class="n">states_meta</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">states_meta</span></div>
-
 
 
 
