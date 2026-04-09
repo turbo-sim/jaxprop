@@ -25,7 +25,7 @@ N_h = 300
 # ---------------------------
 # Delete existing tables
 # ---------------------------
-outdir = "demo_table_generation"
+outdir = "fluid_tables"
 if os.path.exists(outdir):
     shutil.rmtree(outdir, ignore_errors=True)
 

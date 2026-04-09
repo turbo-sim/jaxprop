@@ -20,6 +20,8 @@ class FluidBicubic(eqx.Module):
         saves it to disk, and stores it in memory.
       * On `get_props`, performs bicubic interpolation at the requested state.
 
+    Table generation uses forward finite differences for first and mixed derivatives 
+
     Parameters
     ----------
     fluid_name : str
@@ -41,11 +43,6 @@ class FluidBicubic(eqx.Module):
     identifier : str, optional
         Tag stored in the returned FluidState objects.
 
-    Notes
-    -----
-    * Table generation uses forward finite differences for first and mixed
-      derivatives with adaptive step size.
-    * Currently supports only HmassP_INPUTS as input pair.
     """
 
     # Attributes (static vs dynamic)
@@ -147,6 +144,23 @@ class FluidBicubic(eqx.Module):
         if os.path.exists(pkl_path):
             with open(pkl_path, "rb") as f:
                 table = pickle.load(f)
+
+            meta = table.get("metadata", {})
+            expected = self.metadata
+
+            mismatches = []
+            for k, val_expected in expected.items():
+                val_loaded = meta.get(k, None)
+                if val_loaded != val_expected:
+                    mismatches.append((k, val_loaded, val_expected))
+
+            if mismatches:
+                print(f"Existing table found at '{pkl_path}', but metadata mismatch detected:")
+                for k, old, new in mismatches:
+                    print(f"  - {k}: file={old}  expected={new}")
+                print("Regenerating property table...\n")
+                return self._generate_property_table()
+
             print(f"Loaded property table from: {pkl_path}")
             return table
 
@@ -161,6 +175,7 @@ class FluidBicubic(eqx.Module):
             return self._generate_metastable_vapor_property_table()
         else:
             return self._generate_property_table()
+
 
     def _generate_property_table(self):
         # Initialize fluid (single component)
@@ -1238,7 +1253,7 @@ class FluidBicubic(eqx.Module):
         jxp.HmassP_INPUTS: lambda self, h, p: self._interp_h_p(h, p),
         jxp.PT_INPUTS: lambda self, p, T: self._interp_x_p(p, T, "temperature"),
         jxp.DmassP_INPUTS: lambda self, d, p: self._interp_x_p(p, d, "density"),
-        jxp.PSmass_INPUTS: lambda self, p, s: self._interp_x_p(p, s, "entropy"),
+        # jxp.PSmass_INPUTS: lambda self, p, s: self._interp_x_p(p, s, "entropy"),
         jxp.HmassSmass_INPUTS: lambda self, h, s: self._interp_h_y(h, s, "entropy"),
         jxp.DmassHmass_INPUTS: lambda self, d, h: self._interp_h_y(h, d, "density"),
         jxp.DmassT_INPUTS: lambda self, d, T: self._interp_x_y(
@@ -1246,6 +1261,9 @@ class FluidBicubic(eqx.Module):
         ),
         jxp.DmassSmass_INPUTS: lambda self, d, s: self._interp_x_y(
             jxp.DmassSmass_INPUTS, d, s, coarse_step=self.coarse_step
+        ),
+        jxp.PSmass_INPUTS: lambda self, p, s: self._interp_x_y(
+            jxp.PSmass_INPUTS, p, s, coarse_step=self.coarse_step
         ),
     }
 

@@ -7,7 +7,6 @@ input_pair = jxp.HmassP_INPUTS
 h = 3.00e5    # J/kg
 p = 101325.0  # Pa
 
-
 # base state
 fluid = jxp.FluidPerfectGas("air", T_ref=298.15, p_ref=101325.0)
 base = fluid.get_state(input_pair, h, p)
@@ -63,3 +62,39 @@ val_drho_dp = grad_jax["rho"][1]
 exp_drho_dp = 1.0 / (R * T)
 err_drho_dp = jnp.abs(val_drho_dp - exp_drho_dp) / jnp.abs(exp_drho_dp)
 print(f"  drho/dp|h : {val_drho_dp:+0.6f}   {exp_drho_dp:+0.6f}   {err_drho_dp:+0.6e}")
+
+
+
+
+# --------------------------- final verification summary --------------------------- #
+TOL = 1e-9
+violations = []
+
+def check(name, val, ref, tol=TOL):
+    err = float(jnp.abs(val - ref) / max(1e-14, abs(ref)))
+    if jnp.isnan(val) or jnp.isnan(ref):
+        violations.append((name, "NaN"))
+    elif err > tol:
+        violations.append((name, err))
+
+# check FD vs JAX gradients
+check("dT/dh|p (fd vs jax)", grad_fd['T'][0], grad_jax['T'][0])
+check("dT/dp|h (fd vs jax)", grad_fd['T'][1], grad_jax['T'][1])
+check("drho/dh|p (fd vs jax)", grad_fd['d'][0], grad_jax['d'][0])
+check("drho/dp|h (fd vs jax)", grad_fd['d'][1], grad_jax['d'][1])
+
+# check analytical identities
+check("dT/dh|p identity", val_dT_dh, exp_dT_dh)
+check("drho/dp|h identity", val_drho_dp, exp_drho_dp)
+
+# raise or print result
+if violations:
+    msg_lines = ["The following derivative/identity checks failed:"]
+    for name, err in violations:
+        if err == "NaN":
+            msg_lines.append(f"  - {name}: value or reference is NaN")
+        else:
+            msg_lines.append(f"  - {name}: relative error = {err:.3e}")
+    raise ValueError("\n".join(msg_lines))
+else:
+    print(f"\nAll derivative and identity checks passed (relative errors < {TOL:.1e}).")

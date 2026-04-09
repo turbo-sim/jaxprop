@@ -45,6 +45,7 @@ import matplotlib.pyplot as plt
 
 jxp.set_plot_options(grid=False)
 
+
 # -----------------------------------------------------------------------------
 # Main API to the polytropic expansion model
 # -----------------------------------------------------------------------------
@@ -86,7 +87,7 @@ def polytropic_expansion(
 
     """
 
-    solver  = dfx.Dopri5()
+    solver = dfx.Dopri5()
     adjoint = dfx.DirectAdjoint()  # works for fwd+rev when using callbacks
     term = dfx.ODETerm(_polytropic_odefun)
     ctrl = dfx.PIDController(rtol=1e-6, atol=1e-9)
@@ -116,6 +117,7 @@ def polytropic_expansion(
 # Right hand side of the diffuser ODE system
 # -----------------------------------------------------------------------------
 
+
 def _polytropic_odefun(t, y, args):
     p, h = t, y
     eta, fluid = args
@@ -129,9 +131,11 @@ def postprocess_ode(t, y, args):
     state = fluid.get_state(jxp.HmassP_INPUTS, h, p)
     return state
 
+
 # -----------------------------------------------------------------------------
 # Define one scalar objective function
 # -----------------------------------------------------------------------------
+
 
 def get_exit_temperature(params, fluid):
     sol = polytropic_expansion(params, fluid)
@@ -157,14 +161,14 @@ def finite_diff_grad(fun, x, rel_eps=1e-6):
     """forward 2-point finite-diff gradient of scalar fun: R^n -> R"""
     x = jnp.asarray(x, dtype=jnp.float64)
     f0 = fun(x)
+
     def one_comp(i, val):
         eps = rel_eps * (jnp.abs(val) + 1.0)
         x_pert = x.at[i].add(eps)
         return (fun(x_pert) - f0) / eps
+
     g = [one_comp(i, x[i]) for i in range(x.size)]
     return jnp.array(g, dtype=jnp.float64)
-
-
 
 
 # -----------------------------------------------------------------------------
@@ -174,7 +178,7 @@ if __name__ == "__main__":
 
     # Define the case parameters
     T_in = 400.0
-    p_in = 200e5 
+    p_in = 200e5
     p_out = 50e5
     efficiency = 0.8
     fluid = jxp.FluidJAX(name="CO2", backend="HEOS")
@@ -267,8 +271,9 @@ if __name__ == "__main__":
 
     # --- Gradient calculation accuracy ---
     def alignment_metric(g_ad, g_fd):
-        return (jnp.dot(g_ad, g_fd) /
-                (jnp.linalg.norm(g_ad) * jnp.linalg.norm(g_fd))) - 1
+        return (
+            jnp.dot(g_ad, g_fd) / (jnp.linalg.norm(g_ad) * jnp.linalg.norm(g_fd))
+        ) - 1
 
     def relative_L2_error(g_ad, g_fd):
         return jnp.linalg.norm(g_ad - g_fd) / jnp.linalg.norm(g_fd)
@@ -278,12 +283,13 @@ if __name__ == "__main__":
     print("-" * 42)
     print(f"{'efficiency':>12s} {'fwd vs FD':>16s} {'rev vs FD':>16s}")
 
-
-    for eff, g_fwd_dict, g_rev_dict, g_fd_dict in zip(eff_array, grad_fwd_all, grad_rev_all, grad_fd_all):
+    for eff, g_fwd_dict, g_rev_dict, g_fd_dict in zip(
+        eff_array, grad_fwd_all, grad_rev_all, grad_fd_all
+    ):
         # Convert dicts to arrays in consistent key order
         g_fwd = jnp.asarray([g_fwd_dict[k] for k in keys])
         g_rev = jnp.asarray([g_rev_dict[k] for k in keys])
-        g_fd  = jnp.asarray([g_fd_dict[k]  for k in keys])
+        g_fd = jnp.asarray([g_fd_dict[k] for k in keys])
 
         align_fwd = relative_L2_error(g_fwd, g_fd)
         align_rev = relative_L2_error(g_rev, g_fd)
@@ -294,7 +300,6 @@ if __name__ == "__main__":
     print(g_rev)
     print(g_fwd)
     print(g_fd)
-    
 
     # Show figures
     plt.show()

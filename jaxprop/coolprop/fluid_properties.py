@@ -167,11 +167,11 @@ class Fluid:
         d_crit = self._AS.rhomass_critical()
         T_crit = self._AS.T_critical()
         p_crit = self._AS.p_critical()
-        # state_crit = self.get_state(DmassT_INPUTS, rho_crit, T_crit-1e-12)
-        try:
-            state_crit = self.get_state(CP.DmassT_INPUTS, d_crit, T_crit - 1e-5)
-        except:
-            state_crit = self.get_state(CP.PT_INPUTS, p_crit, T_crit - 1e-5)
+        state_crit = self.get_state(CP.DmassT_INPUTS, d_crit*1.1, T_crit-1e-12)
+        # try:
+        #     state_crit = self.get_state(CP.DmassT_INPUTS, d_crit, T_crit - 1e-5)
+        # except:
+        #     state_crit = self.get_state(CP.PT_INPUTS, p_crit, T_crit - 1e-3)
         return state_crit
 
     def _compute_triple_point_liquid(self):
@@ -182,15 +182,9 @@ class Fluid:
         """Calculate the properties at the triple point (vapor state)"""
         return self.get_state(CP.QT_INPUTS, 1.00, self._AS.Ttriple())
 
+
     @_handle_computation_exceptions
-    def get_state(
-        self,
-        input_type,
-        prop_1,
-        prop_2,
-        generalize_quality=False,
-        supersaturation=False,
-    ):
+    def get_state(self, input_type, prop_1, prop_2, generalize_quality=False, supersaturation=False):
         r"""
         Set the thermodynamic state of the fluid using the CoolProp low-level interface.
 
@@ -1400,32 +1394,32 @@ class _SpinodalPointProblem(psv.OptimizationProblem):
 #     return result
 
 
-def states_to_dict_2d(states):
-    """
-    Convert a 2D list (grid) of state objects into a dictionary.
+# def states_to_dict_2d(states):
+#     """
+#     Convert a 2D list (grid) of state objects into a dictionary.
 
-    Each key is a field name of the state objects, and each value is a 2D Numpy array of all the values for that field.
+#     Each key is a field name of the state objects, and each value is a 2D Numpy array of all the values for that field.
 
-    Parameters
-    ----------
-    states_grid : list of lists of FluidState
-        A 2D grid where each element is a state object with the same keys.
+#     Parameters
+#     ----------
+#     states_grid : list of lists of FluidState
+#         A 2D grid where each element is a state object with the same keys.
 
-    Returns
-    -------
-    dict
-        A dictionary where keys are field names and values are 2D arrays of field values.
-    """
-    state_dict_2d = {}
-    m, n = len(states), len(states[0])
-    for i, row in enumerate(states):
-        for j, state in enumerate(row):
-            for field, value in state.items():
-                if field not in state_dict_2d:
-                    dtype = type(value)  # Determine dtype from the first occurrence
-                    state_dict_2d[field] = np.empty((m, n), dtype=dtype)
-                state_dict_2d[field][i, j] = value
-    return state_dict_2d
+#     Returns
+#     -------
+#     dict
+#         A dictionary where keys are field names and values are 2D arrays of field values.
+#     """
+#     state_dict_2d = {}
+#     m, n = len(states), len(states[0])
+#     for i, row in enumerate(states):
+#         for j, state in enumerate(row):
+#             for field, value in state.items():
+#                 if field not in state_dict_2d:
+#                     dtype = type(value)  # Determine dtype from the first occurrence
+#                     state_dict_2d[field] = np.empty((m, n), dtype=dtype)
+#                 state_dict_2d[field][i, j] = value
+#     return state_dict_2d
 
 
 def compute_quality_grid(fluid, num_points, quality_levels, dT_crit=1.0):
