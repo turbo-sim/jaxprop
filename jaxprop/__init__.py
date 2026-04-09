@@ -31,7 +31,7 @@ from . import bicubic
 
 # Import API classes
 from .perfect_gas import FluidPerfectGas
-from .coolprop import Fluid, FluidJAX
+from .coolprop import Fluid, FluidJAX, FluidMix
 from .bicubic import FluidBicubic
 
 
@@ -46,4 +46,3 @@ URL_DOCS = "https://turbo-sim.github.io/jaxprop/"
 URL_PYPI = "https://pypi.org/project/jaxprop/"
 URL_DTU = "https://thermalpower.dtu.dk/"
 BREAKLINE = 80 * "-"
-
