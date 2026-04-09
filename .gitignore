@@ -24,16 +24,16 @@ __pycache__/
 *.pyo
 
 # Visual Studio Code specific
-.vscode/         # VS Code settings and cache
-settings.json    # VS Code settings file
-*.code-workspace # VS Code workspace file
+.vscode/
+settings.json
+*.code-workspace
 
 # Other
 *.log
 *.tmp
 *.bak
-.DS_Store       # Mac OS X desktop services store
-*.swp           # Vim swap files
+.DS_Store
+*.swp
 
 # Sphinx generated files
 _build/
@@ -52,6 +52,7 @@ environment.pickle
 
 # Other common directories and files
 *.log
+*.pkl
 *.bak
 *.swp
 *.bak~
