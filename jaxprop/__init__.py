@@ -31,7 +31,7 @@ from . import bicubic
 from .perfect_gas import FluidPerfectGas
 from .coolprop import Fluid, FluidJAX, FluidMix
 from .bicubic import FluidBicubic
-from .two_component import FluidTwoComponent, get_mixture_state
+# from .two_component import FluidTwoComponent, get_mixture_state
 
 
 # Package info

@@ -67,6 +67,7 @@ class FluidBicubic(eqx.Module):
     table: dict = eqx.field(static=False)
     identifier: str = eqx.field(static=True)
     grad_method: str = eqx.field(static=True)
+    metadata: dict = eqx.field(static=True)
     mixture_ratio: float = eqx.field(static=True)
     metastable_phase: str = eqx.field(static=True)
     critical_point: dict = eqx.field(static=True)
@@ -122,6 +123,24 @@ class FluidBicubic(eqx.Module):
         self.delta_h = float(self.h_vals[1] - self.h_vals[0])
         self.delta_logP = float(self.logP_vals[1] - self.logP_vals[0])
 
+        # Build expected metadata for cache validation
+        self.metadata = dict(
+            fluid=self.fluid_name,
+            backend=self.backend,
+            h_min=self.h_min,
+            h_max=self.h_max,
+            p_min=self.p_min,
+            p_max=self.p_max,
+            N_h=self.N_h,
+            N_p=self.N_p,
+            delta_h=self.delta_h,
+            delta_logP=self.delta_logP,
+        )
+        if mixture_ratio is not None:
+            self.metadata["mixture_ratio"] = self.mixture_ratio
+        if metastable_phase is not None:
+            self.metadata["metastable_phase"] = self.metastable_phase
+
         # Get critical and triple point properties
         if self.mixture_ratio is None:
             fluid = jxp.Fluid(self.fluid_name, self.backend)
@@ -159,7 +178,14 @@ class FluidBicubic(eqx.Module):
                 for k, old, new in mismatches:
                     print(f"  - {k}: file={old}  expected={new}")
                 print("Regenerating property table...\n")
-                return self._generate_property_table()
+                if "mixture" in self.fluid_name.lower():
+                    return self._generate_mixture_property_table()
+                elif self.metastable_phase == "liquid":
+                    return self._generate_metastable_liquid_property_table()
+                elif self.metastable_phase == "vapor":
+                    return self._generate_metastable_vapor_property_table()
+                else:
+                    return self._generate_property_table()
 
             print(f"Loaded property table from: {pkl_path}")
             return table
