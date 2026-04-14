@@ -363,7 +363,9 @@
     <span class="n">cp</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;cp&quot;</span><span class="p">])</span>
     <span class="n">cv</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;cv&quot;</span><span class="p">])</span>
     <span class="n">gamma</span> <span class="o">=</span> <span class="n">cp</span> <span class="o">/</span> <span class="n">cv</span>
-    <span class="n">s_ref</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="c1"># Use CoolProp absolute entropy at (p_ref, T_ref) so perfect-gas entropy</span>
+    <span class="c1"># is compatible with real-fluid entropy basis.</span>
+    <span class="n">s_ref</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">])</span>
     <span class="n">mu_ref</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">])</span>
     <span class="n">k_ref</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">])</span>
 
