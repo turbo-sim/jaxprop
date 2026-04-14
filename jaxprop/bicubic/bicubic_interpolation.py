@@ -10,7 +10,6 @@ import optimistix as optx
 import jaxprop.coolprop as jxp
 
 
-
 # TODO Add saturation curves look-up:
 # # JAX-compatible cubic Hermite interpolation
 # def jax_cubic_spline(x, x_vals, y_vals):
@@ -142,7 +141,7 @@ class FluidBicubic(eqx.Module):
             print(f"Loaded property table from: {pkl_path}")
             return table
 
-            # TODO do a check that all metadate of the loaded table matches, an dif it changes print message and recompute table
+            # TODO do a check that all metadate of the loaded table matches, and if it changes print message and recompute table
 
         print("No existing table found, generating new one...")
         return self._generate_property_table()
@@ -179,9 +178,38 @@ class FluidBicubic(eqx.Module):
                 "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16)),
             }
 
+        enthalpy_vals = np.tile(np.asarray(self.h_vals)[:, None], (1, self.N_p))
+        pressure_vals = np.tile(
+            np.exp(np.asarray(self.logP_vals))[None, :], (self.N_h, 1)
+        )
+        table["enthalpy"] = {
+            "value": enthalpy_vals,
+            "grad_h": np.ones_like(enthalpy_vals),
+            "grad_p": np.zeros_like(enthalpy_vals),
+            "grad_logP": np.zeros_like(enthalpy_vals),
+            "grad_ph": np.zeros_like(enthalpy_vals),
+            "grad_hlogP": np.zeros_like(enthalpy_vals),
+            "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
+        }
+        
+        table["pressure"] = {
+            "value": pressure_vals,
+            "grad_h": np.zeros_like(pressure_vals),
+            "grad_p": np.ones_like(pressure_vals),
+            "grad_logP": pressure_vals,  # grad wrt P times p => here 1 * p
+            "grad_ph": np.zeros_like(pressure_vals),
+            "grad_hlogP": np.zeros_like(pressure_vals),
+            "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
+        }
+
+        # Define the specific keys you want to protect/skip
+        keys_to_skip = {'metadata', 'pressure', 'enthalpy'}
+
         # Start property calculations
         total_points = self.N_h * self.N_p
-        success_count = 0
+        success_count = 0       # direct gradient evaluations
+        filled_count = 0        # points actually written in table
+        failure_count = 0
         start_time = time.perf_counter()
         with tqdm.tqdm(
             total=total_points,
@@ -209,8 +237,19 @@ class FluidBicubic(eqx.Module):
                         else:
                             m = self.grad_method
                             raise ValueError(f"Unknown gradient scheme: {m}")
-                    except Exception:
-                        continue
+                    except:
+                        for k in table.keys():
+                            if k in keys_to_skip:
+                                continue  # Skip this iteration
+                            # Fill the rest with fallback values
+                            table[k]["value"][i, j] = table[k]["value"][i-1, j]
+                            table[k]["grad_h"][i, j] = table[k]["grad_h"][i-1, j]
+                            table[k]["grad_p"][i, j] = table[k]["grad_p"][i-1, j]
+                            table[k]["grad_logP"][i, j] = table[k]["grad_logP"][i-1, j]
+                            table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i-1, j]
+                            table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i-1, j]
+                        pbar.update(1)
+                        continue 
 
                     # Store gradients and values in table
                     for k, (val, grad_h, grad_p, grad_hp) in grads.items():
@@ -222,7 +261,74 @@ class FluidBicubic(eqx.Module):
                         table[k]["grad_hlogP"][i, j] = grad_hp * p
 
                     # Update progress bar
-                    pbar.update(1)
+                        pbar.update(1)
+
+                    # except Exception:
+                    #     if i > 0:
+                    #         si, sj = i - 1, j
+                    #         for k in table.keys():
+                    #             if k in keys_to_skip:
+                    #                 continue
+                    #             table[k]["value"][i, j] = table[k]["value"][si, sj]
+                    #             table[k]["grad_h"][i, j] = table[k]["grad_h"][si, sj]
+                    #             table[k]["grad_p"][i, j] = table[k]["grad_p"][si, sj]
+                    #             table[k]["grad_logP"][i, j] = table[k]["grad_logP"][si, sj]
+                    #             table[k]["grad_ph"][i, j] = table[k]["grad_ph"][si, sj]
+                    #             table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][si, sj]
+
+                    #     elif j > 0:
+                    #         si, sj = i, j - 1
+                    #         for k in table.keys():
+                    #             if k in keys_to_skip:
+                    #                 continue
+                    #             table[k]["value"][i, j] = table[k]["value"][si, sj]
+                    #             table[k]["grad_h"][i, j] = table[k]["grad_h"][si, sj]
+                    #             table[k]["grad_p"][i, j] = table[k]["grad_p"][si, sj]
+                    #             table[k]["grad_logP"][i, j] = table[k]["grad_logP"][si, sj]
+                    #             table[k]["grad_ph"][i, j] = table[k]["grad_ph"][si, sj]
+                    #             table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][si, sj]
+
+                    #     else:
+                    #         # i == 0 and j == 0: seed from forward difference
+                    #         try:
+                    #             grads = self._gradients_forward(fluid, h, p, eps_h, eps_p)
+                    #             for k, (val, grad_h, grad_p, grad_hp) in grads.items():
+                    #                 table[k]["value"][i, j] = val
+                    #                 table[k]["grad_h"][i, j] = grad_h
+                    #                 table[k]["grad_p"][i, j] = grad_p
+                    #                 table[k]["grad_logP"][i, j] = grad_p * p
+                    #                 table[k]["grad_ph"][i, j] = grad_hp
+                    #                 table[k]["grad_hlogP"][i, j] = grad_hp * p
+                    #         except Exception:
+                    #             state00 = fluid.get_state(jxp.HmassP_INPUTS, h, p)
+                    #             for k in table.keys():
+                    #                 if k in keys_to_skip:
+                    #                     continue
+                    #                 table[k]["value"][i, j] = state00[k]
+                    #                 table[k]["grad_h"][i, j] = 0.0
+                    #                 table[k]["grad_p"][i, j] = 0.0
+                    #                 table[k]["grad_logP"][i, j] = 0.0
+                    #                 table[k]["grad_ph"][i, j] = 0.0
+                    #                 table[k]["grad_hlogP"][i, j] = 0.0
+
+                    #     failure_count += 1
+                    #     filled_count += 1
+                    #     pbar.update(1)
+                    #     continue
+
+                    # # Store gradients and values in table
+                    # for k, (val, grad_h, grad_p, grad_hp) in grads.items():
+                    #     table[k]["value"][i, j] = val
+                    #     table[k]["grad_h"][i, j] = grad_h
+                    #     table[k]["grad_p"][i, j] = grad_p
+                    #     table[k]["grad_logP"][i, j] = grad_p * p
+                    #     table[k]["grad_ph"][i, j] = grad_hp
+                    #     table[k]["grad_hlogP"][i, j] = grad_hp * p
+
+                    # # Update progress bar
+                    # success_count += 1
+                    # filled_count += 1
+                    # pbar.update(1)
 
             # Compute polynomial coefficients ONLY AFTER computing all table values
             for k in jxp.PROPERTIES_CANONICAL:
@@ -236,14 +342,23 @@ class FluidBicubic(eqx.Module):
                 )
 
         # Print table generation report
-        frac_success = success_count / total_points * 100
+        # frac_success = success_count / total_points * 100
         end_time = time.perf_counter()
         elapsed = end_time - start_time
-        print(
-            f"Successfully evaluated {success_count}/{total_points} points "
-            f"({frac_success:.2f} %)"
-        )
+        # print(
+        #     f"Successfully evaluated {success_count}/{total_points} points "
+        #     f"({frac_success:.2f} %)"
+        # )
+        frac_success = 100.0 * success_count / total_points
+        frac_filled = 100.0 * filled_count / total_points
+
+        print(f"Direct gradient success: {success_count}/{total_points} ({frac_success:.2f} %)")
+        print(f"Table filled points     : {filled_count}/{total_points} ({frac_filled:.2f} %)")
+        print(f"Fallback-used points    : {failure_count}")
         print(f"Total table generation time: {elapsed:.2f} s")
+
+        if filled_count != total_points:
+            print("[WARN] Table not fully filled.")
 
         # Convert all numpy arrays to jax.numpy
         for k in jxp.PROPERTIES_CANONICAL:
@@ -275,7 +390,7 @@ class FluidBicubic(eqx.Module):
             grad_hp = (fhp[k] - fh[k] - fp[k] + f0[k]) / (eps_h * eps_p)
             grads[k] = (val, grad_h, grad_p, grad_hp)
         return grads
-
+    
     @staticmethod
     def _gradients_central(fluid, h, p, eps_h, eps_p):
         """Second-order central finite differences for h and p gradients."""
@@ -297,6 +412,344 @@ class FluidBicubic(eqx.Module):
             grad_hp = (fh_p[k] - fh_m[k] - fm_p[k] + fm_m[k]) / (4 * eps_h * eps_p)
             grads[k] = (val, grad_h, grad_p, grad_hp)
         return grads
+
+    def _generate_metastable_liquid_property_table(self):
+        # Initialize fluid (single component)
+        fluid = jxp.Fluid(self.fluid_name, self.backend)
+       
+        # metadata
+        table = {
+            "metadata": dict(
+                fluid=self.fluid_name,
+                backend=self.backend,
+                h_min=self.h_min,
+                h_max=self.h_max,
+                p_min=self.p_min,
+                p_max=self.p_max,
+                N_h=self.N_h,
+                N_p=self.N_p,
+                delta_h=self.delta_h,
+                delta_logP=self.delta_logP,
+                metastable_phase=self.metastable_phase,
+            ),
+        }
+ 
+        # initialize property dicts for canonical properties
+        for k in jxp.PROPERTIES_CANONICAL:
+            table[k] = {
+                "value": np.empty((self.N_h, self.N_p), dtype=np.float64),
+                "grad_h": np.empty((self.N_h, self.N_p), dtype=np.float64),
+                "grad_p": np.empty((self.N_h, self.N_p), dtype=np.float64),
+                "grad_logP": np.empty((self.N_h, self.N_p), dtype=np.float64),
+                "grad_ph": np.empty((self.N_h, self.N_p), dtype=np.float64),
+                "grad_hlogP": np.empty((self.N_h, self.N_p), dtype=np.float64),
+                "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
+            }
+ 
+        # Add enthalpy and pressure as explicit table entries (used for initial guesses)
+        # Enthalpy: f(h,p) = h -> df/dh = 1, df/dp = 0
+        enthalpy_vals = np.tile(np.asarray(self.h_vals)[:, None], (1, self.N_p))
+        pressure_vals = np.tile(
+            np.exp(np.asarray(self.logP_vals))[None, :], (self.N_h, 1)
+        )
+        table["enthalpy"] = {
+            "value": enthalpy_vals,
+            "grad_h": np.ones_like(enthalpy_vals),
+            "grad_p": np.zeros_like(enthalpy_vals),
+            "grad_logP": np.zeros_like(enthalpy_vals),
+            "grad_ph": np.zeros_like(enthalpy_vals),
+            "grad_hlogP": np.zeros_like(enthalpy_vals),
+            "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
+        }
+        # Pressure: f(h,p) = p -> df/dp = 1, df/dlogP = p
+        table["pressure"] = {
+            "value": pressure_vals,
+            "grad_h": np.zeros_like(pressure_vals),
+            "grad_p": np.ones_like(pressure_vals),
+            "grad_logP": pressure_vals,  # grad wrt P times p => here 1 * p
+            "grad_ph": np.zeros_like(pressure_vals),
+            "grad_hlogP": np.zeros_like(pressure_vals),
+            "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
+        }
+ 
+ 
+        rho_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], pressure_vals[-1][-1])["density"]
+        T_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], pressure_vals[-1][-1])["temperature"]
+        isothermal_bulk_modulus_first = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], pressure_vals[-1][-1])["isothermal_bulk_modulus"]
+ 
+        # Define the specific keys you want to protect/skip
+        keys_to_skip = {'metadata', 'pressure', 'enthalpy'}
+       
+ 
+        # Start evaluating properties
+        after_spinodal = False
+        total_points = self.N_h * self.N_p
+        success_count = 0
+        start_time = time.perf_counter()
+        with tqdm(
+            total=total_points,
+            desc="Generating property table",
+            ascii=True,
+            ncols=80,
+            bar_format="{l_bar}{bar}|",
+        ) as pbar:
+            for j, logP in reversed(list(enumerate(np.asarray(self.logP_vals)))):
+                ratio = 1
+                ratio_old = ratio + 1
+                p = float(np.exp(logP))
+ 
+                # 3. Inner Loop: Standard (Min Enthalpy -> Max Enthalpy)
+                for i, h in enumerate(np.asarray(self.h_vals)):
+                    # print(f"({i},{j})")
+                    # finite difference steps (avoid zero)
+                    eps_h = 1e-5 * max(abs(h), 1.0)
+                    eps_p = 1e-5 * max(abs(p), 1.0)
+                   
+                   
+                    if after_spinodal == False:
+                        try:
+                            if self.grad_method == "forward":
+                                grads = self._gradients_metastable_forward(fluid, h, p, eps_h, eps_p, rho_guess, T_guess)
+                                # print("grads:",grads.items())
+                                # print("\n")
+                                # print("table:", table.keys())                            
+                            elif self.grad_method == "central":
+                                grads = self._gradients_metastable_central(fluid, h, p, eps_h, eps_p)
+                            else:
+                                raise ValueError(
+                                    f"Unknown gradient scheme: {self.grad_method}"
+                                )
+                            success_count += 1
+ 
+                        except:
+ 
+                            # TODO: DO NOT DELETE!!!                            
+                            for k in table.keys():
+                                if k in keys_to_skip:
+                                    continue  # Skip this iteration
+                                # Fill the rest with fallback values
+                                table[k]["value"][i, j] = table[k]["value"][i-1, j]
+                                table[k]["grad_h"][i, j] = table[k]["grad_h"][i-1, j]
+                                table[k]["grad_p"][i, j] = table[k]["grad_p"][i-1, j]
+                                table[k]["grad_logP"][i, j] = table[k]["grad_logP"][i-1, j]
+                                table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i-1, j]
+                                table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i-1, j]
+ 
+                            # for k in table.keys():
+                            #     if k in keys_to_skip:
+                            #         continue  # Skip this iteration
+                            #     # Fill the rest with fallback values
+                            #     table[k]["value"][i, j] = 1e-12
+                            #     table[k]["grad_h"][i, j] = 1e-12
+                            #     table[k]["grad_p"][i, j] = 1e-12
+                            #     table[k]["grad_logP"][i, j] = 1e-12
+                            #     table[k]["grad_ph"][i, j] = 1e-12
+                            #     table[k]["grad_hlogP"][i, j] = 1e-12
+ 
+                            pbar.update(1)
+                            after_spinodal = True
+                            continue
+ 
+                       
+ 
+                       
+                        # Update rho guess and T guess for the next grid point
+                        # rho_guess, T_guess = grads["density"][0], grads["temperature"][0]
+ 
+                        rho_guess = grads["density"][0] + grads["density"][1] * self.delta_h
+                        T_guess = grads["temperature"][0] + grads["temperature"][1] * self.delta_h
+                        # print(f"point:({i},{j}) | {grads["isothermal_compressibility"][0]}")
+                        # store computed properties
+                        # NOTE: We use [i, j]. Even though we are looping P backwards,
+                        # 'j' is the correct index for that specific pressure in the matrix.
+                        for k, (val, grad_h, grad_p, grad_hp) in grads.items():
+                            table[k]["value"][i, j] = float(val)
+                            table[k]["grad_h"][i, j] = float(grad_h)
+                            table[k]["grad_p"][i, j] = float(grad_p)
+                            # store derivatives wrt logP = (d/dP) * P
+                            table[k]["grad_logP"][i, j] = float(grad_p * p)
+                            table[k]["grad_ph"][i, j] = float(grad_hp)
+                            table[k]["grad_hlogP"][i, j] = float(grad_hp * p)
+ 
+                        if i > 0:
+                            ratio = grads["isothermal_bulk_modulus"][0] / table["isothermal_bulk_modulus"]["value"][i-1, j]
+                            diff = ratio_old - ratio
+ 
+                            # if ratio < 1e-1:
+                            if diff < 0 or grads["isothermal_bulk_modulus"][0] < 0:
+                                after_spinodal = True
+                               
+                                # for k in table.keys():
+                                #     if k in keys_to_skip:
+                                #         continue  # Skip this iteration
+                                #     # Fill the rest with fallback values
+                                #     table[k]["value"][i, j] = 1e-12
+                                #     table[k]["grad_h"][i, j] = 1e-12
+                                #     table[k]["grad_p"][i, j] = 1e-12
+                                #     table[k]["grad_logP"][i, j] = 1e-12
+                                #     table[k]["grad_ph"][i, j] = 1e-12
+                                #     table[k]["grad_hlogP"][i, j] = 1e-12
+                               
+                                for k in table.keys():
+                                    if k in keys_to_skip:
+                                        continue  # Skip this iteration
+                                    # Fill the rest with fallback values
+                                    table[k]["value"][i, j] = table[k]["value"][i-1, j]
+                                    table[k]["grad_h"][i, j] = table[k]["grad_h"][i-1, j]
+                                    table[k]["grad_p"][i, j] = table[k]["grad_p"][i-1, j]
+                                    table[k]["grad_logP"][i, j] = table[k]["grad_logP"][i-1, j]
+                                    table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i-1, j]
+                                    table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i-1, j]
+ 
+                                   
+ 
+                                # print("After spinodal")
+                               
+                        # print(f"point:{i,j}")
+                        # print(f"IBM:{grads["isothermal_bulk_modulus"][0]}")
+                        # print(f"IBM-ratio:{ratio}")
+ 
+                        ratio_old = ratio
+ 
+                        pbar.update(1)
+ 
+                    else:
+                        # print("here")
+                        for k in table.keys():
+                            if k in keys_to_skip:
+                                continue  # Skip this iteration
+                            # Fill the rest with fallback values
+                            table[k]["value"][i, j] = 1e-12
+                            table[k]["grad_h"][i, j] = 1e-12
+                            table[k]["grad_p"][i, j] = 1e-12
+                            table[k]["grad_logP"][i, j] = 1e-12
+                            table[k]["grad_ph"][i, j] = 1e-12
+                            table[k]["grad_hlogP"][i, j] = 1e-12
+ 
+                        pbar.update(1)
+                       
+               
+ 
+                rho_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], p)["density"]
+                T_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], p)["temperature"]
+                isothermal_bulk_modulus_first = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], p)["isothermal_bulk_modulus"]
+                after_spinodal = False
+ 
+ 
+                # compute coefficients after full table computed
+                for k in jxp.PROPERTIES_CANONICAL:
+                    table[k]["coeffs"] = compute_bicubic_coefficients(
+                        table[k]["value"],
+                        table[k]["grad_h"],
+                        table[k]["grad_logP"],
+                        table[k]["grad_hlogP"],
+                        self.delta_h,
+                        self.delta_logP,
+                    )
+ 
+                # compute enthalpy/pressure coeffs too (they were created earlier)
+                table["enthalpy"]["coeffs"] = compute_bicubic_coefficients(
+                    table["enthalpy"]["value"],
+                    table["enthalpy"]["grad_h"],
+                    table["enthalpy"]["grad_logP"],
+                    table["enthalpy"]["grad_hlogP"],
+                    self.delta_h,
+                    self.delta_logP,
+                )
+                table["pressure"]["coeffs"] = compute_bicubic_coefficients(
+                    table["pressure"]["value"],
+                    table["pressure"]["grad_h"],
+                    table["pressure"]["grad_logP"],
+                    table["pressure"]["grad_hlogP"],
+                    self.delta_h,
+                    self.delta_logP,
+                )
+ 
+        # report
+        frac_success = success_count / total_points * 100.0
+        elapsed = time.perf_counter() - start_time
+        # print(
+        #     f"Successfully evaluated {success_count}/{total_points} points ({frac_success:.2f} %)"
+        # )
+        # print(f"Total table generation time: {elapsed:.2f} s")
+ 
+        # convert to jax arrays for all relevant sub-keys
+        for k in table.keys():
+            # skip metadata dictionary
+            if k == "metadata":
+                continue
+            for sub in [
+                "value",
+                "grad_h",
+                "grad_p",
+                "grad_logP",
+                "grad_ph",
+                "grad_hlogP",
+                "coeffs",
+            ]:
+                # some entries (like coeffs) might already be jnp arrays but this is safe
+                table[k][sub] = jnp.array(table[k][sub], dtype=jnp.float64)
+ 
+        print("Generating saturation properties table...")
+        table["saturation_props"] = {}
+        for k in jxp.PROPERTIES_CANONICAL:
+            table["saturation_props"][k] = {
+                "value": np.empty(self.N_p_sat, dtype=np.float64),
+                "grad_p": np.empty( self.N_p_sat, dtype=np.float64),
+            }
+           
+       
+        # Loop from pmin to 0.99 p_crit
+        # store sat props using gradients_saturation_forward and gradients_saturation_central
+        # gradients_saturation_forward and gradients_saturation_central will use jxp.PQ_inputs of coolprop fluid object
+        # calculate grad_p for calculation of coefficients
+ 
+        for j, logP in list(enumerate(np.asarray(self.logP_sat_vals))):
+            p = float(np.exp(logP))
+            eps_p = 1e-5 * max(abs(p), 1.0)
+            try:
+                if self.grad_method == "forward":
+                    grads = self._gradients_saturation_forward(fluid, p, 0.0, eps_p)                            
+                elif self.grad_method == "central":
+                    grads = self._gradients_saturation_central(fluid, p, 0.0, eps_p)
+                else:
+                    raise ValueError(
+                        f"Unknown gradient scheme: {self.grad_method}"
+                    )
+                success_count += 1
+ 
+            except Exception as e:
+                        print(f"Error:{e}")
+                        print(f"j:{j}")
+ 
+            # store computed properties
+            for k, (val, grad_p) in grads.items():
+                table["saturation_props"][k]["value"][j] = float(val)
+                table["saturation_props"][k]["grad_p"][j] = float(grad_p)
+           
+ 
+        # Convert saturation props to JAX arrays for JIT/vmap compatibility
+        for k in jxp.PROPERTIES_CANONICAL:
+            for sub in ["value", "grad_p"]:
+                table["saturation_props"][k][sub] = jnp.array(
+                    table["saturation_props"][k][sub], dtype=jnp.float64
+                )
+ 
+        # Printing outcome
+        print(
+            f"Successfully evaluated {success_count}/{total_points} points ({frac_success:.2f} %)"
+        )
+        print(f"Total table generation time: {elapsed:.2f} s")
+ 
+        # save
+        pkl_path = os.path.join(self.table_dir, f"{self.table_name}.pkl")
+        with open(pkl_path, "wb") as f:
+            pickle.dump(table, f)
+        print(f"Saved property table to: {pkl_path}")
+ 
+        return table
+
+    
 
     # ------------------ Bicubic property interpolation ------------------
     PROPERTY_CALCULATORS = {
@@ -349,7 +802,7 @@ class FluidBicubic(eqx.Module):
         Parameters
         ----------
         input_type : int
-            Identifier of the input pair (e.g. `jxp.HmassP_INPUTS`, `jxp.PT_INPUTS`).
+            Identifier of the input pair (e.g. `jxp.HmassP_INPUTS`, `jxp.PT_INPUTS`).0
         val1 : float or array_like
             First input variable (e.g. enthalpy, pressure, density).
         val2 : float or array_like
