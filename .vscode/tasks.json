@@ -1,0 +1,46 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "C: Build Active File",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "$src='${file}'; $out='${fileDirname}\\${fileBasenameNoExtension}.exe'; $gcc=Get-Command gcc -ErrorAction SilentlyContinue; $cl=Get-Command cl -ErrorAction SilentlyContinue; if($gcc){ & gcc -O2 -Wall -Wextra -std=c11 \"$src\" -o \"$out\"; if($LASTEXITCODE -ne 0){ exit $LASTEXITCODE } } elseif($cl){ & cl /nologo /W4 /std:c11 /Fe:\"$out\" \"$src\"; if($LASTEXITCODE -ne 0){ exit $LASTEXITCODE } } else { Write-Error 'No C compiler found (gcc or cl).'; exit 1 }"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$gcc",
+        "$msCompile"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "C: Build and Run Active File",
+      "type": "process",
+      "dependsOn": "C: Build Active File",
+      "command": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+      "args": [],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": false
+      }
+    }
+  ]
+}

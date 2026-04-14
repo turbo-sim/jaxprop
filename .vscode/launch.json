@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C: Run Active File (No Debug)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+      "args": [],
+      "cwd": "${fileDirname}",
+      "console": "integratedTerminal",
+      "preLaunchTask": "C: Build Active File"
+    },
+    {
+      "name": "C: Run Active File with 1 Arg (No Debug)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+      "args": [
+        "${input:cArg1}"
+      ],
+      "cwd": "${fileDirname}",
+      "console": "integratedTerminal",
+      "preLaunchTask": "C: Build Active File"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "cArg1",
+      "type": "promptString",
+      "description": "Optional first CLI argument (for test_cbin_reader, pass .cbin path)",
+      "default": ""
+    }
+  ]
+}

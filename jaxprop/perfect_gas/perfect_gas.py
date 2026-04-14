@@ -77,7 +77,9 @@ def get_constants(fluid_name, T_ref, p_ref, dT=100.0):
     cp = jnp.asarray(state["cp"])
     cv = jnp.asarray(state["cv"])
     gamma = cp / cv
-    s_ref = jnp.asarray(0.0)
+    # Use CoolProp absolute entropy at (p_ref, T_ref) so perfect-gas entropy
+    # is compatible with real-fluid entropy basis.
+    s_ref = jnp.asarray(state["s"])
     mu_ref = jnp.asarray(state["mu"])
     k_ref = jnp.asarray(state["k"])
 
