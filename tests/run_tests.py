@@ -3,8 +3,8 @@ import pytest
 
 # Define the list of tests
 tests_list = [
-    "test_bicubic_accuracy",
-    "test_bicubic_consistency"
+    "test_bicubic_accuracy.py",
+    "test_bicubic_consistency.py",
     # "test_example_cases.py",
     "test_helmholtz_eos.py",
     "test_perfect_gas_eos.py",

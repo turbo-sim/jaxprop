@@ -17,8 +17,6 @@ os.environ["JAX_PLATFORM_NAME"] = "cpu"
 import jax
 jax.config.update("jax_enable_x64", True)
 
-
-
 from .graphics import *
 from .utils import *
 from .helpers_jax import *
@@ -31,19 +29,16 @@ from . import bicubic
 
 # Import API classes
 from .perfect_gas import FluidPerfectGas
-from .coolprop import Fluid, FluidJAX
+from .coolprop import Fluid, FluidJAX, FluidMix
 from .bicubic import FluidBicubic
-
-
-from . import components
+# from .two_component import FluidTwoComponent, get_mixture_state
 
 
 # Package info
-__version__ = "0.4.3"
+__version__ = "0.5.6"
 PACKAGE_NAME = "jaxprop"
 URL_GITHUB = "https://github.com/turbo-sim/jaxprop"
 URL_DOCS = "https://turbo-sim.github.io/jaxprop/"
 URL_PYPI = "https://pypi.org/project/jaxprop/"
 URL_DTU = "https://thermalpower.dtu.dk/"
 BREAKLINE = 80 * "-"
-

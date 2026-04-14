@@ -307,7 +307,7 @@ class Fluid:
             identifier=self.identifier,
             **props,
         )
-    
+
     @_handle_computation_exceptions
     def get_state_metastable(
         self,
@@ -318,7 +318,7 @@ class Fluid:
         rhoT_guess=None,
         supersaturation=True,
         generalize_quality=True,
-        solver_algorithm="hybr",
+        solver_algorithm="lm", # hybr
         solver_tolerance=1e-6,
         solver_max_iterations=100,
         print_convergence=False,
@@ -365,7 +365,7 @@ class Fluid:
                 solver_max_iterations=solver_max_iterations,
                 print_convergence=print_convergence,
             )
-        
+
         return FluidState(
             fluid_name=self.name,
             identifier=self.identifier,
@@ -428,7 +428,6 @@ class Fluid:
             FluidState(fluid_name=self.name, identifier=self.identifier, **equilibrium),
             FluidState(fluid_name=self.name, identifier=self.identifier, **metastable),
         )
-
     
 
     def plot_phase_diagram(
@@ -496,8 +495,12 @@ class Fluid:
                     supersaturation=False,
                     dT_crit=dT_crit,
                 )
-            x = jnp.concatenate([jnp.flip(self.spdl_liq[x_prop]), self.spdl_vap[x_prop]])
-            y = jnp.concatenate([jnp.flip(self.spdl_liq[y_prop]), self.spdl_vap[y_prop]])
+            x = jnp.concatenate(
+                [jnp.flip(self.spdl_liq[x_prop]), self.spdl_vap[x_prop]]
+            )
+            y = jnp.concatenate(
+                [jnp.flip(self.spdl_liq[y_prop]), self.spdl_vap[y_prop]]
+            )
             label = self._get_label("Spinodal line", show_in_legend)
             params = {
                 "label": label,
@@ -688,6 +691,127 @@ class Fluid:
 # ------------------------------------------------------------------------------------ #
 
 
+class FluidMix:
+    """
+    Represents a binary fluid mixture with thermodynamic properties
+    calculated using the `calculate_mixture_properties_hp()` function.
+    """
+
+    def __getstate__(self):
+        """Strip CoolProp AbstractStates to make the object pickleable."""
+        state = self.__dict__.copy()
+        state["_AS1"] = None
+        state["_AS2"] = None
+        return state
+
+    def __setstate__(self, state):
+        """Restore FluidMix without AbstractStates (can be rebuilt later)."""
+        self.__dict__.update(state)
+        self._AS1 = None
+        self._AS2 = None
+
+    def __init__(
+        self,
+        name: str,
+        backend: str = "HEOS",
+        mixture_ratio: float = None,
+        exceptions: bool = True,
+        identifier: str = None,
+    ):
+        """
+        Initialize the FluidMix object.
+
+        Parameters
+        ----------
+        name : str
+            Mixture name, e.g. "water_nitrogen_mixture".
+        backend : str, optional
+            CoolProp backend, by default "HEOS".
+        exceptions : bool, optional
+            Whether to raise exceptions, by default True.
+        identifier : str, optional
+            Optional user-specified identifier.
+        """
+        self.name = name
+        self.backend = backend
+        self.exceptions = exceptions
+        self.identifier = identifier if identifier is not None else name
+        self.converged_flag = False
+        self.mixture_ratio = mixture_ratio
+
+        # Parse mixture name
+        if not name.lower().endswith("_mixture"):
+            raise ValueError(
+                f"Invalid mixture name '{name}'. Expected format like 'water_nitrogen_mixture'."
+            )
+
+        # Extract fluid component names
+        parts = name.replace("_mixture", "").split("_")
+        if len(parts) != 2:
+            raise ValueError(
+                f"Expected exactly two components for a binary mixture, got: {parts}"
+            )
+        self.fluid_1, self.fluid_2 = parts
+
+        # Initialize AbstractStates for each component
+        self._AS1 = try_initialize_fluid(self.fluid_1, backend)
+        self._AS2 = try_initialize_fluid(self.fluid_2, backend)
+
+        # # Temperature and pressure limits (approximate from components)
+        # self.p_min = max(1.0, min(self._AS1.pmin(), self._AS2.pmin()))
+        # self.p_max = min(self._AS1.pmax(), self._AS2.pmax())
+        # self.T_min = max(self._AS1.Tmin(), self._AS2.Tmin())
+        # self.T_max = min(self._AS1.Tmax(), self._AS2.Tmax())
+
+    @_handle_computation_exceptions
+    def get_state(self, 
+                input_type,
+                prop_1: float,
+                prop_2: float):
+        """
+        Compute the thermodynamic state of the mixture at given h and p.
+
+        Parameters
+        ----------
+        h_mix : float
+            Mixture specific enthalpy [J/kg].
+        p_mix : float
+            Mixture pressure [Pa].
+        R : float
+            Mixture mass flow ratio (m_dot_1 / m_dot_2).
+
+        Returns
+        -------
+        FluidState
+            Object containing the computed mixture thermodynamic properties.
+        """
+        if not input_type == 20:
+            raise Exception("Inputs rather than p-h are not supported yet")
+
+        props_mix = core.calculate_mixture_properties_hp(
+            h_mix=prop_1,
+            p_mix=prop_2,
+            AS1=self._AS1,
+            AS2=self._AS2,
+            R=self.mixture_ratio,
+        )
+
+        self.converged_flag = True
+
+        # return props_mix
+
+        return FluidState(
+            fluid_name=self.name,
+            identifier=self.identifier,
+            **props_mix,
+        )
+
+
+# ------------------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------------------ #
+
+
 def compute_saturation_line(fluid, N=100, dT_crit=0.5):
     """
     Compute the saturation line for a given fluid.
@@ -730,6 +854,7 @@ def compute_saturation_line(fluid, N=100, dT_crit=0.5):
     saturation_vap = FluidState.stack(vap_states)
 
     return saturation_liq, saturation_vap
+
 
 def compute_pseudocritical_line(fluid, N_points=100):
     """Compute pseudocritical line (approximate, defined here at critical density)."""
@@ -1393,7 +1518,6 @@ def compute_property_grid_rhoT(
     states_meta = states_to_dict_2d(states_meta)
 
     return states_meta
-
 
 
 # def get_state_Qs(fluid, Q, s):

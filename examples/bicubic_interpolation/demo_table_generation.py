@@ -14,21 +14,18 @@ import jaxprop as jxp
 # p_max = 20e6  # Pa
 # N_p = 80  # Number of pressure points
 # N_h = 80  # Number of enthalpy points
-
-fluid_name = "air"
-h_min = 50e3  # J/kg
+fluid_name = "CO2"
+h_min = 150e3  # J/kg
 h_max = 600e3  # J/kg
-p_min = 0.6e5    # Pa
-p_max = 1.5e5   # Pa
-N_h = 32
-N_p = 32
-
-
+p_min = 0.5e6  # Pa
+p_max = 20e6  # Pa
+N_p = 300  
+N_h = 300
 
 # ---------------------------
 # Delete existing tables
 # ---------------------------
-outdir = "demo_table_generation"
+outdir = "fluid_tables"
 if os.path.exists(outdir):
     shutil.rmtree(outdir, ignore_errors=True)
 
