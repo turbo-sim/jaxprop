@@ -14,7 +14,7 @@ import jax.numpy as jnp
 # ---------------------------
 fluid_name = "water"
 outdir = "demo_metastable_table_generation"
-filename = f"{fluid_name}_meta_liquid_120x120.pkl"
+filename = f"{fluid_name}_meta_liquid_20x20.pkl"
 file_path = os.path.join(outdir, filename)
 
 with open(file_path, "rb") as f:
