@@ -4,13 +4,22 @@ import jaxprop as jxp
 import pickle
 
 
-fluid_name = "nitrogen"
-h_min = -145e3  # J/kg
-h_max = -1e3  # J/kg
-p_min = 3e4  # Pa
-p_max = 2e6  # Pa
-N_p = 150 # Number of pressure points
-N_h = 150 # Number of enthalpy points
+# fluid_name = "nitrogen"
+# h_min = -145e3  # J/kg
+# h_max = -1e3  # J/kg
+# p_min = 3e4  # Pa
+# p_max = 2e6  # Pa
+# N_p = 150 # Number of pressure points
+# N_h = 150 # Number of enthalpy points
+# metastable_phase = "liquid"
+
+fluid_name = "water"
+h_min = 200e3  # J/kg
+h_max = 1800e3  # J/kg
+p_min = 1e5    # Pa
+p_max = 13e6   # Pa
+N_p = 20 # Number of pressure points
+N_h = 20 # Number of enthalpy points
 metastable_phase = "liquid"
 
 # fluid_name = "nitrogen"
@@ -98,11 +107,11 @@ fluid_bicubic = jxp.FluidBicubic(
     N_p_sat=150,
 )
 
-state_critical = fluid_bicubic.get_state(jxp.HmassP_INPUTS, 3912677.9, 8822847.22)
-rho = state_critical["surface_tension"]
+# state_critical = fluid_bicubic.get_state(jxp.HmassP_INPUTS, 3912677.9, 8822847.22)
+# rho = state_critical["surface_tension"]
 
-print(f"Density:{rho}")
-print(fluid_bicubic.p_min)
+# print(f"Density:{rho}")
+# print(fluid_bicubic.p_min)
 
 
 # import pandas as pd

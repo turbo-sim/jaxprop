@@ -17,36 +17,81 @@ from ..helpers_props import (
 )
 
 
+# def _handle_computation_exceptions(func):
+#     @wraps(func)
+#     def wrapper(self, *args, **kwargs):
+#         try:
+#             # Perform the computation
+#             result = func(self, *args, **kwargs)
+#             self.converged_flag = True
+#             return result
+#         except Exception as e:
+#             self.converged_flag = False
+#             if self.exceptions:
+#                 input_type = args[0]
+#                 value_1 = args[1]
+#                 value_2 = args[2]
+#                 label = INPUT_TYPE_MAP.get(
+#                     input_type, f"Unknown input type ({input_type})"
+#                 )
+
+#                 msg = (
+#                     f"Thermodynamic property calculations failed:\n"
+#                     f"  Input type : {label}\n"
+#                     f"  Property 1 : {value_1}\n"
+#                     f"  Property 2 : {value_2}\n"
+#                     f"  Error      : {str(e)}"
+#                 )
+#                 raise RuntimeError(msg)
+#             return None
+
+#     return wrapper
+
 def _handle_computation_exceptions(func):
+    # Fast parameter-name mapping (no inspect call inside the hot loop)
+    arg_names = func.__code__.co_varnames[1:func.__code__.co_argcount]  # skip self
+
     @wraps(func)
     def wrapper(self, *args, **kwargs):
+        # Merge positional + keyword into one dict
+        call = {name: val for name, val in zip(arg_names, args)}
+        call.update(kwargs)
+
         try:
-            # Perform the computation
             result = func(self, *args, **kwargs)
             self.converged_flag = True
             return result
         except Exception as e:
             self.converged_flag = False
-            if self.exceptions:
-                input_type = args[0]
-                value_1 = args[1]
-                value_2 = args[2]
-                label = INPUT_TYPE_MAP.get(
-                    input_type, f"Unknown input type ({input_type})"
+            if not self.exceptions:
+                return None
+
+            input_type = call.get("input_type", None)
+            prop_1 = call.get("prop_1", None)
+            prop_2 = call.get("prop_2", None)
+            prop_1_value = call.get("prop_1_value", call.get("prop_1", None))
+            prop_2_value = call.get("prop_2_value", call.get("prop_2", None))
+
+            if input_type is not None:
+                label = INPUT_TYPE_MAP.get(input_type, f"Unknown input type ({input_type})")
+                msg = (
+                    "Thermodynamic property calculations failed:\n"
+                    f"  Input type : {label}\n"
+                    f"  Property 1 : {prop_1_value}\n"
+                    f"  Property 2 : {prop_2_value}\n"
+                    f"  Error      : {type(e).__name__}: {e}"
+                )
+            else:
+                msg = (
+                    "Thermodynamic property calculations failed:\n"
+                    f"  Property 1 : {prop_1} = {prop_1_value}\n"
+                    f"  Property 2 : {prop_2} = {prop_2_value}\n"
+                    f"  Error      : {type(e).__name__}: {e}"
                 )
 
-                msg = (
-                    f"Thermodynamic property calculations failed:\n"
-                    f"  Input type : {label}\n"
-                    f"  Property 1 : {value_1}\n"
-                    f"  Property 2 : {value_2}\n"
-                    f"  Error      : {str(e)}"
-                )
-                raise RuntimeError(msg)
-            return None
+            raise RuntimeError(msg) from e
 
     return wrapper
-
 
 class Fluid:
     """
@@ -167,11 +212,17 @@ class Fluid:
         d_crit = self._AS.rhomass_critical()
         T_crit = self._AS.T_critical()
         p_crit = self._AS.p_critical()
-        state_crit = self.get_state(CP.DmassT_INPUTS, d_crit*1.1, T_crit-1e-12)
+        # state_crit = self.get_state(CP.DmassT_INPUTS, d_crit*1.1, T_crit-1e-12)
         # try:
         #     state_crit = self.get_state(CP.DmassT_INPUTS, d_crit, T_crit - 1e-5)
         # except:
         #     state_crit = self.get_state(CP.PT_INPUTS, p_crit, T_crit - 1e-3)
+        # state_crit = self.get_state(DmassT_INPUTS, rho_crit, T_crit-1e-12)
+        try:
+            state_crit = self.get_state(CP.DmassT_INPUTS, d_crit, T_crit - 1e-5)
+        except:
+            state_crit = self.get_state(CP.PT_INPUTS, p_crit, T_crit - 1e-5)
+
         return state_crit
 
     def _compute_triple_point_liquid(self):
@@ -323,6 +374,8 @@ class Fluid:
         solver_max_iterations=100,
         print_convergence=False,
     ):
+        
+        # print(f"Calculating metastable state for {self.name} with inputs: {prop_1}={prop_1_value}, {prop_2}={prop_2_value}")
         # TODO: add vectorization
         r"""
         Calculate fluid properties assuming phase metastability

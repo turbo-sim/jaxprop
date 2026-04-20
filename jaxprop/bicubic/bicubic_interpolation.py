@@ -689,6 +689,9 @@ class FluidBicubic(eqx.Module):
                             success_count += 1
 
                         except:
+                        # except Exception as e:
+                            # print(f"Exception encountered at point ({i},{j}): {e}")
+                            # print(f"Exception at point ({i},{j}), filling with previous values")
 
                             # TODO: DO NOT DELETE!!!                            
                             for k in table.keys():
@@ -702,22 +705,9 @@ class FluidBicubic(eqx.Module):
                                 table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i-1, j]
                                 table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i-1, j]
 
-                            # for k in table.keys():
-                            #     if k in keys_to_skip:
-                            #         continue  # Skip this iteration
-                            #     # Fill the rest with fallback values
-                            #     table[k]["value"][i, j] = 1e-12
-                            #     table[k]["grad_h"][i, j] = 1e-12
-                            #     table[k]["grad_p"][i, j] = 1e-12
-                            #     table[k]["grad_logP"][i, j] = 1e-12
-                            #     table[k]["grad_ph"][i, j] = 1e-12
-                            #     table[k]["grad_hlogP"][i, j] = 1e-12
-
                             pbar.update(1)
                             after_spinodal = True
                             continue
-
-                        
 
                         
                         # Update rho guess and T guess for the next grid point
@@ -746,17 +736,6 @@ class FluidBicubic(eqx.Module):
                             if diff < 0 or grads["isothermal_bulk_modulus"][0] < 0:
                                 after_spinodal = True
                                 
-                                # for k in table.keys():
-                                #     if k in keys_to_skip:
-                                #         continue  # Skip this iteration
-                                #     # Fill the rest with fallback values
-                                #     table[k]["value"][i, j] = 1e-12
-                                #     table[k]["grad_h"][i, j] = 1e-12
-                                #     table[k]["grad_p"][i, j] = 1e-12
-                                #     table[k]["grad_logP"][i, j] = 1e-12
-                                #     table[k]["grad_ph"][i, j] = 1e-12
-                                #     table[k]["grad_hlogP"][i, j] = 1e-12
-                                
                                 for k in table.keys():
                                     if k in keys_to_skip:
                                         continue  # Skip this iteration
@@ -782,16 +761,27 @@ class FluidBicubic(eqx.Module):
 
                     else:
                         # print("here")
+                        # for k in table.keys():
+                        #     if k in keys_to_skip:
+                        #         continue  # Skip this iteration
+                        #     # Fill the rest with fallback values
+                        #     table[k]["value"][i, j] = 1e-12
+                        #     table[k]["grad_h"][i, j] = 1e-12
+                        #     table[k]["grad_p"][i, j] = 1e-12
+                        #     table[k]["grad_logP"][i, j] = 1e-12
+                        #     table[k]["grad_ph"][i, j] = 1e-12
+                        #     table[k]["grad_hlogP"][i, j] = 1e-12
+
                         for k in table.keys():
-                            if k in keys_to_skip:
-                                continue  # Skip this iteration
-                            # Fill the rest with fallback values
-                            table[k]["value"][i, j] = 1e-12
-                            table[k]["grad_h"][i, j] = 1e-12
-                            table[k]["grad_p"][i, j] = 1e-12
-                            table[k]["grad_logP"][i, j] = 1e-12
-                            table[k]["grad_ph"][i, j] = 1e-12
-                            table[k]["grad_hlogP"][i, j] = 1e-12
+                                if k in keys_to_skip:
+                                    continue  # Skip this iteration
+                                # Fill the rest with fallback values
+                                table[k]["value"][i, j] = table[k]["value"][i-1, j]
+                                table[k]["grad_h"][i, j] = table[k]["grad_h"][i-1, j]
+                                table[k]["grad_p"][i, j] = table[k]["grad_p"][i-1, j]
+                                table[k]["grad_logP"][i, j] = table[k]["grad_logP"][i-1, j]
+                                table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i-1, j]
+                                table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i-1, j]
 
                         pbar.update(1)
                         
@@ -1037,17 +1027,6 @@ class FluidBicubic(eqx.Module):
                                 table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i+1, j]
                                 table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i+1, j]
 
-                            # for k in table.keys():
-                            #     if k in keys_to_skip:
-                            #         continue  # Skip this iteration
-                            #     # Fill the rest with fallback values
-                            #     table[k]["value"][i, j] = 1e-12
-                            #     table[k]["grad_h"][i, j] = 1e-12
-                            #     table[k]["grad_p"][i, j] = 1e-12
-                            #     table[k]["grad_logP"][i, j] = 1e-12
-                            #     table[k]["grad_ph"][i, j] = 1e-12
-                            #     table[k]["grad_hlogP"][i, j] = 1e-12
-
                             pbar.update(1)
                             after_spinodal = True
                             continue
@@ -1075,17 +1054,6 @@ class FluidBicubic(eqx.Module):
 
                         if grads["isothermal_bulk_modulus"][0] < 0:
                             after_spinodal = True
-                            
-                            # for k in table.keys():
-                            #     if k in keys_to_skip:
-                            #         continue  # Skip this iteration
-                            #     # Fill the rest with fallback values
-                            #     table[k]["value"][i, j] = 1e-12
-                            #     table[k]["grad_h"][i, j] = 1e-12
-                            #     table[k]["grad_p"][i, j] = 1e-12
-                            #     table[k]["grad_logP"][i, j] = 1e-12
-                            #     table[k]["grad_ph"][i, j] = 1e-12
-                            #     table[k]["grad_hlogP"][i, j] = 1e-12
 
                             for k in table.keys():
                                 if k in keys_to_skip:
@@ -1118,6 +1086,17 @@ class FluidBicubic(eqx.Module):
                             table[k]["grad_logP"][i, j] = 1e-12
                             table[k]["grad_ph"][i, j] = 1e-12
                             table[k]["grad_hlogP"][i, j] = 1e-12
+
+                        for k in table.keys():
+                                if k in keys_to_skip:
+                                    continue  # Skip this iteration
+                                # Fill the rest with fallback values
+                                table[k]["value"][i, j] = table[k]["value"][i+1, j]
+                                table[k]["grad_h"][i, j] = table[k]["grad_h"][i+1, j]
+                                table[k]["grad_p"][i, j] = table[k]["grad_p"][i+1, j]
+                                table[k]["grad_logP"][i, j] = table[k]["grad_logP"][i+1, j]
+                                table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i+1, j]
+                                table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i+1, j]
 
                         pbar.update(1)
                         
@@ -1286,13 +1265,19 @@ class FluidBicubic(eqx.Module):
 
     @staticmethod
     def _gradients_metastable_forward(fluid, h, p, eps_h, eps_p, rho_guess, T_guess):
-        rhoT_guess = np.array([rho_guess, T_guess])        
+        
+        # print(f"Calculating gradients at h={h}, p={p} with rho_guess={rho_guess} and T_guess={T_guess}")
+        rhoT_guess = np.array([rho_guess, T_guess])     
 
         f0 = fluid.get_state_metastable(
             prop_1 = "p", prop_1_value = p, prop_2 = "h", prop_2_value = h, rhoT_guess=rhoT_guess,)
+        # print(f"f0:{f0}")
         fh = fluid.get_state_metastable(prop_1 ="p", prop_1_value = p, prop_2 ="h", prop_2_value = h + eps_h, rhoT_guess=rhoT_guess,)
+        # print(f"fh:{fh}")
         fp = fluid.get_state_metastable(prop_1 ="p", prop_1_value = p + eps_p, prop_2 = "h", prop_2_value = h, rhoT_guess=rhoT_guess,)
+        # print(f"fp:{fp}")
         fhp = fluid.get_state_metastable(prop_1 ="p", prop_1_value = p + eps_p, prop_2 ="h", prop_2_value = h + eps_h, rhoT_guess=rhoT_guess,)
+        # print(f"fhp:{fhp}")
 
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
@@ -1301,6 +1286,10 @@ class FluidBicubic(eqx.Module):
             grad_p = (fp[k] - f0[k]) / eps_p
             grad_hp = (fhp[k] - fh[k] - fp[k] + f0[k]) / (eps_h * eps_p)
             grads[k] = (val, grad_h, grad_p, grad_hp)
+
+        # print("grads:",grads.items())
+        # print("\n")
+
         return grads
 
     @staticmethod
@@ -1346,14 +1335,6 @@ class FluidBicubic(eqx.Module):
             jxp.PSmass_INPUTS, p, s, coarse_step=self.coarse_step
         ),
     }
-
-    
-
-
-
-    
-
-
 
     @eqx.filter_jit
     def get_state(self, input_type, val1, val2):
