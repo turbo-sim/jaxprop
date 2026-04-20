@@ -972,6 +972,9 @@
                             <span class="n">success_count</span> <span class="o">+=</span> <span class="mi">1</span>
 
                         <span class="k">except</span><span class="p">:</span>
+                        <span class="c1"># except Exception as e:</span>
+                            <span class="c1"># print(f&quot;Exception encountered at point ({i},{j}): {e}&quot;)</span>
+                            <span class="c1"># print(f&quot;Exception at point ({i},{j}), filling with previous values&quot;)</span>
 
                             <span class="c1"># TODO: DO NOT DELETE!!!                            </span>
                             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -985,22 +988,9 @@
                                 <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_ph&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_ph&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
                                 <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_hlogP&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_hlogP&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
 
-                            <span class="c1"># for k in table.keys():</span>
-                            <span class="c1">#     if k in keys_to_skip:</span>
-                            <span class="c1">#         continue  # Skip this iteration</span>
-                            <span class="c1">#     # Fill the rest with fallback values</span>
-                            <span class="c1">#     table[k][&quot;value&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_h&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_p&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_logP&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_ph&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_hlogP&quot;][i, j] = 1e-12</span>
-
                             <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                             <span class="n">after_spinodal</span> <span class="o">=</span> <span class="kc">True</span>
                             <span class="k">continue</span>
-
-                        
 
                         
                         <span class="c1"># Update rho guess and T guess for the next grid point</span>
@@ -1029,17 +1019,6 @@
                             <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">grads</span><span class="p">[</span><span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                                 <span class="n">after_spinodal</span> <span class="o">=</span> <span class="kc">True</span>
                                 
-                                <span class="c1"># for k in table.keys():</span>
-                                <span class="c1">#     if k in keys_to_skip:</span>
-                                <span class="c1">#         continue  # Skip this iteration</span>
-                                <span class="c1">#     # Fill the rest with fallback values</span>
-                                <span class="c1">#     table[k][&quot;value&quot;][i, j] = 1e-12</span>
-                                <span class="c1">#     table[k][&quot;grad_h&quot;][i, j] = 1e-12</span>
-                                <span class="c1">#     table[k][&quot;grad_p&quot;][i, j] = 1e-12</span>
-                                <span class="c1">#     table[k][&quot;grad_logP&quot;][i, j] = 1e-12</span>
-                                <span class="c1">#     table[k][&quot;grad_ph&quot;][i, j] = 1e-12</span>
-                                <span class="c1">#     table[k][&quot;grad_hlogP&quot;][i, j] = 1e-12</span>
-                                
                                 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                                     <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys_to_skip</span><span class="p">:</span>
                                         <span class="k">continue</span>  <span class="c1"># Skip this iteration</span>
@@ -1065,16 +1044,27 @@
 
                     <span class="k">else</span><span class="p">:</span>
                         <span class="c1"># print(&quot;here&quot;)</span>
+                        <span class="c1"># for k in table.keys():</span>
+                        <span class="c1">#     if k in keys_to_skip:</span>
+                        <span class="c1">#         continue  # Skip this iteration</span>
+                        <span class="c1">#     # Fill the rest with fallback values</span>
+                        <span class="c1">#     table[k][&quot;value&quot;][i, j] = 1e-12</span>
+                        <span class="c1">#     table[k][&quot;grad_h&quot;][i, j] = 1e-12</span>
+                        <span class="c1">#     table[k][&quot;grad_p&quot;][i, j] = 1e-12</span>
+                        <span class="c1">#     table[k][&quot;grad_logP&quot;][i, j] = 1e-12</span>
+                        <span class="c1">#     table[k][&quot;grad_ph&quot;][i, j] = 1e-12</span>
+                        <span class="c1">#     table[k][&quot;grad_hlogP&quot;][i, j] = 1e-12</span>
+
                         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys_to_skip</span><span class="p">:</span>
-                                <span class="k">continue</span>  <span class="c1"># Skip this iteration</span>
-                            <span class="c1"># Fill the rest with fallback values</span>
-                            <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span>
-                            <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_h&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span>
-                            <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_p&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span>
-                            <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_logP&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span>
-                            <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_ph&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span>
-                            <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_hlogP&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span>
+                                <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys_to_skip</span><span class="p">:</span>
+                                    <span class="k">continue</span>  <span class="c1"># Skip this iteration</span>
+                                <span class="c1"># Fill the rest with fallback values</span>
+                                <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_h&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_h&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_p&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_p&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_logP&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_logP&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_ph&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_ph&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_hlogP&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_hlogP&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
 
                         <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                         
@@ -1320,17 +1310,6 @@
                                 <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_ph&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_ph&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
                                 <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_hlogP&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_hlogP&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
 
-                            <span class="c1"># for k in table.keys():</span>
-                            <span class="c1">#     if k in keys_to_skip:</span>
-                            <span class="c1">#         continue  # Skip this iteration</span>
-                            <span class="c1">#     # Fill the rest with fallback values</span>
-                            <span class="c1">#     table[k][&quot;value&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_h&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_p&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_logP&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_ph&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_hlogP&quot;][i, j] = 1e-12</span>
-
                             <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                             <span class="n">after_spinodal</span> <span class="o">=</span> <span class="kc">True</span>
                             <span class="k">continue</span>
@@ -1358,17 +1337,6 @@
 
                         <span class="k">if</span> <span class="n">grads</span><span class="p">[</span><span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                             <span class="n">after_spinodal</span> <span class="o">=</span> <span class="kc">True</span>
-                            
-                            <span class="c1"># for k in table.keys():</span>
-                            <span class="c1">#     if k in keys_to_skip:</span>
-                            <span class="c1">#         continue  # Skip this iteration</span>
-                            <span class="c1">#     # Fill the rest with fallback values</span>
-                            <span class="c1">#     table[k][&quot;value&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_h&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_p&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_logP&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_ph&quot;][i, j] = 1e-12</span>
-                            <span class="c1">#     table[k][&quot;grad_hlogP&quot;][i, j] = 1e-12</span>
 
                             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                                 <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys_to_skip</span><span class="p">:</span>
@@ -1401,6 +1369,17 @@
                             <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_logP&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span>
                             <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_ph&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span>
                             <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_hlogP&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span>
+
+                        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                                <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys_to_skip</span><span class="p">:</span>
+                                    <span class="k">continue</span>  <span class="c1"># Skip this iteration</span>
+                                <span class="c1"># Fill the rest with fallback values</span>
+                                <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_h&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_h&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_p&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_p&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_logP&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_logP&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_ph&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_ph&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_hlogP&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_hlogP&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
 
                         <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                         
@@ -1569,13 +1548,19 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_gradients_metastable_forward</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">eps_p</span><span class="p">,</span> <span class="n">rho_guess</span><span class="p">,</span> <span class="n">T_guess</span><span class="p">):</span>
-        <span class="n">rhoT_guess</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rho_guess</span><span class="p">,</span> <span class="n">T_guess</span><span class="p">])</span>        
+        
+        <span class="c1"># print(f&quot;Calculating gradients at h={h}, p={p} with rho_guess={rho_guess} and T_guess={T_guess}&quot;)</span>
+        <span class="n">rhoT_guess</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rho_guess</span><span class="p">,</span> <span class="n">T_guess</span><span class="p">])</span>     
 
         <span class="n">f0</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state_metastable</span><span class="p">(</span>
             <span class="n">prop_1</span> <span class="o">=</span> <span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="n">prop_1_value</span> <span class="o">=</span> <span class="n">p</span><span class="p">,</span> <span class="n">prop_2</span> <span class="o">=</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="n">prop_2_value</span> <span class="o">=</span> <span class="n">h</span><span class="p">,</span> <span class="n">rhoT_guess</span><span class="o">=</span><span class="n">rhoT_guess</span><span class="p">,)</span>
+        <span class="c1"># print(f&quot;f0:{f0}&quot;)</span>
         <span class="n">fh</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state_metastable</span><span class="p">(</span><span class="n">prop_1</span> <span class="o">=</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="n">prop_1_value</span> <span class="o">=</span> <span class="n">p</span><span class="p">,</span> <span class="n">prop_2</span> <span class="o">=</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="n">prop_2_value</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">rhoT_guess</span><span class="o">=</span><span class="n">rhoT_guess</span><span class="p">,)</span>
+        <span class="c1"># print(f&quot;fh:{fh}&quot;)</span>
         <span class="n">fp</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state_metastable</span><span class="p">(</span><span class="n">prop_1</span> <span class="o">=</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="n">prop_1_value</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">,</span> <span class="n">prop_2</span> <span class="o">=</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="n">prop_2_value</span> <span class="o">=</span> <span class="n">h</span><span class="p">,</span> <span class="n">rhoT_guess</span><span class="o">=</span><span class="n">rhoT_guess</span><span class="p">,)</span>
+        <span class="c1"># print(f&quot;fp:{fp}&quot;)</span>
         <span class="n">fhp</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state_metastable</span><span class="p">(</span><span class="n">prop_1</span> <span class="o">=</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="n">prop_1_value</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">,</span> <span class="n">prop_2</span> <span class="o">=</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="n">prop_2_value</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">rhoT_guess</span><span class="o">=</span><span class="n">rhoT_guess</span><span class="p">,)</span>
+        <span class="c1"># print(f&quot;fhp:{fhp}&quot;)</span>
 
         <span class="n">grads</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">:</span>
@@ -1584,6 +1569,10 @@
             <span class="n">grad_p</span> <span class="o">=</span> <span class="p">(</span><span class="n">fp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">f0</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">/</span> <span class="n">eps_p</span>
             <span class="n">grad_hp</span> <span class="o">=</span> <span class="p">(</span><span class="n">fhp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">fh</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">fp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="n">f0</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">eps_h</span> <span class="o">*</span> <span class="n">eps_p</span><span class="p">)</span>
             <span class="n">grads</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">grad_h</span><span class="p">,</span> <span class="n">grad_p</span><span class="p">,</span> <span class="n">grad_hp</span><span class="p">)</span>
+
+        <span class="c1"># print(&quot;grads:&quot;,grads.items())</span>
+        <span class="c1"># print(&quot;\n&quot;)</span>
+
         <span class="k">return</span> <span class="n">grads</span>
 
     <span class="nd">@staticmethod</span>
@@ -1629,14 +1618,6 @@
             <span class="n">jxp</span><span class="o">.</span><span class="n">PSmass_INPUTS</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">coarse_step</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">coarse_step</span>
         <span class="p">),</span>
     <span class="p">}</span>
-
-    
-
-
-
-    
-
-
 
 <div class="viewcode-block" id="FluidBicubic.get_state">
 <a class="viewcode-back" href="../../../source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.get_state">[docs]</a>

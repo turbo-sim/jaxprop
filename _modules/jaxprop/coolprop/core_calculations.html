@@ -397,9 +397,9 @@
         <span class="c1"># &quot;joule_thomson&quot;: compute_joule_thomson(AS),</span>
         <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="n">mu</span><span class="p">,</span>
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
-        <span class="s2">&quot;vapor_quality&quot;</span><span class="p">:</span> <span class="n">q_mass</span><span class="p">,</span>
+        <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">q_mass</span><span class="p">,</span>
         <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="s2">&quot;void_fraction&quot;</span><span class="p">:</span> <span class="n">q_vol</span><span class="p">,</span>
+        <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="n">q_vol</span><span class="p">,</span>
         <span class="s2">&quot;surface_tension&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;subcooling&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;superheating&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
@@ -519,8 +519,8 @@
         <span class="s2">&quot;joule_thomson&quot;</span><span class="p">:</span> <span class="n">compute_joule_thomson</span><span class="p">(</span><span class="n">AS</span><span class="p">),</span>
         <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="n">mu</span><span class="p">,</span>
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
-        <span class="s2">&quot;vapor_quality&quot;</span><span class="p">:</span> <span class="n">mfrac_V</span><span class="p">,</span>
-        <span class="s2">&quot;void_fraction&quot;</span><span class="p">:</span> <span class="n">vfrac_V</span><span class="p">,</span>
+        <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">mfrac_V</span><span class="p">,</span>
+        <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="n">vfrac_V</span><span class="p">,</span>
         <span class="s2">&quot;surface_tension&quot;</span><span class="p">:</span> <span class="n">surface_tension</span><span class="p">,</span>
         <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="s2">&quot;subcooling&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
@@ -742,9 +742,14 @@
 
 <span class="sd">    This function can be used to estimate metastable properties using the equation of state beyond the saturation lines.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># print(&quot;Are we in compute_properties_metastable_rhoT?&quot;)</span>
+    <span class="c1"># print(&quot;We are in final metastable property calculation with rho-T inputs.&quot;)</span>
     <span class="c1"># Update CoolProp state</span>
     <span class="n">AS</span> <span class="o">=</span> <span class="n">abstract_state</span>
-    <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">_to_scalar</span><span class="p">(</span><span class="n">rho</span><span class="p">),</span> <span class="n">_to_scalar</span><span class="p">(</span><span class="n">T</span><span class="p">))</span>
+    <span class="c1"># AS.update(CP.DmassT_INPUTS, _to_scalar(rho), _to_scalar(T))</span>
+    <span class="n">AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    
 
     <span class="c1"># Fluid constants</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">GAS_CONSTANT</span>
@@ -835,8 +840,8 @@
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
         <span class="s2">&quot;surface_tension&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># always for Helmholtz EoS</span>
-        <span class="s2">&quot;vapor_quality&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-        <span class="s2">&quot;void_fraction&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;subcooling&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;superheating&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;pressure_saturation&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
@@ -852,8 +857,8 @@
     <span class="c1"># Quality handling</span>
     <span class="k">if</span> <span class="n">generalize_quality</span><span class="p">:</span>
         <span class="n">q_mass</span> <span class="o">=</span> <span class="n">calculate_generalized_quality</span><span class="p">(</span><span class="n">AS</span><span class="p">)</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;vapor_quality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">q_mass</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;void_fraction&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">q_mass</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_two_phase&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># crude check vs critical entropy</span>
@@ -862,8 +867,8 @@
         <span class="n">cloned_AS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">rho_crit</span><span class="p">,</span> <span class="n">T_crit</span><span class="p">)</span>
         <span class="n">s_crit</span> <span class="o">=</span> <span class="n">cloned_AS</span><span class="o">.</span><span class="n">smass</span><span class="p">()</span>
         <span class="n">frac_mass</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">AS</span><span class="o">.</span><span class="n">smass</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">s_crit</span> <span class="k">else</span> <span class="mf">0.0</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;vapor_quality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_mass</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;void_fraction&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_mass</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_mass</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frac_mass</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_two_phase&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">return</span> <span class="n">props</span></div>
@@ -1053,6 +1058,7 @@
         <span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">calculation_type</span> <span class="o">==</span> <span class="s2">&quot;metastable&quot;</span><span class="p">:</span>
+        <span class="c1"># print(&quot;Are we here?&quot;)</span>
         <span class="n">rho_guess</span><span class="p">,</span> <span class="n">T_guess</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">rhoT_guess_metastable</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_perform_flash_calculation</span><span class="p">(</span>
             <span class="n">abstract_state</span><span class="o">=</span><span class="n">abstract_state</span><span class="p">,</span>
@@ -1125,7 +1131,7 @@
             <span class="n">solver_max_iterations</span><span class="o">=</span><span class="n">solver_max_iterations</span><span class="p">,</span>
             <span class="n">print_convergence</span><span class="o">=</span><span class="n">print_convergence</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">props_meta</span><span class="p">[</span><span class="s2">&quot;vapor_quality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.00</span> <span class="k">if</span> <span class="n">phase_change</span> <span class="o">==</span> <span class="s2">&quot;condensation&quot;</span> <span class="k">else</span> <span class="mf">0.00</span>
+        <span class="n">props_meta</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.00</span> <span class="k">if</span> <span class="n">phase_change</span> <span class="o">==</span> <span class="s2">&quot;condensation&quot;</span> <span class="k">else</span> <span class="mf">0.00</span>
 
         <span class="c1"># Blend properties</span>
         <span class="n">props_blended</span> <span class="o">=</span> <span class="n">blend_properties</span><span class="p">(</span>
@@ -1194,6 +1200,7 @@
             <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">elif</span> <span class="n">calculation_type</span> <span class="o">==</span> <span class="s2">&quot;metastable&quot;</span><span class="p">:</span>
+        <span class="c1"># print(&quot;Are we here in the metastable section of _perform_flash_calculation?&quot;)</span>
         <span class="n">function_handle</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span> <span class="n">compute_properties_metastable_rhoT</span><span class="p">(</span>
             <span class="n">abstract_state</span><span class="o">=</span><span class="n">abstract_state</span><span class="p">,</span>
             <span class="n">rho</span><span class="o">=</span><span class="n">rho</span><span class="p">,</span>
@@ -1208,6 +1215,8 @@
     <span class="c1"># Define the problem (find root of temperature-density residual)</span>
     <span class="n">rho_crit</span> <span class="o">=</span> <span class="n">abstract_state</span><span class="o">.</span><span class="n">rhomass_critical</span><span class="p">()</span>
     <span class="n">T_crit</span> <span class="o">=</span> <span class="n">abstract_state</span><span class="o">.</span><span class="n">T_critical</span><span class="p">()</span>
+    <span class="c1"># print(f&quot;rho_crit: {rho_crit}, T_crit: {T_crit}&quot;)</span>
+
     <span class="n">problem</span> <span class="o">=</span> <span class="n">_FlashCalculationResidual</span><span class="p">(</span>
         <span class="n">prop_1</span><span class="o">=</span><span class="n">prop_1</span><span class="p">,</span>
         <span class="n">prop_1_value</span><span class="o">=</span><span class="n">prop_1_value</span><span class="p">,</span>
@@ -1217,6 +1226,7 @@
         <span class="n">rho_scale</span><span class="o">=</span><span class="n">rho_crit</span><span class="p">,</span>
         <span class="n">T_scale</span><span class="o">=</span><span class="n">T_crit</span><span class="p">,</span>
     <span class="p">)</span>
+   
 
     <span class="c1"># Define root-finding solver object</span>
     <span class="n">solver</span> <span class="o">=</span> <span class="n">psv</span><span class="o">.</span><span class="n">NonlinearSystemSolver</span><span class="p">(</span>
@@ -1226,11 +1236,14 @@
         <span class="n">max_iterations</span><span class="o">=</span><span class="n">solver_max_iterations</span><span class="p">,</span>
         <span class="n">print_convergence</span><span class="o">=</span><span class="n">print_convergence</span><span class="p">,</span>
         <span class="n">update_on</span><span class="o">=</span><span class="s2">&quot;function&quot;</span><span class="p">,</span>
-        <span class="n">lm_factor</span><span class="o">=</span><span class="mf">0.05</span>
+        <span class="c1"># lm_factor=0.05</span>
     <span class="p">)</span>
+    <span class="c1"># print(f&quot;rho_crit: {rho_crit}, T_crit: {T_crit}&quot;)</span>
+
 
     <span class="c1"># Define initial guess and solve the problem</span>
     <span class="c1"># x0 = np.asarray([rho_guess, T_guess])</span>
+    
     <span class="n">x0_reduced</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">rho_guess</span> <span class="o">/</span> <span class="n">rho_crit</span><span class="p">,</span> <span class="n">T_guess</span> <span class="o">/</span> <span class="n">T_crit</span><span class="p">])</span>
     <span class="n">xf_reduced</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x0_reduced</span><span class="p">)</span>
     <span class="n">rho</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="n">xf_reduced</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">rho_crit</span><span class="p">,</span> <span class="n">xf_reduced</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">T_crit</span>
@@ -1241,6 +1254,8 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
     <span class="n">props</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">compute_properties</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="c1"># print(&quot;hello the props should be printed below\n&quot;)</span>
+    <span class="c1"># print(f&quot;Final props: {props}&quot;)</span>
     <span class="c1"># props[&quot;residual&quot;]  = np.linalg.norm(problem.residual(xf_reduced))</span>
     <span class="k">return</span> <span class="n">props</span>
 
@@ -1271,7 +1286,8 @@
         <span class="c1"># Compute residual</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">compute_residual</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">target_value</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="n">prop_name</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">prop_name</span> <span class="o">==</span> <span class="s2">&quot;vapor_quality&quot;</span><span class="p">:</span>
+            <span class="c1"># if prop_name == &quot;quality_mass&quot;:</span>
+            <span class="k">if</span> <span class="n">prop_name</span> <span class="o">==</span> <span class="s2">&quot;Q&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">value</span> <span class="o">-</span> <span class="n">target_value</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">value</span> <span class="o">/</span> <span class="n">target_value</span>
@@ -1889,8 +1905,8 @@
 <span class="c1">#     rho = 1 / (y_1 / props_1[&#39;rho&#39;] + y_2 / props_2[&#39;rho&#39;])</span>
 <span class="c1">#     vol_1 = y_1 * rho/props_1[&#39;rhomass&#39;]</span>
 <span class="c1">#     vol_2 = y_2 * rho/props_2[&#39;rhomass&#39;]</span>
-<span class="c1">#     vapor_quality = y_1 if props_1[&#39;rho&#39;] &lt; props_2[&#39;rho&#39;] else vol_2</span>
-<span class="c1">#     void_fraction = vol_1 if props_1[&#39;rho&#39;] &lt; props_2[&#39;rho&#39;] else vol_2</span>
+<span class="c1">#     quality_mass = y_1 if props_1[&#39;rho&#39;] &lt; props_2[&#39;rho&#39;] else vol_2</span>
+<span class="c1">#     quality_volume = vol_1 if props_1[&#39;rho&#39;] &lt; props_2[&#39;rho&#39;] else vol_2</span>
     
 <span class="c1">#     # Isothermal compressibility</span>
 <span class="c1">#     betaT_1 = props_1[&quot;isothermal_compressibility&quot;]</span>
@@ -1916,8 +1932,8 @@
 <span class="c1">#         &quot;vol_frac_1&quot;: vol_1,</span>
 <span class="c1">#         &quot;vol_frac_2&quot;: vol_2,</span>
 <span class="c1">#         &quot;mixture_ratio&quot;: y_1 / y_2,</span>
-<span class="c1">#         &quot;vapor_quality&quot;: vapor_quality,</span>
-<span class="c1">#         &quot;void_fraction&quot;: void_fraction,</span>
+<span class="c1">#         &quot;quality_mass&quot;: quality_mass,</span>
+<span class="c1">#         &quot;quality_volume&quot;: quality_volume,</span>
 <span class="c1">#         &quot;pressure&quot;: props_1[&#39;p&#39;],</span>
 <span class="c1">#         &quot;temperature&quot;: props_1[&#39;T&#39;],</span>
 <span class="c1">#         &quot;density&quot;: rho,</span>
