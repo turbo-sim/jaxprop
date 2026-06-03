@@ -144,9 +144,14 @@ class FluidBicubic(eqx.Module):
         # Get critical and triple point properties
         if self.mixture_ratio is None:
             fluid = jxp.Fluid(self.fluid_name, self.backend)
-            self.critical_point = fluid.critical_point
-            self.logP_sat_vals = jnp.linspace(np.log(self.p_min), np.log(self.critical_point["pressure"]*0.98), self.N_p_sat)
-            self.delta_logP_sat = float(self.logP_sat_vals[1] - self.logP_sat_vals[0])
+            try:
+                self.critical_point = fluid.critical_point
+                self.logP_sat_vals = jnp.linspace(np.log(self.p_min), np.log(self.critical_point["pressure"]*0.98), self.N_p_sat)
+                self.delta_logP_sat = float(self.logP_sat_vals[1] - self.logP_sat_vals[0])
+            except:
+                self.critical_point = None
+                self.logP_sat_vals = None
+                self.delta_logP_sat = None
         else:
             self.critical_point = None
             self.logP_sat_vals = None
@@ -456,6 +461,9 @@ class FluidBicubic(eqx.Module):
         #     "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
         # }
 
+        # Define the specific keys you want to protect/skip
+        keys_to_skip = {'metadata', 'pressure', 'enthalpy'}
+
         total_points = self.N_h * self.N_p
         success_count = 0
         start_time = time.perf_counter()
@@ -484,6 +492,7 @@ class FluidBicubic(eqx.Module):
                         else:
                             m = self.grad_method
                             raise ValueError(f"Unknown gradient scheme: {m}")
+                        success_count += 1
                     except:
                         for k in table.keys():
                             if k in keys_to_skip:
@@ -507,7 +516,7 @@ class FluidBicubic(eqx.Module):
                         table[k]["grad_hlogP"][i, j] = grad_hp * p
 
                     # Update progress bar
-                        pbar.update(1)
+                    pbar.update(1)
 
             # compute coefficients
             for k in jxp.PROPERTIES_CANONICAL:
@@ -1429,7 +1438,7 @@ class FluidBicubic(eqx.Module):
 
         return self._interp_h_p(h, solution.value)
 
-    def _interp_x_p(self, p, x_value, x_name, tol=1e-10, max_steps=64):
+    def _interp_x_p(self, p, x_value, x_name, tol=1e-10, max_steps=1000):
         j0 = jnp.argmin(jnp.abs(self.logP_vals - jnp.log(p)))
         i0 = jnp.argmin(jnp.abs(self.table[x_name]["value"][:, j0] - x_value))
         h0 = self.table["enthalpy"]["value"][i0, j0]

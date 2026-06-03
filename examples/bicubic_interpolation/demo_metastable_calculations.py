@@ -13,13 +13,22 @@ import pickle
 # N_h = 150 # Number of enthalpy points
 # metastable_phase = "liquid"
 
+# fluid_name = "water"
+# h_min = 200e3  # J/kg
+# h_max = 1800e3  # J/kg
+# p_min = 5e4    # Pa
+# p_max = 13e6   # Pa
+# N_p = 150 # Number of pressure points
+# N_h = 150 # Number of enthalpy points
+# metastable_phase = "liquid"
+
 fluid_name = "water"
-h_min = 200e3  # J/kg
+h_min = 300e3  # J/kg
 h_max = 1800e3  # J/kg
 p_min = 1e5    # Pa
 p_max = 13e6   # Pa
-N_p = 20 # Number of pressure points
-N_h = 20 # Number of enthalpy points
+N_p = 120 # Number of pressure points
+N_h = 120 # Number of enthalpy points
 metastable_phase = "liquid"
 
 # fluid_name = "nitrogen"
@@ -70,11 +79,11 @@ metastable_phase = "liquid"
 
 # fluid_name = "water"
 # h_min = 2200e3  # J/kg
-# h_max = 5200e3  # J/kg  3400e3
-# p_min = 1e5    # Pa
+# h_max = 3400e3  # J/kg  3400e3
+# p_min = 5e4    # Pa
 # p_max = 13e6   # Pa
-# N_p = 140 # Number of pressure points
-# N_h = 140 # Number of enthalpy points
+# N_p = 150 # Number of pressure points
+# N_h = 150 # Number of enthalpy points
 # metastable_phase = "vapor"
 
 # fl = jxp.Fluid(fluid_name)
@@ -110,8 +119,11 @@ fluid_bicubic = jxp.FluidBicubic(
 # state_critical = fluid_bicubic.get_state(jxp.HmassP_INPUTS, 3912677.9, 8822847.22)
 # rho = state_critical["surface_tension"]
 
-# print(f"Density:{rho}")
-# print(fluid_bicubic.p_min)
+state_liquid_in = fluid_bicubic.get_state(jxp.PT_INPUTS, 1.2e7, 578.95)
+
+rho = state_liquid_in["density"]
+print(f"Density:{rho}")
+print(fluid_bicubic.p_min)
 
 
 # import pandas as pd

@@ -306,13 +306,13 @@ if __name__ == "__main__":
 
     outdir = "mixture_tables"
     fluid_name = "water_nitrogen_mixture"
-    h_min = 100e3  # J/kg
-    h_max = 180e3  # J/kg
-    p_min = 2e6    # Pa
-    p_max = 20e6   # Pa
-    N_h = 15
-    N_p = 15
-    mixture_ratio = 70
+    h_min = 11761.455626177372  # J/kg
+    h_max = 144060.733331034  # J/kg
+    p_min = 2e4    # Pa
+    p_max = 3e6   # Pa
+    N_h = 100
+    N_p = 100
+    mixture_ratio = 39.1
 
     fluid_bicubic = jxp.FluidBicubic(
         fluid_name=fluid_name,
@@ -329,7 +329,7 @@ if __name__ == "__main__":
     
 
     # Mixture state values
-    p_mix = 20e5    # Pa
+    p_mix = 2e5    # Pa
     h_mix = 100e3   # J/kg
     R     = mixture_ratio 
 
