@@ -1385,14 +1385,17 @@ class FluidBicubic(eqx.Module):
 
     def _interp_h_p(self, h, p):
 
+        _DEBUG_BOUNDS = False  # set True during development only
+
         out_of_range = (h < self.h_min) | (h > self.h_max) | (p < self.p_min) | (p > self.p_max)
-        jax.debug.callback(
-            lambda oor, h_, p_: print(
-                f"Extrapolation attempted in table {self.table_name}. Values out of interpolation range: h={h_}, p={p_}"
-            ) if oor else None,
-            out_of_range, h, p,
-            ordered=True,
-        )
+        if _DEBUG_BOUNDS:
+            jax.debug.callback(
+                lambda oor, h_, p_: print(
+                    f"Extrapolation attempted in table {self.table_name}. Values out of interpolation range: h={h_}, p={p_}"
+                ) if oor else None,
+                out_of_range, h, p,
+                ordered=True,
+            )
 
         ii = (h - self.h_min) / self.delta_h
         jj = (jnp.log(p) - jnp.log(self.p_min)) / self.delta_logP
