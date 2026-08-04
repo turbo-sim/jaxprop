@@ -658,7 +658,6 @@ class FluidBicubic(eqx.Module):
         
 
         # Start evaluating properties
-        after_spinodal = False
         total_points = self.N_h * self.N_p
         success_count = 0
         start_time = time.perf_counter()
@@ -673,6 +672,12 @@ class FluidBicubic(eqx.Module):
                 ratio = 1
                 ratio_old = ratio + 1
                 p = float(np.exp(logP))
+                # BUGFIX 2026-07-21: the spinodal latch must be PER PRESSURE
+                # COLUMN.  As a run-global flag (old code), the first trip froze
+                # every remaining point of the WHOLE table at the previous h-row
+                # — the shipped water_meta_liquid_90x90 table was row h_min
+                # broadcast everywhere (T 294-297 K for ALL h, zero h-variation).
+                after_spinodal = False
 
                 # 3. Inner Loop: Standard (Min Enthalpy -> Max Enthalpy)
                 for i, h in enumerate(np.asarray(self.h_vals)):
@@ -738,11 +743,20 @@ class FluidBicubic(eqx.Module):
                             table[k]["grad_hlogP"][i, j] = float(grad_hp * p)
 
                         if i > 0:
-                            ratio = grads["isothermal_bulk_modulus"][0] / table["isothermal_bulk_modulus"]["value"][i-1, j] 
+                            ratio = grads["isothermal_bulk_modulus"][0] / table["isothermal_bulk_modulus"]["value"][i-1, j]
                             diff = ratio_old - ratio
 
-                            # if ratio < 1e-1:
+                            # BUGFIX 2026-07-21: `diff < 0` (any non-monotonicity
+                            # of the node-to-node bulk-modulus RATIO) is a hair
+                            # trigger — it fired at the FIRST h step of the first
+                            # column on plain stable liquid water and (with the
+                            # run-global latch above) froze the entire table.
+                            # Use the same physical criterion as the vapor
+                            # generator, whose table is verified healthy:
+                            # spinodal = isothermal bulk modulus turns negative.
+                            # OLD condition (kept for reference):
                             if diff < 0 or grads["isothermal_bulk_modulus"][0] < 0:
+                            # if grads["isothermal_bulk_modulus"][0] < 0:
                                 after_spinodal = True
                                 
                                 for k in table.keys():
@@ -984,7 +998,6 @@ class FluidBicubic(eqx.Module):
         keys_to_skip = {'metadata', 'pressure', 'enthalpy'}
         
         # Start evaluating properties
-        after_spinodal = False
         total_points = self.N_h * self.N_p
         success_count = 0
         start_time = time.perf_counter()
@@ -998,6 +1011,10 @@ class FluidBicubic(eqx.Module):
             for j, logP in reversed(list(enumerate(np.asarray(self.logP_vals)))):
                 ratio = 1
                 p = float(np.exp(logP))
+                # BUGFIX 2026-07-21: per-column spinodal latch (see the liquid
+                # generator) — a run-global flag freezes the whole remaining
+                # table after the first trip.
+                after_spinodal = False
 
                 # 3. Inner Loop: Standard (Min Enthalpy -> Max Enthalpy)
                 for i, h in reversed(list(enumerate(np.asarray(self.h_vals)))):
