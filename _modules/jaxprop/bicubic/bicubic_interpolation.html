@@ -941,7 +941,6 @@
         
 
         <span class="c1"># Start evaluating properties</span>
-        <span class="n">after_spinodal</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">total_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_h</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span>
         <span class="n">success_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
@@ -956,6 +955,12 @@
                 <span class="n">ratio</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="n">ratio_old</span> <span class="o">=</span> <span class="n">ratio</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="n">p</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logP</span><span class="p">))</span>
+                <span class="c1"># BUGFIX 2026-07-21: the spinodal latch must be PER PRESSURE</span>
+                <span class="c1"># COLUMN.  As a run-global flag (old code), the first trip froze</span>
+                <span class="c1"># every remaining point of the WHOLE table at the previous h-row</span>
+                <span class="c1"># — the shipped water_meta_liquid_90x90 table was row h_min</span>
+                <span class="c1"># broadcast everywhere (T 294-297 K for ALL h, zero h-variation).</span>
+                <span class="n">after_spinodal</span> <span class="o">=</span> <span class="kc">False</span>
 
                 <span class="c1"># 3. Inner Loop: Standard (Min Enthalpy -&gt; Max Enthalpy)</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h_vals</span><span class="p">)):</span>
@@ -1021,11 +1026,20 @@
                             <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;grad_hlogP&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">grad_hp</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span>
 
                         <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="n">ratio</span> <span class="o">=</span> <span class="n">grads</span><span class="p">[</span><span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> 
+                            <span class="n">ratio</span> <span class="o">=</span> <span class="n">grads</span><span class="p">[</span><span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
                             <span class="n">diff</span> <span class="o">=</span> <span class="n">ratio_old</span> <span class="o">-</span> <span class="n">ratio</span>
 
-                            <span class="c1"># if ratio &lt; 1e-1:</span>
+                            <span class="c1"># BUGFIX 2026-07-21: `diff &lt; 0` (any non-monotonicity</span>
+                            <span class="c1"># of the node-to-node bulk-modulus RATIO) is a hair</span>
+                            <span class="c1"># trigger — it fired at the FIRST h step of the first</span>
+                            <span class="c1"># column on plain stable liquid water and (with the</span>
+                            <span class="c1"># run-global latch above) froze the entire table.</span>
+                            <span class="c1"># Use the same physical criterion as the vapor</span>
+                            <span class="c1"># generator, whose table is verified healthy:</span>
+                            <span class="c1"># spinodal = isothermal bulk modulus turns negative.</span>
+                            <span class="c1"># OLD condition (kept for reference):</span>
                             <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">grads</span><span class="p">[</span><span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="c1"># if grads[&quot;isothermal_bulk_modulus&quot;][0] &lt; 0:</span>
                                 <span class="n">after_spinodal</span> <span class="o">=</span> <span class="kc">True</span>
                                 
                                 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -1267,7 +1281,6 @@
         <span class="n">keys_to_skip</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;pressure&#39;</span><span class="p">,</span> <span class="s1">&#39;enthalpy&#39;</span><span class="p">}</span>
         
         <span class="c1"># Start evaluating properties</span>
-        <span class="n">after_spinodal</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">total_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_h</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_p</span>
         <span class="n">success_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
@@ -1281,6 +1294,10 @@
             <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">logP</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logP_vals</span><span class="p">)))):</span>
                 <span class="n">ratio</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="n">p</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logP</span><span class="p">))</span>
+                <span class="c1"># BUGFIX 2026-07-21: per-column spinodal latch (see the liquid</span>
+                <span class="c1"># generator) — a run-global flag freezes the whole remaining</span>
+                <span class="c1"># table after the first trip.</span>
+                <span class="n">after_spinodal</span> <span class="o">=</span> <span class="kc">False</span>
 
                 <span class="c1"># 3. Inner Loop: Standard (Min Enthalpy -&gt; Max Enthalpy)</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h_vals</span><span class="p">)))):</span>
