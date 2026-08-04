@@ -241,6 +241,12 @@ def calculate_properties_rhop(rho, p, constants):
 def assemble_properties(T, p, rho, h, s, constants):
     R = constants.R
     gamma = constants.gamma
+    # Broadcast the CONSTANT-valued props (gamma, cp, cv, Z, Grüneisen) to the shape
+    # of the input-dependent props so EVERY FluidState field shares one shape.  Real
+    # backends (FluidBicubic) return all fields at the input shape; consumers rely on
+    # it (e.g. st["G"][0]).  Without this, a scalar-input call leaves gamma 0-dim
+    # while rho/T are (1,) → "too many indices" on st["G"][0].
+    ones = jnp.ones_like(T)
     return {
         "temperature": T,
         "pressure": p,
@@ -250,11 +256,11 @@ def assemble_properties(T, p, rho, h, s, constants):
         "viscosity": viscosity_from_T(T, constants),
         "conductivity": conductivity_from_T(T, constants),
         "speed_of_sound": speed_of_sound_from_T(T, constants),
-        "heat_capacity_ratio": gamma,
-        "isobaric_heat_capacity": gamma * R / (gamma - 1),
-        "isochoric_heat_capacity": R / (gamma - 1),
-        "compressibility_factor": jnp.asarray(1.0, dtype=jnp.float64),
-        "gruneisen": gamma - 1,
+        "heat_capacity_ratio": gamma * ones,
+        "isobaric_heat_capacity": (gamma * R / (gamma - 1)) * ones,
+        "isochoric_heat_capacity": (R / (gamma - 1)) * ones,
+        "compressibility_factor": ones,
+        "gruneisen": (gamma - 1) * ones,
     }
 
 # ----------------------------------------------------------------------------- #
