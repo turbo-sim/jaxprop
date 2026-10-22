@@ -7,8 +7,8 @@ h_min = -120e3  # J/kg
 h_max = 0.001e3  # J/kg
 p_min = 1e5  # Pa
 p_max = 1e6  # Pa
-N_p = 20 # Number of pressure points
-N_h = 20 # Number of enthalpy points
+N_p = 60 # Number of pressure points
+N_h = 60 # Number of enthalpy points
 
 # fl = jxp.Fluid(fluid_name)
 # print(fl.critical_point["pressure"])
@@ -43,10 +43,10 @@ fluid_bicubic = jxp.FluidBicubic(
 # ---------------------------
 # Step 2: Interpolate at (h, P)
 # ---------------------------
-test_h = 100e3   # Test enthalpy [J/kg]
-test_P = 1.1e6     # Test pressure [Pa]
-# test_h = 315e3  # Test enthalpy [J/kg]
-# test_P = 5e6  # Test pressure [Pa]
+# test_h = 100e3   # Test enthalpy [J/kg]
+# test_P = 1.1e6     # Test pressure [Pa]
+test_h = -60e3  # Test enthalpy [J/kg]
+test_P = 5e5  # Test pressure [Pa]
 props_bicubic = fluid_bicubic.get_state(jxp.HmassP_INPUTS, test_h, test_P)
 
 # -----------------------------------

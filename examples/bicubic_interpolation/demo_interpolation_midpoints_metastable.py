@@ -34,8 +34,8 @@ h_min = -120e3  # J/kg
 h_max = 10e3  # J/kg
 p_min = 1e5  # Pa
 p_max = 3e6  # Pa
-N_p = 128 # Number of pressure points
-N_h = 128 # Number of enthalpy points
+N_p = 40 # Number of pressure points
+N_h = 40 # Number of enthalpy points
 metastable_phase = "liquid"
 
 outdir = "demo_metastable_table_generation"

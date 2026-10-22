@@ -11,12 +11,12 @@ jxp.set_plot_options()
 # ---------------------------
 
 fluid_name = "nitrogen"
-h_min = -140e3  # J/kg
+h_min = -100e3  # J/kg
 h_max = -10e3  # J/kg
-p_min = 2e4  # Pa
-p_max = 1e6  # Pa
-N_p = 160 # Number of pressure points
-N_h = 160 # Number of enthalpy points
+p_min = 2e5  # Pa
+p_max = 1e7  # Pa
+N_p = 21 # Number of pressure points
+N_h = 21 # Number of enthalpy points
 metastable_phase = "liquid"
 
 outdir = "demo_metastable_table_generation"
@@ -47,8 +47,21 @@ Q_sat = 0.0 if metastable_phase == "liquid" else 1.0
 # ---------------------------
 # Use the same log-spaced pressure nodes as the table, then take midpoints
 logP_sat_nodes = np.asarray(fluid_bicubic.logP_sat_vals)
+
+# Extend the nodes past the last tabulated one (0.98 p_crit) into the
+# supercritical region with the same log-spacing, up to max(p_max, 1.5 p_crit).
+# There get_state_saturation holds the end-node values and CoolProp has no
+# saturation reference
+p_crit = fluid_bicubic.critical_point["pressure"]
+p_sat_max = np.exp(logP_sat_nodes[-1])
+p_ext_max = max(p_max, 1.5 * p_crit)
+dlogP = fluid_bicubic.delta_logP_sat
+n_extra = int(np.ceil(np.log(p_ext_max / p_sat_max) / dlogP))
+logP_sat_nodes = np.append(logP_sat_nodes, logP_sat_nodes[-1] + dlogP * np.arange(1, n_extra + 1))
+
 logP_midpoints = 0.5 * (logP_sat_nodes[:-1] + logP_sat_nodes[1:])
 p_midpoints = np.exp(logP_midpoints)
+in_table = p_midpoints <= p_sat_max
 
 # ---------------------------
 # Evaluate saturation at midpoints
@@ -62,11 +75,11 @@ cp_vals = {prop: [] for prop in properties}
 for p in p_midpoints:
     sat_interp = fluid_bicubic.get_state_saturation(float(p))
     # print(sat_interp)
-    sat_cp = fluid_cp.get_state(jxp.PQ_INPUTS, float(p), Q_sat)
+    sat_cp = fluid_cp.get_state(jxp.PQ_INPUTS, float(p), Q_sat)  # None above p_crit
 
     for prop in properties:
         val_interp = float(sat_interp[prop])
-        val_cp = float(sat_cp[prop])
+        val_cp = float(sat_cp[prop]) if sat_cp is not None else float("nan")
         interp_vals[prop].append(val_interp)
         cp_vals[prop].append(val_cp)
 
@@ -85,13 +98,13 @@ for prop in properties:
 # ---------------------------
 # Print error summary
 # ---------------------------
-print("\nSaturation midpoint interpolation error summary:")
+print("\nSaturation midpoint interpolation error summary (within table range):")
 header = f"{'Prop':<10} {'% min':>12} {'% max':>12} {'% mean':>12}"
 print("-" * len(header))
 print(header)
 print("-" * len(header))
 for prop in properties:
-    err = error_data[prop]
+    err = error_data[prop][in_table]
     print(f"{prop:<10} {np.nanmin(err):>12.3e} {np.nanmax(err):>12.3e} {np.nanmean(err):>12.3e}")
 
 # ---------------------------
@@ -103,6 +116,8 @@ if len(properties) == 1:
 
 for ax, prop in zip(axes, properties):
     ax.semilogy(p_midpoints / 1e6, error_data[prop], "o-", markersize=3)
+    ax.axvline(p_sat_max / 1e6, color="gray", ls=":")
+    ax.axvline(p_crit / 1e6, color="k", ls=":")
     ax.set_ylabel(f"{prop} error [%]")
     ax.grid(True, which="both", ls="--", alpha=0.5)
 
@@ -119,7 +134,9 @@ if len(properties) == 1:
 
 for ax, prop in zip(axes2, properties):
     ax.plot(p_midpoints / 1e6, cp_vals[prop], "k-", label="CoolProp", linewidth=1.5)
-    ax.plot(p_midpoints / 1e6, interp_vals[prop], "r--", label="Bicubic", linewidth=1.5)
+    ax.plot(p_midpoints / 1e6, interp_vals[prop], "r--o", label="Bicubic", linewidth=1.5, markersize=3)
+    ax.axvline(p_sat_max / 1e6, color="gray", ls=":")
+    ax.axvline(p_crit / 1e6, color="k", ls=":")
     ax.set_ylabel(prop)
     ax.grid(True, which="both", ls="--", alpha=0.5)
     ax.legend(fontsize=8)

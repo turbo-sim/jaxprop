@@ -11,23 +11,23 @@ jxp.set_plot_options()
 # ---------------------------
 # Configuration
 # ---------------------------
-# fluid_name = "nitrogen"
-# h_min = -145e3  # J/kg
-# h_max = -10e3  # J/kg
-# p_min = 3e4  # Pa
-# p_max = 1e6  # Pa
-# N_p = 165 # Number of pressure points
-# N_h = 165 # Number of enthalpy points
-# metastable_phase = "liquid"
-
 fluid_name = "nitrogen"
-h_min = 20e3  # J/kg
-h_max = 200e3  # J/kg
+h_min = -145e3  # J/kg
+h_max = -10e3  # J/kg
 p_min = 3e4  # Pa
 p_max = 1e6  # Pa
-N_p = 165 # Number of pressure points
-N_h = 165 # Number of enthalpy points
-metastable_phase = "vapor"
+N_p = 100 # Number of pressure points
+N_h = 100 # Number of enthalpy points
+metastable_phase = "liquid"
+
+# fluid_name = "nitrogen"
+# h_min = 20e3  # J/kg
+# h_max = 200e3  # J/kg
+# p_min = 3e4  # Pa
+# p_max = 1e6  # Pa
+# N_p = 100 # Number of pressure points
+# N_h = 100 # Number of enthalpy points
+# metastable_phase = "vapor"
 
 outdir = "demo_metastable_table_generation"
 
