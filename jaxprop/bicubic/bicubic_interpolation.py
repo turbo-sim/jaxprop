@@ -1525,8 +1525,15 @@ class FluidBicubic(eqx.Module):
         return self._interp_h_p(h, p)
     
     def _interp_sat_p(self, p):
-        jj = (jnp.log(p) - jnp.log(self.p_min)) / self.delta_logP_sat
-        j = jnp.clip(jnp.floor(jj).astype(int), 0, self.N_p_sat)
+        # Clamp the query to the tabulated range [p_min, 0.98 p_crit]: outside it
+        # the saturation props are held at the end values (zero p-derivative).
+        # Without the clamp, p above the last node gave j = j+1 after the index
+        # clip -> dx = 0 -> NaN for every property (e.g. a supercritical inlet).
+        p_sat_max = jnp.exp(self.logP_sat_vals[-1])
+        p_q = jnp.clip(p, self.p_min, p_sat_max)
+
+        jj = (jnp.log(p_q) - jnp.log(self.p_min)) / self.delta_logP_sat
+        j = jnp.clip(jnp.floor(jj).astype(int), 0, self.N_p_sat - 2)
 
         # Use jnp.take for JAX-traced index compatibility (vmap / JIT)
         def _take(arr, idx):
@@ -1536,7 +1543,7 @@ class FluidBicubic(eqx.Module):
         p_j  = _take(self.table["saturation_props"]["pressure"]["value"], j)
         p_j1 = _take(self.table["saturation_props"]["pressure"]["value"], j + 1)
         dx = p_j1 - p_j
-        t = (p - p_j) / dx
+        t = (p_q - p_j) / dx
 
         props = {}
 
