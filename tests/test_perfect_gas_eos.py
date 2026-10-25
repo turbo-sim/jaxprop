@@ -123,9 +123,10 @@ def test_perfect_gas_derivatives(input_type, case):
         # JAX forward-mode gradient
         grad_jax = np.array(jax.jacfwd(prop_fun)(x0), dtype=float)
 
-        # finite-difference gradient
+        # Central differences avoid forward-step truncation error in the
+        # exponential pressure relation while retaining the derivative tolerance.
         grad_fd = approx_derivative(
-            prop_fun, x0=x0, method="2-point", rel_step=1e-6
+            prop_fun, x0=x0, method="3-point", rel_step=1e-6
         )
 
         if not np.allclose(grad_jax, grad_fd, rtol=1e-5, atol=1e-5):
@@ -145,7 +146,3 @@ if __name__ == "__main__":
     # pytest.main([__file__])
     pytest.main([__file__, "-v"])
     # # pytest.main([__file__, "-vv"])
-
-
-
- 

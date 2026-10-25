@@ -20,7 +20,7 @@ diffrax = "^0.7.0"
 optimistix = "^0.0.10"
 matplotlib = "^3.10.6"
 CoolProp = "^7.0.0"
-pysolver_view = "^0.6.8"
+pysolver_view = "^0.7.1"
 #pysolver_view = { path = "../pysolver_view/", develop = true }
 tqdm = "^4.67.1"
 

@@ -1365,6 +1365,8 @@ class _SpinodalPointProblem(psv.OptimizationProblem):
 
         Not a good idea to scale the bulk modulus by pressure because it can take negative values or zero when evaluated with the HEOS.
         """
+        # Optimizers supply a one-variable vector; CoolProp requires scalar density.
+        rho = np.asarray(rho).item()
         state = self.fluid.get_state_metastable(
             "rho", rho, "T", self.T, supersaturation=self.supersaturation
         )

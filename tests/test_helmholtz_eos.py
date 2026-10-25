@@ -74,6 +74,12 @@ def test_hemholtz_solver(fluid_name, backend, state_label):
         if key in ("is_two_phase", "identifier"):
             continue
 
+        # FluidState also declares mixture-only fields, left NaN for pure fluids.
+        # The pure-fluid Helmholtz calculation must still provide every finite value.
+        if key not in props:
+            assert np.all(np.isnan(np.asarray(v_ref))), f"Missing finite property: {key}"
+            continue
+
         # Check values are consistent
         v_new = props[key]
         assert_consistent_values(

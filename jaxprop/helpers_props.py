@@ -122,6 +122,48 @@ class FluidState(eqx.Module):
         """Dict-style iteration"""
         return self.to_dict().items()
 
+    def at_index(self, index: int) -> "FluidState":
+        """Extract one state along the first array axis, preserving scalar fields.
+
+        Return a new state with unchanged fluid/stream metadata. JAX array
+        operations retain differentiation through the selected properties.
+        """
+        return jax.tree_util.tree_map(
+            lambda value: value[index] if jnp.ndim(value) else value, self
+        )
+
+
+    def flipped(self) -> "FluidState":
+        """Return a new state with array properties reversed along their first axis."""
+        return jax.tree_util.tree_map(
+            lambda value: jnp.flip(value, axis=0) if jnp.ndim(value) else value, self
+        )
+
+
+    def __add__(self, other: "FluidState") -> "FluidState":
+        """Concatenate state properties along their first axis for one fluid/stream.
+
+        Scalar properties become one-element arrays before concatenation.
+        Inputs are unchanged; incompatible fluid or stream metadata is rejected.
+        """
+        if not isinstance(other, type(self)):
+            return NotImplemented
+        if self.fluid_name != other.fluid_name or self.identifier != other.identifier:
+            raise ValueError(
+                "Cannot combine states with different fluid_name or identifier"
+            )
+        properties = {}
+        for field in fields(self):
+            if field.name in ("fluid_name", "identifier"):
+                continue
+            values = (getattr(self, field.name), getattr(other, field.name))
+            properties[field.name] = jnp.concatenate(
+                [jnp.atleast_1d(jnp.nan if value is None else value) for value in values]
+            )
+        return type(self)(
+            fluid_name=self.fluid_name, identifier=self.identifier, **properties
+        )
+
     @classmethod
     def stack(cls, states: list["FluidState"]) -> "FluidState":
         """Combine a list of FluidState into a batched FluidState (values stacked into arrays)."""
