@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.helpers_props &#8212; jaxprop v0.5.6 documentation</title>
+    <title>jaxprop.helpers_props &#8212; jaxprop v0.5.7 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=bf16e958"></script>
+    <script src="../../_static/documentation_options.js?v=04ea6b45"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -133,7 +133,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.6 documentation</p>
+    <p class="title logo__title">jaxprop v0.5.7 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -416,6 +416,54 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Dict-style iteration&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span></div>
 
+
+<div class="viewcode-block" id="FluidState.at_index">
+<a class="viewcode-back" href="../../source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.at_index">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">at_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluidState&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract one state along the first array axis, preserving scalar fields.</span>
+
+<span class="sd">        Return a new state with unchanged fluid/stream metadata. JAX array</span>
+<span class="sd">        operations retain differentiation through the selected properties.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree_util</span><span class="o">.</span><span class="n">tree_map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">if</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">else</span> <span class="n">value</span><span class="p">,</span> <span class="bp">self</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="FluidState.flipped">
+<a class="viewcode-back" href="../../source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.flipped">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">flipped</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluidState&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new state with array properties reversed along their first axis.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree_util</span><span class="o">.</span><span class="n">tree_map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">else</span> <span class="n">value</span><span class="p">,</span> <span class="bp">self</span>
+        <span class="p">)</span></div>
+
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;FluidState&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluidState&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Concatenate state properties along their first axis for one fluid/stream.</span>
+
+<span class="sd">        Scalar properties become one-element arrays before concatenation.</span>
+<span class="sd">        Inputs are unchanged; incompatible fluid or stream metadata is rejected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">fluid_name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">identifier</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot combine states with different fluid_name or identifier&quot;</span>
+            <span class="p">)</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;fluid_name&quot;</span><span class="p">,</span> <span class="s2">&quot;identifier&quot;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">properties</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">jnp</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">nan</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">properties</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="FluidState.stack">
 <a class="viewcode-back" href="../../source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.stack">[docs]</a>
