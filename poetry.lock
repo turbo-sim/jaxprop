@@ -2098,14 +2098,14 @@ diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
 name = "pysolver-view"
-version = "0.7.1"
+version = "0.8.0"
 description = "Visualization of solver convergence evolution"
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["main"]
 files = [
-    {file = "pysolver_view-0.7.1-py3-none-any.whl", hash = "sha256:918d2c32bb447bbaed68f7100f5658921cf065fe58310a2860638ee36a53512e"},
-    {file = "pysolver_view-0.7.1.tar.gz", hash = "sha256:6f155847e60d6269b953ef5a064c1386bace1479bc108ae3275ee9b32a29732c"},
+    {file = "pysolver_view-0.8.0-py3-none-any.whl", hash = "sha256:2dc69f36b4792d7b2b628071e658fcf789d3df2f0c1b0fe8b1fab8249dbf4330"},
+    {file = "pysolver_view-0.8.0.tar.gz", hash = "sha256:0eeb2a0fdaacccaf16369b56b001c318072438b265533e472fc096ae891d3ab8"},
 ]
 
 [package.dependencies]
@@ -2120,6 +2120,7 @@ toml = ">=0.10.2,<0.11.0"
 
 [package.extras]
 jax = ["jax (>=0.5.3,<0.6.0)"]
+pounce = ["pounce-solver (==0.13.0)"]
 thermodynamics = ["CoolProp (>=6.6,<8)"]
 
 [[package]]
@@ -3413,4 +3414,4 @@ tzlocal = {version = ">=4.0", markers = "sys_platform != \"darwin\" and sys_plat
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.14"
-content-hash = "fb8013abc74107f8e05b47ce9b8ea02326f0b848409f00d3853bc4311216fa14"
+content-hash = "0bcde7570b08edaa77d294cc4b1d1969e7ae8db4dc68464e00f0e98d8abede1b"

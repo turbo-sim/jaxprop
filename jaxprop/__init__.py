@@ -35,7 +35,7 @@ from .bicubic import FluidBicubic
 
 
 # Package info
-__version__ = "0.5.7"
+__version__ = "0.5.8"
 PACKAGE_NAME = "jaxprop"
 URL_GITHUB = "https://github.com/turbo-sim/jaxprop"
 URL_DOCS = "https://turbo-sim.github.io/jaxprop/"
