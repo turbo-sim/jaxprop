@@ -1,6 +1,6 @@
 # JAXprop
 
-`jaxprop` provides JAX-compatible thermodynamic property calculations with support for automatic differentiation, vectorization, and JIT compilation.  
+JAX-compatible Python package for real-fluid thermodynamic properties, phase equilibria and metastable states, with automatic differentiation.
 
 🔗 **Docs**: [turbo-sim.github.io/jaxprop](https://turbo-sim.github.io/jaxprop/)  
 📦 **PyPI**: [pypi.org/project/jaxprop](https://pypi.org/project/jaxprop/)
@@ -20,3 +20,11 @@
 
 ```bash
 pip install jaxprop
+
+<!-- research-software-metadata:start -->
+## Development and citation
+
+Roberto Agromayor is the main developer, with contributions from Srinivas Prakash Diwanji, Alberto Bergamin and Andrea Cioffi.
+
+Citation metadata is provided in [CITATION.cff](CITATION.cff). For version-specific reproducibility, also record the release or commit used.
+<!-- research-software-metadata:end -->
