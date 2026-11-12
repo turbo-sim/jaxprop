@@ -1,8 +1,4 @@
-"""Fixed public state expectations for the uniform fluid interface.
-
-Strict expected failures identify confirmed phase-3 gaps. Remove each marker
-when its intended behavior is implemented; an unexpected pass fails the suite.
-"""
+"""Passing public state expectations for the shared fluid foundation."""
 
 import jax
 import jax.numpy as jnp
@@ -26,15 +22,7 @@ PUBLIC_ALIASES = (
     ("speed_of_sound", "a"),
     ("viscosity", "mu"),
     ("conductivity", "k"),
-    pytest.param(
-        "isobaric_expansion_coefficient",
-        "alpha_p",
-        marks=pytest.mark.xfail(
-            strict=True,
-            raises=KeyError,
-            reason="phase3: duplicate alias definition removes alpha_p",
-        ),
-    ),
+    ("isobaric_expansion_coefficient", "alpha_p"),
 )
 
 
@@ -60,18 +48,7 @@ def _state(values, *, fluid_name="CO2", identifier="working_fluid"):
 
 
 def _stack_case(shape, count):
-    if shape == () and count == 2:
-        return pytest.param(shape, count, id=f"scalar-{count}")
-    return pytest.param(
-        shape,
-        count,
-        id=f"shape{shape}-{count}",
-        marks=pytest.mark.xfail(
-            strict=True,
-            raises=AssertionError,
-            reason="phase3: stack squeezes the added axis or existing singleton axes",
-        ),
-    )
+    return pytest.param(shape, count, id=f"shape{shape}-{count}")
 
 
 @pytest.mark.parametrize(

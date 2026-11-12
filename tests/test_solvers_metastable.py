@@ -137,7 +137,7 @@ def test_metastable_solver_consistency(fluid_name, backend, state_label):
                 continue
 
             # Check values are consistent
-            v_new = state_new[key]
+            v_new = state_new.raw_property(key)
             assert_consistent_values(
                 v_ref,
                 v_new,

@@ -195,8 +195,8 @@ def test_bicubic_midpoint_accuracy(fluid_case, grid_case, tmp_path):
         interp_grid = fluid_bicubic.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
         true_grid = fluid_cp.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
         for prop in jxp.PROPERTIES_CANONICAL:
-            interp_val = np.asarray(interp_grid[prop])
-            true_val = np.asarray(true_grid[prop])
+            interp_val = np.asarray(interp_grid.raw_property(prop))
+            true_val = np.asarray(true_grid.raw_property(prop))
             context = f"{fluid_name} N={N} {sample_name} prop={prop}"
             assert interp_val.shape == true_val.shape == H_mesh.shape, context
             if prop in CORE_PROPERTIES:

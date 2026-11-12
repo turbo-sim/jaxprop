@@ -1,6 +1,11 @@
 import os
 import time
 import pickle
+import copy
+import hashlib
+import inspect
+from pathlib import Path
+import warnings
 import numpy as np
 import jax
 import jax.numpy as jnp
@@ -8,6 +13,16 @@ import equinox as eqx
 import optimistix as optx
 import jaxprop.coolprop as jxp
 from tqdm import tqdm
+
+from ..errors import CalculationError, InvalidConfigurationError, UnsupportedOptionError
+from .cache_metadata import metadata_fingerprint, source_signature
+from .table_cache import (
+    CACHE_FORMAT_VERSION,
+    GENERATOR_REVISION,
+    normalize_generated_arrays,
+    save_table_atomic,
+    table_validation_error,
+)
 
 
 class FluidBicubic(eqx.Module):
@@ -18,9 +33,10 @@ class FluidBicubic(eqx.Module):
       * On construction, attempts to load a precomputed table from disk.
       * If not found, generates the table with finite-difference derivatives,
         saves it to disk, and stores it in memory.
-      * On `get_props`, performs bicubic interpolation at the requested state.
+      * On `get_state`, performs bicubic interpolation at the requested state.
 
-    Table generation uses forward finite differences for first and mixed derivatives 
+    Generation uses the selected finite-difference scheme. Cache reuse requires
+    an exact generation manifest, verified source identity and valid arrays.
 
     Parameters
     ----------
@@ -37,7 +53,8 @@ class FluidBicubic(eqx.Module):
     coarse_step : int
         Number of points to skip when determining the initial guess during 2D inverse interpolations
     table_name : str, optional
-        Name of the table pickle file (default: "{fluid_name}_{N_h}x{N_p}").
+        File stem. The default includes a digest of the complete generation
+        identity so different configurations can coexist in one cache directory.
     table_dir : str, optional
         Directory for saving/loading table pickle (default: "fluid_tables").
     identifier : str, optional
@@ -66,8 +83,12 @@ class FluidBicubic(eqx.Module):
     table_dir: str = eqx.field(static=True)
     table: dict = eqx.field(static=False)
     identifier: str = eqx.field(static=True)
+    provider: str = eqx.field(static=True)
+    model: str = eqx.field(static=True)
+    reference_id: tuple = eqx.field(static=True)
     grad_method: str = eqx.field(static=True)
     metadata: dict = eqx.field(static=True)
+    table_mode: str = eqx.field(static=True)
     mixture_ratio: float = eqx.field(static=True)
     metastable_phase: str = eqx.field(static=True)
     critical_point: dict = eqx.field(static=True)
@@ -82,7 +103,7 @@ class FluidBicubic(eqx.Module):
         p_max: float,
         N_h: int,
         N_p: int,
-        N_p_sat: int=60,
+        N_p_sat: int = 60,
         mixture_ratio: float = None,
         metastable_phase: str = None,
         coarse_step: int = 10,
@@ -91,29 +112,131 @@ class FluidBicubic(eqx.Module):
         table_name: str = None,
         table_dir: str = "fluid_tables",
     ):
+        # Validate static configuration before allocating grids or evaluating
+        # reference states. Invalid options must never produce an empty cache.
+        context = dict(fluid_name=fluid_name, provider="bicubic", model="real_fluid")
+
+        def invalid(request, reason):
+            raise InvalidConfigurationError(request=request, reason=reason, **context)
+
+        if not isinstance(fluid_name, str) or not fluid_name:
+            invalid("fluid_name", "Provide a nonempty CoolProp source name.")
+        if not isinstance(backend, str) or not backend:
+            invalid("backend", "Provide a nonempty CoolProp source backend.")
+        for name, value in (
+            ("N_h", N_h),
+            ("N_p", N_p),
+            ("N_p_sat", N_p_sat),
+            ("coarse_step", coarse_step),
+        ):
+            minimum = 1 if name == "coarse_step" else 2
+            if (
+                isinstance(value, (bool, np.bool_))
+                or not isinstance(value, (int, np.integer))
+                or value < minimum
+            ):
+                invalid(name, f"Expected an integer >= {minimum}.")
+        try:
+            for value in (h_min, h_max, p_min, p_max):
+                scalar = np.asarray(value)
+                if scalar.ndim != 0 or scalar.dtype.kind not in "iuf":
+                    invalid(
+                        "bounds",
+                        "Table bounds must be real finite scalars, not booleans or strings.",
+                    )
+            bounds = np.asarray([h_min, h_max, p_min, p_max], dtype=float)
+        except (TypeError, ValueError) as error:
+            raise InvalidConfigurationError(
+                request="bounds",
+                reason="Table bounds must be real finite scalars.",
+                **context,
+            ) from error
+        h_min, h_max, p_min, p_max = map(float, bounds)
+        if (
+            not np.all(np.isfinite(bounds))
+            or not h_min < h_max
+            or not 0 < p_min < p_max
+        ):
+            invalid("bounds", "Require finite h_min < h_max and 0 < p_min < p_max.")
+        if gradient_method not in ("forward", "central"):
+            invalid("gradient_method", "Choose 'forward' or 'central'.")
+        if metastable_phase not in (None, "liquid", "vapor"):
+            invalid("metastable_phase", "Choose None, 'liquid', or 'vapor'.")
+        is_mixture = fluid_name.lower().endswith("_mixture")
+        context["model"] = "binary_mixture" if is_mixture else "real_fluid"
+        if is_mixture != (mixture_ratio is not None):
+            invalid(
+                "mixture_ratio",
+                "A legacy binary '_mixture' source requires its mass ratio; ordinary sources do not accept it.",
+            )
+        if is_mixture:
+            try:
+                if np.asarray(mixture_ratio).ndim != 0:
+                    invalid("mixture_ratio", "Provide a scalar mass ratio.")
+                ratio = float(mixture_ratio)
+            except (TypeError, ValueError) as error:
+                raise InvalidConfigurationError(
+                    request="mixture_ratio",
+                    reason="Provide a finite nonnegative scalar mass ratio.",
+                    **context,
+                ) from error
+            if (
+                isinstance(mixture_ratio, (bool, np.bool_))
+                or not np.isfinite(ratio)
+                or ratio < 0
+            ):
+                invalid(
+                    "mixture_ratio", "Provide a finite nonnegative scalar mass ratio."
+                )
+            mixture_ratio = ratio
+            if metastable_phase is not None:
+                invalid(
+                    "metastable_phase",
+                    "Mixture and metastable table modes cannot be combined.",
+                )
+        if metastable_phase is not None and gradient_method == "central":
+            raise UnsupportedOptionError(
+                request="gradient_method",
+                reason="Metastable central differences are not implemented; choose forward differences.",
+                supported=("forward",),
+                **context,
+            )
+        if table_name is not None and (
+            not isinstance(table_name, str)
+            or not table_name
+            or table_name in (".", "..")
+            or any(c in table_name for c in "/\\:\x00")
+        ):
+            invalid(
+                "table_name",
+                "Use a file stem without directory separators or drive components.",
+            )
         # store basic params
         self.fluid_name = fluid_name
         self.backend = backend
         self.h_min, self.h_max, self.N_h = h_min, h_max, N_h
         self.p_min, self.p_max, self.N_p = p_min, p_max, N_p
         self.mixture_ratio = mixture_ratio
-        self.identifier = identifier or fluid_name
+        self.identifier = identifier
+        self.provider = "bicubic"
+        self.model = "binary_mixture" if mixture_ratio is not None else "real_fluid"
+        self.reference_id = (
+            (self.model, backend, fluid_name, mixture_ratio)
+            if mixture_ratio is not None
+            else (self.model, backend, fluid_name)
+        )
         self.metastable_phase = metastable_phase
         self.N_p_sat = N_p_sat
-        
-
-        # include mixture_ratio in filename if relevant (prevent collisions)
-        if table_name is None:
-            if mixture_ratio is not None or "mixture" in fluid_name.lower():
-                self.table_name = f"{fluid_name}_{N_h}x{N_p}_mix_{mixture_ratio:.2f}"
-            elif metastable_phase is not None:
-                self.table_name = f"{fluid_name}_meta_{metastable_phase}_{N_h}x{N_p}"
-            else:
-                self.table_name = f"{fluid_name}_{N_h}x{N_p}"
-        else:
-            self.table_name = table_name
-
-        self.table_dir = table_dir
+        self.table_mode = (
+            "mixture"
+            if is_mixture
+            else (
+                "equilibrium"
+                if metastable_phase is None
+                else f"metastable_{metastable_phase}"
+            )
+        )
+        self.table_dir = os.fspath(table_dir)
         self.grad_method = gradient_method
         self.coarse_step = coarse_step
 
@@ -123,32 +246,20 @@ class FluidBicubic(eqx.Module):
         self.delta_h = float(self.h_vals[1] - self.h_vals[0])
         self.delta_logP = float(self.logP_vals[1] - self.logP_vals[0])
 
-        # Build expected metadata for cache validation
-        self.metadata = dict(
-            fluid=self.fluid_name,
-            backend=self.backend,
-            h_min=self.h_min,
-            h_max=self.h_max,
-            p_min=self.p_min,
-            p_max=self.p_max,
-            N_h=self.N_h,
-            N_p=self.N_p,
-            delta_h=self.delta_h,
-            delta_logP=self.delta_logP,
-        )
-        if mixture_ratio is not None:
-            self.metadata["mixture_ratio"] = self.mixture_ratio
-        if metastable_phase is not None:
-            self.metadata["metastable_phase"] = self.metastable_phase
-
         # Get critical and triple point properties
         if self.mixture_ratio is None:
             fluid = jxp.Fluid(self.fluid_name, self.backend)
             try:
                 self.critical_point = fluid.critical_point
-                self.logP_sat_vals = jnp.linspace(np.log(self.p_min), np.log(self.critical_point["pressure"]*0.98), self.N_p_sat)
-                self.delta_logP_sat = float(self.logP_sat_vals[1] - self.logP_sat_vals[0])
-            except:
+                self.logP_sat_vals = jnp.linspace(
+                    np.log(self.p_min),
+                    np.log(self.critical_point["pressure"] * 0.98),
+                    self.N_p_sat,
+                )
+                self.delta_logP_sat = float(
+                    self.logP_sat_vals[1] - self.logP_sat_vals[0]
+                )
+            except (AttributeError, LookupError, TypeError, ValueError):
                 self.critical_point = None
                 self.logP_sat_vals = None
                 self.delta_logP_sat = None
@@ -157,147 +268,245 @@ class FluidBicubic(eqx.Module):
             self.logP_sat_vals = None
             self.delta_logP_sat = None
 
+        if metastable_phase is not None and (
+            self.logP_sat_vals is None
+            or self.p_min >= float(self.critical_point.p) * 0.98
+        ):
+            invalid(
+                "saturation_domain",
+                "Metastable table construction requires available source saturation data and p_min < 0.98*p_critical.",
+            )
+        # One immutable generation identity is shared by every writer and reader.
+        # Runtime identity, inverse-guess stride and cache location are excluded.
+        import jaxprop
+        import jaxlib
+        import scipy
+        import pysolver_view
+
+        code_files = (
+            Path(__file__),
+            Path(__file__).with_name("cache_metadata.py"),
+            Path(__file__).with_name("table_cache.py"),
+            Path(__file__).parents[1] / "coolprop" / "core_calculations.py",
+            Path(__file__).parents[1] / "coolprop" / "fluid_properties.py",
+            Path(__file__).parents[1] / "fluid_state.py",
+            Path(__file__).parents[1] / "property_schema.py",
+        )
+        code_identity = {
+            str(path.relative_to(Path(__file__).parents[1])): hashlib.sha256(
+                path.read_bytes()
+            ).hexdigest()
+            for path in code_files
+        }
+        self.metadata = dict(
+            cache_format_version=CACHE_FORMAT_VERSION,
+            generator_revision=GENERATOR_REVISION,
+            generator_code_fingerprint=metadata_fingerprint(code_identity),
+            jaxprop_version=jaxprop.__version__,
+            jax_version=jax.__version__,
+            jaxlib_version=jaxlib.__version__,
+            numpy_version=np.__version__,
+            scipy_version=scipy.__version__,
+            pysolver_view_version=pysolver_view.__version__,
+            fluid=self.fluid_name,
+            backend=self.backend,
+            table_mode=self.table_mode,
+            mixture_ratio=self.mixture_ratio,
+            metastable_phase=self.metastable_phase,
+            gradient_method=self.grad_method,
+            N_p_sat=int(self.N_p_sat),
+            h_min=float(self.h_min),
+            h_max=float(self.h_max),
+            p_min=float(self.p_min),
+            p_max=float(self.p_max),
+            N_h=int(self.N_h),
+            N_p=int(self.N_p),
+            delta_h=self.delta_h,
+            delta_logP=self.delta_logP,
+            numeric_dtype=str(self.h_vals.dtype),
+            jax_enable_x64=bool(jax.config.jax_enable_x64),
+            jax_platform=jax.default_backend(),
+            jax_default_matmul_precision=jax.config.jax_default_matmul_precision,
+            properties=list(jxp.PROPERTIES_CANONICAL),
+            source_signature=source_signature(
+                self.fluid_name, self.backend, self.mixture_ratio
+            ),
+            generation_settings=dict(
+                finite_difference_relative_step=1e-5,
+                step_scale_floor=1.0,
+                grid_axes=["enthalpy", "log_pressure"],
+                saturation_critical_pressure_fraction=0.98,
+                metastable_solver_defaults={
+                    name: parameter.default
+                    for name, parameter in inspect.signature(
+                        jxp.Fluid.get_state_metastable
+                    ).parameters.items()
+                    if name.startswith("solver_")
+                },
+                saturation_log_pressure_min=(
+                    None if self.logP_sat_vals is None else float(self.logP_sat_vals[0])
+                ),
+                saturation_log_pressure_max=(
+                    None
+                    if self.logP_sat_vals is None
+                    else float(self.logP_sat_vals[-1])
+                ),
+            ),
+        )
+        if table_name is None:
+            label = "".join(c if c.isalnum() or c in "_-" else "_" for c in fluid_name)[
+                :48
+            ]
+            self.table_name = f"{label}_{self.table_mode}_{N_h}x{N_p}_{metadata_fingerprint(self.metadata)[:20]}"
+        else:
+            self.table_name = table_name
+
         # Load or generate
         self.table = self._load_or_generate_table()
 
     # ------------------ Table loading / generation ------------------
     def _load_or_generate_table(self):
-        os.makedirs(self.table_dir, exist_ok=True)
+        cacheable = self.metadata["source_signature"].get(
+            "deterministic_cache_identity", False
+        )
         pkl_path = os.path.join(self.table_dir, f"{self.table_name}.pkl")
-
-        if os.path.exists(pkl_path):
-            with open(pkl_path, "rb") as f:
-                table = pickle.load(f)
-
-            meta = table.get("metadata", {})
-            expected = self.metadata
-
-            mismatches = []
-            for k, val_expected in expected.items():
-                val_loaded = meta.get(k, None)
-                if val_loaded != val_expected:
-                    mismatches.append((k, val_loaded, val_expected))
-
-            if mismatches:
-                print(f"Existing table found at '{pkl_path}', but metadata mismatch detected:")
-                for k, old, new in mismatches:
-                    print(f"  - {k}: file={old}  expected={new}")
-                print("Regenerating property table...\n")
-                if "mixture" in self.fluid_name.lower():
-                    return self._generate_mixture_property_table()
-                elif self.metastable_phase == "liquid":
-                    return self._generate_metastable_liquid_property_table()
-                elif self.metastable_phase == "vapor":
-                    return self._generate_metastable_vapor_property_table()
-                else:
-                    return self._generate_property_table()
-
-            print(f"Loaded property table from: {pkl_path}")
-            return table
-
-        print("No existing table found, generating new one...")
-
-        # choose mixture or single-fluid generator based on fluid_name containing "mixture"
-        if "mixture" in self.fluid_name.lower():
-            return self._generate_mixture_property_table()
-        elif self.metastable_phase == "liquid":
-            return self._generate_metastable_liquid_property_table()
-        elif self.metastable_phase == "vapor":
-            return self._generate_metastable_vapor_property_table()
+        if cacheable:
+            os.makedirs(self.table_dir, exist_ok=True)
+            try:
+                with open(pkl_path, "rb") as f:
+                    table = pickle.load(f)
+                reason = table_validation_error(table, self.metadata)
+            except FileNotFoundError:
+                reason = None
+                table = None
+            except (
+                pickle.UnpicklingError,
+                EOFError,
+                AttributeError,
+                ImportError,
+                IndexError,
+                TypeError,
+                ValueError,
+                OverflowError,
+            ) as error:
+                reason = f"unreadable or malformed cache ({type(error).__name__})"
+                table = None
         else:
-            return self._generate_property_table()
+            warnings.warn(
+                "Source-file/definition identity could not be verified; persistent table caching is disabled for this source.",
+                UserWarning,
+                stacklevel=2,
+            )
+            reason = None
+            table = None
+        if table is not None and reason is None:
+            print(f"Loaded property table from: {pkl_path}")
+            return normalize_generated_arrays(table, self.metadata)
+        if reason is not None:
+            warnings.warn(
+                f"Regenerating property table '{pkl_path}': {reason}.",
+                UserWarning,
+                stacklevel=2,
+            )
+        else:
+            print("No matching table found, generating a new one...")
+        generators = {
+            "equilibrium": self._generate_property_table,
+            "mixture": self._generate_mixture_property_table,
+            "metastable_liquid": self._generate_metastable_liquid_property_table,
+            "metastable_vapor": self._generate_metastable_vapor_property_table,
+        }
+        try:
+            table = generators[self.table_mode]()
+            table = normalize_generated_arrays(table, self.metadata)
+            reason = table_validation_error(table, self.metadata)
+        except CalculationError:
+            raise
+        except Exception as error:
+            raise CalculationError(
+                fluid_name=self.fluid_name,
+                provider="bicubic",
+                model=self.model,
+                request="table_generation",
+                reason=f"Unable to generate a complete {self.table_mode} table: {error}",
+            ) from error
+        if reason is not None:
+            raise CalculationError(
+                fluid_name=self.fluid_name,
+                provider="bicubic",
+                model=self.model,
+                request="table_generation",
+                reason=f"Generated table was rejected: {reason}",
+            )
+        # Catch a reference/configuration change during construction before
+        # publishing numerical data under the earlier source identity.
+        if (
+            source_signature(self.fluid_name, self.backend, self.mixture_ratio)
+            != self.metadata["source_signature"]
+        ):
+            raise CalculationError(
+                fluid_name=self.fluid_name,
+                provider="bicubic",
+                model=self.model,
+                request="table_generation",
+                reason="Source configuration or reference convention changed during table generation.",
+            )
+        if cacheable:
+            self._save_table(table)
+        return table
 
+    def _save_table(self, table):
+        path = os.path.join(self.table_dir, f"{self.table_name}.pkl")
+        save_table_atomic(table, path)
+        print(f"Saved property table to: {path}")
+
+    def _initialize_table_arrays(self):
+        """Use one schema and exact independent coordinates in every mode."""
+        shape = (self.N_h, self.N_p)
+        table = {"metadata": copy.deepcopy(self.metadata)}
+        for name in jxp.PROPERTIES_CANONICAL:
+            table[name] = {
+                key: np.full(shape, np.nan, dtype=np.float64)
+                for key in (
+                    "value",
+                    "grad_h",
+                    "grad_p",
+                    "grad_logP",
+                    "grad_ph",
+                    "grad_hlogP",
+                )
+            }
+            table[name]["coeffs"] = np.full(
+                (self.N_h - 1, self.N_p - 1, 16), np.nan, dtype=np.float64
+            )
+        h = np.broadcast_to(np.asarray(self.h_vals)[:, None], shape).copy()
+        p = np.broadcast_to(np.exp(np.asarray(self.logP_vals))[None, :], shape).copy()
+        for name, values in (("enthalpy", h), ("pressure", p)):
+            table[name].update(
+                value=values,
+                grad_h=np.ones(shape) if name == "enthalpy" else np.zeros(shape),
+                grad_p=np.ones(shape) if name == "pressure" else np.zeros(shape),
+                grad_logP=p.copy() if name == "pressure" else np.zeros(shape),
+                grad_ph=np.zeros(shape),
+                grad_hlogP=np.zeros(shape),
+            )
+        return table
 
     def _generate_property_table(self):
         # Initialize fluid (single component)
         fluid = jxp.Fluid(self.fluid_name, self.backend)
 
         # metadata
-        table = {
-            "metadata": dict(
-                fluid=self.fluid_name,
-                backend=self.backend,
-                h_min=self.h_min,
-                h_max=self.h_max,
-                p_min=self.p_min,
-                p_max=self.p_max,
-                N_h=self.N_h,
-                N_p=self.N_p,
-                delta_h=self.delta_h,
-                delta_logP=self.delta_logP,
-            ),
-        }
+        table = self._initialize_table_arrays()
+        enthalpy_vals = table["enthalpy"]["value"]
+        pressure_vals = table["pressure"]["value"]
 
-        # initialize property dicts for canonical properties
-        for k in jxp.PROPERTIES_CANONICAL:
-            table[k] = {
-                "value": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_h": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_p": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_logP": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_ph": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_hlogP": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-            }
-
-        # Add enthalpy and pressure as explicit table entries (used for initial guesses)
-        # Enthalpy: f(h,p) = h -> df/dh = 1, df/dp = 0
-        enthalpy_vals = np.tile(np.asarray(self.h_vals)[:, None], (1, self.N_p))
-        pressure_vals = np.tile(
-            np.exp(np.asarray(self.logP_vals))[None, :], (self.N_h, 1)
-        )
-        table["enthalpy"] = {
-            "value": enthalpy_vals,
-            "grad_h": np.ones_like(enthalpy_vals),
-            "grad_p": np.zeros_like(enthalpy_vals),
-            "grad_logP": np.zeros_like(enthalpy_vals),
-            "grad_ph": np.zeros_like(enthalpy_vals),
-            "grad_hlogP": np.zeros_like(enthalpy_vals),
-            "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-        }
-        # Pressure: f(h,p) = p -> df/dp = 1, df/dlogP = p
-        table["pressure"] = {
-            "value": pressure_vals,
-            "grad_h": np.zeros_like(pressure_vals),
-            "grad_p": np.ones_like(pressure_vals),
-            "grad_logP": pressure_vals,  # grad wrt P times p => here 1 * p
-            "grad_ph": np.zeros_like(pressure_vals),
-            "grad_hlogP": np.zeros_like(pressure_vals),
-            "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-        }
-
-        # Start evaluating properties
-        enthalpy_vals = np.tile(np.asarray(self.h_vals)[:, None], (1, self.N_p))
-        pressure_vals = np.tile(
-            np.exp(np.asarray(self.logP_vals))[None, :], (self.N_h, 1)
-        )
-        table["enthalpy"] = {
-            "value": enthalpy_vals,
-            "grad_h": np.ones_like(enthalpy_vals),
-            "grad_p": np.zeros_like(enthalpy_vals),
-            "grad_logP": np.zeros_like(enthalpy_vals),
-            "grad_ph": np.zeros_like(enthalpy_vals),
-            "grad_hlogP": np.zeros_like(enthalpy_vals),
-            "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-        }
-        
-        table["pressure"] = {
-            "value": pressure_vals,
-            "grad_h": np.zeros_like(pressure_vals),
-            "grad_p": np.ones_like(pressure_vals),
-            "grad_logP": pressure_vals,  # grad wrt P times p => here 1 * p
-            "grad_ph": np.zeros_like(pressure_vals),
-            "grad_hlogP": np.zeros_like(pressure_vals),
-            "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-        }
-
-        # Define the specific keys you want to protect/skip
-        keys_to_skip = {'metadata', 'pressure', 'enthalpy'}
+        keys_to_skip = {"metadata", "pressure", "enthalpy"}
 
         # Start property calculations
         total_points = self.N_h * self.N_p
-        success_count = 0       # direct gradient evaluations
-        filled_count = 0        # points actually written in table
+        success_count = 0  # direct gradient evaluations
+        filled_count = 0  # points actually written in table
         failure_count = 0
         start_time = time.perf_counter()
         with tqdm(
@@ -324,13 +533,19 @@ class FluidBicubic(eqx.Module):
                                 f"Unknown gradient scheme: {self.grad_method}"
                             )
                         success_count += 1
-                    except Exception:
-                        # skip problematic grid points but keep going
-                        pbar.update(1)
-                        continue
+                    except Exception as error:
+                        raise CalculationError(
+                            fluid_name=self.fluid_name,
+                            provider="bicubic",
+                            model=self.model,
+                            request="table_generation",
+                            reason=f"Source evaluation failed at pressure {p!r}: {error}",
+                        ) from error
 
                     # store computed properties
                     for k, (val, grad_h, grad_p, grad_hp) in grads.items():
+                        if k in keys_to_skip:
+                            continue
                         table[k]["value"][i, j] = float(val)
                         table[k]["grad_h"][i, j] = float(grad_h)
                         table[k]["grad_p"][i, j] = float(grad_p)
@@ -396,13 +611,8 @@ class FluidBicubic(eqx.Module):
                 table[k][sub] = jnp.array(table[k][sub], dtype=jnp.float64)
 
         table["saturation_props"] = {}
-        
-        # save
-        pkl_path = os.path.join(self.table_dir, f"{self.table_name}.pkl")
-        with open(pkl_path, "wb") as f:
-            pickle.dump(table, f)
-        print(f"Saved property table to: {pkl_path}")
 
+        # save
         return table
 
     def _generate_mixture_property_table(self):
@@ -410,59 +620,11 @@ class FluidBicubic(eqx.Module):
 
         fluidmix = jxp.FluidMix(self.fluid_name, self.backend, self.mixture_ratio)
 
-        table = {
-            "metadata": dict(
-                fluid=self.fluid_name,
-                backend=self.backend,
-                mixture_ratio=self.mixture_ratio,
-                h_min=self.h_min,
-                h_max=self.h_max,
-                p_min=self.p_min,
-                p_max=self.p_max,
-                N_h=self.N_h,
-                N_p=self.N_p,
-                delta_h=self.delta_h,
-                delta_logP=self.delta_logP,
-            ),
-        }
+        table = self._initialize_table_arrays()
+        enthalpy_vals = table["enthalpy"]["value"]
+        pressure_vals = table["pressure"]["value"]
 
-        for k in jxp.PROPERTIES_CANONICAL:
-            table[k] = {
-                "value": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_h": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_p": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_logP": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_ph": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_hlogP": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-            }
-
-        # # enthalpy & pressure table entries (same logic as single-fluid)
-        # enthalpy_vals = np.tile(np.asarray(self.h_vals)[:, None], (1, self.N_p))
-        # pressure_vals = np.tile(
-        #     np.exp(np.asarray(self.logP_vals))[None, :], (self.N_h, 1)
-        # )
-        # table["enthalpy"] = {
-        #     "value": enthalpy_vals,
-        #     "grad_h": np.ones_like(enthalpy_vals),
-        #     "grad_p": np.zeros_like(enthalpy_vals),
-        #     "grad_logP": np.zeros_like(enthalpy_vals),
-        #     "grad_ph": np.zeros_like(enthalpy_vals),
-        #     "grad_hlogP": np.zeros_like(enthalpy_vals),
-        #     "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-        # }
-        # table["pressure"] = {
-        #     "value": pressure_vals,
-        #     "grad_h": np.zeros_like(pressure_vals),
-        #     "grad_p": np.ones_like(pressure_vals),
-        #     "grad_logP": pressure_vals,
-        #     "grad_ph": np.zeros_like(pressure_vals),
-        #     "grad_hlogP": np.zeros_like(pressure_vals),
-        #     "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-        # }
-
-        # Define the specific keys you want to protect/skip
-        keys_to_skip = {'metadata', 'pressure', 'enthalpy'}
+        keys_to_skip = {"metadata", "pressure", "enthalpy"}
 
         total_points = self.N_h * self.N_p
         success_count = 0
@@ -493,21 +655,18 @@ class FluidBicubic(eqx.Module):
                             m = self.grad_method
                             raise ValueError(f"Unknown gradient scheme: {m}")
                         success_count += 1
-                    except:
-                        for k in table.keys():
-                            if k in keys_to_skip:
-                                continue  # Skip this iteration
-                            # Fill the rest with fallback values
-                            table[k]["value"][i, j] = table[k]["value"][i-1, j]
-                            table[k]["grad_h"][i, j] = table[k]["grad_h"][i-1, j]
-                            table[k]["grad_p"][i, j] = table[k]["grad_p"][i-1, j]
-                            table[k]["grad_logP"][i, j] = table[k]["grad_logP"][i-1, j]
-                            table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i-1, j]
-                            table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i-1, j]
-                        pbar.update(1)
-                        continue 
+                    except Exception as error:
+                        raise CalculationError(
+                            fluid_name=self.fluid_name,
+                            provider="bicubic",
+                            model=self.model,
+                            request="table_generation",
+                            reason=f"Source evaluation failed at pressure {p!r}: {error}",
+                        ) from error
 
                     for k, (val, grad_h, grad_p, grad_hp) in grads.items():
+                        if k in keys_to_skip:
+                            continue
                         table[k]["value"][i, j] = val
                         table[k]["grad_h"][i, j] = grad_h
                         table[k]["grad_p"][i, j] = grad_p
@@ -571,91 +730,34 @@ class FluidBicubic(eqx.Module):
             for sub in ["value", "grad_h", "grad_p", "grad_ph", "coeffs"]:
                 table[k][sub] = jnp.array(table[k][sub])
 
-
         # # save
         # pkl_path = os.path.join(self.table_dir, f"{self.table_name}.pkl")
         # with open(pkl_path, "wb") as f:
         #     pickle.dump(table, f)
 
         table["saturation_props"] = {}
-        
-        # Save to pickle file
-        os.makedirs(self.table_dir, exist_ok=True)
-        pkl_path = os.path.join(self.table_dir, f"{self.table_name}.pkl")
-        with open(pkl_path, "wb") as f:
-            pickle.dump(table, f)
-            
-        print(f"Saved property table to: {pkl_path}")
 
+        # Save to pickle file
         return table
-    
+
     def _generate_metastable_liquid_property_table(self):
         # Initialize fluid (single component)
         fluid = jxp.Fluid(self.fluid_name, self.backend)
-        
+
         # metadata
-        table = {
-            "metadata": dict(
-                fluid=self.fluid_name,
-                backend=self.backend,
-                h_min=self.h_min,
-                h_max=self.h_max,
-                p_min=self.p_min,
-                p_max=self.p_max,
-                N_h=self.N_h,
-                N_p=self.N_p,
-                delta_h=self.delta_h,
-                delta_logP=self.delta_logP,
-                metastable_phase=self.metastable_phase,
-            ),
-        }
+        table = self._initialize_table_arrays()
+        enthalpy_vals = table["enthalpy"]["value"]
+        pressure_vals = table["pressure"]["value"]
 
-        # initialize property dicts for canonical properties
-        for k in jxp.PROPERTIES_CANONICAL:
-            table[k] = {
-                "value": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_h": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_p": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_logP": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_ph": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_hlogP": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-            }
-
-        # Add enthalpy and pressure as explicit table entries (used for initial guesses)
-        # Enthalpy: f(h,p) = h -> df/dh = 1, df/dp = 0
-        enthalpy_vals = np.tile(np.asarray(self.h_vals)[:, None], (1, self.N_p))
-        pressure_vals = np.tile(
-            np.exp(np.asarray(self.logP_vals))[None, :], (self.N_h, 1)
-        )
-        table["enthalpy"] = {
-            "value": enthalpy_vals,
-            "grad_h": np.ones_like(enthalpy_vals),
-            "grad_p": np.zeros_like(enthalpy_vals),
-            "grad_logP": np.zeros_like(enthalpy_vals),
-            "grad_ph": np.zeros_like(enthalpy_vals),
-            "grad_hlogP": np.zeros_like(enthalpy_vals),
-            "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-        }
-        # Pressure: f(h,p) = p -> df/dp = 1, df/dlogP = p
-        table["pressure"] = {
-            "value": pressure_vals,
-            "grad_h": np.zeros_like(pressure_vals),
-            "grad_p": np.ones_like(pressure_vals),
-            "grad_logP": pressure_vals,  # grad wrt P times p => here 1 * p
-            "grad_ph": np.zeros_like(pressure_vals),
-            "grad_hlogP": np.zeros_like(pressure_vals),
-            "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-        }
-
-
-        rho_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], pressure_vals[-1][-1])["density"]
-        T_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], pressure_vals[-1][-1])["temperature"]
-        isothermal_bulk_modulus_first = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], pressure_vals[-1][-1])["isothermal_bulk_modulus"]
+        rho_guess = fluid.get_state(
+            jxp.HmassP_INPUTS, enthalpy_vals[0][0], pressure_vals[-1][-1]
+        )["density"]
+        T_guess = fluid.get_state(
+            jxp.HmassP_INPUTS, enthalpy_vals[0][0], pressure_vals[-1][-1]
+        )["temperature"]
 
         # Define the specific keys you want to protect/skip
-        keys_to_skip = {'metadata', 'pressure', 'enthalpy'}
-        
+        keys_to_skip = {"metadata", "pressure", "enthalpy"}
 
         # Start evaluating properties
         total_points = self.N_h * self.N_p
@@ -669,15 +771,12 @@ class FluidBicubic(eqx.Module):
             bar_format="{l_bar}{bar}|",
         ) as pbar:
             for j, logP in reversed(list(enumerate(np.asarray(self.logP_vals)))):
-                ratio = 1
-                ratio_old = ratio + 1
                 p = float(np.exp(logP))
                 # BUGFIX 2026-07-21: the spinodal latch must be PER PRESSURE
                 # COLUMN.  As a run-global flag (old code), the first trip froze
                 # every remaining point of the WHOLE table at the previous h-row
                 # — the shipped water_meta_liquid_90x90 table was row h_min
                 # broadcast everywhere (T 294-297 K for ALL h, zero h-variation).
-                after_spinodal = False
 
                 # 3. Inner Loop: Standard (Min Enthalpy -> Max Enthalpy)
                 for i, h in enumerate(np.asarray(self.h_vals)):
@@ -685,136 +784,80 @@ class FluidBicubic(eqx.Module):
                     # finite difference steps (avoid zero)
                     eps_h = 1e-5 * max(abs(h), 1.0)
                     eps_p = 1e-5 * max(abs(p), 1.0)
-                    
-                    
-                    if after_spinodal == False:
-                        try:
-                            if self.grad_method == "forward":
-                                grads = self._gradients_metastable_forward(fluid, h, p, eps_h, eps_p, rho_guess, T_guess)
-                                # print("grads:",grads.items())
-                                # print("\n")
-                                # print("table:", table.keys())                            
-                            elif self.grad_method == "central":
-                                grads = self._gradients_metastable_central(fluid, h, p, eps_h, eps_p)
-                            else:
-                                raise ValueError(
-                                    f"Unknown gradient scheme: {self.grad_method}"
-                                )
-                            success_count += 1
 
-                        except:
-                        # except Exception as e:
-                            # print(f"Exception encountered at point ({i},{j}): {e}")
-                            # print(f"Exception at point ({i},{j}), filling with previous values")
+                    try:
+                        if self.grad_method == "forward":
+                            grads = self._gradients_metastable_forward(
+                                fluid, h, p, eps_h, eps_p, rho_guess, T_guess
+                            )
+                            # print("grads:",grads.items())
+                            # print("\n")
+                            # print("table:", table.keys())
+                        elif self.grad_method == "central":
+                            grads = self._gradients_metastable_central(
+                                fluid, h, p, eps_h, eps_p
+                            )
+                        else:
+                            raise ValueError(
+                                f"Unknown gradient scheme: {self.grad_method}"
+                            )
+                        success_count += 1
 
-                            # TODO: DO NOT DELETE!!!                            
-                            for k in table.keys():
-                                if k in keys_to_skip:
-                                    continue  # Skip this iteration
-                                # Fill the rest with fallback values
-                                table[k]["value"][i, j] = table[k]["value"][i-1, j]
-                                table[k]["grad_h"][i, j] = table[k]["grad_h"][i-1, j]
-                                table[k]["grad_p"][i, j] = table[k]["grad_p"][i-1, j]
-                                table[k]["grad_logP"][i, j] = table[k]["grad_logP"][i-1, j]
-                                table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i-1, j]
-                                table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i-1, j]
+                    except Exception as error:
+                        raise CalculationError(
+                            fluid_name=self.fluid_name,
+                            provider="bicubic",
+                            model=self.model,
+                            request="table_generation",
+                            reason=f"Source evaluation failed at pressure {p!r}: {error}",
+                        ) from error
 
-                            pbar.update(1)
-                            after_spinodal = True
+                    # Update rho guess and T guess for the next grid point
+                    # rho_guess, T_guess = grads["density"][0], grads["temperature"][0]
+
+                    rho_guess = grads["density"][0] + grads["density"][1] * self.delta_h
+                    T_guess = (
+                        grads["temperature"][0] + grads["temperature"][1] * self.delta_h
+                    )
+                    # print(f"point:({i},{j}) | {grads["isothermal_compressibility"][0]}")
+                    # store computed properties
+                    # NOTE: We use [i, j]. Even though we are looping P backwards,
+                    # 'j' is the correct index for that specific pressure in the matrix.
+                    for k, (val, grad_h, grad_p, grad_hp) in grads.items():
+                        if k in keys_to_skip:
                             continue
+                        table[k]["value"][i, j] = float(val)
+                        table[k]["grad_h"][i, j] = float(grad_h)
+                        table[k]["grad_p"][i, j] = float(grad_p)
+                        # store derivatives wrt logP = (d/dP) * P
+                        table[k]["grad_logP"][i, j] = float(grad_p * p)
+                        table[k]["grad_ph"][i, j] = float(grad_hp)
+                        table[k]["grad_hlogP"][i, j] = float(grad_hp * p)
 
-                        
-                        # Update rho guess and T guess for the next grid point
-                        # rho_guess, T_guess = grads["density"][0], grads["temperature"][0]
+                    if grads["isothermal_bulk_modulus"][0] < 0:
+                        raise CalculationError(
+                            fluid_name=self.fluid_name,
+                            provider="bicubic",
+                            model=self.model,
+                            request="table_generation",
+                            reason="The metastable continuation routine stopped inside the requested grid; refusing to cache copied or extrapolated nodes.",
+                            index=(i, j),
+                        )
 
-                        rho_guess = grads["density"][0] + grads["density"][1] * self.delta_h
-                        T_guess = grads["temperature"][0] + grads["temperature"][1] * self.delta_h
-                        # print(f"point:({i},{j}) | {grads["isothermal_compressibility"][0]}")
-                        # store computed properties
-                        # NOTE: We use [i, j]. Even though we are looping P backwards, 
-                        # 'j' is the correct index for that specific pressure in the matrix.
-                        for k, (val, grad_h, grad_p, grad_hp) in grads.items():
-                            table[k]["value"][i, j] = float(val)
-                            table[k]["grad_h"][i, j] = float(grad_h)
-                            table[k]["grad_p"][i, j] = float(grad_p)
-                            # store derivatives wrt logP = (d/dP) * P
-                            table[k]["grad_logP"][i, j] = float(grad_p * p)
-                            table[k]["grad_ph"][i, j] = float(grad_hp)
-                            table[k]["grad_hlogP"][i, j] = float(grad_hp * p)
+                        # print("After spinodal")
 
-                        if i > 0:
-                            ratio = grads["isothermal_bulk_modulus"][0] / table["isothermal_bulk_modulus"]["value"][i-1, j]
-                            diff = ratio_old - ratio
+                    # print(f"point:{i,j}")
+                    # print(f"IBM:{grads["isothermal_bulk_modulus"][0]}")
+                    # print(f"IBM-ratio:{ratio}")
 
-                            # BUGFIX 2026-07-21: `diff < 0` (any non-monotonicity
-                            # of the node-to-node bulk-modulus RATIO) is a hair
-                            # trigger — it fired at the FIRST h step of the first
-                            # column on plain stable liquid water and (with the
-                            # run-global latch above) froze the entire table.
-                            # Use the same physical criterion as the vapor
-                            # generator, whose table is verified healthy:
-                            # spinodal = isothermal bulk modulus turns negative.
-                            # OLD condition (kept for reference):
-                            if diff < 0 or grads["isothermal_bulk_modulus"][0] < 0:
-                            # if grads["isothermal_bulk_modulus"][0] < 0:
-                                after_spinodal = True
-                                
-                                for k in table.keys():
-                                    if k in keys_to_skip:
-                                        continue  # Skip this iteration
-                                    # Fill the rest with fallback values
-                                    table[k]["value"][i, j] = table[k]["value"][i-1, j]
-                                    table[k]["grad_h"][i, j] = table[k]["grad_h"][i-1, j]
-                                    table[k]["grad_p"][i, j] = table[k]["grad_p"][i-1, j]
-                                    table[k]["grad_logP"][i, j] = table[k]["grad_logP"][i-1, j]
-                                    table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i-1, j]
-                                    table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i-1, j]
+                    pbar.update(1)
 
-                                    
-
-                                # print("After spinodal")
-                                
-                        # print(f"point:{i,j}")
-                        # print(f"IBM:{grads["isothermal_bulk_modulus"][0]}")
-                        # print(f"IBM-ratio:{ratio}")
-
-                        ratio_old = ratio
-
-                        pbar.update(1) 
-
-                    else:
-                        # print("here")
-                        # for k in table.keys():
-                        #     if k in keys_to_skip:
-                        #         continue  # Skip this iteration
-                        #     # Fill the rest with fallback values
-                        #     table[k]["value"][i, j] = 1e-12
-                        #     table[k]["grad_h"][i, j] = 1e-12
-                        #     table[k]["grad_p"][i, j] = 1e-12
-                        #     table[k]["grad_logP"][i, j] = 1e-12
-                        #     table[k]["grad_ph"][i, j] = 1e-12
-                        #     table[k]["grad_hlogP"][i, j] = 1e-12
-
-                        for k in table.keys():
-                                if k in keys_to_skip:
-                                    continue  # Skip this iteration
-                                # Fill the rest with fallback values
-                                table[k]["value"][i, j] = table[k]["value"][i-1, j]
-                                table[k]["grad_h"][i, j] = table[k]["grad_h"][i-1, j]
-                                table[k]["grad_p"][i, j] = table[k]["grad_p"][i-1, j]
-                                table[k]["grad_logP"][i, j] = table[k]["grad_logP"][i-1, j]
-                                table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i-1, j]
-                                table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i-1, j]
-
-                        pbar.update(1)
-                        
-                
-
-                rho_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], p)["density"]
-                T_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], p)["temperature"]
-                isothermal_bulk_modulus_first = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], p)["isothermal_bulk_modulus"]
-                after_spinodal = False
-
+                rho_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], p)[
+                    "density"
+                ]
+                T_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], p)[
+                    "temperature"
+                ]
 
                 # compute coefficients after full table computed
                 for k in jxp.PROPERTIES_CANONICAL:
@@ -874,11 +917,10 @@ class FluidBicubic(eqx.Module):
         table["saturation_props"] = {}
         for k in jxp.PROPERTIES_CANONICAL:
             table["saturation_props"][k] = {
-                "value": np.empty(self.N_p_sat, dtype=np.float64),
-                "grad_p": np.empty( self.N_p_sat, dtype=np.float64),
+                "value": np.full(self.N_p_sat, np.nan, dtype=np.float64),
+                "grad_p": np.full(self.N_p_sat, np.nan, dtype=np.float64),
             }
-            
-        
+
         # Loop from pmin to 0.99 p_crit
         # store sat props using gradients_saturation_forward and gradients_saturation_central
         # gradients_saturation_forward and gradients_saturation_central will use jxp.PQ_inputs of coolprop fluid object
@@ -889,24 +931,25 @@ class FluidBicubic(eqx.Module):
             eps_p = 1e-5 * max(abs(p), 1.0)
             try:
                 if self.grad_method == "forward":
-                    grads = self._gradients_saturation_forward(fluid, p, 0.0, eps_p)                            
+                    grads = self._gradients_saturation_forward(fluid, p, 0.0, eps_p)
                 elif self.grad_method == "central":
                     grads = self._gradients_saturation_central(fluid, p, 0.0, eps_p)
                 else:
-                    raise ValueError(
-                        f"Unknown gradient scheme: {self.grad_method}"
-                    )
-                success_count += 1
+                    raise ValueError(f"Unknown gradient scheme: {self.grad_method}")
 
-            except Exception as e:
-                        print(f"Error:{e}")
-                        print(f"j:{j}")
+            except Exception as error:
+                raise CalculationError(
+                    fluid_name=self.fluid_name,
+                    provider="bicubic",
+                    model=self.model,
+                    request="table_generation",
+                    reason=f"Source evaluation failed at pressure {p!r}: {error}",
+                ) from error
 
             # store computed properties
             for k, (val, grad_p) in grads.items():
                 table["saturation_props"][k]["value"][j] = float(val)
                 table["saturation_props"][k]["grad_p"][j] = float(grad_p)
-            
 
         # Convert saturation props to JAX arrays for JIT/vmap compatibility
         for k in jxp.PROPERTIES_CANONICAL:
@@ -915,6 +958,7 @@ class FluidBicubic(eqx.Module):
                     table["saturation_props"][k][sub], dtype=jnp.float64
                 )
 
+        elapsed = time.perf_counter() - start_time
         # Printing outcome
         print(
             f"Successfully evaluated {success_count}/{total_points} points ({frac_success:.2f} %)"
@@ -922,81 +966,27 @@ class FluidBicubic(eqx.Module):
         print(f"Total table generation time: {elapsed:.2f} s")
 
         # save
-        pkl_path = os.path.join(self.table_dir, f"{self.table_name}.pkl")
-        with open(pkl_path, "wb") as f:
-            pickle.dump(table, f)
-        print(f"Saved property table to: {pkl_path}")
-
         return table
-
-
 
     def _generate_metastable_vapor_property_table(self):
         # Initialize fluid (single component)
         fluid = jxp.Fluid(self.fluid_name, self.backend)
-        
+
         # metadata
-        table = {
-            "metadata": dict(
-                fluid=self.fluid_name,
-                backend=self.backend,
-                h_min=self.h_min,
-                h_max=self.h_max,
-                p_min=self.p_min,
-                p_max=self.p_max,
-                N_h=self.N_h,
-                N_p=self.N_p,
-                delta_h=self.delta_h,
-                delta_logP=self.delta_logP,
-                metastable_phase=self.metastable_phase,
-            ),
-        }
+        table = self._initialize_table_arrays()
+        enthalpy_vals = table["enthalpy"]["value"]
+        pressure_vals = table["pressure"]["value"]
 
-        # initialize property dicts for canonical properties
-        for k in jxp.PROPERTIES_CANONICAL:
-            table[k] = {
-                "value": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_h": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_p": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_logP": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_ph": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "grad_hlogP": np.empty((self.N_h, self.N_p), dtype=np.float64),
-                "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-            }
-
-        # Add enthalpy and pressure as explicit table entries (used for initial guesses)
-        # Enthalpy: f(h,p) = h -> df/dh = 1, df/dp = 0
-        enthalpy_vals = np.tile(np.asarray(self.h_vals)[:, None], (1, self.N_p))
-        pressure_vals = np.tile(
-            np.exp(np.asarray(self.logP_vals))[None, :], (self.N_h, 1)
-        )
-        table["enthalpy"] = {
-            "value": enthalpy_vals,
-            "grad_h": np.ones_like(enthalpy_vals),
-            "grad_p": np.zeros_like(enthalpy_vals),
-            "grad_logP": np.zeros_like(enthalpy_vals),
-            "grad_ph": np.zeros_like(enthalpy_vals),
-            "grad_hlogP": np.zeros_like(enthalpy_vals),
-            "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-        }
-        # Pressure: f(h,p) = p -> df/dp = 1, df/dlogP = p
-        table["pressure"] = {
-            "value": pressure_vals,
-            "grad_h": np.zeros_like(pressure_vals),
-            "grad_p": np.ones_like(pressure_vals),
-            "grad_logP": pressure_vals,  # grad wrt P times p => here 1 * p
-            "grad_ph": np.zeros_like(pressure_vals),
-            "grad_hlogP": np.zeros_like(pressure_vals),
-            "coeffs": np.empty((self.N_h - 1, self.N_p - 1, 16), dtype=np.float64),
-        }
-
-
-        rho_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[-1][-1], pressure_vals[-1][-1])["density"]
-        T_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[-1][-1], pressure_vals[-1][-1])["temperature"]
+        rho_guess = fluid.get_state(
+            jxp.HmassP_INPUTS, enthalpy_vals[-1][-1], pressure_vals[-1][-1]
+        )["density"]
+        T_guess = fluid.get_state(
+            jxp.HmassP_INPUTS, enthalpy_vals[-1][-1], pressure_vals[-1][-1]
+        )["temperature"]
 
         # Define the specific keys you want to protect/skip
-        keys_to_skip = {'metadata', 'pressure', 'enthalpy'}
-        
+        keys_to_skip = {"metadata", "pressure", "enthalpy"}
+
         # Start evaluating properties
         total_points = self.N_h * self.N_p
         success_count = 0
@@ -1009,12 +999,10 @@ class FluidBicubic(eqx.Module):
             bar_format="{l_bar}{bar}|",
         ) as pbar:
             for j, logP in reversed(list(enumerate(np.asarray(self.logP_vals)))):
-                ratio = 1
                 p = float(np.exp(logP))
                 # BUGFIX 2026-07-21: per-column spinodal latch (see the liquid
                 # generator) — a run-global flag freezes the whole remaining
                 # table after the first trip.
-                after_spinodal = False
 
                 # 3. Inner Loop: Standard (Min Enthalpy -> Max Enthalpy)
                 for i, h in reversed(list(enumerate(np.asarray(self.h_vals)))):
@@ -1022,116 +1010,80 @@ class FluidBicubic(eqx.Module):
                     # finite difference steps (avoid zero)
                     eps_h = 1e-5 * max(abs(h), 1.0)
                     eps_p = 1e-5 * max(abs(p), 1.0)
-                    
-                    
-                    if after_spinodal == False:
-                        try:
-                            if self.grad_method == "forward":
-                                grads = self._gradients_metastable_forward(fluid, h, p, eps_h, eps_p, rho_guess, T_guess)
-                                # print("grads:",grads.items())
-                                # print("\n")
-                                # print("table:", table.keys())                            
-                            elif self.grad_method == "central":
-                                grads = self._gradients_metastable_central(fluid, h, p, eps_h, eps_p)
-                            else:
-                                raise ValueError(
-                                    f"Unknown gradient scheme: {self.grad_method}"
-                                )
-                            success_count += 1
 
-                        except:
+                    try:
+                        if self.grad_method == "forward":
+                            grads = self._gradients_metastable_forward(
+                                fluid, h, p, eps_h, eps_p, rho_guess, T_guess
+                            )
+                            # print("grads:",grads.items())
+                            # print("\n")
+                            # print("table:", table.keys())
+                        elif self.grad_method == "central":
+                            grads = self._gradients_metastable_central(
+                                fluid, h, p, eps_h, eps_p
+                            )
+                        else:
+                            raise ValueError(
+                                f"Unknown gradient scheme: {self.grad_method}"
+                            )
+                        success_count += 1
 
-                            # TODO: DO NOT DELETE!!!                            
-                            for k in table.keys():
-                                if k in keys_to_skip:
-                                    continue  # Skip this iteration
-                                # Fill the rest with fallback values
-                                table[k]["value"][i, j] = table[k]["value"][i+1, j]
-                                table[k]["grad_h"][i, j] = table[k]["grad_h"][i+1, j]
-                                table[k]["grad_p"][i, j] = table[k]["grad_p"][i+1, j]
-                                table[k]["grad_logP"][i, j] = table[k]["grad_logP"][i+1, j]
-                                table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i+1, j]
-                                table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i+1, j]
+                    except Exception as error:
+                        raise CalculationError(
+                            fluid_name=self.fluid_name,
+                            provider="bicubic",
+                            model=self.model,
+                            request="table_generation",
+                            reason=f"Source evaluation failed at pressure {p!r}: {error}",
+                        ) from error
 
-                            pbar.update(1)
-                            after_spinodal = True
+                    # Update rho guess and T guess for the next grid point
+                    # rho_guess, T_guess = grads["density"][0], grads["temperature"][0]
+
+                    rho_guess = grads["density"][0] - grads["density"][1] * self.delta_h
+                    T_guess = (
+                        grads["temperature"][0] - grads["temperature"][1] * self.delta_h
+                    )
+                    # print(f"point:({i},{j}) | {grads["isothermal_compressibility"][0]}")
+                    # store computed properties
+                    # NOTE: We use [i, j]. Even though we are looping P backwards,
+                    # 'j' is the correct index for that specific pressure in the matrix.
+                    for k, (val, grad_h, grad_p, grad_hp) in grads.items():
+                        if k in keys_to_skip:
                             continue
+                        table[k]["value"][i, j] = float(val)
+                        table[k]["grad_h"][i, j] = float(grad_h)
+                        table[k]["grad_p"][i, j] = float(grad_p)
+                        # store derivatives wrt logP = (d/dP) * P
+                        table[k]["grad_logP"][i, j] = float(grad_p * p)
+                        table[k]["grad_ph"][i, j] = float(grad_hp)
+                        table[k]["grad_hlogP"][i, j] = float(grad_hp * p)
 
-                        
+                    if grads["isothermal_bulk_modulus"][0] < 0:
+                        raise CalculationError(
+                            fluid_name=self.fluid_name,
+                            provider="bicubic",
+                            model=self.model,
+                            request="table_generation",
+                            reason="The metastable continuation routine stopped inside the requested grid; refusing to cache copied or extrapolated nodes.",
+                            index=(i, j),
+                        )
 
-                        
-                        # Update rho guess and T guess for the next grid point
-                        # rho_guess, T_guess = grads["density"][0], grads["temperature"][0]
+                        # print("After spinodal")
 
-                        rho_guess = grads["density"][0] + grads["density"][1] * self.delta_h
-                        T_guess = grads["temperature"][0] + grads["temperature"][1] * self.delta_h
-                        # print(f"point:({i},{j}) | {grads["isothermal_compressibility"][0]}")
-                        # store computed properties
-                        # NOTE: We use [i, j]. Even though we are looping P backwards, 
-                        # 'j' is the correct index for that specific pressure in the matrix.
-                        for k, (val, grad_h, grad_p, grad_hp) in grads.items():
-                            table[k]["value"][i, j] = float(val)
-                            table[k]["grad_h"][i, j] = float(grad_h)
-                            table[k]["grad_p"][i, j] = float(grad_p)
-                            # store derivatives wrt logP = (d/dP) * P
-                            table[k]["grad_logP"][i, j] = float(grad_p * p)
-                            table[k]["grad_ph"][i, j] = float(grad_hp)
-                            table[k]["grad_hlogP"][i, j] = float(grad_hp * p)
+                    # print(f"point:{i,j}")
+                    # print(f"IBM:{grads["isothermal_bulk_modulus"][0]}")
+                    # print(f"IBM-ratio:{ratio}")
 
-                        if grads["isothermal_bulk_modulus"][0] < 0:
-                            after_spinodal = True
+                    pbar.update(1)
 
-                            for k in table.keys():
-                                if k in keys_to_skip:
-                                    continue  # Skip this iteration
-                                # Fill the rest with fallback values
-                                table[k]["value"][i, j] = table[k]["value"][i+1, j]
-                                table[k]["grad_h"][i, j] = table[k]["grad_h"][i+1, j]
-                                table[k]["grad_p"][i, j] = table[k]["grad_p"][i+1, j]
-                                table[k]["grad_logP"][i, j] = table[k]["grad_logP"][i+1, j]
-                                table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i+1, j]
-                                table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i+1, j]
-
-                            # print("After spinodal")
-                                
-                        # print(f"point:{i,j}")
-                        # print(f"IBM:{grads["isothermal_bulk_modulus"][0]}")
-                        # print(f"IBM-ratio:{ratio}")
-
-                        pbar.update(1) 
-
-                    else:
-                        # print("here")
-                        for k in table.keys():
-                            if k in keys_to_skip:
-                                continue  # Skip this iteration
-                            # Fill the rest with fallback values
-                            table[k]["value"][i, j] = 1e-12
-                            table[k]["grad_h"][i, j] = 1e-12
-                            table[k]["grad_p"][i, j] = 1e-12
-                            table[k]["grad_logP"][i, j] = 1e-12
-                            table[k]["grad_ph"][i, j] = 1e-12
-                            table[k]["grad_hlogP"][i, j] = 1e-12
-
-                        for k in table.keys():
-                                if k in keys_to_skip:
-                                    continue  # Skip this iteration
-                                # Fill the rest with fallback values
-                                table[k]["value"][i, j] = table[k]["value"][i+1, j]
-                                table[k]["grad_h"][i, j] = table[k]["grad_h"][i+1, j]
-                                table[k]["grad_p"][i, j] = table[k]["grad_p"][i+1, j]
-                                table[k]["grad_logP"][i, j] = table[k]["grad_logP"][i+1, j]
-                                table[k]["grad_ph"][i, j] = table[k]["grad_ph"][i+1, j]
-                                table[k]["grad_hlogP"][i, j] = table[k]["grad_hlogP"][i+1, j]
-
-                        pbar.update(1)
-                        
-                
-
-                rho_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[-1][-1], p)["density"]
-                T_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[-1][-1], p)["temperature"]
-                after_spinodal = False
-
+                rho_guess = fluid.get_state(
+                    jxp.HmassP_INPUTS, enthalpy_vals[-1][-1], p
+                )["density"]
+                T_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[-1][-1], p)[
+                    "temperature"
+                ]
 
                 # compute coefficients after full table computed
                 for k in jxp.PROPERTIES_CANONICAL:
@@ -1192,11 +1144,10 @@ class FluidBicubic(eqx.Module):
         table["saturation_props"] = {}
         for k in jxp.PROPERTIES_CANONICAL:
             table["saturation_props"][k] = {
-                "value": np.empty(self.N_p_sat, dtype=np.float64),
-                "grad_p": np.empty( self.N_p_sat, dtype=np.float64),
+                "value": np.full(self.N_p_sat, np.nan, dtype=np.float64),
+                "grad_p": np.full(self.N_p_sat, np.nan, dtype=np.float64),
             }
-            
-        
+
         # Loop from pmin to 0.99 p_crit
         # store sat props using gradients_saturation_forward and gradients_saturation_central
         # gradients_saturation_forward and gradients_saturation_central will use jxp.PQ_inputs of coolprop fluid object
@@ -1207,24 +1158,25 @@ class FluidBicubic(eqx.Module):
             eps_p = 1e-5 * max(abs(p), 1.0)
             try:
                 if self.grad_method == "forward":
-                    grads = self._gradients_saturation_forward(fluid, p, 1.0, eps_p)                            
+                    grads = self._gradients_saturation_forward(fluid, p, 1.0, eps_p)
                 elif self.grad_method == "central":
                     grads = self._gradients_saturation_central(fluid, p, 1.0, eps_p)
                 else:
-                    raise ValueError(
-                        f"Unknown gradient scheme: {self.grad_method}"
-                    )
-                success_count += 1
+                    raise ValueError(f"Unknown gradient scheme: {self.grad_method}")
 
-            except Exception as e:
-                        print(f"Error:{e}")
-                        print(f"j:{j}")
+            except Exception as error:
+                raise CalculationError(
+                    fluid_name=self.fluid_name,
+                    provider="bicubic",
+                    model=self.model,
+                    request="table_generation",
+                    reason=f"Source evaluation failed at pressure {p!r}: {error}",
+                ) from error
 
             # store computed properties
             for k, (val, grad_p) in grads.items():
                 table["saturation_props"][k]["value"][j] = float(val)
                 table["saturation_props"][k]["grad_p"][j] = float(grad_p)
-
 
         # Convert saturation props to JAX arrays for JIT/vmap compatibility
         for k in jxp.PROPERTIES_CANONICAL:
@@ -1233,6 +1185,7 @@ class FluidBicubic(eqx.Module):
                     table["saturation_props"][k][sub], dtype=jnp.float64
                 )
 
+        elapsed = time.perf_counter() - start_time
         # Printing generation results
         print(
             f"Successfully evaluated {success_count}/{total_points} points ({frac_success:.2f} %)"
@@ -1240,24 +1193,17 @@ class FluidBicubic(eqx.Module):
         print(f"Total table generation time: {elapsed:.2f} s")
 
         # save
-        pkl_path = os.path.join(self.table_dir, f"{self.table_name}.pkl")
-        with open(pkl_path, "wb") as f:
-            pickle.dump(table, f)
-        print(f"Saved property table to: {pkl_path}")
-
         return table
-
-
-
-
 
     # ------------------ Gradient helpers ------------------
     @staticmethod
     def _gradients_forward(fluid, h, p, eps_h, eps_p):
-        f0 = fluid.get_state(jxp.HmassP_INPUTS, h, p)
-        fh = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p)
-        fp = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p)
-        fhp = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p + eps_p)
+        # Export raw values once per sample. Optional NaNs remain available to
+        # table generation without repeated bound-method lookups per property.
+        f0 = fluid.get_state(jxp.HmassP_INPUTS, h, p).to_dict()
+        fh = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p).to_dict()
+        fp = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p).to_dict()
+        fhp = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p + eps_p).to_dict()
 
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
@@ -1267,18 +1213,18 @@ class FluidBicubic(eqx.Module):
             grad_hp = (fhp[k] - fh[k] - fp[k] + f0[k]) / (eps_h * eps_p)
             grads[k] = (val, grad_h, grad_p, grad_hp)
         return grads
-    
+
     @staticmethod
     def _gradients_central(fluid, h, p, eps_h, eps_p):
-        f0 = fluid.get_state(jxp.HmassP_INPUTS, h, p)
-        fhp = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p)
-        fhm = fluid.get_state(jxp.HmassP_INPUTS, h - eps_h, p)
-        fph = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p)
-        fpm = fluid.get_state(jxp.HmassP_INPUTS, h, p - eps_p)
-        fh_p = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p + eps_p)
-        fh_m = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p - eps_p)
-        fm_p = fluid.get_state(jxp.HmassP_INPUTS, h - eps_h, p + eps_p)
-        fm_m = fluid.get_state(jxp.HmassP_INPUTS, h - eps_h, p - eps_p)
+        f0 = fluid.get_state(jxp.HmassP_INPUTS, h, p).to_dict()
+        fhp = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p).to_dict()
+        fhm = fluid.get_state(jxp.HmassP_INPUTS, h - eps_h, p).to_dict()
+        fph = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p).to_dict()
+        fpm = fluid.get_state(jxp.HmassP_INPUTS, h, p - eps_p).to_dict()
+        fh_p = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p + eps_p).to_dict()
+        fh_m = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p - eps_p).to_dict()
+        fm_p = fluid.get_state(jxp.HmassP_INPUTS, h - eps_h, p + eps_p).to_dict()
+        fm_m = fluid.get_state(jxp.HmassP_INPUTS, h - eps_h, p - eps_p).to_dict()
 
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
@@ -1291,18 +1237,41 @@ class FluidBicubic(eqx.Module):
 
     @staticmethod
     def _gradients_metastable_forward(fluid, h, p, eps_h, eps_p, rho_guess, T_guess):
-        
+
         # print(f"Calculating gradients at h={h}, p={p} with rho_guess={rho_guess} and T_guess={T_guess}")
-        rhoT_guess = np.array([rho_guess, T_guess])     
+        rhoT_guess = np.array([rho_guess, T_guess])
 
         f0 = fluid.get_state_metastable(
-            prop_1 = "p", prop_1_value = p, prop_2 = "h", prop_2_value = h, rhoT_guess=rhoT_guess,)
+            prop_1="p",
+            prop_1_value=p,
+            prop_2="h",
+            prop_2_value=h,
+            rhoT_guess=rhoT_guess,
+        ).to_dict()
         # print(f"f0:{f0}")
-        fh = fluid.get_state_metastable(prop_1 ="p", prop_1_value = p, prop_2 ="h", prop_2_value = h + eps_h, rhoT_guess=rhoT_guess,)
+        fh = fluid.get_state_metastable(
+            prop_1="p",
+            prop_1_value=p,
+            prop_2="h",
+            prop_2_value=h + eps_h,
+            rhoT_guess=rhoT_guess,
+        ).to_dict()
         # print(f"fh:{fh}")
-        fp = fluid.get_state_metastable(prop_1 ="p", prop_1_value = p + eps_p, prop_2 = "h", prop_2_value = h, rhoT_guess=rhoT_guess,)
+        fp = fluid.get_state_metastable(
+            prop_1="p",
+            prop_1_value=p + eps_p,
+            prop_2="h",
+            prop_2_value=h,
+            rhoT_guess=rhoT_guess,
+        ).to_dict()
         # print(f"fp:{fp}")
-        fhp = fluid.get_state_metastable(prop_1 ="p", prop_1_value = p + eps_p, prop_2 ="h", prop_2_value = h + eps_h, rhoT_guess=rhoT_guess,)
+        fhp = fluid.get_state_metastable(
+            prop_1="p",
+            prop_1_value=p + eps_p,
+            prop_2="h",
+            prop_2_value=h + eps_h,
+            rhoT_guess=rhoT_guess,
+        ).to_dict()
         # print(f"fhp:{fhp}")
 
         grads = {}
@@ -1319,9 +1288,9 @@ class FluidBicubic(eqx.Module):
         return grads
 
     @staticmethod
-    def _gradients_saturation_forward(fluid, p,Q , eps_p):
-        f0 = fluid.get_state(jxp.PQ_INPUTS, p, Q)
-        fp = fluid.get_state(jxp.PQ_INPUTS, p + eps_p, Q)
+    def _gradients_saturation_forward(fluid, p, Q, eps_p):
+        f0 = fluid.get_state(jxp.PQ_INPUTS, p, Q).to_dict()
+        fp = fluid.get_state(jxp.PQ_INPUTS, p + eps_p, Q).to_dict()
 
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
@@ -1329,17 +1298,17 @@ class FluidBicubic(eqx.Module):
             grad_p = (fp[k] - f0[k]) / eps_p
             grads[k] = (val, grad_p)
         return grads
-    
+
     @staticmethod
-    def _gradients_saturation_central(fluid, p,Q , eps_p):
-        f0 = fluid.get_state(jxp.PQ_INPUTS, p, Q)
-        fp_plus = fluid.get_state(jxp.PQ_INPUTS, p + eps_p, Q)
-        fp_minus = fluid.get_state(jxp.PQ_INPUTS, p - eps_p, Q)
+    def _gradients_saturation_central(fluid, p, Q, eps_p):
+        f0 = fluid.get_state(jxp.PQ_INPUTS, p, Q).to_dict()
+        fp_plus = fluid.get_state(jxp.PQ_INPUTS, p + eps_p, Q).to_dict()
+        fp_minus = fluid.get_state(jxp.PQ_INPUTS, p - eps_p, Q).to_dict()
 
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
             val = f0[k]
-            grad_p = (fp_plus[k] - fp_minus[k]) / 2*eps_p
+            grad_p = (fp_plus[k] - fp_minus[k]) / 2 * eps_p
             grads[k] = (val, grad_p)
         return grads
 
@@ -1380,7 +1349,7 @@ class FluidBicubic(eqx.Module):
         props = jax.tree.map(lambda x: x.reshape(val1.shape), props_batched)
 
         return props
-    
+
     def get_state_saturation(self, pressure):
 
         # TODO: add a warning for values behond the table limits!!!
@@ -1388,8 +1357,6 @@ class FluidBicubic(eqx.Module):
         sat_props = self._interp_sat_p(pressure)
 
         return sat_props
-
-
 
     @eqx.filter_jit
     def _get_state_scalar(self, input_type, val1, val2):
@@ -1404,13 +1371,21 @@ class FluidBicubic(eqx.Module):
 
         _DEBUG_BOUNDS = False  # set True during development only
 
-        out_of_range = (h < self.h_min) | (h > self.h_max) | (p < self.p_min) | (p > self.p_max)
+        out_of_range = (
+            (h < self.h_min) | (h > self.h_max) | (p < self.p_min) | (p > self.p_max)
+        )
         if _DEBUG_BOUNDS:
             jax.debug.callback(
-                lambda oor, h_, p_: print(
-                    f"Extrapolation attempted in table {self.table_name}. Values out of interpolation range: h={h_}, p={p_}"
-                ) if oor else None,
-                out_of_range, h, p,
+                lambda oor, h_, p_: (
+                    print(
+                        f"Extrapolation attempted in table {self.table_name}. Values out of interpolation range: h={h_}, p={p_}"
+                    )
+                    if oor
+                    else None
+                ),
+                out_of_range,
+                h,
+                p,
                 ordered=True,
             )
 
@@ -1437,7 +1412,15 @@ class FluidBicubic(eqx.Module):
         props["enthalpy"] = h
         props["pressure"] = p
 
-        return jxp.FluidState(fluid_name=self.fluid_name, **props)
+        return jxp.FluidState(
+            fluid_name=self.fluid_name,
+            identifier=self.identifier,
+            provider=self.provider,
+            model=self.model,
+            reference_id=self.reference_id,
+            available_properties=frozenset(jxp.PROPERTIES_CANONICAL),
+            **props,
+        )
 
     def _interp_h_y(self, h, y_value, y_name, tol=1e-10, max_steps=64):
         i0 = jnp.argmin(jnp.abs(self.h_vals - h))
@@ -1523,7 +1506,7 @@ class FluidBicubic(eqx.Module):
         h_scaled, p_scaled = solution.value
         h, p = from_scaled(h_scaled, p_scaled)
         return self._interp_h_p(h, p)
-    
+
     def _interp_sat_p(self, p):
         # Clamp the query to the tabulated range [p_min, 0.98 p_crit]: outside it
         # the saturation props are held at the end values (zero p-derivative).
@@ -1540,7 +1523,7 @@ class FluidBicubic(eqx.Module):
             return jnp.take(arr, idx, mode="clip")
 
         # Raw calculations
-        p_j  = _take(self.table["saturation_props"]["pressure"]["value"], j)
+        p_j = _take(self.table["saturation_props"]["pressure"]["value"], j)
         p_j1 = _take(self.table["saturation_props"]["pressure"]["value"], j + 1)
         dx = p_j1 - p_j
         t = (p_q - p_j) / dx
@@ -1548,10 +1531,10 @@ class FluidBicubic(eqx.Module):
         props = {}
 
         for k in jxp.PROPERTIES_CANONICAL:
-            val_j  = _take(self.table["saturation_props"][k]["value"], j)
+            val_j = _take(self.table["saturation_props"][k]["value"], j)
             val_j1 = _take(self.table["saturation_props"][k]["value"], j + 1)
-            gp_j   = _take(self.table["saturation_props"][k]["grad_p"], j)
-            gp_j1  = _take(self.table["saturation_props"][k]["grad_p"], j + 1)
+            gp_j = _take(self.table["saturation_props"][k]["grad_p"], j)
+            gp_j1 = _take(self.table["saturation_props"][k]["grad_p"], j + 1)
 
             dy = val_j1 - val_j
             a = gp_j * dx - dy
@@ -1571,19 +1554,11 @@ class FluidBicubic(eqx.Module):
         return props
 
 
-
-
-
-
-
-
-
-
-
-
 # ------------------------------------------------------------------
 # Bicubic coefficient computation function (unchanged logic)
-def compute_bicubic_coefficients(value, grad_h, grad_logP, grad_hlogP, delta_h, delta_logP):
+def compute_bicubic_coefficients(
+    value, grad_h, grad_logP, grad_hlogP, delta_h, delta_logP
+):
     XX = np.stack(
         [
             value[:-1, :-1],

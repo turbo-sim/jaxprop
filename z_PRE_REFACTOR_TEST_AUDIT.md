@@ -20,6 +20,18 @@ Phase 2 added 218 cases across [state operations](tests/test_state_contract.py),
 
 The full HEOS suite passed 405 cases with 119 strict expected failures, zero unexpected failures, and zero skips. All 306 preexisting HEOS cases still pass. [Full verification](development/test_audit/results/phase2/full_heos_20261112_205840/summary.json). These new cases specify intended functionality; the numerical evaluator implementation remains unchanged in Phase 2.
 
+## Phase 3 implementation status
+
+The shared state foundation is implemented and adds 145 passing tests for [typed errors](tests/test_errors.py), [state availability/collections/serialization/JAX behavior](tests/test_state_foundation.py), and [evaluator identity/gradient integration](tests/test_evaluator_state_metadata.py). Forty earlier contract gaps are resolved. The final full HEOS + REFPROP suite reports **764 passed, 79 strict expected failures, zero unexpected failures, and zero skips**. [Full verification](development/test_audit/results/phase3/full_20261112_214051/summary.json).
+
+The numerical oracles use raw enabled properties to inspect unavailable slots without triggering public-access errors. Finiteness, shape, availability-pattern, and tolerance checks are retained. Comparison coverage exactly matches Phase 1: 50,189 finite values and 34,761 explicitly unavailable values across 84,950 comparisons, with zero failed comparisons. The remaining expected failures continue to identify constructor/capability/reference and evaluator work in later phases.
+
+## Table cache validation follow-up
+
+The cache lifecycle portion of Phase 8 now adds 109 passing cases across [cache policy and atomic publication](tests/test_bicubic_cache.py), [source/reference/native-file fingerprints](tests/test_cache_metadata.py), and [real generation/reload integration](tests/test_bicubic_cache_integration.py). Actual equilibrium, mixture, and both metastable generators are covered. The complete HEOS + REFPROP run reports **873 passed, 79 strict expected failures, zero unexpected failures, and zero skips**, with the same numerical comparison counts as Phase 1. [Full verification](development/test_audit/results/cache_validation/full_20261112_223133/summary.json).
+
+The [implementation checklist](z_IMPLEMENTATION_PLAN.md) distinguishes completed cache/configuration checks from remaining interpolation-cell, saturation-grid integrity, and metastable numerical-accuracy work. Metadata identity and finite payloads alone do not establish derivative accuracy.
+
 The findings and baseline below describe the starting state before these test repairs. The implementation checklist records current completion and the remaining coverage work.
 
 ## Executed baseline

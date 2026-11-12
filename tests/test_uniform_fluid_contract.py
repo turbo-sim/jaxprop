@@ -113,23 +113,7 @@ def test_common_factory_constructs_each_advertised_model(case, tmp_path):
     assert fluid.identifier == "working_fluid"
 
 
-@pytest.mark.parametrize(
-    "case",
-    parameters_with_gaps(
-        {
-            "coolprop": pending(4, "Fluid defaults identifier to the source name"),
-            "bicubic": pending(
-                4, "FluidBicubic defaults identifier to the source name"
-            ),
-            "coolprop_jax": pending(
-                4, "FluidJAX has no public identifier", AttributeError
-            ),
-            "binary_mixture": pending(
-                9, "FluidMix defaults identifier to the mixture name"
-            ),
-        }
-    ),
-)
+@pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
 def test_default_identifier_is_none(case, fluid_objects):
     assert fluid_objects[case.id].identifier is None
 
@@ -154,31 +138,12 @@ def test_metadata_and_capability_queries(case, fluid_objects):
         assert "saturation" not in capability.phase_operations
 
 
-@pytest.mark.parametrize(
-    "case",
-    parameters_with_gaps(
-        {
-            "coolprop_jax": pending(6, "FluidJAX drops fluid_name in returned states"),
-        }
-    ),
-)
+@pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
 def test_state_preserves_source_identity(case, fluid_objects):
     assert baseline(fluid_objects[case.id], case.id).fluid_name == case.name
 
 
-@pytest.mark.parametrize(
-    "case",
-    parameters_with_gaps(
-        {
-            "coolprop_jax": pending(
-                6, "FluidJAX rejects identifier at construction", TypeError
-            ),
-            "bicubic": pending(
-                8, "FluidBicubic drops the requested identifier in returned states"
-            ),
-        }
-    ),
-)
+@pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
 def test_explicit_identifier_reaches_returned_state(case, tmp_path):
     fluid = build_current_fluid(case, tmp_path, identifier="working_fluid")
     assert baseline(fluid, case.id).identifier == "working_fluid"
@@ -255,8 +220,9 @@ def test_successful_scalar_states_have_finite_mass_based_core_fields(
     case, fluid_objects
 ):
     state = baseline(fluid_objects[case.id], case.id)
+    assert set(CORE_PROPERTIES) <= state.available_properties
     for property_name in CORE_PROPERTIES:
-        value = np.asarray(getattr(state, property_name))
+        value = np.asarray(state.raw_property(property_name))
         assert value.shape == () and np.isfinite(value), property_name
     # Independent first-law identity checks the units and specific-energy basis.
     tolerance = 1e-5 if case.id == "bicubic" else 1e-10
@@ -280,11 +246,6 @@ for _case in CONTRACT_CASES:
         _marks = []
         if _case.id == "coolprop" and _label in ("singleton", "singleton_matrix"):
             _marks = [pending(6, "Fluid squeezes singleton axes")]
-        if _case.id == "perfect_gas" and _label in (
-            "singleton_matrix",
-            "broadcast_matrix",
-        ):
-            _marks = [pending(7, "FluidPerfectGas does not broadcast every core field")]
         if _case.id == "binary_mixture" and _label != "scalar":
             _marks = [
                 pending(
@@ -316,24 +277,10 @@ def test_numeric_fields_preserve_exact_broadcast_shape(
     parameters_with_gaps(
         {
             "coolprop": pending(
-                4,
-                "FluidState has no per-element status or availability",
-                AttributeError,
-            ),
-            "coolprop_jax": pending(
-                6,
-                "FluidState has no per-element status or availability",
-                AttributeError,
-            ),
-            "bicubic": pending(
-                8,
-                "FluidState has no per-element status or availability",
-                AttributeError,
+                6, "Fluid squeezes singleton axes before constructing its state"
             ),
             "perfect_gas": pending(
-                7,
-                "FluidState has no per-element status or availability",
-                AttributeError,
+                7, "Perfect gas still omits the required internal energy"
             ),
             "binary_mixture": pending(
                 9, "FluidMix does not yet evaluate broadcast batches", RuntimeError
@@ -350,8 +297,6 @@ def test_enabled_numeric_fields_status_and_property_masks_share_broadcast_shape(
         np.array([[enthalpy], [enthalpy + 1e3]]),
         8e6,
     )
-    # Access the missing status contract first, so known xfails are precise even
-    # for evaluators which currently also squeeze/under-broadcast numeric fields.
     status = np.asarray(state.status)
     valid = np.asarray(state.valid)
     assert status.shape == valid.shape == (2, 1)
@@ -477,7 +422,6 @@ def test_molar_input_pairs_are_rejected_without_implicit_conversion(
 
 
 @pytest.mark.parametrize("access", ["canonical", "alias", "item"])
-@pending(3, "unsupported perfect-gas quality is silently exposed as NaN")
 def test_perfect_gas_quality_property_access_is_explicit(access, fluid_objects):
     state = baseline(fluid_objects["perfect_gas"])
     read = {

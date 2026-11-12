@@ -31,7 +31,8 @@ def test_batched_states_concatenate_along_the_first_axis():
     endpoint = FluidState(fluid_name="CO2", pressure=3e7, enthalpy=3e5)
     combined = path + endpoint
     np.testing.assert_allclose(combined.p, [1e7, 2e7, 3e7])
-    assert path.flipped().h == path.h  # Scalar properties remain scalar.
+    np.testing.assert_array_equal(path.flipped().h, path.h)
+    assert path.h.shape == path.p.shape == (2,)
     np.testing.assert_allclose(path.p, [1e7, 2e7])
 
 

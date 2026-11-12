@@ -281,11 +281,15 @@ class FluidPerfectGas(eqx.Module):
     constants: PerfectGasConstants = eqx.field(static=False)
     fluid_name: str = eqx.field(static=True, default=None)
     identifier: str = eqx.field(static=True, default=None)
+    provider: str = eqx.field(static=True, default="native")
+    model: str = eqx.field(static=True, default="perfect_gas")
+    reference_id: tuple = eqx.field(static=True, default=None)
 
     def __init__(self, name, T_ref=300.0, p_ref=101_325.0, identifier=None):
         self.constants = get_constants(name, T_ref, p_ref)
         self.fluid_name = name
         self.identifier = identifier
+        self.reference_id = (self.model, "HEOS", name, T_ref, p_ref)
 
     @eqx.filter_jit
     def get_state(self, input_pair: str, x: float, y: float):
@@ -294,6 +298,10 @@ class FluidPerfectGas(eqx.Module):
         return jxp.FluidState(
             fluid_name=self.fluid_name,
             identifier=self.identifier,
+            provider=self.provider,
+            model=self.model,
+            reference_id=self.reference_id,
+            available_properties=frozenset(props),
             **props,
         )
     
@@ -307,33 +315,38 @@ def get_props_gradient(fluid, input_pair, x, y, method="auto", eps_rel=1e-6, eps
     Each entry: grads[prop] = jnp.array([∂prop/∂x, ∂prop/∂y])
     """
     def f(vec):
-        return fluid.get_state(input_pair, vec[0], vec[1])
+        # Differentiate numeric properties only: status/validity arrays and
+        # static availability metadata are not thermodynamic derivatives.
+        return fluid.get_state(input_pair, vec[0], vec[1]).to_dict()
 
     # JAX autodiff path
     if method in ("auto", "jax"):
-        return jax.jacfwd(f)(jnp.array([x, y]))
+        grads = jax.jacfwd(f)(jnp.array([x, y]))
+    else:
+        # Finite difference path
+        dx = eps_rel * jnp.maximum(jnp.abs(x), 1.0) + eps_abs
+        dy = eps_rel * jnp.maximum(jnp.abs(y), 1.0) + eps_abs
 
-    # Finite difference path
-    dx = eps_rel * jnp.maximum(jnp.abs(x), 1.0) + eps_abs
-    dy = eps_rel * jnp.maximum(jnp.abs(y), 1.0) + eps_abs
+        fx_p = f(jnp.array([x + dx, y]))
+        fx_m = f(jnp.array([x - dx, y]))
+        fy_p = f(jnp.array([x, y + dy]))
+        fy_m = f(jnp.array([x, y - dy]))
 
-    fx_p = f(jnp.array([x + dx, y]))
-    fx_m = f(jnp.array([x - dx, y]))
-    fy_p = f(jnp.array([x, y + dy]))
-    fy_m = f(jnp.array([x, y - dy]))
-
-    grads = {}
-    for name in fx_p.to_dict().keys():
-        if name in ("fluid_name", "identifier"):
-            continue
-        grads[name] = jnp.array([
-            (fx_p[name] - fx_m[name]) / (2.0 * dx),
-            (fy_p[name] - fy_m[name]) / (2.0 * dy),
-        ])
+        grads = {}
+        for name in fx_p:
+            grads[name] = jnp.array([
+                (fx_p[name] - fx_m[name]) / (2.0 * dx),
+                (fy_p[name] - fy_m[name]) / (2.0 * dy),
+            ])
 
     return jxp.FluidState(
         fluid_name=fluid.fluid_name,
         identifier=fluid.identifier,
+        provider=fluid.provider,
+        model=fluid.model,
+        reference_id=fluid.reference_id,
+        available_properties=frozenset(grads),
+        error_policy="mask",
         **grads,
     )
 

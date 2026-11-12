@@ -21,6 +21,7 @@ from .graphics import *
 from .utils import *
 from .helpers_jax import *
 from .helpers_props import *
+from .errors import *
 
 # Import subpackages
 from . import coolprop

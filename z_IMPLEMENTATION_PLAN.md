@@ -10,7 +10,7 @@ Check an implementation item when its source/test changes are present and its re
 
 Implement and verify one coherent change at a time. Start with tests for its intended behavior, implement the change, run the affected tests, and then run the shared contract/numerical checks relevant to its callers. Use the full HEOS suite at the phase boundaries. Run the declared optional-backend and slow integration cases before completing their corresponding release scope. Revisit completed items when a later change alters their contract.
 
-The checked preparation items record completed audit work. Phases 1 and 2 are complete: the numerical test foundation is repaired, and the [public fluid contract](z_PUBLIC_FLUID_CONTRACT.md) fixes the intended interface with executable conformance cases. Production evaluator changes remain in Phases 3 through 12. The earlier array-aware diagnostic experiment is retained as historical evidence.
+The checked preparation items record completed audit work. Phases 1 through 3 are complete: the numerical test foundation is repaired, the [public fluid contract](z_PUBLIC_FLUID_CONTRACT.md) fixes the intended interface, and the shared state foundation is implemented. Remaining implementation, integration, and performance verification work is in Phases 4 through 13. The earlier array-aware diagnostic experiment is retained as historical evidence.
 
 ## Completed preparation
 
@@ -68,22 +68,44 @@ Verification command: `JAXPROP_TEST_BACKENDS=HEOS python tests/run_tests.py -q -
 
 ## Phase 3 Implement the shared state foundation
 
-- [ ] Implement/export the shared typed-error hierarchy and structured context required by controlled state access; wire construction/evaluator request validation in the following phases.
-- [ ] Standardize and preserve fluid/stream identity in every returned state and through collection operations.
-- [ ] Fix the overwritten `alpha_p` alias and validate all canonical names and aliases.
-- [ ] Fix stacking to add a state axis while preserving existing singleton dimensions. Cover indexing, reversal, concatenation, empty inputs, metadata mismatch, and nonmutation.
-- [ ] Add property availability and controlled public lookup so explicit unsupported requests raise informative errors through attribute, canonical-name, and alias access.
-- [ ] Keep numerical storage and state operations compatible with the declared JAX transformations. Test dictionary conversion and serialization of state data.
+- [x] Implement/export the shared typed-error hierarchy and structured context required by controlled state access; wire construction/evaluator request validation in the following phases.
+- [x] Standardize and preserve fluid/stream identity in every returned state and through collection operations.
+- [x] Fix the overwritten `alpha_p` alias and validate all canonical names and aliases.
+- [x] Fix stacking to add a state axis while preserving existing singleton dimensions. Cover indexing, reversal, concatenation, empty inputs, metadata mismatch, and nonmutation. Reject out-of-range static indices instead of accepting JAX's implicit clamping.
+- [x] Add property availability and controlled public lookup so explicit unsupported requests raise informative errors through attribute, canonical-name, and alias access.
+- [x] Keep numerical storage and state operations compatible with the declared JAX transformations. Test dictionary conversion and serialization of state data.
 
 Acceptance includes consistent behavior for `state.quality_mass`, `state.Q`, and `state["Q"]`, plus metadata and shape preservation through every state operation.
+
+Acceptance verified on 12 November 2026. [FluidState](jaxprop/fluid_state.py) uses private numerical storage, immutable identity/provenance, explicit enabled properties, and per-element status/validity. It broadcasts constant properties, preserves singleton axes, checks model/reference compatibility, intersects collection property availability, and preserves mixed-provider provenance. Public canonical/alias lookups distinguish unsupported properties from locally unavailable values; perfect-gas quality access now raises the same informative typed error through all three access paths.
+
+The [validated property schema](jaxprop/property_schema.py) restores `alpha_p` and rejects duplicate canonical definitions, alias collisions, and shadowing. The [typed errors](jaxprop/errors.py) expose structured context and support pickle round trips. State `to_data()` / `from_data()` and pickle preserve values, masks, identity, and access policy; NumPy inputs and exports cannot mutate existing states. Native/JAX numerical storage remains compatible with full-state JIT and floating-property derivatives. The perfect-gas gradient helper now differentiates numerical dictionaries rather than integer status/bool validity leaves.
+
+| New Phase 3 tests | Passed |
+| --- | ---: |
+| [Typed error foundation](tests/test_errors.py) | 36 |
+| [State foundation](tests/test_state_foundation.py) | 86 |
+| [Evaluator metadata and gradient integration](tests/test_evaluator_state_metadata.py) | 23 |
+| **Total new cases** | **145** |
+
+Forty prior strict expected failures now pass and their markers were removed. The final full HEOS + REFPROP run completed with **764 passed, 79 strict expected failures, zero unexpected failures, and zero skips** in 366.65 seconds. The 79 remaining gaps belong to later phases. Numerical comparison coverage exactly matches Phase 1: **84,950 comparisons, 50,189 finite values, 34,761 explicitly unavailable values, and zero failed comparisons**. [Summary](development/test_audit/results/phase3/full_20261112_214051/summary.json), [pytest log](development/test_audit/results/phase3/full_20261112_214051/pytest.log), [JUnit results](development/test_audit/results/phase3/full_20261112_214051/junit.xml).
+
+Verification used `JAXPROP_TEST_BACKENDS=HEOS,REFPROP` with the same complete pytest discovery as `python tests/run_tests.py -q`; a local recorder captured comparison counts and JUnit results. Tables were generated in fresh isolated pytest fixtures with normal Windows execution permissions. Seventeen warnings remain: 15 static-array metadata warnings and the two known input-validation warnings. Their fixes remain in the later reference/JAX and evaluator work.
+
+Internal numerical comparisons now read raw enabled properties while retaining the repaired finite-core, shape, availability-pattern, and tolerance assertions. Profiling identified expensive Equinox method binding when bicubic finite differences repeatedly called `raw_property`. The gradient helpers now snapshot one numerical dictionary per sampled state. A ten-node probe improved from 0.480 s to 0.130 s with all 1,520 value/gradient entries and NaN patterns exactly equal. [Scoped benchmark](development/test_audit/results/phase3/snapshot_performance_probe.json). The full fresh-table rerun above verifies the optimized path; no finite-difference equations or numerical budgets were changed.
+
+Reference IDs currently identify the model, supplied source/backend, and applicable construction parameters. Actual source-reference fingerprints and source-alias canonicalization remain in Phase 5. Source/callback/bicubic/legacy-mixture states provisionally expose the full numerical schema; precise per-call property enabling and diagnostic rejection remain in Phase 4 and the corresponding evaluator phases. Perfect-gas state quality access is already controlled, while its quality-input and saturation-operation validation remains in Phase 7. These explicit boundaries preserve the remaining strict expected failures rather than implementing unrelated evaluator changes in the state foundation.
 
 ## Phase 4 Standardize construction and evaluator capabilities
 
 - [ ] Implement shared construction/configuration and consistent object metadata for the supported evaluators.
 - [ ] Publish supported input pairs, properties, options, phase operations, JAX modes, and applicable domains through the common capability contract.
+- [ ] Publish named numerical status codes and derive each call's enabled property set from model/provider capabilities and requested diagnostics. Replace provisional full-schema declarations in source, callback, bicubic, and legacy-mixture states; disabled diagnostics and inapplicable properties must be explicitly unsupported.
 - [ ] Validate static unsupported requests before numerical evaluation or JIT entry. Include fluid, evaluator, request, reason, and relevant supported alternatives in errors.
 - [ ] Apply one scalar/list/NumPy/JAX broadcasting policy and the selected per-element numerical failure policy.
 - [ ] Create reusable fluid objects outside repeated cycle evaluations and verify that reuse preserves results and identity.
+- [ ] Reduce repeated internal state-construction work without weakening public validation: reuse validated immutable identity/schema/provenance, skip already-correct broadcasts, allocate missing-value defaults only when needed, and compute the successful-status mask once. The provisional PyPI comparison found unchanged CoolProp numerical work but higher state-assembly cost.
+- [ ] Evaluate a compact or lazy property-validity representation. Invalid values are already masked to NaN; deriving validity from masked values and status could reduce full-state JAX outputs from 77 to 39 leaves. Require explicit-mask, nonfinite-value, status, serialization, collection, JIT, and derivative tests before adopting this change; preserve unsupported-property errors and the masking invariant.
 
 Acceptance requires changing the numerical provider through configuration while preserving the common call/output contract over its supported domain.
 
@@ -91,6 +113,8 @@ Acceptance requires changing the numerical provider through configuration while 
 
 - [ ] Implement one dedicated CoolProp initialization path for critical and liquid/vapor triple-reference points, independently of the selected evaluator.
 - [ ] Expose source fluid/composition, backend/version, reference convention, point interpretation, availability, and failure reason. Reuse immutable source-reference data consistently.
+- [ ] Replace Phase 3's provisional construction/reference IDs with source-reference fingerprints, including actual source enthalpy/entropy anchor values, model parameters, and component reference identities. Detect changed global CoolProp reference conventions and carry the fingerprint into table cache validation.
+- [ ] Separate array-valued reference states from Equinox static metadata. Keep static fields limited to immutable non-array configuration and verify removal of the existing static-array warnings without weakening JAX behavior or cache identity.
 - [ ] Populate applicable source-reference points for perfect-gas and bicubic objects while enforcing their own evaluation capabilities.
 - [ ] Support pseudo-pure Air and refrigerant blends with explicit classification and interpretation of their lower saturation endpoints, preserving distinct liquid/vapor pressures.
 - [ ] Handle unavailable or ambiguous reference points individually, with informative errors on explicit access and usable ordinary calculations where supported.
@@ -111,23 +135,46 @@ Acceptance requires the same source-compatible values and common behavior throug
 
 - [ ] Apply the common construction, identity, call, broadcast, property-availability, and failure contracts.
 - [ ] Complete available core properties, including internal energy and a defined gas-state marker.
+- [ ] Complete the perfect-gas derivative properties defined by the model, including expansion/compressibility, bulk moduli, and Joule-Thomson behavior. Test their consistency with the gas constant, heat capacities, and sound speed before declaring them available.
 - [ ] Adopt and document the chosen enthalpy/entropy reference conventions, updating forward and inverse equations consistently.
 - [ ] Replace silent invalid-input clipping with the selected domain/failure policy, and explicitly reject phase-equilibrium inputs and properties.
 - [ ] Add independent ideal-gas identities, off-calibration conditions, transport checks, batch cases, and advertised JAX derivative tests.
+- [ ] Define a derivative-result schema or explicit quantity-kind metadata for property-gradient helpers, including derivative units and primal validity. Prevent derivative-valued fields from being combined with ordinary thermodynamic state values.
 
 Acceptance requires thermodynamic consistency and common API behavior for the explicitly selected perfect-gas physical model.
 
 ## Phase 8 Harden bicubic interpolation and table lifecycle
 
 - [ ] Apply the common metadata, identity, call, shape, capability, and error contracts to `FluidBicubic`.
-- [ ] Validate constructor bounds/grid sizes and source/phase/composition configuration.
-- [ ] Detect failed reference nodes and invalid interpolation cells. Reject or explicitly mask incomplete tables according to the selected policy.
-- [ ] Expand cache identity and validation to cover generation settings, reference conventions, format, and source versions. Test reuse, invalidation, corruption, and atomic concurrent construction.
+- [x] Validate the current table constructor's bounds, integer grid sizes, gradient scheme, and source/phase/composition combinations. Reject the unimplemented metastable central scheme explicitly. Revisit these checks when integrating the common factory/configuration API.
+- [x] Reject failed source evaluations and incomplete core arrays before publication. Initialize unfilled buffers with NaNs and remove copied-neighbor/spinodal-clipping fallbacks; preserve an existing cache if construction fails.
+- [ ] Complete phase-aware interpolation-cell validity and applicable masking/domain behavior beyond the current structural and finite-core checks.
+- [x] Use one complete generation manifest across all four table modes. Include settings, source/reference and native-file fingerprints, numerical precision, algorithm/library versions, and schema; require exact manifest matching. Test reuse, invalidation, malformed caches, and atomic concurrent publication.
+- [ ] Separate the persisted generation manifest from the numerical runtime PyTree while preserving public provenance and exact cache validation. The provisional profile found 120 metadata leaves traversed on every warmed bicubic call versus 10 in PyPI 0.5.8, despite identical numerical table arrays; cache hashing/validation itself does not run during those calls.
+- [ ] Avoid redundant cached-array conversion when storage and dtype already match, while retaining manifest, structure, dtype, and finite-core validation. Measure this separately as a cached-load improvement.
+- [x] Preserve exact independent pressure/enthalpy grids and analytic derivatives in every mode. Correct the liquid instability criterion, descending vapor predictor sign, and main-grid/saturation success accounting exposed by real cache integration tests.
+- [ ] Validate metastable solver residuals relative to the finite-difference perturbations, and improve solve accuracy or derivative construction where residual errors can dominate those steps. Cache identity and finite arrays alone do not establish derivative accuracy.
+- [ ] Extend saturation payload integrity checks to compare pressure nodes with the declared log-pressure grid. Decide whether payload checksums are required to detect finite-value file corruption that structural checks cannot identify.
 - [ ] Enforce the explicit domain policy and validate inverse roots/residuals. Correct iteration-limit wiring and bound the inverse problems where appropriate.
 - [ ] Correct the saturation central-derivative denominator and complete the saturation, mixture, and metastable table modes retained in the public capability set.
 - [ ] Add independent polynomial interpolation tests, cell-boundary checks, near-critical/application-relevant domains, and value/derivative comparisons.
 
 Acceptance requires trustworthy table construction/reuse, informative domain and solver failures, and source-compatible values/derivatives within documented resolution-dependent tolerances.
+
+The cache lifecycle subset was implemented early at the user's request on 12 November 2026. All four generators now use one manifest and array initializer, exact independent pressure/enthalpy coordinates, one validated loader, and one atomic publisher. The manifest covers mode/composition (including explicit `None` selectors), bounds/grid sizes, gradient scheme, saturation settings, dtype/JAX precision, package/numerical-library versions, generation-code fingerprints, source configuration and enthalpy/entropy anchors. HEOS definitions and resolved REFPROP native DLL/FLD/PPF/MIX/HMX data have content fingerprints. An unverifiable source disables persistent reuse/publication rather than claiming a verified identity. Runtime identifiers, file locations, and inverse initial-guess stride are excluded from generation identity.
+
+Exact canonical manifest comparison rejects extra, missing, or changed fields. Default filenames include a manifest digest, removing rounded-mixture-ratio collisions and allowing configurations to coexist. Legacy caches are not trusted under the new format. Structural validation checks property schema, shape, dtype, independent grid coordinates, finite core values/derivatives/coefficients, and saturation array structure; legitimate optional NaNs remain allowed. Corrupt/incompatible files regenerate, while I/O errors propagate. Failed evaluations, invalid generated data, reference changes during construction, serialization failures, and failed atomic replacements preserve the previous file and do not publish partial data.
+
+Real integration checks cover equilibrium forward/central tables, a binary mixture, and both metastable Water branches. These tests also exposed and verified fixes for exact pressure/enthalpy axes being overwritten by solver residuals, a spurious liquid instability criterion, descending vapor predictor direction, and saturation/main-grid counting. The missing metastable central implementation now raises an explicit unsupported-option error. Broader metastable residual/derivative accuracy and cell validity remain unchecked above; matching metadata is not an accuracy proof.
+
+| New cache tests | Passed |
+| --- | ---: |
+| [Cache policy, validation, and atomic I/O](tests/test_bicubic_cache.py) | 61 |
+| [Source/reference/native-file identity](tests/test_cache_metadata.py) | 40 |
+| [Real numerical generation and reload](tests/test_bicubic_cache_integration.py) | 8 |
+| **Total** | **109** |
+
+Full HEOS + REFPROP verification: **873 passed, 79 strict expected failures, zero unexpected failures, and zero skips** in 391.04 seconds. Numerical coverage is unchanged: 84,950 comparisons, 50,189 finite values, 34,761 explicitly unavailable values, and zero failed comparisons. [Summary](development/test_audit/results/cache_validation/full_20261112_223133/summary.json), [pytest log](development/test_audit/results/cache_validation/full_20261112_223133/pytest.log), [JUnit results](development/test_audit/results/cache_validation/full_20261112_223133/junit.xml). The same recorded full-suite procedure as Phase 3 used `JAXPROP_TEST_BACKENDS=HEOS,REFPROP` and fresh isolated pytest fixtures. Expected cache-regeneration diagnostics and the existing static-array/input-validation warnings remain visible. The Windows concurrent reader/writer test additionally passed 20 repeated runs; it permits bounded explicit sharing denials while still rejecting partial, truncated, or corrupt pickle reads.
 
 ## Phase 9 Consolidate the two-component mixture implementations
 
@@ -157,11 +204,13 @@ Acceptance requires every retained advertised public path to produce the specifi
 - [ ] Repair supported object serialization and verify property evaluation after a round trip.
 - [ ] Make application-wide JAX platform, precision, and exception-hook configuration explicit and test import behavior in subprocesses.
 - [ ] Document/test repeated evaluation, state isolation, and the supported concurrency model.
+- [ ] Preserve NumPy storage when combining NumPy states and avoid reconstructing already-validated collection data through redundant eager JAX masking/broadcast operations. Retain compatibility, shape, identity, status, and availability checks. Provisional two-state concatenation was 3.9 times slower than PyPI 0.5.8.
+- [ ] Prepare repeatable workloads for construction, table generation, repeated states, and transformed calls. The formal comparison with the downloaded PyPI release and its performance acceptance gate belong to Phase 13.
 - [ ] Test numerical smoothing and solver-selection helpers used by the retained calculation paths.
 
 Acceptance requires reusable objects that behave predictably in a consuming application, including the advertised plotting, worker, and JAX execution modes.
 
-## Phase 12 Validate ThermOpt and publish the interface
+## Phase 12 Validate ThermOpt and prepare interface publication
 
 - [ ] Adapt ThermOpt construction, setup/reference access, and plotting to the common JaxProp API, reusing configured fluid objects.
 - [ ] Test compressor, expander, and discretized heat-exchanger entry points across compatible evaluators, including energy balance, state recovery, identity, and constraint arrays.
@@ -170,7 +219,34 @@ Acceptance requires reusable objects that behave predictably in a consuming appl
 - [ ] Align CI and documented test commands, including explicit optional REFPROP and slow-case selection.
 - [ ] Update examples, API documentation, and release/migration notes to the selected consistent behavior and verified capability matrix.
 
-Acceptance requires the intended consumer workflows to pass through the common API, with every claimed capability covered by the corresponding tests and the verification evidence recorded.
+Acceptance requires the intended consumer workflows to pass through the common API, with every claimed capability covered by the corresponding tests and the verification evidence recorded. Prepare the release documentation here; publish the refactored release after the Phase 13 performance gate passes.
+
+## Phase 13 Compare performance with the latest PyPI release
+
+Download the latest stable JaxProp release available on PyPI when this phase starts, before publishing the refactored implementation. Use that unchanged published package as the old implementation baseline. The aim is to preserve practical performance across representative uses of the new consistent interface, while retaining its correctness checks and complete state behavior.
+
+- [ ] Resolve and download the latest stable PyPI release. Record the version, download date, distribution artifact/hash, and dependency versions. Pin this baseline for the complete comparison and retain the artifact so results can be reproduced after PyPI changes.
+- [ ] Install the published baseline and the new checkout in isolated environments/processes. Verify their imported package paths so the local checkout cannot shadow the PyPI installation. Match hardware, Python, compatible dependency versions, CoolProp source backend, JAX device/precision, and thread settings; record any unavoidable differences separately.
+- [ ] Fix the workload matrix, numerical accuracy requirements, and regression budgets before measuring. Use an initial working target of at most 10% higher median time for comparable warmed evaluations, derivatives, and application workloads. Define separate budgets for construction, compilation, and table generation, accounting for the additional required reference initialization. Record any budget revisions before collecting acceptance timings.
+- [ ] Implement equivalent calls through each version's own public API, using benchmark-side argument translation where signatures differ. Verify comparable physical states, outputs, reference conventions, solver tolerances, and table domains/resolutions before timing. Account explicitly for intentional perfect-gas reference/model changes. Mark missing legacy functionality as not comparable; do not present it as a speedup or disable new validation/metadata to improve the primary comparison.
+- [ ] Measure object/reference initialization, fresh table generation, cached table loading, first-call JAX compilation, and warmed repeated evaluation separately. Give each version independent table/compilation caches, with explicit cold/warm conditions. Include the complete public call cost; use kernel-only timings to diagnose overhead rather than replace the API comparison.
+- [ ] Run the representative cases below wherever both versions provide the relevant functionality, including comparable HEOS and optional available REFPROP configurations. For changed mixture formulations, compare the common validated operations and report additional new capabilities separately.
+- [ ] Warm up, repeat and interleave measurements in independent worker processes; synchronize all JAX outputs with `block_until_ready` before stopping timers. Use enough calls/repetitions to resolve short operations and report median, variability/uncertainty, absolute time, throughput, and new/old timing ratios for every case. For optimizers, report iteration/property-call counts alongside wall time so solver behavior can be distinguished from evaluation cost.
+- [ ] Save runnable benchmark scripts, environment/configuration manifests, raw samples, correctness results, and a comparison report. Profile and fix repeatable regressions beyond the declared budgets, rerun the affected cases and numerical checks, and add any remaining findings to this checklist. Keep individual case results visible rather than hiding regressions in an overall average.
+
+| Workload | Representative cases |
+| --- | --- |
+| State construction and access | Construct states; canonical/alias lookups; raw/dictionary export; indexing, stacking, and concatenation. |
+| Fluid property evaluation | Direct CoolProp, callback/JAX, bicubic, perfect gas, and common binary-mixture operations; scalar/singleton inputs, small and large batches, and broadcast matrices. |
+| States and input pairs | CO2, Water, and Air/Nitrogen; applicable liquid, gas, supercritical/near-critical, saturation, and metastable conditions; forward `PT`/`HmassP` and inverse `PSmass`/other supported pairs. |
+| Differentiation and execution | Eager, JIT, vectorized calls, and supported first derivatives of matching floating properties; separate compilation from warmed execution. |
+| ThermOpt consumers | Compressor, expander, discretized heat exchanger, repeated cycle evaluations, and the recuperated sCO2 optimization; include applicable perfect-gas and phase-changing cases. |
+
+Acceptance requires numerically valid comparisons and no repeatable material slowdown beyond the predeclared budgets for comparable workloads. Resolve inconclusive timings with additional measurements. Publish the per-case report and retain explanations for unavoidable new setup work or non-comparable capabilities. The refactored release remains unpublished until this phase passes.
+
+A provisional measurement was completed on 12 November 2026 against the unchanged PyPI 0.5.8 wheel, with its SHA-256 verified against PyPI. Both versions used the same Python/dependencies and CPU/x64 settings in separate workers, run in baseline/current/current/baseline order. Thirty-three workloads separate setup, compilation, warmed calls, state access, and collection operations. Each warmed case has five samples in each of two workers per version; cold table generation has one sample per worker. All 28 sampled common-value/shape comparisons passed at relative/absolute tolerance $10^{-7}$; additional bicubic and perfect-gas temperature derivatives matched exactly at the sampled points.
+
+This provisional run identifies material regressions and does not complete Phase 13. Pooled warmed medians include +19% for a direct CoolProp three-state compressor calculation, +46% for a full scalar bicubic state, +16% for a 1,024-state bicubic batch, and 3.9 times the time for NumPy-state concatenation. The callback scalar path improved by 40%, the perfect-gas full scalar path improved by 33%, and the perfect-gas full batch was approximately unchanged. Compiled bicubic projections/derivatives and the compiled compressor showed no consistent regression across these limited, noisy microtimings. The repeated construction, manifest traversal, collection, and validity-representation follow-ups are recorded in Phases 4, 8, and 11 above. Required cache/source validation should remain intact. This run covers small 16-by-16 HEOS tables and a short compressor calculation, not REFPROP or complete ThermOpt optimization. [Report](development/performance/results/provisional/run_20261112_230030/REPORT.md), [all timings and correctness checks](development/performance/results/provisional/run_20261112_230030/summary.json).
 
 ## Verification log
 
@@ -180,5 +256,9 @@ Acceptance requires the intended consumer workflows to pass through the common A
 | Array-aware diagnostic comparison | Completed experiment | 167 passed with 25,022 numerical comparisons. [Recorded run](development/test_audit/results/baseline_20261112_195233/array_oracle_summary.json). |
 | Persistent test repairs | Completed phase 1 | 480 passed across HEOS and REFPROP, zero failures/skips, 50,189 finite values compared. [Summary](development/test_audit/results/phase1/full_20261112_203206/summary.json), [pytest log](development/test_audit/results/phase1/full_20261112_203206/pytest.log). |
 | Uniform public contract | Completed phase 2 | 218 new cases: 99 passed, 119 strict expected failures. Full HEOS: 405 passed, zero unexpected failures/skips. [Summary](development/test_audit/results/phase2/full_heos_20261112_205840/summary.json). |
-| Shared state and evaluator refactor | Pending | Phases 3 through 11; implement/remove the corresponding strict expected failures. |
-| Consumer integration and publication checks | Pending | Phase 12. |
+| Shared state foundation | Completed phase 3 | 145 new passing tests, 40 prior gaps resolved. HEOS + REFPROP: 764 passed, 79 strict expected failures, zero unexpected failures/skips; Phase 1 numerical comparison counts preserved. [Summary](development/test_audit/results/phase3/full_20261112_214051/summary.json). |
+| Table cache identity and lifecycle | Completed subset of phase 8 | 109 new passing tests. HEOS + REFPROP: 873 passed, 79 strict expected failures, zero unexpected failures/skips; numerical comparison counts preserved. [Summary](development/test_audit/results/cache_validation/full_20261112_223133/summary.json). Other Phase 8 work remains open. |
+| Construction, references, and evaluator completion | Pending | Phases 4 through 11; implement/remove the corresponding strict expected failures. |
+| Consumer integration and publication preparation | Pending | Phase 12. |
+| Provisional performance against PyPI 0.5.8 | Measured; follow-ups pending | 33 workloads, two workers per version, matched dependencies, 28 passing sampled value/shape comparisons plus matching sampled derivatives. Material state/bicubic/collection regressions recorded above. [Report](development/performance/results/provisional/run_20261112_230030/REPORT.md). |
+| Formal performance gate against the published PyPI baseline | Pending | Phase 13; resolve/pin the latest stable release at phase start and pass the complete comparison gate before publication. The provisional run does not replace this acceptance gate. |

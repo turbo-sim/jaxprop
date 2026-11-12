@@ -111,8 +111,8 @@ def test_solver_consistency(bicubic_case, input_type):
 
     # Compare property by property
     for prop in jxp.PROPERTIES_CANONICAL:
-        ref_val = np.array(state_ref[prop])
-        interp_val = np.array(interp[prop])
+        ref_val = np.array(state_ref.raw_property(prop))
+        interp_val = np.array(interp.raw_property(prop))
         context = f"{fluid_name} {jxp.INPUT_TYPE_MAP[input_type]} {prop}"
         assert ref_val.shape == interp_val.shape == H_mesh.shape, context
         if prop in CORE_PROPERTIES:

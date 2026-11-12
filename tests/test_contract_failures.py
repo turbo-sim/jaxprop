@@ -40,11 +40,6 @@ ERROR_BASES = (
 )
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AttributeError,
-    reason="phase3: public typed error foundation is not implemented",
-)
 @pytest.mark.parametrize("name,base", ERROR_BASES)
 def test_public_errors_preserve_typed_categories_and_one_library_base(name, base):
     error_type = getattr(jxp, name)
@@ -261,11 +256,6 @@ def test_air_preserves_distinct_lower_saturation_endpoints_and_evaluable_ordinar
     assert not np.isclose(fluid.triple_point_liquid.p, fluid.triple_point_vapor.p)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AttributeError,
-    reason="phase3: state identity has no model/reference compatibility metadata",
-)
 def test_state_collections_reject_same_name_and_stream_with_different_physical_models(
     source_fluid, perfect_gas
 ):
@@ -279,11 +269,6 @@ def test_state_collections_reject_same_name_and_stream_with_different_physical_m
         jxp.FluidState.stack([source, approximate])
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AttributeError,
-    reason="phase3: state has no controlled raw access or property validity masks",
-)
 def test_unavailable_at_a_valid_state_is_distinct_from_an_unsupported_property(
     source_fluid,
 ):

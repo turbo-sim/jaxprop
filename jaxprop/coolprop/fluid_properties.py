@@ -180,7 +180,12 @@ class Fluid:
         self.abstract_state = self._AS
         self.exceptions = exceptions
         self.converged_flag = False
-        self.identifier = identifier if identifier is not None else name
+        self.identifier = identifier
+        self.provider = "coolprop"
+        self.model = "real_fluid"
+        # Phase 5 replaces this construction identity with the source-reference
+        # fingerprint, including the actual energy/entropy reference convention.
+        self.reference_id = (self.model, backend, name)
 
         # Initialize variables
         self.sat_liq = None
@@ -307,6 +312,10 @@ class Fluid:
         state = FluidState(
             fluid_name=self.name,
             identifier=self.identifier,
+            provider=self.provider,
+            model=self.model,
+            reference_id=self.reference_id,
+            available_properties=frozenset(PROPERTIES_CANONICAL),
             **results,
         )
 
@@ -356,6 +365,10 @@ class Fluid:
         return FluidState(
             fluid_name=self.name,
             identifier=self.identifier,
+            provider=self.provider,
+            model=self.model,
+            reference_id=self.reference_id,
+            available_properties=frozenset(PROPERTIES_CANONICAL),
             **props,
         )
 
@@ -422,6 +435,10 @@ class Fluid:
         return FluidState(
             fluid_name=self.name,
             identifier=self.identifier,
+            provider=self.provider,
+            model=self.model,
+            reference_id=self.reference_id,
+            available_properties=frozenset(PROPERTIES_CANONICAL),
             **props,
         )
 
@@ -477,9 +494,24 @@ class Fluid:
         )
 
         return (
-            FluidState(fluid_name=self.name, identifier=self.identifier, **blended),
-            FluidState(fluid_name=self.name, identifier=self.identifier, **equilibrium),
-            FluidState(fluid_name=self.name, identifier=self.identifier, **metastable),
+            FluidState(
+                fluid_name=self.name, identifier=self.identifier,
+                provider=self.provider, model=self.model,
+                reference_id=self.reference_id,
+                available_properties=frozenset(PROPERTIES_CANONICAL), **blended,
+            ),
+            FluidState(
+                fluid_name=self.name, identifier=self.identifier,
+                provider=self.provider, model=self.model,
+                reference_id=self.reference_id,
+                available_properties=frozenset(PROPERTIES_CANONICAL), **equilibrium,
+            ),
+            FluidState(
+                fluid_name=self.name, identifier=self.identifier,
+                provider=self.provider, model=self.model,
+                reference_id=self.reference_id,
+                available_properties=frozenset(PROPERTIES_CANONICAL), **metastable,
+            ),
         )
     
 
@@ -788,7 +820,9 @@ class FluidMix:
         self.name = name
         self.backend = backend
         self.exceptions = exceptions
-        self.identifier = identifier if identifier is not None else name
+        self.identifier = identifier
+        self.provider = "native"
+        self.model = "binary_mixture"
         self.converged_flag = False
         self.mixture_ratio = mixture_ratio
 
@@ -805,6 +839,9 @@ class FluidMix:
                 f"Expected exactly two components for a binary mixture, got: {parts}"
             )
         self.fluid_1, self.fluid_2 = parts
+        self.reference_id = (
+            self.model, backend, self.fluid_1, self.fluid_2, mixture_ratio
+        )
 
         # Initialize AbstractStates for each component
         self._AS1 = try_initialize_fluid(self.fluid_1, backend)
@@ -856,6 +893,10 @@ class FluidMix:
         return FluidState(
             fluid_name=self.name,
             identifier=self.identifier,
+            provider=self.provider,
+            model=self.model,
+            reference_id=self.reference_id,
+            available_properties=frozenset(PROPERTIES_CANONICAL),
             **props_mix,
         )
 

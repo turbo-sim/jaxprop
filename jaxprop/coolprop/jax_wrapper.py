@@ -110,18 +110,38 @@ def _get_state_jvp(input_state, fluid, primals, tangents):
 class FluidJAX(eqx.Module):
     name: str = eqx.field(static=True)
     backend: str = eqx.field(static=True)
+    identifier: str = eqx.field(static=True)
+    provider: str = eqx.field(static=True)
+    model: str = eqx.field(static=True)
+    reference_id: tuple = eqx.field(static=True)
     fluid: object = eqx.field(static=True)  # raw CoolProp.AbstractState object
     exceptions: bool = eqx.field(static=True)
 
-    def __init__(self, name: str, backend: str="HEOS", exceptions: bool=True):
+    def __init__(
+        self, name: str, backend: str="HEOS", exceptions: bool=True, identifier=None
+    ):
         from .fluid_properties import Fluid
         self.name = name
         self.backend = backend
         self.exceptions = exceptions
-        self.fluid = Fluid(name=name, backend=backend, exceptions=exceptions)
+        self.identifier = identifier
+        self.provider = "coolprop_jax"
+        self.model = "real_fluid"
+        self.fluid = Fluid(
+            name=name, backend=backend, exceptions=exceptions, identifier=identifier
+        )
+        self.reference_id = self.fluid.reference_id
 
     @eqx.filter_jit
     def get_state(self, input_pair, x, y):
         """Return a CoolPropState with fields shaped like broadcast(x, y)."""
         raw = get_state(input_pair, x, y, self.fluid)
-        return jxp.FluidState(**{k: raw[k] for k in jxp.PROPERTIES_CANONICAL})
+        return jxp.FluidState(
+            fluid_name=self.name,
+            identifier=self.identifier,
+            provider=self.provider,
+            model=self.model,
+            reference_id=self.reference_id,
+            available_properties=frozenset(jxp.PROPERTIES_CANONICAL),
+            **{k: raw[k] for k in jxp.PROPERTIES_CANONICAL},
+        )
