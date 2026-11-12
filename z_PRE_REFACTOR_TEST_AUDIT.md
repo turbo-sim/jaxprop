@@ -2,7 +2,7 @@
 
 Uniform behavior across fluid classes is the primary refactoring goal. Tests should specify that intended contract and protect valid physical calculations. Backward compatibility is secondary, and intentional changes to signatures, array shapes, identity, reference conventions, and failures should be reflected in the new expectations. The [fluid interface audit](z_FLUID_INTERFACE_AUDIT.md) describes the proposed interface work.
 
-The initial audit found useful numerical tests, an assertion-helper defect that bypassed many comparisons, and important public operations without active tests. Phase 1 has now repaired the assertion and execution foundation. The shared fluid behavior suite and the broader functionality tests remain part of the subsequent refactor phases.
+The initial audit found useful numerical tests, an assertion-helper defect that bypassed many comparisons, and important public operations without active tests. Phase 1 repaired the assertion and execution foundation. Phase 2 added the fixed shared fluid contract suite. Broader functionality tests and implementation of the remaining contract gaps continue in the subsequent refactor phases.
 
 The [implementation checklist](z_IMPLEMENTATION_PLAN.md) sequences these test repairs and the fluid-interface changes, with completion tracked against passing acceptance checks.
 
@@ -11,6 +11,14 @@ The [implementation checklist](z_IMPLEMENTATION_PLAN.md) sequences these test re
 Phase 1 passed the complete 480-case HEOS and REFPROP suite on 12 November 2026. It added 37 numerical-assertion regressions, 15 runner/backend-selection regressions, a sampling regression, and a fixed input-pair contract test. The existing scalar solver cases now execute their numerical comparisons. Temporary fixtures, full pressure coverage, true cell centers/boundaries, finite-core assertions, and local inverse/accuracy checks are in place.
 
 Actual cell-center checks exposed five failures at the old 10/20/40 accuracy grids. Using 16/32/64 grids meets the retained 0.1/0.01/0.001 percent error budgets, including maximum core-property errors. The full run checked 50,189 finite values with zero failed property comparisons. Twelve existing static-JAX-metadata warnings remain tracked in the implementation plan. [Full verification](development/test_audit/results/phase1/full_20261112_203206/summary.json).
+
+## Phase 2 implementation status
+
+The [public fluid contract](z_PUBLIC_FLUID_CONTRACT.md) now specifies the common construction/call vocabulary, model/provider/source distinction, identity, broadcast shapes, availability, reference conventions, errors, and JAX policy. Its independent five-row matrix covers all advertised evaluator/model families, including the binary consolidation target.
+
+Phase 2 added 218 cases across [state operations](tests/test_state_contract.py), [shared fluid conformance](tests/test_uniform_fluid_contract.py), and [failure/reference/execution behavior](tests/test_contract_failures.py). Of these, 99 pass and 119 are confirmed gaps marked with strict expected failures and implementation ownership. A fixed gap must have its marker removed; unexpected passes fail the suite. Factory absence does not prevent direct tests of the existing classes.
+
+The full HEOS suite passed 405 cases with 119 strict expected failures, zero unexpected failures, and zero skips. All 306 preexisting HEOS cases still pass. [Full verification](development/test_audit/results/phase2/full_heos_20261112_205840/summary.json). These new cases specify intended functionality; the numerical evaluator implementation remains unchanged in Phase 2.
 
 The findings and baseline below describe the starting state before these test repairs. The implementation checklist records current completion and the remaining coverage work.
 

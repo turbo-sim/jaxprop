@@ -6,6 +6,8 @@ Uniform, consistent behavior is the primary design priority. Define the intended
 
 Track implementation, acceptance checks, and completed work in the [implementation checklist](z_IMPLEMENTATION_PLAN.md).
 
+Phase 2 defines the target decisions in the [public fluid contract](z_PUBLIC_FLUID_CONTRACT.md), with a fixed executable conformance matrix. That contract supersedes the provisional API choices below; the source findings remain the record of the starting implementation.
+
 Interchangeability should provide one construction and property-call contract over each model's declared domain. CoolProp evaluation, its JAX callback wrapper, and bicubic interpolation can evaluate the same source fluid model. Selecting a perfect gas or a two-component formulation also selects a physical model, whose applicable phase features and reference conventions need to be explicit.
 
 This audit covers the local JaxProp 0.5.8 checkout at commit `ed66d108555e71d0d8543a1b670d05237a834221` on 12 November 2026. Short runtime probes imported this checkout using ThermOpt's virtual environment, with Python 3.13.2, JAX 0.6.2, Equinox 0.12.2, CoolProp 7.2.0, NumPy 2.4.4, and SciPy 1.17.1. Bicubic probes reused an existing 4 by 4 CO2 table. These runtime results establish API behavior at the sampled points.

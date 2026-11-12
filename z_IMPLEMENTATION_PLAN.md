@@ -10,7 +10,7 @@ Check an implementation item when its source/test changes are present and its re
 
 Implement and verify one coherent change at a time. Start with tests for its intended behavior, implement the change, run the affected tests, and then run the shared contract/numerical checks relevant to its callers. Use the full HEOS suite at the phase boundaries. Run the declared optional-backend and slow integration cases before completing their corresponding release scope. Revisit completed items when a later change alters their contract.
 
-The checked preparation items record completed audit work. Phase 1 is implemented and verified, including the permanent assertion repair. Phases 2 through 12 remain open. The earlier array-aware diagnostic experiment is retained as historical evidence.
+The checked preparation items record completed audit work. Phases 1 and 2 are complete: the numerical test foundation is repaired, and the [public fluid contract](z_PUBLIC_FLUID_CONTRACT.md) fixes the intended interface with executable conformance cases. Production evaluator changes remain in Phases 3 through 12. The earlier array-aware diagnostic experiment is retained as historical evidence.
 
 ## Completed preparation
 
@@ -43,16 +43,32 @@ The test runner can be invoked from any working directory as `python path/to/jax
 
 ## Phase 2 Define and test the uniform public contract
 
-- [ ] Specify one construction API and provider selector, following the audit's proposed `create_fluid(name, provider, backend, identifier, ...)` pattern. Distinguish the numerical provider, physical model, and CoolProp source backend.
-- [ ] Specify one `get_state(input_type, prop_1, prop_2, ...)` argument vocabulary, common identity/defaults, SI and mass/molar conventions, and reference conventions.
-- [ ] Specify exact scalar and broadcast shapes, core state fields, optional property availability, supported input pairs/options, and batch failure behavior.
-- [ ] Specify typed errors for unsupported input pairs/properties/options, unavailable reference points, invalid states, and failed calculations. Define eager and supported JAX outcomes.
-- [ ] Add a fixed shared conformance matrix for every advertised evaluator and physical model, with explicit applicable and unsupported cases.
+- [x] Specify one construction API and provider selector, following the audit's proposed `create_fluid(name, provider, backend, identifier, ...)` pattern. Distinguish the numerical provider, physical model, and CoolProp source backend.
+- [x] Specify one `get_state(input_type, prop_1, prop_2, ...)` argument vocabulary, common identity/defaults, SI and mass/molar conventions, and reference conventions.
+- [x] Specify exact scalar and broadcast shapes, core state fields, optional property availability, supported input pairs/options, and batch failure behavior.
+- [x] Specify typed errors for unsupported input pairs/properties/options, unavailable reference points, invalid states, and failed calculations. Define eager and supported JAX outcomes.
+- [x] Add a fixed shared conformance matrix for every advertised evaluator and physical model, with explicit applicable and unsupported cases.
 
 Acceptance requires tests to express the intended common behavior, including perfect-gas quality/saturation rejection. During incremental implementation, track confirmed failures explicitly so the remaining work stays visible.
 
+Acceptance verified on 12 November 2026. The [public contract](z_PUBLIC_FLUID_CONTRACT.md) specifies construction/model/provider selection, mass-based SI inputs, preserved identity and broadcast axes, property availability, source references, typed errors, and eager/JAX failure policies. The fixed matrix includes direct CoolProp, its JAX wrapper, bicubic, perfect gas, and the consolidated binary target represented by current `FluidMix`. The broken unexported `FluidTwoComponent` is an input to consolidation rather than a promised separate public evaluator.
+
+| New contract tests | Passed | Strict expected failures |
+| --- | ---: | ---: |
+| [State foundation](tests/test_state_contract.py) | 25 | 10 |
+| [Shared evaluator conformance](tests/test_uniform_fluid_contract.py) | 74 | 61 |
+| [Failures, references, and execution modes](tests/test_contract_failures.py) | 0 | 48 |
+| **Total new cases** | **99** | **119** |
+
+The full HEOS run completed with **405 passed, 119 strict expected failures, zero unexpected failures, and zero skips** in 279.61 seconds. All 306 existing HEOS cases passed. [Summary](development/test_audit/results/phase2/full_heos_20261112_205840/summary.json), [pytest log](development/test_audit/results/phase2/full_heos_20261112_205840/pytest.log), and [JUnit results](development/test_audit/results/phase2/full_heos_20261112_205840/junit.xml) record the run. The final uniform string-valued error-request assertions were separately reverified: [48 strict expected failures](development/test_audit/results/phase2/final_failures.xml).
+
+Each expected failure identifies a confirmed gap and its responsible phase; remove its marker when implemented. `strict=True` makes an unexpected pass fail the suite. The missing factory does not gate the existing evaluators' numerical, identity, shape, or rejection tests. Phase 2 changes tests and specifications only. Its 119 expected failures are pending implementation requirements, not completed evaluator functionality.
+
+Verification command: `JAXPROP_TEST_BACKENDS=HEOS python tests/run_tests.py -q --tb=short --junitxml=<run>/junit.xml` (set the environment variable using the local shell). Normal Windows execution permissions were used for the pytest fixtures. The run emitted 14 static-JAX-metadata warnings, one complex-input conversion warning, and one list-input JAX deprecation warning. The latter two expose current validation gaps covered by strict expected failures. REFPROP is outside this phase's HEOS verification scope; the Phase 1 optional-backend result remains recorded above.
+
 ## Phase 3 Implement the shared state foundation
 
+- [ ] Implement/export the shared typed-error hierarchy and structured context required by controlled state access; wire construction/evaluator request validation in the following phases.
 - [ ] Standardize and preserve fluid/stream identity in every returned state and through collection operations.
 - [ ] Fix the overwritten `alpha_p` alias and validate all canonical names and aliases.
 - [ ] Fix stacking to add a state axis while preserving existing singleton dimensions. Cover indexing, reversal, concatenation, empty inputs, metadata mismatch, and nonmutation.
@@ -163,5 +179,6 @@ Acceptance requires the intended consumer workflows to pass through the common A
 | Pre-phase-1 HEOS suite | Completed baseline | 252 passed. [Recorded run](development/test_audit/results/baseline_20261112_195233/summary.json). Shared assertion-helper limitation is documented. |
 | Array-aware diagnostic comparison | Completed experiment | 167 passed with 25,022 numerical comparisons. [Recorded run](development/test_audit/results/baseline_20261112_195233/array_oracle_summary.json). |
 | Persistent test repairs | Completed phase 1 | 480 passed across HEOS and REFPROP, zero failures/skips, 50,189 finite values compared. [Summary](development/test_audit/results/phase1/full_20261112_203206/summary.json), [pytest log](development/test_audit/results/phase1/full_20261112_203206/pytest.log). |
-| Uniform API and evaluator refactor | Pending | Phases 2 through 11. |
+| Uniform public contract | Completed phase 2 | 218 new cases: 99 passed, 119 strict expected failures. Full HEOS: 405 passed, zero unexpected failures/skips. [Summary](development/test_audit/results/phase2/full_heos_20261112_205840/summary.json). |
+| Shared state and evaluator refactor | Pending | Phases 3 through 11; implement/remove the corresponding strict expected failures. |
 | Consumer integration and publication checks | Pending | Phase 12. |
