@@ -1,5 +1,4 @@
 import os
-import shutil
 import atexit
 import pytest
 import numpy as np
@@ -19,12 +18,31 @@ PRINT_STATISTICS = os.environ.get("PRINT_STATISTICS") == "1"
 # Import fluid cases from the bicubic test module
 from test_bicubic_accuracy import FLUID_CASES
 
-TABLE_DIR = "fluid_tables"
 GRID_SIZE = 40
 CONSISTENCY_TOL = 1e-10  # relative L² error tolerance
 
-# Input types to test (derived from the class itself)
-INPUT_TYPES = list(jxp.bicubic.FluidBicubic.PROPERTY_CALCULATORS.keys())
+# This expected contract is independent of the implementation's dispatch table.
+INPUT_TYPES = (
+    jxp.HmassP_INPUTS,
+    jxp.PT_INPUTS,
+    jxp.DmassP_INPUTS,
+    jxp.HmassSmass_INPUTS,
+    jxp.DmassHmass_INPUTS,
+    jxp.DmassT_INPUTS,
+    jxp.DmassSmass_INPUTS,
+    jxp.PSmass_INPUTS,
+)
+CORE_PROPERTIES = (
+    "pressure",
+    "temperature",
+    "density",
+    "enthalpy",
+    "entropy",
+    "internal_energy",
+    "isobaric_heat_capacity",
+    "isochoric_heat_capacity",
+    "speed_of_sound",
+)
 
 
 # -------------------------------------------------------
@@ -43,49 +61,41 @@ def l2_relative_error(a, b):
 # -------------------------------------------------------
 # Fixtures
 # -------------------------------------------------------
-@pytest.fixture(scope="session", autouse=True)
-def clean_tables_start():
-    """
-    Delete all existing tables at the start of the test session if they exist.
-    Does not regenerate tables.
-    """
-    if os.path.exists(TABLE_DIR):
-        print(f"[INFO] Removing existing table directory: {TABLE_DIR}")
-        shutil.rmtree(TABLE_DIR, ignore_errors=True)
-    os.makedirs(TABLE_DIR, exist_ok=True)
-
-    # Run the tests
-    yield
+@pytest.fixture(scope="module", params=FLUID_CASES, ids=lambda case: case["fluid"])
+def bicubic_case(request, tmp_path_factory):
+    """Build one isolated table per fluid and reuse it for every input pair."""
+    fluid_case = request.param
+    fluid = jxp.FluidBicubic(
+        fluid_name=fluid_case["fluid"],
+        backend="HEOS",
+        h_min=fluid_case["h_min"], h_max=fluid_case["h_max"],
+        p_min=fluid_case["p_min"], p_max=fluid_case["p_max"],
+        N_h=GRID_SIZE, N_p=GRID_SIZE,
+        table_dir=str(tmp_path_factory.mktemp("bicubic_consistency")),
+        coarse_step=1,
+    )
+    return fluid_case, fluid
 
 # -------------------------------------------------------
 # Test
 # -------------------------------------------------------
 @pytest.mark.parametrize("input_type", INPUT_TYPES)
-@pytest.mark.parametrize("fluid_case", FLUID_CASES)
-def test_solver_consistency(fluid_case, input_type):
+def test_solver_consistency(bicubic_case, input_type):
     """
     Check that each solver input pair gives results consistent with H-P baseline,
     based on relative L² errors of all canonical properties.
     """
+    fluid_case, fluid = bicubic_case
     fluid_name = fluid_case["fluid"]
     h_min, h_max = fluid_case["h_min"], fluid_case["h_max"]
     p_min, p_max = fluid_case["p_min"], fluid_case["p_max"]
 
-    # Load bicubic fluid model (table already exists)
-    fluid = jxp.FluidBicubic(
-        fluid_name=fluid_name,
-        backend="HEOS",
-        h_min=h_min, h_max=h_max,
-        p_min=p_min, p_max=p_max,
-        N_h=GRID_SIZE, N_p=GRID_SIZE,
-        table_dir=TABLE_DIR,
-        coarse_step=1,
-    )
-
-    # Reference grid at midpoints
+    # Include domain boundaries and pressures throughout the interpolation range.
     h_vals = jnp.linspace(h_min, h_max, 25)
-    logp_vals = jnp.linspace(jnp.log(p_max), jnp.log(p_max), 25)
+    logp_vals = jnp.linspace(jnp.log(p_min), jnp.log(p_max), 25)
     p_vals = jnp.exp(logp_vals)
+    np.testing.assert_allclose(np.asarray(p_vals)[[0, -1]], [p_min, p_max])
+    assert np.unique(np.asarray(p_vals)).size == len(p_vals)
     H_mesh, P_mesh = jnp.meshgrid(h_vals, p_vals, indexing="ij")
 
     # PH baseline
@@ -103,6 +113,20 @@ def test_solver_consistency(fluid_case, input_type):
     for prop in jxp.PROPERTIES_CANONICAL:
         ref_val = np.array(state_ref[prop])
         interp_val = np.array(interp[prop])
+        context = f"{fluid_name} {jxp.INPUT_TYPE_MAP[input_type]} {prop}"
+        assert ref_val.shape == interp_val.shape == H_mesh.shape, context
+        if prop in CORE_PROPERTIES:
+            assert np.all(np.isfinite(ref_val)), f"{context}: invalid HP baseline"
+            assert np.all(np.isfinite(interp_val)), f"{context}: invalid inverse"
+            np.testing.assert_allclose(
+                interp_val, ref_val,
+                rtol=CONSISTENCY_TOL, atol=CONSISTENCY_TOL, err_msg=context,
+            )
+        np.testing.assert_array_equal(
+            np.isnan(interp_val), np.isnan(ref_val), err_msg=context
+        )
+        assert not np.any(np.isinf(ref_val)), f"{context}: infinite HP baseline"
+        assert not np.any(np.isinf(interp_val)), f"{context}: infinite inverse"
 
         mask = np.isfinite(ref_val)
         if not np.any(mask):
@@ -116,6 +140,11 @@ def test_solver_consistency(fluid_case, input_type):
             f"[{fluid_name}] input={jxp.INPUT_TYPE_MAP[input_type]} "
             f"prop={prop} rel L2 error={rel_err:.3e} > tol={CONSISTENCY_TOL:.1e}"
         )
+
+
+def test_bicubic_input_pair_contract():
+    """Removing an implemented pair must remain visible to the test suite."""
+    assert set(jxp.FluidBicubic.PROPERTY_CALCULATORS) == set(INPUT_TYPES)
 
 
 def log_result(fluid_name, input_type, prop, rel_err, tol):

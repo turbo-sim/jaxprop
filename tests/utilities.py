@@ -3,15 +3,22 @@ import os
 import numpy as np
 import jaxprop as jxp
 
-# Detect if running in GitHub Actions
-IN_GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS", "false").lower() == "true"
-
-# Define available backends
 def get_available_backends():
-    if os.environ.get("GITHUB_ACTIONS", "false").lower() == "true":
-        return ["HEOS"]
-    else:
-        return ["HEOS", "REFPROP"]
+    """Select test backends, opting into REFPROP with JAXPROP_TEST_BACKENDS.
+
+    HEOS is the default on both local machines and CI. For example, set
+    ``JAXPROP_TEST_BACKENDS=HEOS,REFPROP`` to also collect REFPROP cases.
+    Requested REFPROP cases are skipped by conftest when its library cannot
+    be initialized. Each other collected calculation retains its own failures.
+    """
+    requested = os.environ.get("JAXPROP_TEST_BACKENDS", "HEOS")
+    backends = list(dict.fromkeys(name.strip().upper() for name in requested.split(",")))
+    if any(name not in {"HEOS", "REFPROP"} for name in backends):
+        raise ValueError(
+            "JAXPROP_TEST_BACKENDS must contain HEOS and/or REFPROP, "
+            f"separated by commas. Received {requested!r}."
+        )
+    return backends
 
 # Define reference states dynamically
 def get_reference_state(fluid, backend, label):
@@ -67,66 +74,72 @@ def assert_consistent_values(
     tolerance,
     log_list,
     raise_error=True,
+    *,
+    atol=None,
+    rtol=None,
 ):
+    """Compare every element of real scalar/array properties and record coverage.
+
+    Inputs must have identical, nonempty shapes. Core thermodynamic properties
+    must be finite. Paired NaNs represent unavailable optional properties.
+    Infinities and unmatched NaNs fail. Each finite element must satisfy the
+    absolute or relative tolerance, which default to ``tolerance``. ``atol``
+    and ``rtol`` allow property-specific tolerances in their respective units.
+
+    Return whether the comparison passed. ``raise_error=False`` records failed
+    numerical comparisons for diagnostics. Invalid types, shapes and tolerance
+    settings always raise, so a malformed comparison cannot silently pass.
     """
-    Compare a reference and computed value for thermodynamic consistency.
+    reference = np.asarray(v_ref)
+    calculated = np.asarray(v_new)
+    if reference.dtype.kind not in "biuf" or calculated.dtype.kind not in "biuf":
+        raise TypeError(f"{prop_name} comparison requires real numeric values")
+    if reference.shape != calculated.shape:
+        raise AssertionError(
+            f"{prop_name} shapes differ: {reference.shape} != {calculated.shape}"
+        )
+    if reference.size == 0:
+        raise AssertionError(f"{prop_name} comparison contains no values")
+    absolute_tolerance = float(tolerance if atol is None else atol)
+    relative_tolerance = float(tolerance if rtol is None else rtol)
+    tolerances = np.array([absolute_tolerance, relative_tolerance])
+    if not np.all(np.isfinite(tolerances)) or np.any(tolerances < 0):
+        raise ValueError("Comparison tolerances must be finite and nonnegative")
 
-    Checks if values agree within specified absolute or relative tolerances.
-    Logs errors and optionally raises an exception if they do not agree.
-
-    Parameters
-    ----------
-    v_ref : float
-        Reference value (e.g., from a known or validated solver).
-    v_new : float
-        New value to be validated.
-    prop_name : str
-        Name of the thermodynamic property.
-    fluid_name : str
-        Name of the working fluid.
-    backend : str
-        Thermodynamic backend used (e.g., HEOS, REFPROP).
-    state_label : str
-        Label of the thermodynamic state (e.g., 'supercritical_gas').
-    input_type : str
-        Input variable combination used to define the state.
-    prop1_name, prop2_name : str
-        Names of the input variables.
-    prop1, prop2 : float
-        Input values used to define the state.
-    tolerance : float
-        Tolerance for consistency check.
-    log_list : list
-        List to store detailed log of error metrics.
-    raise_error : bool
-        Whether to raise an error if consistency fails.
-
-    Notes
-    -----
-    The consistency check passes if:
-
-        abs_error < atol  OR  rel_error < rtol
-
-    """
-
-    # Skip boolean types
-    if isinstance(v_ref, (bool, np.bool_)) or isinstance(v_new, (bool, np.bool_)):
-        return
-    
-    # Skip non-numeric types
-    if not isinstance(v_ref, (int, float, np.number)) or not isinstance(v_new, (int, float, np.number)):
-        return
-
-    # Skip NaNs (both-NaN treated as consistent)
-    if np.isnan(v_ref) and np.isnan(v_new):
-        return
-
-    # Compute error metrics
-    abs_err = abs(v_new - v_ref)
-    rel_err = abs_err / abs(v_ref) if abs(v_ref) > 0 else np.inf
-    min_error = min(abs_err, rel_err)
-
-    # Append result to log
+    reference = reference.astype(np.float64)
+    calculated = calculated.astype(np.float64)
+    finite = np.isfinite(reference) & np.isfinite(calculated)
+    paired_nan = np.isnan(reference) & np.isnan(calculated)
+    core_properties = {
+        "pressure",
+        "temperature",
+        "density",
+        "enthalpy",
+        "entropy",
+        "internal_energy",
+    }
+    canonical_name = jxp.ALIAS_TO_CANONICAL.get(prop_name, prop_name)
+    unavailable = paired_nan & (canonical_name not in core_properties)
+    absolute_errors = np.full(reference.shape, np.inf)
+    relative_errors = np.full(reference.shape, np.inf)
+    absolute_errors[finite] = np.abs(calculated[finite] - reference[finite])
+    np.divide(
+        absolute_errors,
+        np.abs(reference),
+        out=relative_errors,
+        where=finite & (reference != 0),
+    )
+    absolute_errors[unavailable] = 0.0
+    relative_errors[unavailable] = 0.0
+    passed = bool(
+        np.all(
+            (absolute_errors <= absolute_tolerance)
+            | (relative_errors <= relative_tolerance)
+        )
+    )
+    abs_err = float(np.max(absolute_errors))
+    rel_err = float(np.max(relative_errors))
+    min_error = float(np.max(np.minimum(absolute_errors, relative_errors)))
     log_list.append(
         {
             "fluid": fluid_name,
@@ -141,17 +154,21 @@ def assert_consistent_values(
             "abs_error": abs_err,
             "rel_error": rel_err,
             "min_error": min_error,
+            "finite_count": int(np.count_nonzero(finite)),
+            "unavailable_count": int(np.count_nonzero(unavailable)),
+            "value_count": int(reference.size),
+            "passed": passed,
         }
     )
-
-    # Logical OR check (interpretable and robust)
-    if not (abs_err < tolerance or rel_err < tolerance) and raise_error:
+    if not passed and raise_error:
         raise AssertionError(
             f"Inconsistency in '{prop_name}' for fluid '{backend}::{fluid_name}' "
             f"at state '{state_label}' using input '{input_type}'\n"
-            f"  input = ({prop1_name} = {prop1:.6g}, {prop2_name} = {prop2:.6g})\n"
-            f"  ref = {v_ref:.6g}, new = {v_new:.6g}\n"
+            f"  input = ({prop1_name} = {prop1}, {prop2_name} = {prop2})\n"
+            f"  ref = {reference}, new = {calculated}\n"
             f"  abs_err = {abs_err:.2e}, rel_err = {rel_err:.2e} "
-            f"(fails check: abs_err < {tolerance:.1e} or rel_err < {tolerance:.1e})"
+            f"(required abs_err <= {absolute_tolerance:.1e} "
+            f"or rel_err <= {relative_tolerance:.1e})"
         )
+    return passed
 

@@ -1,10 +1,8 @@
 import os
-import shutil
 import pytest
 import atexit
 import numpy as np
 import pandas as pd
-import jax.numpy as jnp
 import jaxprop as jxp
 import matplotlib.pyplot as plt
 
@@ -16,7 +14,17 @@ import matplotlib.pyplot as plt
 INTERP_LOG = []
 PRINT_STATISTICS = os.environ.get("PRINT_STATISTICS") == "1"
 
-TABLE_DIR = "fluid_tables"
+CORE_PROPERTIES = (
+    "pressure",
+    "temperature",
+    "density",
+    "enthalpy",
+    "entropy",
+    "internal_energy",
+    "isobaric_heat_capacity",
+    "isochoric_heat_capacity",
+    "speed_of_sound",
+)
 
 FLUID_CASES = [
     {
@@ -43,10 +51,12 @@ FLUID_CASES = [
 ]
 
 
+# True cell centers and maximum local errors need finer grids than the old
+# arbitrary 25-point samples. Retain the original percentage error budgets.
 GRID_CASES = [
-    {"N": 10, "tol": 1e-1},   # coarse grid → lower accuracy expected
-    {"N": 20, "tol": 1e-2},
-    {"N": 40, "tol": 1e-3},   # fine grid → tight tolerance
+    {"N": 16, "tol": 1e-1},
+    {"N": 32, "tol": 1e-2},
+    {"N": 64, "tol": 1e-3},
 ]
 
 # -------------------------------------------------------
@@ -98,25 +108,65 @@ def plot_table_domain(fluid_case):
 # -------------------------------------------------------
 # Tests
 # -------------------------------------------------------
-@pytest.fixture(autouse=True)
-def clean_table_dir():
-    """
-    Automatically clean the fluid_tables directory before each test.
-    This ensures no cached tables from previous runs affect current results.
-    """
-    shutil.rmtree(TABLE_DIR, ignore_errors=True)
-    os.makedirs(TABLE_DIR, exist_ok=True)
-    yield  # run the test
-    # Optional: clean again after test
-    shutil.rmtree(TABLE_DIR, ignore_errors=True)
+def sample_grids(fluid_case, num_nodes):
+    """Return actual cell centers and boundary nodes/edge centers."""
+    h_nodes = np.linspace(fluid_case["h_min"], fluid_case["h_max"], num_nodes)
+    log_p_nodes = np.linspace(
+        np.log(fluid_case["p_min"]), np.log(fluid_case["p_max"]), num_nodes
+    )
+    h_centers = (h_nodes[:-1] + h_nodes[1:]) / 2
+    p_centers = np.exp((log_p_nodes[:-1] + log_p_nodes[1:]) / 2)
+    center_grid = np.meshgrid(h_centers, p_centers, indexing="ij")
+
+    h_edges = np.sort(np.concatenate((h_nodes, h_centers)))
+    p_edges = np.sort(np.concatenate((np.exp(log_p_nodes), p_centers)))
+    boundary_grid = (
+        np.concatenate((
+            np.full(p_edges.shape, fluid_case["h_min"]),
+            np.full(p_edges.shape, fluid_case["h_max"]),
+            h_edges,
+            h_edges,
+        )),
+        np.concatenate((
+            p_edges,
+            p_edges,
+            np.full(h_edges.shape, fluid_case["p_min"]),
+            np.full(h_edges.shape, fluid_case["p_max"]),
+        )),
+    )
+    return {"cell_centers": center_grid, "boundaries": boundary_grid}
+
+
+def test_accuracy_sampling_uses_cell_centers_and_domain_boundaries():
+    """Protect the intended cell geometry with independently known coordinates."""
+    domain = {"h_min": 0.0, "h_max": 6.0, "p_min": 1.0, "p_max": 64.0}
+    grids = sample_grids(domain, num_nodes=4)
+    h_centers, p_centers = grids["cell_centers"]
+    np.testing.assert_allclose(h_centers, [[1, 1, 1], [3, 3, 3], [5, 5, 5]])
+    np.testing.assert_allclose(p_centers, [[2, 8, 32], [2, 8, 32], [2, 8, 32]])
+
+    h_boundary, p_boundary = grids["boundaries"]
+    assert h_boundary.shape == p_boundary.shape == (28,)
+    assert np.all(
+        (h_boundary == 0)
+        | (h_boundary == 6)
+        | (p_boundary == 1)
+        | (p_boundary == 64)
+    )
+    for enthalpy, pressure in ((0, 1), (0, 64), (6, 1), (6, 64), (0, 2), (3, 64)):
+        assert np.any(
+            np.isclose(h_boundary, enthalpy) & np.isclose(p_boundary, pressure)
+        )
 
 
 @pytest.mark.parametrize("fluid_case", FLUID_CASES)
 @pytest.mark.parametrize("grid_case", GRID_CASES)
-def test_bicubic_midpoint_accuracy(fluid_case, grid_case):
+def test_bicubic_midpoint_accuracy(fluid_case, grid_case, tmp_path):
     """
-    Check that bicubic interpolation at midpoints matches CoolProp
-    within prescribed L2 relative error thresholds for key properties.
+    Compare true cell centers and boundaries with the source properties.
+
+    Preserve the mean percentage-error budgets and enforce the same budgets
+    for the maximum local error of the required core properties.
     """
 
     # Fluid-specific domain
@@ -134,42 +184,48 @@ def test_bicubic_midpoint_accuracy(fluid_case, grid_case):
         h_min=h_min, h_max=h_max,
         p_min=p_min, p_max=p_max,
         N_h=N, N_p=N,
-        table_dir=TABLE_DIR,
+        table_dir=str(tmp_path),
     )
 
     # Reference CoolProp model
     fluid_cp = jxp.FluidJAX(fluid_name, exceptions=False)
 
-    # Midpoint grid
-    h_vals = jnp.linspace(h_min, h_max, 25)
-    p_vals = jnp.exp(jnp.linspace(jnp.log(p_min), jnp.log(p_max), 25))
-    H_mesh, P_mesh = np.meshgrid(h_vals, p_vals, indexing="ij")
+    failures = []
+    for sample_name, (H_mesh, P_mesh) in sample_grids(fluid_case, N).items():
+        interp_grid = fluid_bicubic.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
+        true_grid = fluid_cp.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
+        for prop in jxp.PROPERTIES_CANONICAL:
+            interp_val = np.asarray(interp_grid[prop])
+            true_val = np.asarray(true_grid[prop])
+            context = f"{fluid_name} N={N} {sample_name} prop={prop}"
+            assert interp_val.shape == true_val.shape == H_mesh.shape, context
+            if prop in CORE_PROPERTIES:
+                assert np.all(np.isfinite(true_val)), f"{context}: invalid reference"
+                assert np.all(np.isfinite(interp_val)), f"{context}: invalid interpolant"
+            np.testing.assert_array_equal(
+                np.isnan(interp_val), np.isnan(true_val), err_msg=context
+            )
+            assert not np.any(np.isinf(true_val)), f"{context}: infinite reference"
+            assert not np.any(np.isinf(interp_val)), f"{context}: infinite interpolant"
+            mask = np.isfinite(true_val)
+            if not np.any(mask):
+                continue
 
-    # Evaluate both models at midpoints
-    interp_grid = fluid_bicubic.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
-    true_grid = fluid_cp.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
-
-    # Properties to check
-    # properties = ["T", "d", "e", "s", "a", "G"]
-    props_to_check = jxp.PROPERTIES_CANONICAL
-
-    for prop in props_to_check:
-        interp_val = np.array(interp_grid[prop])
-        true_val = np.array(true_grid[prop])
-
-        # Mask out NaNs in the reference (true) values
-        mask = ~np.isnan(true_val)
-        if not np.any(mask):
-            continue
-        
-        # Calculate error and save info
-        err = mean_absolute_percentage_error(interp_val[mask], true_val[mask])
-        log_result(fluid_name, N, prop, err, tol) 
-
-
-        assert err < tol, (
-            f"{fluid_name} N={N} prop={prop}: MAPE={err:.3e} > tol={tol:.1e}"
-        )
+            err = mean_absolute_percentage_error(interp_val[mask], true_val[mask])
+            log_result(fluid_name, N, prop, err, tol)
+            if err >= tol:
+                failures.append(f"{context}: mean error {err:.6e}% >= {tol:.6e}%")
+            if prop in CORE_PROPERTIES:
+                local_error = (
+                    100 * np.abs(interp_val[mask] - true_val[mask])
+                    / np.maximum(np.abs(true_val[mask]), 1e-30)
+                )
+                maximum_error = float(np.max(local_error))
+                if maximum_error >= tol:
+                    failures.append(
+                        f"{context}: maximum error {maximum_error:.6e}% >= {tol:.6e}%"
+                    )
+    assert not failures, "\n".join(failures)
 
 
 def log_result(fluid_name, N, prop, err, tol):
