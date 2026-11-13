@@ -4,6 +4,7 @@ import pickle
 import copy
 import hashlib
 import inspect
+from functools import partial
 from pathlib import Path
 import warnings
 import numpy as np
@@ -81,7 +82,7 @@ class FluidBicubic(eqx.Module):
     logP_sat_vals: jnp.ndarray = eqx.field(static=False)
     table_name: str = eqx.field(static=True)
     table_dir: str = eqx.field(static=True)
-    table: dict = eqx.field(static=False)
+    _table: dict = eqx.field(static=False)
     identifier: str = eqx.field(static=True)
     provider: str = eqx.field(static=True)
     model: str = eqx.field(static=True)
@@ -361,8 +362,22 @@ class FluidBicubic(eqx.Module):
         else:
             self.table_name = table_name
 
-        # Load or generate
-        self.table = self._load_or_generate_table()
+        # The persisted payload includes its full generation manifest. Keep
+        # only numerical entries in the dynamic tree so Equinox does not walk
+        # source fingerprints and generation settings on every property call.
+        table = self._load_or_generate_table()
+        self._table = {
+            name: entry for name, entry in table.items() if name != "metadata"
+        }
+
+    @property
+    def table(self):
+        """Expose the complete payload for inspection without tracing metadata.
+
+        The outer dictionary is a snapshot; numerical entries share the stored
+        arrays. Generation/reload validate the complete persisted manifest.
+        """
+        return {"metadata": self.metadata, **self._table}
 
     # ------------------ Table loading / generation ------------------
     def _load_or_generate_table(self):
@@ -1331,15 +1346,15 @@ class FluidBicubic(eqx.Module):
         ),
     }
 
-    @eqx.filter_jit
+    @partial(jax.jit, static_argnames=("input_type",))
     def get_state(self, input_type, val1, val2):
-        # jax.debug.print("input:{ip}, v1:{v1}, v2:{v2}", ip=input_type, v1=val1, v2=val2)
-
-        # TODO: add a warning for values behond the table limits!!!
-
-        val1 = jnp.asarray(val1)
-        val2 = jnp.asarray(val2)
+        """Evaluate dynamic numeric inputs; only the input-pair selector is static."""
+        val1, val2 = jnp.asarray(val1), jnp.asarray(val2)
         val1, val2 = jnp.broadcast_arrays(val1, val2)
+
+        # Scalar evaluation needs neither a length-one vmap nor tree reshaping.
+        if val1.ndim == 0:
+            return self._get_state_scalar(input_type, val1, val2)
 
         batched_fn = jax.vmap(lambda v1, v2: self._get_state_scalar(input_type, v1, v2))
 
@@ -1358,7 +1373,6 @@ class FluidBicubic(eqx.Module):
 
         return sat_props
 
-    @eqx.filter_jit
     def _get_state_scalar(self, input_type, val1, val2):
         fn = self.PROPERTY_CALCULATORS.get(input_type)
         if fn is None:
@@ -1403,9 +1417,8 @@ class FluidBicubic(eqx.Module):
         basis = jnp.kron(ym, xm)
 
         props = {
-            name: jnp.dot(self.table[name]["coeffs"][i, j], basis)
-            for name in self.table.keys()
-            if name != "metadata" and name != "saturation_props"
+            name: jnp.dot(self._table[name]["coeffs"][i, j], basis)
+            for name in jxp.PROPERTIES_CANONICAL
         }
 
         # enforce exact inputs
@@ -1424,8 +1437,8 @@ class FluidBicubic(eqx.Module):
 
     def _interp_h_y(self, h, y_value, y_name, tol=1e-10, max_steps=64):
         i0 = jnp.argmin(jnp.abs(self.h_vals - h))
-        j0 = jnp.argmin(jnp.abs(self.table[y_name]["value"][i0, :] - y_value))
-        p0 = self.table["pressure"]["value"][i0, j0]
+        j0 = jnp.argmin(jnp.abs(self._table[y_name]["value"][i0, :] - y_value))
+        p0 = self._table["pressure"]["value"][i0, j0]
 
         def residual(p, _):
             val = self._interp_h_p(h, p)[y_name] - y_value
@@ -1443,8 +1456,8 @@ class FluidBicubic(eqx.Module):
 
     def _interp_x_p(self, p, x_value, x_name, tol=1e-10, max_steps=1000):
         j0 = jnp.argmin(jnp.abs(self.logP_vals - jnp.log(p)))
-        i0 = jnp.argmin(jnp.abs(self.table[x_name]["value"][:, j0] - x_value))
-        h0 = self.table["enthalpy"]["value"][i0, j0]
+        i0 = jnp.argmin(jnp.abs(self._table[x_name]["value"][:, j0] - x_value))
+        h0 = self._table["enthalpy"]["value"][i0, j0]
 
         def residual(h, _):
             val = self._interp_h_p(h, p)[x_name] - x_value
@@ -1477,12 +1490,12 @@ class FluidBicubic(eqx.Module):
 
         # coarse scan
         step = max(1, coarse_step)
-        h_table = self.table["enthalpy"]["value"][::step, ::step]
-        p_table = self.table["pressure"]["value"][::step, ::step]
-        val_x = self.table[prop1]["value"][::step, ::step]
-        val_y = self.table[prop2]["value"][::step, ::step]
-        range_x = jnp.ptp(self.table[prop1]["value"])
-        range_y = jnp.ptp(self.table[prop2]["value"])
+        h_table = self._table["enthalpy"]["value"][::step, ::step]
+        p_table = self._table["pressure"]["value"][::step, ::step]
+        val_x = self._table[prop1]["value"][::step, ::step]
+        val_y = self._table[prop2]["value"][::step, ::step]
+        range_x = jnp.ptp(self._table[prop1]["value"])
+        range_y = jnp.ptp(self._table[prop2]["value"])
         # avoid zero-range issues
         range_x = jnp.where(range_x == 0.0, 1.0, range_x)
         range_y = jnp.where(range_y == 0.0, 1.0, range_y)
@@ -1523,18 +1536,18 @@ class FluidBicubic(eqx.Module):
             return jnp.take(arr, idx, mode="clip")
 
         # Raw calculations
-        p_j = _take(self.table["saturation_props"]["pressure"]["value"], j)
-        p_j1 = _take(self.table["saturation_props"]["pressure"]["value"], j + 1)
+        p_j = _take(self._table["saturation_props"]["pressure"]["value"], j)
+        p_j1 = _take(self._table["saturation_props"]["pressure"]["value"], j + 1)
         dx = p_j1 - p_j
         t = (p_q - p_j) / dx
 
         props = {}
 
         for k in jxp.PROPERTIES_CANONICAL:
-            val_j = _take(self.table["saturation_props"][k]["value"], j)
-            val_j1 = _take(self.table["saturation_props"][k]["value"], j + 1)
-            gp_j = _take(self.table["saturation_props"][k]["grad_p"], j)
-            gp_j1 = _take(self.table["saturation_props"][k]["grad_p"], j + 1)
+            val_j = _take(self._table["saturation_props"][k]["value"], j)
+            val_j1 = _take(self._table["saturation_props"][k]["value"], j + 1)
+            gp_j = _take(self._table["saturation_props"][k]["grad_p"], j)
+            gp_j1 = _take(self._table["saturation_props"][k]["grad_p"], j + 1)
 
             dy = val_j1 - val_j
             a = gp_j * dx - dy

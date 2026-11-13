@@ -1,0 +1,808 @@
+{
+  "measured_date": "2026-11-13",
+  "baseline": {
+    "version": "0.5.8",
+    "distribution": "jaxprop-0.5.8-py3-none-any.whl",
+    "sha256": "3b6db9bfa5bd9ee37a4c3441f92f86b772e0c88ce8609bf76d32c322fbc795a3",
+    "source_sha256": "77a6c75f1a29528c2e4fe6e82e2cb67a4c55e68d6a8ba6b40baad26cb43fcf2f"
+  },
+  "implementation": {
+    "base_git_commit": "61728b00dc88aea2e2716d331603b30119ba17d8",
+    "working_tree_source_sha256": "201fe271b9032e42cbdd915888c8e83c028b96ac59a89a456e5787cdfe1d26b4",
+    "note": "Measured optimized working tree before the phase 4 implementation."
+  },
+  "method": {
+    "worker_order": [
+      "baseline1",
+      "current1",
+      "current2",
+      "baseline2",
+      "baseline3",
+      "current3"
+    ],
+    "workers_per_version": 3,
+    "warmed_samples_per_worker": 5,
+    "cold_table_samples_per_worker": 1,
+    "synchronize_jax": true,
+    "scope": "Six serial workers in ABBAAB order, three per version. Five warmed samples per workload/worker; synchronize JAX results. Changing-Python-scalar cases intentionally use a fresh value each call after initial warmup to expose static-value recompilation. HEOS, 16x16 tables, CPU/x64, no complete ThermOpt optimization/REFPROP performance/GPU claim."
+  },
+  "environment": {
+    "python": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]",
+    "dependencies": {
+      "jax": "0.6.2",
+      "numpy": "2.4.4",
+      "CoolProp": "7.2.0",
+      "equinox": "0.12.2",
+      "scipy": "1.17.1"
+    },
+    "hardware": {
+      "platform": "Windows-11-10.0.26300-SP0",
+      "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+      "cpu_count": 28
+    },
+    "conditions": {
+      "backend": "cpu",
+      "x64": true
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "XLA_FLAGS": null
+    }
+  },
+  "validation": {
+    "common_value_shape_groups_passed": 42,
+    "all_common_groups_passed": true,
+    "sampled_derivatives": {
+      "perfect_gas_dTdh": 0.0009322483948628121,
+      "bicubic_dTdh": 0.0008858590660434417
+    },
+    "sampled_derivatives_exact_match": true,
+    "full_suite": {
+      "backends": [
+        "HEOS",
+        "REFPROP"
+      ],
+      "passed": 936,
+      "strict_expected_failures": 78,
+      "unexpected_failures": 0,
+      "skips": 0,
+      "property_comparisons": 84950,
+      "finite_values_compared": 50189,
+      "unavailable_values_checked": 34761,
+      "failed_comparisons": 0
+    }
+  },
+  "rows": [
+    {
+      "case": "construct_Fluid_CO2",
+      "baseline_us": 6402.426666666667,
+      "baseline_iqr_us": [
+        5943.473333333333,
+        7515.643333333333
+      ],
+      "current_us": 5044.980000000001,
+      "current_iqr_us": [
+        4923.846666666667,
+        5216.743333333334
+      ],
+      "ratio": 0.7879793494966494,
+      "paired_ratios": [
+        0.8742209119031367,
+        0.6676073932463537,
+        0.8162925310698739
+      ]
+    },
+    {
+      "case": "source_CO2_HP_scalar",
+      "baseline_us": 995.2145,
+      "baseline_iqr_us": [
+        864.2447500000001,
+        1109.39375
+      ],
+      "current_us": 646.7330000000001,
+      "current_iqr_us": [
+        625.83725,
+        660.2900000000001
+      ],
+      "ratio": 0.6498428228286465,
+      "paired_ratios": [
+        0.5890831805145788,
+        0.6084917201936273,
+        0.7534516013494219
+      ]
+    },
+    {
+      "case": "source_CO2_PT_scalar",
+      "baseline_us": 857.3105,
+      "baseline_iqr_us": [
+        830.3305,
+        936.5860000000001
+      ],
+      "current_us": 550.7715000000001,
+      "current_iqr_us": [
+        536.4467500000001,
+        670.1097500000001
+      ],
+      "ratio": 0.6424410992283426,
+      "paired_ratios": [
+        0.8439459965370946,
+        0.6324799565095706,
+        0.6734717437929503
+      ]
+    },
+    {
+      "case": "source_CO2_PS_scalar",
+      "baseline_us": 924.4846666666667,
+      "baseline_iqr_us": [
+        892.0966666666668,
+        1019.9673333333335
+      ],
+      "current_us": 668.7080000000001,
+      "current_iqr_us": [
+        622.1916666666667,
+        748.892
+      ],
+      "ratio": 0.7233305473968561,
+      "paired_ratios": [
+        0.7876449677122509,
+        0.7303173479845305,
+        0.5908407796244886
+      ]
+    },
+    {
+      "case": "source_Water_PT_scalar",
+      "baseline_us": 889.8766666666667,
+      "baseline_iqr_us": [
+        835.2386666666666,
+        980.0323333333334
+      ],
+      "current_us": 607.2620000000002,
+      "current_iqr_us": [
+        581.0086666666667,
+        651.4010000000001
+      ],
+      "ratio": 0.6824114203091816,
+      "paired_ratios": [
+        0.7281660754486577,
+        0.6857127806214278,
+        0.6258264237399084
+      ]
+    },
+    {
+      "case": "source_Air_PT_scalar",
+      "baseline_us": 828.5040000000001,
+      "baseline_iqr_us": [
+        670.9290000000001,
+        861.4536666666668
+      ],
+      "current_us": 419.784,
+      "current_iqr_us": [
+        408.32666666666665,
+        466.40766666666667
+      ],
+      "ratio": 0.5066770951015324,
+      "paired_ratios": [
+        0.4942312506762258,
+        0.45979778304843133,
+        0.7375516472566994
+      ]
+    },
+    {
+      "case": "source_CO2_HP_batch64",
+      "baseline_us": 22803.34,
+      "baseline_iqr_us": [
+        19960.200000000004,
+        23713.550000000003
+      ],
+      "current_us": 18655.16,
+      "current_iqr_us": [
+        17420.83,
+        20862.550000000003
+      ],
+      "ratio": 0.8180889290779333,
+      "paired_ratios": [
+        0.9260713562136073,
+        0.760447392456616,
+        0.8893773745912178
+      ]
+    },
+    {
+      "case": "source_CO2_HP_read_T",
+      "baseline_us": 1038.314,
+      "baseline_iqr_us": [
+        994.94,
+        1087.5810000000001
+      ],
+      "current_us": 699.484,
+      "current_iqr_us": [
+        638.1076666666668,
+        730.8073333333334
+      ],
+      "ratio": 0.6736728966382038,
+      "paired_ratios": [
+        0.6638837836172543,
+        0.5947071185720489,
+        0.6920490046691039
+      ]
+    },
+    {
+      "case": "construct_FluidState_38",
+      "baseline_us": 617.9786666666666,
+      "baseline_iqr_us": [
+        600.2113333333334,
+        645.614
+      ],
+      "current_us": 325.4873333333333,
+      "current_iqr_us": [
+        297.78266666666667,
+        348.65900000000005
+      ],
+      "ratio": 0.5266967144496897,
+      "paired_ratios": [
+        0.5421392068721638,
+        0.5181503559684931,
+        0.49086803995076295
+      ]
+    },
+    {
+      "case": "state_numpy_canonical_T",
+      "baseline_us": 0.05356666666666667,
+      "baseline_iqr_us": [
+        0.0498,
+        0.055733333333333336
+      ],
+      "current_us": 2.4164666666666665,
+      "current_iqr_us": [
+        2.327516666666667,
+        2.6079833333333333
+      ],
+      "ratio": 45.111387678904784,
+      "paired_ratios": [
+        48.871268656716424,
+        42.14055023923445,
+        51.430615164520745
+      ]
+    },
+    {
+      "case": "state_numpy_alias_T",
+      "baseline_us": 0.1371666666666667,
+      "baseline_iqr_us": [
+        0.1296,
+        0.16381666666666667
+      ],
+      "current_us": 2.3125666666666667,
+      "current_iqr_us": [
+        2.2092,
+        2.4228666666666667
+      ],
+      "ratio": 16.8595382746051,
+      "paired_ratios": [
+        16.015734265734267,
+        17.635323383084575,
+        19.117441860465117
+      ]
+    },
+    {
+      "case": "state_numpy_to_dict",
+      "baseline_us": 1981.993,
+      "baseline_iqr_us": [
+        1802.6208333333334,
+        2144.8308333333334
+      ],
+      "current_us": 0.4026666666666667,
+      "current_iqr_us": [
+        0.38950000000000007,
+        0.4135
+      ],
+      "ratio": 0.00020316250696479084,
+      "paired_ratios": [
+        0.00018904524942933788,
+        0.00018919934601282657,
+        0.00023754493112724623
+      ]
+    },
+    {
+      "case": "state_numpy_concatenate",
+      "baseline_us": 2222.9575,
+      "baseline_iqr_us": [
+        2117.20125,
+        2437.695
+      ],
+      "current_us": 119.28750000000002,
+      "current_iqr_us": [
+        112.06875,
+        125.72375000000001
+      ],
+      "ratio": 0.05366161971157794,
+      "paired_ratios": [
+        0.05737608927771845,
+        0.045771381290274055,
+        0.06307494431721931
+      ]
+    },
+    {
+      "case": "source_compressor_3state",
+      "baseline_us": 2920.3083333333334,
+      "baseline_iqr_us": [
+        2474.2716666666665,
+        3147.0641666666666
+      ],
+      "current_us": 2054.545,
+      "current_iqr_us": [
+        2015.045,
+        2364.4891666666667
+      ],
+      "ratio": 0.7035370123588548,
+      "paired_ratios": [
+        0.8015634886501557,
+        0.6071743652940637,
+        0.8246327876330496
+      ]
+    },
+    {
+      "case": "construct_PerfectGas_CO2",
+      "baseline_us": 11269.000000000002,
+      "baseline_iqr_us": [
+        8265.555,
+        12485.045000000002
+      ],
+      "current_us": 7386.800000000001,
+      "current_iqr_us": [
+        7321.93,
+        7633.18
+      ],
+      "ratio": 0.6554973821989528,
+      "paired_ratios": [
+        0.6265876968807785,
+        0.6493016763459508,
+        0.9208731524823526
+      ]
+    },
+    {
+      "case": "perfect_gas_HP_full_scalar",
+      "baseline_us": 156.61500000000004,
+      "baseline_iqr_us": [
+        145.8445,
+        171.699
+      ],
+      "current_us": 38.1385,
+      "current_iqr_us": [
+        36.134750000000004,
+        39.605000000000004
+      ],
+      "ratio": 0.24351754301950637,
+      "paired_ratios": [
+        0.24404110597073184,
+        0.21329481094219346,
+        0.27189864831445587
+      ]
+    },
+    {
+      "case": "perfect_gas_HP_full_jax_scalar",
+      "baseline_us": 146.73450000000003,
+      "baseline_iqr_us": [
+        141.716,
+        170.35900000000004
+      ],
+      "current_us": 38.761,
+      "current_iqr_us": [
+        35.4245,
+        41.77125000000001
+      ],
+      "ratio": 0.2641573726696857,
+      "paired_ratios": [
+        0.2805240600909406,
+        0.19884282591336905,
+        0.2934489842501712
+      ]
+    },
+    {
+      "case": "perfect_gas_HP_changing_python_scalar",
+      "baseline_us": 28822.84,
+      "baseline_iqr_us": [
+        26408.810000000005,
+        30604.460000000003
+      ],
+      "current_us": 79.42,
+      "current_iqr_us": [
+        76.38,
+        86.25
+      ],
+      "ratio": 0.0027554536610549137,
+      "paired_ratios": [
+        0.0029587646463707256,
+        0.00242368174076927,
+        0.003389239852338713
+      ]
+    },
+    {
+      "case": "perfect_gas_HP_eager_T",
+      "baseline_us": 126.29500000000002,
+      "baseline_iqr_us": [
+        117.66375000000002,
+        148.71875
+      ],
+      "current_us": 38.761,
+      "current_iqr_us": [
+        37.38975,
+        43.806
+      ],
+      "ratio": 0.30690842867888674,
+      "paired_ratios": [
+        0.30690842867888674,
+        0.24176082938457416,
+        0.38587896747229405
+      ]
+    },
+    {
+      "case": "perfect_gas_HP_jit_T",
+      "baseline_us": 5.654333333333334,
+      "baseline_iqr_us": [
+        5.473166666666667,
+        6.8021666666666665
+      ],
+      "current_us": 5.94,
+      "current_iqr_us": [
+        5.684333333333335,
+        6.407
+      ],
+      "ratio": 1.0505217237516948,
+      "paired_ratios": [
+        1.147711015736767,
+        0.7498877413560844,
+        1.1034738993126512
+      ]
+    },
+    {
+      "case": "perfect_gas_HP_jit_dTdh",
+      "baseline_us": 5.759,
+      "baseline_iqr_us": [
+        5.556666666666667,
+        6.553000000000001
+      ],
+      "current_us": 5.655666666666668,
+      "current_iqr_us": [
+        5.493166666666667,
+        5.967666666666667
+      ],
+      "ratio": 0.9820570700931877,
+      "paired_ratios": [
+        1.099038348774481,
+        0.7980878995433791,
+        1.0119375573921028
+      ]
+    },
+    {
+      "case": "perfect_gas_HP_full_batch1024",
+      "baseline_us": 273.23,
+      "baseline_iqr_us": [
+        223.11833333333337,
+        306.0383333333333
+      ],
+      "current_us": 72.68000000000002,
+      "current_iqr_us": [
+        58.265,
+        85.85166666666667
+      ],
+      "ratio": 0.2660030011345753,
+      "paired_ratios": [
+        0.2506927277953435,
+        0.26740649735151356,
+        0.3050236303168213
+      ]
+    },
+    {
+      "case": "callback_HP_full_scalar",
+      "baseline_us": 4190.8166666666675,
+      "baseline_iqr_us": [
+        3763.6533333333336,
+        4700.214166666668
+      ],
+      "current_us": 1508.335,
+      "current_iqr_us": [
+        1451.6491666666666,
+        1674.48
+      ],
+      "ratio": 0.3599143365056134,
+      "paired_ratios": [
+        0.3754084283245498,
+        0.3388811127707219,
+        0.4155966415534067
+      ]
+    },
+    {
+      "case": "callback_HP_jit_T",
+      "baseline_us": 3629.46,
+      "baseline_iqr_us": [
+        3470.890833333334,
+        3865.4125000000004
+      ],
+      "current_us": 1267.1633333333336,
+      "current_iqr_us": [
+        1228.7625,
+        1320.1708333333336
+      ],
+      "ratio": 0.34913274518339743,
+      "paired_ratios": [
+        0.34622601494931227,
+        0.32047911214096747,
+        0.36157243988486504
+      ]
+    },
+    {
+      "case": "callback_HP_full_batch32",
+      "baseline_us": 114644.83333333334,
+      "baseline_iqr_us": [
+        111358.48333333334,
+        119632.83333333334
+      ],
+      "current_us": 31885.8,
+      "current_iqr_us": [
+        29016.4,
+        34886.216666666674
+      ],
+      "ratio": 0.27812679449139294,
+      "paired_ratios": [
+        0.2912847987745284,
+        0.221968836561538,
+        0.3220460579578728
+      ]
+    },
+    {
+      "case": "bicubic_construct_cold16",
+      "baseline_us": 2258651.5999937546,
+      "baseline_iqr_us": [
+        2191597.949997231,
+        2409081.4999944996
+      ],
+      "current_us": 2199709.599997732,
+      "current_iqr_us": [
+        2194970.4499966176,
+        2683008.499996504
+      ],
+      "ratio": 0.9739038991245105,
+      "paired_ratios": [
+        1.401857195747542,
+        0.8594255125425623,
+        1.0309181965964922
+      ]
+    },
+    {
+      "case": "bicubic_construct_cached16",
+      "baseline_us": 22625.05,
+      "baseline_iqr_us": [
+        22475.025,
+        23359.487500000003
+      ],
+      "current_us": 31585.399999999998,
+      "current_iqr_us": [
+        29796.800000000003,
+        35306.6875
+      ],
+      "ratio": 1.3960366938415605,
+      "paired_ratios": [
+        1.553558551182605,
+        1.3098291495488408,
+        1.4508065229199034
+      ]
+    },
+    {
+      "case": "bicubic_HP_full_scalar",
+      "baseline_us": 365.62399999999997,
+      "baseline_iqr_us": [
+        344.17125000000004,
+        388.65675
+      ],
+      "current_us": 157.9125,
+      "current_iqr_us": [
+        145.89625,
+        176.451
+      ],
+      "ratio": 0.43189861715861105,
+      "paired_ratios": [
+        0.49374405973272556,
+        0.3914756624743696,
+        0.43312598475667463
+      ]
+    },
+    {
+      "case": "bicubic_HP_full_jax_scalar",
+      "baseline_us": 372.064,
+      "baseline_iqr_us": [
+        336.346,
+        411.91350000000006
+      ],
+      "current_us": 146.15449999999998,
+      "current_iqr_us": [
+        139.7375,
+        150.76575000000003
+      ],
+      "ratio": 0.3928208587769845,
+      "paired_ratios": [
+        0.39833809473824566,
+        0.3519166891103331,
+        0.4828723507452178
+      ]
+    },
+    {
+      "case": "bicubic_HP_changing_python_scalar",
+      "baseline_us": 106769.22,
+      "baseline_iqr_us": [
+        102728.53,
+        122432.95000000001
+      ],
+      "current_us": 278.38000000000005,
+      "current_iqr_us": [
+        225.81,
+        296.71000000000004
+      ],
+      "ratio": 0.002607305738489052,
+      "paired_ratios": [
+        0.0022098066657127782,
+        0.002621523749886437,
+        0.0022185825786597275
+      ]
+    },
+    {
+      "case": "bicubic_HP_eager_T",
+      "baseline_us": 370.35999999999996,
+      "baseline_iqr_us": [
+        344.3887500000001,
+        437.20825
+      ],
+      "current_us": 164.5075,
+      "current_iqr_us": [
+        150.55725,
+        178.913
+      ],
+      "ratio": 0.4441826871152393,
+      "paired_ratios": [
+        0.37783799426481807,
+        0.5693184118267824,
+        0.3992984882657887
+      ]
+    },
+    {
+      "case": "bicubic_HP_jit_T",
+      "baseline_us": 6.109,
+      "baseline_iqr_us": [
+        5.953000000000001,
+        6.352166666666667
+      ],
+      "current_us": 6.257000000000001,
+      "current_iqr_us": [
+        6.079333333333333,
+        6.665666666666667
+      ],
+      "ratio": 1.0242265509903423,
+      "paired_ratios": [
+        1.0148099027409372,
+        1.1285535003001035,
+        0.9989356606886275
+      ]
+    },
+    {
+      "case": "bicubic_HP_jit_dTdh",
+      "baseline_us": 6.9766666666666675,
+      "baseline_iqr_us": [
+        6.517,
+        7.4565
+      ],
+      "current_us": 7.088666666666667,
+      "current_iqr_us": [
+        6.7698333333333345,
+        7.287000000000001
+      ],
+      "ratio": 1.0160535117056855,
+      "paired_ratios": [
+        1.020765452511793,
+        0.9877538013293272,
+        1.0458320824577203
+      ]
+    },
+    {
+      "case": "bicubic_HP_full_batch1024",
+      "baseline_us": 1297.13,
+      "baseline_iqr_us": [
+        1198.7275,
+        1435.5075000000002
+      ],
+      "current_us": 1280.2750000000003,
+      "current_iqr_us": [
+        1204.44,
+        1399.79
+      ],
+      "ratio": 0.9870059284728595,
+      "paired_ratios": [
+        0.8664183866752653,
+        1.1395311187005157,
+        1.0302160234809985
+      ]
+    },
+    {
+      "case": "bicubic_PS_full_scalar",
+      "baseline_us": 3875.561666666667,
+      "baseline_iqr_us": [
+        2549.0275,
+        4633.934166666667
+      ],
+      "current_us": 3099.411666666667,
+      "current_iqr_us": [
+        2759.6525,
+        3343.1783333333333
+      ],
+      "ratio": 0.7997322538625584,
+      "paired_ratios": [
+        0.6433602163939778,
+        0.6366805864924314,
+        1.1963548980356236
+      ]
+    },
+    {
+      "case": "bicubic_compressor_3state_eager",
+      "baseline_us": 3496.9950000000003,
+      "baseline_iqr_us": [
+        3350.65,
+        3664.25
+      ],
+      "current_us": 3740.7975,
+      "current_iqr_us": [
+        3297.75375,
+        3977.3700000000003
+      ],
+      "ratio": 1.0697177147808332,
+      "paired_ratios": [
+        0.8954272516042606,
+        1.0505696434602558,
+        1.032855178669173
+      ]
+    },
+    {
+      "case": "bicubic_compressor_3state_jit",
+      "baseline_us": 98.06400000000002,
+      "baseline_iqr_us": [
+        85.99433333333334,
+        104.65533333333335
+      ],
+      "current_us": 95.92266666666667,
+      "current_iqr_us": [
+        93.138,
+        107.43733333333334
+      ],
+      "ratio": 0.9781639201609832,
+      "paired_ratios": [
+        0.8910028122163186,
+        1.0119964605364318,
+        1.2563140324623001
+      ]
+    }
+  ],
+  "current_only": [
+    {
+      "case": "perfect_gas_jax_to_data",
+      "current_us": 157.60000000000002,
+      "current_iqr_us": [
+        150.88,
+        163.175
+      ]
+    },
+    {
+      "case": "perfect_gas_jax_property_valid",
+      "current_us": 55.00700000000001,
+      "current_iqr_us": [
+        52.62350000000001,
+        59.551500000000004
+      ]
+    }
+  ],
+  "notes": [
+    "New/old ratios compare complete public calls using their respective APIs.",
+    "Changing-Python-scalar timings include avoided repeated compilation, not just arithmetic acceleration.",
+    "Current-only validity/export APIs have no equivalent published API.",
+    "Intermediate workers, profiles, lowered IR, extracted packages, wheel and ad hoc scripts were removed after preserving this compact record.",
+    "This representative CPU comparison does not complete the phase 13 release gate."
+  ]
+}

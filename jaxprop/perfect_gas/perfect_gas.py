@@ -1,9 +1,11 @@
 import jax
+from functools import partial
 import jax.numpy as jnp
 import equinox as eqx
 
 from ..coolprop import Fluid
 from .. import helpers_props as jxp
+
 
 # ----------------------------------------------------------------------------- #
 # Constant generation and Sutherland estimation
@@ -91,10 +93,15 @@ def get_constants(fluid_name, T_ref, p_ref, dT=100.0):
 
     # Create object to store constants
     consts = PerfectGasConstants(
-        R=R, gamma=gamma,
-        T_ref=T_ref, P_ref=p_ref, s_ref=s_ref,
-        k_ref=k_ref, mu_ref=mu_ref,
-        S_k=S_k, S_mu=S_mu,
+        R=R,
+        gamma=gamma,
+        T_ref=T_ref,
+        P_ref=p_ref,
+        s_ref=s_ref,
+        k_ref=k_ref,
+        mu_ref=mu_ref,
+        S_k=S_k,
+        S_mu=S_mu,
     )
 
     return consts
@@ -102,9 +109,9 @@ def get_constants(fluid_name, T_ref, p_ref, dT=100.0):
 
 def estimate_sutherland_constant(T1, mu1, T2, mu2):
     """
-    Estimate the Sutherland constant [K] from two values of a transport property 
+    Estimate the Sutherland constant [K] from two values of a transport property
     (viscosity or thermal conductivity) at two temperatures, assuming a Sutherland-like law:
-    
+
         mu(T) = mu_ref * (T / T_ref)^{3/2} * (T_ref + S) / (T + S)
 
     Parameters
@@ -123,10 +130,10 @@ def estimate_sutherland_constant(T1, mu1, T2, mu2):
     return (r * T2 - T1) / (1 - r)
 
 
-
 # ----------------------------------------------------------------------------- #
 # Helper functions to calculate individual fluid properties
 # ----------------------------------------------------------------------------- #
+
 
 def specific_heat(constants):
     R = constants.R
@@ -135,9 +142,11 @@ def specific_heat(constants):
     cv = cp / gamma
     return cp, cv
 
+
 def temperature_from_h(h, constants):
     cp, _ = specific_heat(constants)
     return jnp.maximum(1.0, h / cp)
+
 
 def temperature_from_Ps(p, s, constants):
     R = constants.R
@@ -149,9 +158,11 @@ def temperature_from_Ps(p, s, constants):
     exponent = ((s - s_ref) + (R * jnp.log(p / P_ref))) / cp
     return jnp.maximum(1.0, T_ref * jnp.exp(exponent))
 
+
 def temperature_from_rhoP(rho, p, constants):
     R = constants.R
     return jnp.maximum(1.0, p / (rho * R))
+
 
 def viscosity_from_T(T, constants):
     mu_ref = constants.mu_ref
@@ -159,16 +170,19 @@ def viscosity_from_T(T, constants):
     S_mu = constants.S_mu
     return mu_ref * ((T / T_ref) ** 1.5) * ((T_ref + S_mu) / (T + S_mu))
 
+
 def conductivity_from_T(T, constants):
     k_ref = constants.k_ref
     T_ref = constants.T_ref
     S_k = constants.S_k
     return k_ref * ((T / T_ref) ** 1.5) * ((T_ref + S_k) / (T + S_k))
 
+
 def speed_of_sound_from_T(T, constants):
     R = constants.R
     gamma = constants.gamma
     return jnp.sqrt(gamma * R * T)
+
 
 def entropy_from_PT(p, T, constants):
     R = constants.R
@@ -177,6 +191,7 @@ def entropy_from_PT(p, T, constants):
     s_ref = constants.s_ref
     cp, _ = specific_heat(constants)
     return s_ref + (cp * jnp.log(T / T_ref)) - (R * jnp.log(p / P_ref))
+
 
 def entropy_from_rhoP(rho, p, constants):
     R = constants.R
@@ -187,7 +202,8 @@ def entropy_from_rhoP(rho, p, constants):
 # ----------------------------------------------------------------------------- #
 # Helper functions to calculate full fluid states
 # ----------------------------------------------------------------------------- #
-    
+
+
 def calculate_properties_PT(p, T, constants):
     T = jnp.maximum(T, 0.1)
     p = jnp.maximum(p, 0.1)
@@ -197,6 +213,7 @@ def calculate_properties_PT(p, T, constants):
     h = cp * T
     s = entropy_from_PT(p, T, constants)
     return assemble_properties(T, p, rho, h, s, constants)
+
 
 def calculate_properties_hs(h, s, constants):
     cp, _ = specific_heat(constants)
@@ -209,12 +226,14 @@ def calculate_properties_hs(h, s, constants):
     rho = P / (R * T)
     return assemble_properties(T, P, rho, h, s, constants)
 
+
 def calculate_properties_hP(h, p, constants):
     T = temperature_from_h(h, constants)
     R = constants.R
     rho = p / (R * T)
     s = entropy_from_PT(p, T, constants)
     return assemble_properties(T, p, rho, h, s, constants)
+
 
 def calculate_properties_Ps(p, s, constants):
     T = temperature_from_Ps(p, s, constants)
@@ -224,6 +243,7 @@ def calculate_properties_Ps(p, s, constants):
     h = cp * T
     return assemble_properties(T, p, rho, h, s, constants)
 
+
 def calculate_properties_rhoh(rho, h, constants):
     T = temperature_from_h(h, constants)
     R = constants.R
@@ -231,12 +251,14 @@ def calculate_properties_rhoh(rho, h, constants):
     s = entropy_from_rhoP(rho, p, constants)
     return assemble_properties(T, p, rho, h, s, constants)
 
+
 def calculate_properties_rhop(rho, p, constants):
     cp, _ = specific_heat(constants)
     T = temperature_from_rhoP(rho, p, constants)
     h = cp * T
     s = entropy_from_rhoP(rho, p, constants)
     return assemble_properties(T, p, rho, h, s, constants)
+
 
 def assemble_properties(T, p, rho, h, s, constants):
     R = constants.R
@@ -262,6 +284,7 @@ def assemble_properties(T, p, rho, h, s, constants):
         "compressibility_factor": ones,
         "gruneisen": (gamma - 1) * ones,
     }
+
 
 # ----------------------------------------------------------------------------- #
 # State evaluators (public API)
@@ -291,9 +314,14 @@ class FluidPerfectGas(eqx.Module):
         self.identifier = identifier
         self.reference_id = (self.model, "HEOS", name, T_ref, p_ref)
 
-    @eqx.filter_jit
-    def get_state(self, input_pair: str, x: float, y: float):
-        """Evaluate thermodynamic state for a perfect gas."""
+    @partial(jax.jit, static_argnames=("input_pair",))
+    def get_state(self, input_pair, x, y):
+        """Evaluate with dynamic numerical inputs and a static pair selector.
+
+        The model is already a numerical PyTree with static identity metadata,
+        so native JIT avoids filtered-method binding and per-value compilation.
+        """
+        x, y = jnp.asarray(x), jnp.asarray(y)
         props = PROPERTY_CALCULATORS[input_pair](x, y, self.constants)
         return jxp.FluidState(
             fluid_name=self.fluid_name,
@@ -304,16 +332,21 @@ class FluidPerfectGas(eqx.Module):
             available_properties=frozenset(props),
             **props,
         )
-    
+
+
 # ----------------------------------------------------------------------------- #
 # Gradient calculations (only used when JAX is installed)
 # ----------------------------------------------------------------------------- #
 
-def get_props_gradient(fluid, input_pair, x, y, method="auto", eps_rel=1e-6, eps_abs=1e-6):
+
+def get_props_gradient(
+    fluid, input_pair, x, y, method="auto", eps_rel=1e-6, eps_abs=1e-6
+):
     """
     Return dict of gradients for perfect_gas_props at (x, y).
     Each entry: grads[prop] = jnp.array([∂prop/∂x, ∂prop/∂y])
     """
+
     def f(vec):
         # Differentiate numeric properties only: status/validity arrays and
         # static availability metadata are not thermodynamic derivatives.
@@ -334,10 +367,12 @@ def get_props_gradient(fluid, input_pair, x, y, method="auto", eps_rel=1e-6, eps
 
         grads = {}
         for name in fx_p:
-            grads[name] = jnp.array([
-                (fx_p[name] - fx_m[name]) / (2.0 * dx),
-                (fy_p[name] - fy_m[name]) / (2.0 * dy),
-            ])
+            grads[name] = jnp.array(
+                [
+                    (fx_p[name] - fx_m[name]) / (2.0 * dx),
+                    (fy_p[name] - fy_m[name]) / (2.0 * dy),
+                ]
+            )
 
     return jxp.FluidState(
         fluid_name=fluid.fluid_name,
@@ -349,4 +384,3 @@ def get_props_gradient(fluid, input_pair, x, y, method="auto", eps_rel=1e-6, eps
         error_policy="mask",
         **grads,
     )
-

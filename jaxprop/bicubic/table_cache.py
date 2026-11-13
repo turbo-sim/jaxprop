@@ -5,6 +5,7 @@ import os
 import pickle
 import tempfile
 
+import jax
 import jax.numpy as jnp
 import numpy as np
 
@@ -111,6 +112,14 @@ def table_validation_error(table, metadata):
 def normalize_generated_arrays(table, metadata):
     """Give every generation mode the same declared floating storage dtype."""
     dtype = np.dtype(metadata["numeric_dtype"])
+
+    def normalized(value):
+        # A validated pickle normally restores correctly typed JAX arrays.
+        # Avoid redispatching an asarray conversion for every cached field.
+        if isinstance(value, jax.Array) and value.dtype == dtype:
+            return value
+        return jnp.asarray(value, dtype=dtype)
+
     # Do not repair a missing schema: validation must still reject that table.
     if not isinstance(table, dict):
         return table
@@ -118,13 +127,13 @@ def normalize_generated_arrays(table, metadata):
         if isinstance(table.get(name), dict):
             for key in TABLE_ARRAYS:
                 if key in table[name]:
-                    table[name][key] = jnp.asarray(table[name][key], dtype=dtype)
+                    table[name][key] = normalized(table[name][key])
     if isinstance(table.get("saturation_props"), dict):
         for entry in table["saturation_props"].values():
             if isinstance(entry, dict):
                 for key in ("value", "grad_p"):
                     if key in entry:
-                        entry[key] = jnp.asarray(entry[key], dtype=dtype)
+                        entry[key] = normalized(entry[key])
     return table
 
 

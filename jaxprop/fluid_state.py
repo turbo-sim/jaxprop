@@ -17,6 +17,21 @@ from .errors import (
 from .property_schema import ALIAS_TO_CANONICAL, PROPERTY_ALIASES, PROPERTIES_CANONICAL
 
 
+@jax.jit
+def _jax_property_valid(value, status):
+    """Materialize a requested mask in one compiled array operation."""
+    return jnp.isfinite(value) & (status == 0)
+
+
+@jax.jit
+def _jax_property_validity(properties, status):
+    """Materialize serialization masks together, avoiding per-field dispatch."""
+    successful = status == 0
+    return {
+        name: jnp.isfinite(value) & successful for name, value in properties.items()
+    }
+
+
 class FluidState(eqx.Module):
     """A numeric pytree whose public properties enforce their availability.
 
@@ -33,7 +48,6 @@ class FluidState(eqx.Module):
     available_properties: frozenset = eqx.field(static=True)
     error_policy: str = eqx.field(static=True)
     _data: dict
-    _property_validity: dict
     status: jax.Array
 
     def __init__(
@@ -211,24 +225,37 @@ class FluidState(eqx.Module):
                 reason="State properties, masks, and status must have compatible broadcast shapes.",
                 **context,
             ) from error
-        self.status = xp.broadcast_to(status_array, shape)
+        # Most evaluator outputs already have the final shape. Avoid dispatching
+        # a broadcast for every value/mask, especially for ordinary NumPy scalars.
+        self.status = (
+            status_array
+            if status_array.shape == shape
+            else xp.broadcast_to(status_array, shape)
+        )
+        if xp is np:
+            self.status.setflags(write=False)
+        successful = self.status == 0
         self._data = {}
-        self._property_validity = {}
         for name in PROPERTIES_CANONICAL:
             if name not in normalized:
                 continue
-            value = xp.broadcast_to(values.get(name, xp.asarray(np.nan)), shape)
-            valid = (
-                xp.broadcast_to(masks.get(name, xp.asarray(True)), shape)
-                & (self.status == 0)
-                & xp.isfinite(value)
-            )
+            # dict.get eagerly evaluates its default even when the key exists.
+            # Allocate missing-value arrays only for genuinely missing fields.
+            value = values[name] if name in values else xp.asarray(np.nan)
+            if value.shape != shape:
+                value = xp.broadcast_to(value, shape)
+            valid = successful & xp.isfinite(value)
+            if name in masks:
+                mask = masks[name]
+                if mask.shape != shape:
+                    mask = xp.broadcast_to(mask, shape)
+                valid = valid & mask
             self._data[name] = xp.where(valid, value, np.nan)
             if xp is np:
                 self._data[name].setflags(write=False)
-                valid = np.asarray(valid)
-                valid.setflags(write=False)
-            self._property_validity[name] = valid
+        # Unavailable values are already NaN. Recovering their validity on
+        # demand avoids returning a redundant boolean array per property from
+        # compiled evaluators. NumPy/JAX states share the same tree structure.
 
     @staticmethod
     def _numeric_array(value, name, context, xp):
@@ -281,32 +308,52 @@ class FluidState(eqx.Module):
         return self._data[FluidState._canonical(self, name)]
 
     def property_valid(self, name):
-        return self._property_validity[FluidState._canonical(self, name)]
+        value = self._data[FluidState._canonical(self, name)]
+        if isinstance(value, (jax.Array, jax.core.Tracer)) or isinstance(
+            self.status, (jax.Array, jax.core.Tracer)
+        ):
+            return _jax_property_valid(value, self.status)
+        valid = np.asarray(np.isfinite(value) & (self.status == 0))
+        valid.setflags(write=False)
+        return valid
 
     def _read_property(self, name):
         canonical = FluidState._canonical(self, name)
-        valid = self._property_validity[canonical]
+        value = self._data[canonical]
         # Evaluator wrappers enforce transformed error modes in later phases.
         # State operations never turn traced availability into a Python bool.
         if (
             self.error_policy == "raise"
-            and not isinstance(valid, jax.core.Tracer)
-            and not np.all(np.asarray(valid))
+            and not isinstance(value, jax.core.Tracer)
+            and not isinstance(self.status, jax.core.Tracer)
         ):
-            unavailable = np.logical_not(np.asarray(valid))
-            indices = (
-                [()] if unavailable.ndim == 0 else list(zip(*np.nonzero(unavailable)))
+            # Inspect concrete storage directly rather than launching a tiny
+            # JAX validity kernel and immediately synchronizing it to the host.
+            concrete_valid = np.isfinite(np.asarray(value)) & (
+                np.asarray(self.status) == 0
             )
-            raise PropertyUnavailableError(
-                fluid_name=self.fluid_name,
-                provider=self.provider,
-                model=self.model,
-                request=canonical,
-                reason="The enabled property is undefined at the requested state indices.",
-                supported=sorted(self.available_properties),
-                indices=indices,
+            all_valid = (
+                bool(concrete_valid)
+                if concrete_valid.ndim == 0
+                else concrete_valid.all()
             )
-        return self._data[canonical]
+            if not all_valid:
+                unavailable = np.logical_not(concrete_valid)
+                indices = (
+                    [()]
+                    if unavailable.ndim == 0
+                    else list(zip(*np.nonzero(unavailable)))
+                )
+                raise PropertyUnavailableError(
+                    fluid_name=self.fluid_name,
+                    provider=self.provider,
+                    model=self.model,
+                    request=canonical,
+                    reason="The enabled property is undefined at the requested state indices.",
+                    supported=sorted(self.available_properties),
+                    indices=indices,
+                )
+        return value
 
     def __getattr__(self, name):
         if name in ALIAS_TO_CANONICAL:
@@ -357,11 +404,18 @@ class FluidState(eqx.Module):
 
     def to_data(self):
         """Export metadata, raw values, status and masks for a lossless round trip."""
+        if isinstance(self.status, (jax.Array, jax.core.Tracer)) or any(
+            isinstance(value, (jax.Array, jax.core.Tracer))
+            for value in self._data.values()
+        ):
+            masks = _jax_property_validity(self._data, self.status)
+        else:
+            masks = {name: FluidState.property_valid(self, name) for name in self._data}
         return dict(
             metadata=self._metadata(),
             properties=self.to_dict(),
             status=self.status,
-            property_validity=dict(self._property_validity),
+            property_validity=masks,
         )
 
     @classmethod
@@ -402,7 +456,29 @@ class FluidState(eqx.Module):
     def flipped(self):
         if not self.shape:
             return self
-        return jax.tree_util.tree_map(lambda value: jnp.flip(value, axis=0), self)
+        # Slicing preserves each leaf's storage backend and NumPy read-only
+        # views; jnp.flip would transfer ordinary source states to JAX.
+        return jax.tree_util.tree_map(lambda value: value[::-1], self)
+
+    @classmethod
+    def _from_validated(cls, metadata, properties, status):
+        """Assemble collection results whose inputs/invariants are validated.
+
+        This private path is only for shape-preserving combinations of existing
+        states. Their values are already NaN-masked and their metadata/statuses
+        have passed public construction checks. Collection
+        compatibility is checked before this method is called. New NumPy arrays
+        are owned by the result and frozen before exposing them.
+        """
+        for value in (*properties.values(), status):
+            if isinstance(value, np.ndarray):
+                value.setflags(write=False)
+        result = object.__new__(cls)
+        for name, value in metadata.items():
+            object.__setattr__(result, name, value)
+        object.__setattr__(result, "_data", properties)
+        object.__setattr__(result, "status", status)
+        return result
 
     @classmethod
     def _combine(cls, states, *, stack):
@@ -437,30 +513,45 @@ class FluidState(eqx.Module):
             if len(providers) == 1
             else ("mixed" if providers else None)
         )
+        # Keep ordinary source states on NumPy. Mixed storage and transformed
+        # calls use JAX so no traced numerical leaves reach NumPy operations.
+        xp = (
+            jnp
+            if any(
+                isinstance(value, (jax.Array, jax.core.Tracer))
+                for state in states
+                for value in (
+                    state.status,
+                    *state._data.values(),
+                )
+            )
+            else np
+        )
         combine = (
-            (lambda arrays: jnp.stack(arrays, axis=0))
+            (lambda arrays: xp.stack(arrays, axis=0))
             if stack
             else (
-                lambda arrays: jnp.concatenate(
-                    [jnp.atleast_1d(value) for value in arrays], axis=0
+                lambda arrays: xp.concatenate(
+                    [xp.atleast_1d(value) for value in arrays], axis=0
                 )
             )
         )
         properties = {
             name: combine([state._data[name] for state in states]) for name in enabled
         }
-        masks = {
-            name: combine([state._property_validity[name] for state in states])
-            for name in enabled
-        }
-        metadata = first._metadata() | dict(
+        metadata = FluidState._metadata(first) | dict(
             provider=provider, providers=providers, available_properties=enabled
         )
-        return cls(
-            **metadata,
-            **properties,
-            status=combine([state.status for state in states]),
-            property_validity=masks,
+        status = combine([state.status for state in states])
+        if not np.issubdtype(status.dtype, np.integer):
+            # Signed/unsigned integer promotion can produce floats (for example
+            # int64 + uint64). Existing states only contain validated codes 0–4,
+            # so restoring an integer dtype is exact and keeps status semantic.
+            status = status.astype(np.int32)
+        return cls._from_validated(
+            metadata,
+            properties,
+            status=status,
         )
 
     def __add__(self, other):

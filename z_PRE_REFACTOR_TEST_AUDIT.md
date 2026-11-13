@@ -32,6 +32,12 @@ The cache lifecycle portion of Phase 8 now adds 109 passing cases across [cache 
 
 The [implementation checklist](z_IMPLEMENTATION_PLAN.md) distinguishes completed cache/configuration checks from remaining interpolation-cell, saturation-grid integrity, and metastable numerical-accuracy work. Metadata identity and finite payloads alone do not establish derivative accuracy.
 
+## Performance and native JAX regression coverage
+
+The performance work adds 62 passing regression cases: constructor/collection/runtime-storage behavior and native-JAX execution/lazy validity. These cover NumPy/JAX storage, immutability, missing values, masks/status, empty batches, serialization, dynamic coefficients/model parameters, compilation reuse, broadcasting, gradients, and constant/traced control flow. Perfect-gas list input now satisfies its contract case and its strict expected-failure marker was removed. The [JAX efficiency audit](z_JAX_EFFICIENCY_AUDIT.md) describes the implementation and phased follow-ups.
+
+The complete HEOS + REFPROP suite reports **936 passed, 78 strict expected failures, zero unexpected failures, and zero skips**, retaining all 84,950 numerical comparisons with zero failures. [Full verification](development/test_audit/results/jax_efficiency/full_20261113_094055/summary.json). The compact [performance report](development/performance/README.md) preserves the final matched comparison; disposable benchmarking scaffolding and intermediate artifacts have been removed. The formal performance gate and remaining capability/reference/model/domain work stay open in the implementation plan.
+
 The findings and baseline below describe the starting state before these test repairs. The implementation checklist records current completion and the remaining coverage work.
 
 ## Executed baseline

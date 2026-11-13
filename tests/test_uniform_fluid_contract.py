@@ -323,10 +323,10 @@ for _case in CONTRACT_CASES:
             _marks = [
                 pending(9, "FluidMix rejects array-like batch inputs", RuntimeError)
             ]
-        if _case.id in ("perfect_gas", "coolprop_jax") and _kind == "list":
+        if _case.id == "coolprop_jax" and _kind == "list":
             _marks = [
                 pending(
-                    7 if _case.id == "perfect_gas" else 6,
+                    6,
                     "list inputs are not normalized before JAX evaluation",
                     TypeError,
                 )
