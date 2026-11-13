@@ -340,6 +340,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             Path(__file__).with_name("cache_metadata.py"),
             Path(__file__).with_name("table_cache.py"),
             Path(__file__).parents[1] / "coolprop" / "core_calculations.py",
+            Path(__file__).parents[1] / "coolprop" / "source_context.py",
             Path(__file__).parents[1] / "coolprop" / "fluid_properties.py",
             Path(__file__).parents[1] / "fluid_state.py",
             Path(__file__).parents[1] / "property_schema.py",

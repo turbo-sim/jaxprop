@@ -1,0 +1,1001 @@
+{
+  "measured_utc": "2026-11-13T16:40:16.804045+00:00",
+  "baseline_commit": "f03443a3f932f5d309f67c5b4db7b58f9cd84415",
+  "before_source_sha256": "39cc4b8c9d29808a4613cc6b0f97d12f32ba9b0021caffa7ea6ef5ab19794e71",
+  "after_source_sha256": "270952c6af648712c9165b12c1c8f520798a6d04d4e09588d3363cc202db1ea0",
+  "source_hash_method": "Sorted jaxprop/**/*.py relative POSIX path, NUL, exact bytes, NUL; SHA256.",
+  "scope": "Focused serial CPU/x64 Phase6 valid-state regression guard; no formal Phase13/PyPI or whole-application claim. Current callback compiled mask is compared with previous default valid evaluation. Eager callback now preserves typed source errors.",
+  "method": {
+    "worker_order": [
+      "before1",
+      "after1",
+      "after2",
+      "before2",
+      "before3",
+      "after3",
+      "after4",
+      "before4"
+    ],
+    "workers_per_version": 4,
+    "samples_per_worker_per_case": 9,
+    "warm_calls": {
+      "native_runtime": 20,
+      "source_and_callback_runtime": 3,
+      "setup": 2
+    },
+    "synchronization": "jax.block_until_ready after every measured call",
+    "threads": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1"
+    },
+    "table": {
+      "h_min": 600000,
+      "h_max": 850000,
+      "p_min": 5000000,
+      "p_max": 12000000,
+      "N_h": 8,
+      "N_p": 8,
+      "N_p_sat": 4,
+      "coarse_step": 1
+    },
+    "calls_per_sample": {
+      "perfect_gas_scalar": 500,
+      "perfect_gas_batch1024": 100,
+      "perfect_gas_compiled_T": 2000,
+      "perfect_gas_compiled_dTdh": 2000,
+      "bicubic_scalar": 500,
+      "bicubic_batch1024": 100,
+      "bicubic_compiled_T": 2000,
+      "bicubic_compiled_dTdh": 2000,
+      "source_eager_scalar": 100,
+      "source_eager_batch32": 15,
+      "callback_eager_scalar": 50,
+      "callback_eager_batch32": 10,
+      "callback_compiled_full_scalar": 100,
+      "callback_compiled_full_batch32": 10,
+      "callback_compiled_T": 100,
+      "callback_compiled_dTdh": 100
+    },
+    "setup_calls_per_sample": {
+      "source_construction": 10,
+      "callback_construction": 10,
+      "perfect_gas_construction": 5,
+      "bicubic_cached_loading": 3
+    },
+    "setup": "Warmed independent setup samples; imports, first JAX initialization, and fresh table generation excluded. Initial combined setup is recorded separately per worker."
+  },
+  "environment": {
+    "versions": {
+      "jax": "0.6.2",
+      "jaxlib": "0.6.2",
+      "CoolProp": "7.2.0",
+      "numpy": "2.4.4",
+      "equinox": "0.12.2",
+      "scipy": "1.17.1"
+    },
+    "python": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]",
+    "device": "TFRT_CPU_0",
+    "x64": true,
+    "threads": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1"
+    },
+    "xla_flags": null
+  },
+  "correctness": {
+    "snapshot_scalar_count": 20896,
+    "all_workers_match": true,
+    "mismatches": [],
+    "mismatch_count": 0,
+    "value_rtol_atol": 1e-07,
+    "derivative_rtol_atol": 1e-12,
+    "batch_snapshot_positions": "first, middle, last; all statuses",
+    "unavailable_numeric_snapshot": "null",
+    "after_scalar_snapshots": {
+      "perfect_gas_scalar": {
+        "shape": [],
+        "fields": {
+          "compressibility_factor": [
+            1.0
+          ],
+          "conductivity": [
+            0.045108466073727704
+          ],
+          "density": [
+            64.88968408265364
+          ],
+          "enthalpy": [
+            700000.0
+          ],
+          "entropy": [
+            2673.673265127196
+          ],
+          "gruneisen": [
+            0.21377354232261303
+          ],
+          "heat_capacity_ratio": [
+            1.213773542322613
+          ],
+          "isobaric_heat_capacity": [
+            1072.6754859654739
+          ],
+          "isochoric_heat_capacity": [
+            883.7525687970251
+          ],
+          "pressure": [
+            8000000.0
+          ],
+          "speed_of_sound": [
+            386.8352099096321
+          ],
+          "temperature": [
+            652.5738764039685
+          ],
+          "viscosity": [
+            2.9830590048518594e-05
+          ]
+        },
+        "status": [
+          0
+        ]
+      },
+      "bicubic_scalar": {
+        "shape": [],
+        "fields": {
+          "compressibility_factor": [
+            0.9598758199971649
+          ],
+          "conductivity": [
+            0.0381066694834728
+          ],
+          "density": [
+            83.79146628765211
+          ],
+          "enthalpy": [
+            700000.0
+          ],
+          "entropy": [
+            2411.306095380402
+          ],
+          "gruneisen": [
+            0.2505472331679401
+          ],
+          "heat_capacity_ratio": [
+            1.3090015869560525
+          ],
+          "internal_energy": [
+            604525.0556411262
+          ],
+          "is_two_phase": [
+            0.0
+          ],
+          "isentropic_bulk_modulus": [
+            10116770.70864612
+          ],
+          "isentropic_compressibility": [
+            9.884565608521238e-08
+          ],
+          "isobaric_expansion_coefficient": [
+            0.0023425058594527264
+          ],
+          "isobaric_heat_capacity": [
+            1128.8460085163392
+          ],
+          "isochoric_heat_capacity": [
+            862.3716870627769
+          ],
+          "isothermal_bulk_modulus": [
+            7728614.588350884
+          ],
+          "isothermal_compressibility": [
+            1.2938913052385874e-07
+          ],
+          "isothermal_joule_thomson": [
+            -0.0027844226781936873
+          ],
+          "joule_thomson": [
+            2.4666166490533774e-06
+          ],
+          "pressure": [
+            8000000.0
+          ],
+          "quality_mass": [
+            1.0
+          ],
+          "quality_volume": [
+            1.0
+          ],
+          "speed_of_sound": [
+            347.472844252724
+          ],
+          "surface_tension": [
+            null
+          ],
+          "temperature": [
+            526.4896805741372
+          ],
+          "viscosity": [
+            2.6283813549471906e-05
+          ]
+        },
+        "status": [
+          0
+        ]
+      },
+      "source_eager_scalar": {
+        "shape": [],
+        "fields": {
+          "compressibility_factor": [
+            0.9598753427941553
+          ],
+          "conductivity": [
+            0.03810668837388425
+          ],
+          "density": [
+            83.79161773959842
+          ],
+          "enthalpy": [
+            699999.9999999998
+          ],
+          "entropy": [
+            2411.3060157960767
+          ],
+          "gruneisen": [
+            0.2505472476824683
+          ],
+          "heat_capacity_ratio": [
+            1.3090031203955586
+          ],
+          "internal_energy": [
+            604525.0561355453
+          ],
+          "is_two_phase": [
+            0.0
+          ],
+          "isentropic_bulk_modulus": [
+            10116779.406447755
+          ],
+          "isentropic_compressibility": [
+            9.884568594652437e-08
+          ],
+          "isobaric_expansion_coefficient": [
+            0.002342519936355635
+          ],
+          "isobaric_heat_capacity": [
+            1128.8477314412971
+          ],
+          "isochoric_heat_capacity": [
+            862.3720706641085
+          ],
+          "isothermal_bulk_modulus": [
+            7728613.66700993
+          ],
+          "isothermal_compressibility": [
+            1.2938931134163977e-07
+          ],
+          "isothermal_joule_thomson": [
+            -0.0027844404685414795
+          ],
+          "joule_thomson": [
+            2.4666218401186353e-06
+          ],
+          "pressure": [
+            8000000.000000001
+          ],
+          "quality_mass": [
+            1.0
+          ],
+          "quality_volume": [
+            1.0
+          ],
+          "speed_of_sound": [
+            347.4728309378429
+          ],
+          "surface_tension": [
+            null
+          ],
+          "temperature": [
+            526.4897652386331
+          ],
+          "viscosity": [
+            2.6283822397258006e-05
+          ]
+        },
+        "status": [
+          0
+        ]
+      },
+      "callback_eager_scalar": {
+        "shape": [],
+        "fields": {
+          "compressibility_factor": [
+            0.9598753427941553
+          ],
+          "conductivity": [
+            0.03810668837388425
+          ],
+          "density": [
+            83.79161773959842
+          ],
+          "enthalpy": [
+            699999.9999999998
+          ],
+          "entropy": [
+            2411.3060157960767
+          ],
+          "gruneisen": [
+            0.2505472476824683
+          ],
+          "heat_capacity_ratio": [
+            1.3090031203955586
+          ],
+          "internal_energy": [
+            604525.0561355453
+          ],
+          "is_two_phase": [
+            0.0
+          ],
+          "isentropic_bulk_modulus": [
+            10116779.406447755
+          ],
+          "isentropic_compressibility": [
+            9.884568594652437e-08
+          ],
+          "isobaric_expansion_coefficient": [
+            0.002342519936355635
+          ],
+          "isobaric_heat_capacity": [
+            1128.8477314412971
+          ],
+          "isochoric_heat_capacity": [
+            862.3720706641085
+          ],
+          "isothermal_bulk_modulus": [
+            7728613.66700993
+          ],
+          "isothermal_compressibility": [
+            1.2938931134163977e-07
+          ],
+          "isothermal_joule_thomson": [
+            -0.0027844404685414795
+          ],
+          "joule_thomson": [
+            2.4666218401186353e-06
+          ],
+          "pressure": [
+            8000000.000000001
+          ],
+          "quality_mass": [
+            1.0
+          ],
+          "quality_volume": [
+            1.0
+          ],
+          "speed_of_sound": [
+            347.4728309378429
+          ],
+          "surface_tension": [
+            null
+          ],
+          "temperature": [
+            526.4897652386331
+          ],
+          "viscosity": [
+            2.6283822397258006e-05
+          ]
+        },
+        "status": [
+          0
+        ]
+      },
+      "callback_compiled_full_scalar": {
+        "shape": [],
+        "fields": {
+          "compressibility_factor": [
+            0.9598753427941553
+          ],
+          "conductivity": [
+            0.03810668837388425
+          ],
+          "density": [
+            83.79161773959842
+          ],
+          "enthalpy": [
+            699999.9999999998
+          ],
+          "entropy": [
+            2411.3060157960767
+          ],
+          "gruneisen": [
+            0.2505472476824683
+          ],
+          "heat_capacity_ratio": [
+            1.3090031203955586
+          ],
+          "internal_energy": [
+            604525.0561355453
+          ],
+          "is_two_phase": [
+            0.0
+          ],
+          "isentropic_bulk_modulus": [
+            10116779.406447755
+          ],
+          "isentropic_compressibility": [
+            9.884568594652437e-08
+          ],
+          "isobaric_expansion_coefficient": [
+            0.002342519936355635
+          ],
+          "isobaric_heat_capacity": [
+            1128.8477314412971
+          ],
+          "isochoric_heat_capacity": [
+            862.3720706641085
+          ],
+          "isothermal_bulk_modulus": [
+            7728613.66700993
+          ],
+          "isothermal_compressibility": [
+            1.2938931134163977e-07
+          ],
+          "isothermal_joule_thomson": [
+            -0.0027844404685414795
+          ],
+          "joule_thomson": [
+            2.4666218401186353e-06
+          ],
+          "pressure": [
+            8000000.000000001
+          ],
+          "quality_mass": [
+            1.0
+          ],
+          "quality_volume": [
+            1.0
+          ],
+          "speed_of_sound": [
+            347.4728309378429
+          ],
+          "surface_tension": [
+            null
+          ],
+          "temperature": [
+            526.4897652386331
+          ],
+          "viscosity": [
+            2.6283822397258006e-05
+          ]
+        },
+        "status": [
+          0
+        ]
+      }
+    }
+  },
+  "optimized_native_programs": {
+    "perfect_gas_compiled_T": {
+      "all_workers_equal": true,
+      "before": {
+        "instruction_count": 10,
+        "normalized_sha256": "82483cb63b77beca9aa444c1df7288d3248f67811ec61c62e0a1158c6a234c73",
+        "contains_callback": false
+      },
+      "after": {
+        "instruction_count": 10,
+        "normalized_sha256": "82483cb63b77beca9aa444c1df7288d3248f67811ec61c62e0a1158c6a234c73",
+        "contains_callback": false
+      }
+    },
+    "perfect_gas_compiled_dTdh": {
+      "all_workers_equal": true,
+      "before": {
+        "instruction_count": 18,
+        "normalized_sha256": "192069fe3d870cdb6d2394a8ec387be1d00069758ac22c8d1c03db08348006dc",
+        "contains_callback": false
+      },
+      "after": {
+        "instruction_count": 18,
+        "normalized_sha256": "192069fe3d870cdb6d2394a8ec387be1d00069758ac22c8d1c03db08348006dc",
+        "contains_callback": false
+      }
+    },
+    "perfect_gas_full_batch1024": {
+      "all_workers_equal": true,
+      "before": {
+        "instruction_count": 153,
+        "normalized_sha256": "576441e8f62136ac5b7b1f283ebf06e27fad02746082adfd9c94deee0d797d79",
+        "contains_callback": false
+      },
+      "after": {
+        "instruction_count": 153,
+        "normalized_sha256": "576441e8f62136ac5b7b1f283ebf06e27fad02746082adfd9c94deee0d797d79",
+        "contains_callback": false
+      }
+    },
+    "bicubic_compiled_T": {
+      "all_workers_equal": true,
+      "before": {
+        "instruction_count": 37,
+        "normalized_sha256": "327b8d9cadbf4c666894054395c7b096f3871c7be428002d2a0a2dd971abb00e",
+        "contains_callback": false
+      },
+      "after": {
+        "instruction_count": 37,
+        "normalized_sha256": "327b8d9cadbf4c666894054395c7b096f3871c7be428002d2a0a2dd971abb00e",
+        "contains_callback": false
+      }
+    },
+    "bicubic_compiled_dTdh": {
+      "all_workers_equal": true,
+      "before": {
+        "instruction_count": 96,
+        "normalized_sha256": "2154b930cf2eda0112eeb54c213b16f80cf26d9a599738dfdd825b1bdf4dc3e3",
+        "contains_callback": false
+      },
+      "after": {
+        "instruction_count": 96,
+        "normalized_sha256": "2154b930cf2eda0112eeb54c213b16f80cf26d9a599738dfdd825b1bdf4dc3e3",
+        "contains_callback": false
+      }
+    },
+    "bicubic_full_batch1024": {
+      "all_workers_equal": true,
+      "before": {
+        "instruction_count": 340,
+        "normalized_sha256": "8810a7270464abc627dbb673a9f09d5011fe2a505ca971a6626da5703aa54418",
+        "contains_callback": false
+      },
+      "after": {
+        "instruction_count": 340,
+        "normalized_sha256": "8810a7270464abc627dbb673a9f09d5011fe2a505ca971a6626da5703aa54418",
+        "contains_callback": false
+      }
+    }
+  },
+  "compiler_normalization": "Optimized HLO instruction right-hand sides in emitted order, dropping source metadata and replacing percent-prefixed instruction/computation names. Large array constant payloads may be compiler-elided; snapshots independently check sampled values.",
+  "initial_setup_seconds": {
+    "before1": 0.5906034999934491,
+    "after1": 0.4737674999923911,
+    "after2": 0.185780200001318,
+    "before2": 0.19912949998979457,
+    "before3": 0.18320629998925142,
+    "after3": 0.17478119999577757,
+    "after4": 0.18098060000920668,
+    "before4": 0.17457100001047365
+  },
+  "rows": [
+    {
+      "case": "perfect_gas_scalar",
+      "category": "warmed_runtime",
+      "before_us": 36.28960000000001,
+      "after_us": 35.9392,
+      "ratio": 0.9903443410784355,
+      "before_iqr_us": [
+        35.4271,
+        37.659400000000005
+      ],
+      "after_iqr_us": [
+        34.88435,
+        37.4818
+      ],
+      "paired_worker_ratios": [
+        0.9601561915750566,
+        1.0410441735760383,
+        0.9602516579536571,
+        0.9711848726222443
+      ]
+    },
+    {
+      "case": "perfect_gas_batch1024",
+      "category": "warmed_runtime",
+      "before_us": 92.1505,
+      "after_us": 81.5515,
+      "ratio": 0.8849816333063848,
+      "before_iqr_us": [
+        78.2265,
+        98.89224999999999
+      ],
+      "after_iqr_us": [
+        77.87975,
+        87.4915
+      ],
+      "paired_worker_ratios": [
+        0.9462133100842777,
+        0.9296250146437053,
+        0.9018830934323893,
+        0.916698725346875
+      ]
+    },
+    {
+      "case": "perfect_gas_compiled_T",
+      "category": "warmed_runtime",
+      "before_us": 4.8194,
+      "after_us": 4.707575,
+      "ratio": 0.9767969041789435,
+      "before_iqr_us": [
+        4.6182875,
+        5.1970625
+      ],
+      "after_iqr_us": [
+        4.4668375000000005,
+        5.1152750000000005
+      ],
+      "paired_worker_ratios": [
+        0.8574017311510805,
+        0.9955271233161699,
+        0.9606037399303973,
+        0.9943137425123706
+      ]
+    },
+    {
+      "case": "perfect_gas_compiled_dTdh",
+      "category": "warmed_runtime",
+      "before_us": 5.045025000000001,
+      "after_us": 5.0022,
+      "ratio": 0.9915114394874157,
+      "before_iqr_us": [
+        4.8972375,
+        5.184175
+      ],
+      "after_iqr_us": [
+        4.8092749999999995,
+        5.1527875000000005
+      ],
+      "paired_worker_ratios": [
+        0.9887999845383737,
+        1.0457043591332527,
+        0.9720454237681608,
+        0.9915442949645455
+      ]
+    },
+    {
+      "case": "bicubic_scalar",
+      "category": "warmed_runtime",
+      "before_us": 113.6286,
+      "after_us": 112.3663,
+      "ratio": 0.9888910010331905,
+      "before_iqr_us": [
+        109.24485000000001,
+        116.88265000000001
+      ],
+      "after_iqr_us": [
+        110.3874,
+        115.3081
+      ],
+      "paired_worker_ratios": [
+        0.9966150963889089,
+        0.9961341940113644,
+        0.9664920747859034,
+        1.011115788074482
+      ]
+    },
+    {
+      "case": "bicubic_batch1024",
+      "category": "warmed_runtime",
+      "before_us": 743.0029999999999,
+      "after_us": 733.8820000000001,
+      "ratio": 0.9877241410869136,
+      "before_iqr_us": [
+        721.203,
+        762.6285
+      ],
+      "after_iqr_us": [
+        707.3629999999999,
+        748.537
+      ],
+      "paired_worker_ratios": [
+        0.9830859633378977,
+        1.0325429454918575,
+        0.9246578174750858,
+        0.9841463314984242
+      ]
+    },
+    {
+      "case": "bicubic_compiled_T",
+      "category": "warmed_runtime",
+      "before_us": 4.886025,
+      "after_us": 4.849725,
+      "ratio": 0.9925706479193209,
+      "before_iqr_us": [
+        4.6328,
+        5.1632125
+      ],
+      "after_iqr_us": [
+        4.6846125,
+        5.0119625
+      ],
+      "paired_worker_ratios": [
+        0.956173478711092,
+        0.9354772433765114,
+        0.9512117068629448,
+        1.0406956110256715
+      ]
+    },
+    {
+      "case": "bicubic_compiled_dTdh",
+      "category": "warmed_runtime",
+      "before_us": 5.3317250000000005,
+      "after_us": 5.36825,
+      "ratio": 1.0068505033549178,
+      "before_iqr_us": [
+        5.20855,
+        5.559150000000001
+      ],
+      "after_iqr_us": [
+        5.18275,
+        5.602600000000001
+      ],
+      "paired_worker_ratios": [
+        1.0018321901719438,
+        1.0264117685665262,
+        0.9896279918390091,
+        1.0170582493307174
+      ]
+    },
+    {
+      "case": "source_eager_scalar",
+      "category": "warmed_runtime",
+      "before_us": 572.9965,
+      "after_us": 399.904,
+      "ratio": 0.6979170029834388,
+      "before_iqr_us": [
+        566.0817499999999,
+        597.8340000000001
+      ],
+      "after_iqr_us": [
+        393.20074999999997,
+        410.93125
+      ],
+      "paired_worker_ratios": [
+        0.6706172258059091,
+        0.7103584757900084,
+        0.6647827954017087,
+        0.697386325730634
+      ]
+    },
+    {
+      "case": "source_eager_batch32",
+      "category": "warmed_runtime",
+      "before_us": 8875.626666666667,
+      "after_us": 3931.2766666666666,
+      "ratio": 0.44292947577786057,
+      "before_iqr_us": [
+        8661.428333333333,
+        9256.393333333333
+      ],
+      "after_iqr_us": [
+        3835.92,
+        3995.9083333333333
+      ],
+      "paired_worker_ratios": [
+        0.43459288191042655,
+        0.45574136267129894,
+        0.4216581377107601,
+        0.44101265900279935
+      ]
+    },
+    {
+      "case": "callback_eager_scalar",
+      "category": "warmed_runtime",
+      "before_us": 1138.8290000000002,
+      "after_us": 243.885,
+      "ratio": 0.21415418820560414,
+      "before_iqr_us": [
+        1112.741,
+        1186.0915
+      ],
+      "after_iqr_us": [
+        231.434,
+        249.36
+      ],
+      "paired_worker_ratios": [
+        0.20503025061850869,
+        0.21801445009365802,
+        0.20843022766662742,
+        0.21794832511738146
+      ]
+    },
+    {
+      "case": "callback_eager_batch32",
+      "category": "warmed_runtime",
+      "before_us": 22085.015,
+      "after_us": 3680.9,
+      "ratio": 0.1666695721057921,
+      "before_iqr_us": [
+        21722.2125,
+        22965.4075
+      ],
+      "after_iqr_us": [
+        3628.03,
+        3796.2975
+      ],
+      "paired_worker_ratios": [
+        0.16447462708153915,
+        0.1693675172609739,
+        0.16626284306887382,
+        0.1673386855659908
+      ]
+    },
+    {
+      "case": "callback_compiled_full_scalar",
+      "category": "warmed_runtime",
+      "before_us": 1076.525,
+      "after_us": 447.928,
+      "ratio": 0.4160869464248391,
+      "before_iqr_us": [
+        1043.3632499999999,
+        1124.9682500000001
+      ],
+      "after_iqr_us": [
+        442.37649999999996,
+        456.93399999999997
+      ],
+      "paired_worker_ratios": [
+        0.4026650314039286,
+        0.43248924731697924,
+        0.41375761722854104,
+        0.42346221221941455
+      ]
+    },
+    {
+      "case": "callback_compiled_full_batch32",
+      "category": "warmed_runtime",
+      "before_us": 22043.965,
+      "after_us": 4005.8450000000003,
+      "ratio": 0.18172071131486556,
+      "before_iqr_us": [
+        21478.112500000003,
+        22735.9
+      ],
+      "after_iqr_us": [
+        3902.445,
+        4104.0
+      ],
+      "paired_worker_ratios": [
+        0.17771797115908658,
+        0.18709169255734795,
+        0.1726444873613866,
+        0.1816548992475198
+      ]
+    },
+    {
+      "case": "callback_compiled_T",
+      "category": "warmed_runtime",
+      "before_us": 1011.857,
+      "after_us": 385.40599999999995,
+      "ratio": 0.38088978976278265,
+      "before_iqr_us": [
+        987.84475,
+        1041.56675
+      ],
+      "after_iqr_us": [
+        381.67275,
+        395.32599999999996
+      ],
+      "paired_worker_ratios": [
+        0.3716900919576015,
+        0.38892489494686616,
+        0.35026425062679994,
+        0.3875481593279335
+      ]
+    },
+    {
+      "case": "callback_compiled_dTdh",
+      "category": "warmed_runtime",
+      "before_us": 1910.3029999999999,
+      "after_us": 674.3985,
+      "ratio": 0.3530322153082522,
+      "before_iqr_us": [
+        1871.9582500000001,
+        1992.0542500000001
+      ],
+      "after_iqr_us": [
+        662.9847500000001,
+        685.6415000000001
+      ],
+      "paired_worker_ratios": [
+        0.34836744407425035,
+        0.3677083900706266,
+        0.3311151185233612,
+        0.35363145498533954
+      ]
+    },
+    {
+      "case": "source_construction",
+      "category": "setup",
+      "before_us": 902.38,
+      "after_us": 1290.915,
+      "ratio": 1.430566945189388,
+      "before_iqr_us": [
+        859.705,
+        928.4425
+      ],
+      "after_iqr_us": [
+        1257.555,
+        1334.7725
+      ],
+      "paired_worker_ratios": [
+        1.3859398504377565,
+        1.4334869702003146,
+        1.5357603954637975,
+        1.4140377392540124
+      ]
+    },
+    {
+      "case": "callback_construction",
+      "category": "setup",
+      "before_us": 1096.8600000000001,
+      "after_us": 1494.9899999999998,
+      "ratio": 1.362972485093813,
+      "before_iqr_us": [
+        1077.4975,
+        1120.945
+      ],
+      "after_iqr_us": [
+        1458.8474999999999,
+        1535.56
+      ],
+      "paired_worker_ratios": [
+        1.3156081789430099,
+        1.4161479801193209,
+        1.378415836167516,
+        1.356106358381503
+      ]
+    },
+    {
+      "case": "perfect_gas_construction",
+      "category": "setup",
+      "before_us": 2860.42,
+      "after_us": 3027.91,
+      "ratio": 1.0585543381741143,
+      "before_iqr_us": [
+        2821.65,
+        3052.41
+      ],
+      "after_iqr_us": [
+        2951.2200000000003,
+        3098.9449999999997
+      ],
+      "paired_worker_ratios": [
+        1.0327776737216707,
+        0.9848289429114879,
+        1.0676539459527878,
+        1.0416036791789982
+      ]
+    },
+    {
+      "case": "bicubic_cached_loading",
+      "category": "setup",
+      "before_us": 20958.800000000003,
+      "after_us": 20619.75,
+      "ratio": 0.9838230242189437,
+      "before_iqr_us": [
+        20331.39166666667,
+        21462.241666666665
+      ],
+      "after_iqr_us": [
+        20247.25833333333,
+        20891.225
+      ],
+      "paired_worker_ratios": [
+        0.9803062699369887,
+        0.9516805438384134,
+        0.996761952702245,
+        1.0123226064361381
+      ]
+    }
+  ],
+  "integrity_checks": {
+    "source_hashes_consistent_per_version": {
+      "before": true,
+      "after": true
+    },
+    "all_worker_environments_equal": true,
+    "current_package_matches_measured_hash": true
+  }
+}

@@ -35,7 +35,7 @@ fluid_bicubic = jxp.FluidBicubic(
     gradient_method="forward",
 )
 
-fluid_cp = jxp.FluidCoolProp(fluid_name, exceptions=False)
+fluid_cp = jxp.Fluid(fluid_name, method="coolprop")
 
 # ---------------------------
 # Saturation quality for comparison
@@ -75,11 +75,11 @@ cp_vals = {prop: [] for prop in properties}
 for p in p_midpoints:
     sat_interp = fluid_bicubic.get_state_saturation(float(p))
     # print(sat_interp)
-    sat_cp = fluid_cp.get_state(jxp.PQ_INPUTS, float(p), Q_sat)  # None above p_crit
+    sat_cp = fluid_cp.get_state(jxp.PQ_INPUTS, float(p), Q_sat, errors="mask")
 
     for prop in properties:
         val_interp = float(sat_interp[prop])
-        val_cp = float(sat_cp[prop]) if sat_cp is not None else float("nan")
+        val_cp = float(sat_cp.raw_property(prop))
         interp_vals[prop].append(val_interp)
         cp_vals[prop].append(val_cp)
 

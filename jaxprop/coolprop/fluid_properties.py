@@ -4,12 +4,20 @@ import jax.numpy as jnp
 import matplotlib.pyplot as plt
 import CoolProp.CoolProp as CP
 import pysolver_view as psv
+import math
+from threading import RLock
+from numbers import Integral
 
 from functools import wraps
 
 from . import core_calculations as core
 from ..errors import (
     InvalidConfigurationError,
+    InvalidStateError,
+    OutOfDomainError,
+    CalculationError,
+    ConvergenceError,
+    UnsupportedOperationError,
     JaxPropError,
     UnsupportedExecutionModeError,
 )
@@ -21,19 +29,47 @@ from ..source_references import (
 )
 from ..fluid_api import (
     SOURCE_PROPERTIES,
+    DIAGNOSTIC_PROPERTIES,
     LEGACY_MIXTURE_PROPERTIES,
     SOURCE_PAIRS,
     ReadonlyConfigurationMixin,
     enabled_properties,
     validate_request,
+    StatusCode,
 )
-
 from ..helpers_props import (
     FluidState,
     INPUT_TYPE_MAP,
     LABEL_MAPPING,
     PROPERTIES_CANONICAL,
 )
+
+_SOURCE_INPUT_FIELDS = {
+    CP.PT_INPUTS: ("pressure", "temperature"),
+    CP.HmassSmass_INPUTS: ("enthalpy", "entropy"),
+    CP.HmassP_INPUTS: ("enthalpy", "pressure"),
+    CP.PSmass_INPUTS: ("pressure", "entropy"),
+    CP.DmassHmass_INPUTS: ("density", "enthalpy"),
+    CP.DmassP_INPUTS: ("density", "pressure"),
+    CP.DmassT_INPUTS: ("density", "temperature"),
+    CP.DmassSmass_INPUTS: ("density", "entropy"),
+    CP.PQ_INPUTS: ("pressure", "quality_mass"),
+    CP.QT_INPUTS: ("quality_mass", "temperature"),
+    CP.SmassT_INPUTS: ("entropy", "temperature"),
+    CP.DmassUmass_INPUTS: ("density", "internal_energy"),
+}
+_SOURCE_CORE_FIELDS = (
+    "pressure",
+    "temperature",
+    "density",
+    "enthalpy",
+    "entropy",
+    "internal_energy",
+)
+# Library acceptance precision for arithmetic and inverse flashes at a declared
+# source boundary. This is not an EOS accuracy claim or a clipping/extrapolation
+# option. Reusing a recovered boundary coordinate must use the same policy.
+_SOURCE_BOUNDARY_RTOL = 1e-9
 
 # def _handle_computation_exceptions(func):
 #     @wraps(func)
@@ -133,7 +169,8 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
     backend : str
         Backend used for CoolProp, default is 'HEOS'.
     exceptions : bool
-        Determines if exceptions should be raised during state calculations. Default is True.
+        Legacy constructor option. Only True is accepted; select per-call
+        ``errors="mask"`` for numerical failures without exceptions.
     converged_flag : bool
         Flag indicating whether properties calculations converged.
     properties : dict
@@ -179,15 +216,17 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
     """
 
     def __getstate__(self):
-        """Strip CoolProp AbstractState to make the object pickleable."""
+        """Drop transient fields; complete provider serialization is pending."""
         state = self.__dict__.copy()
         state["_AS"] = None  # Drop the unpickleable CoolProp object
+        state["_state_lock"] = None
         return state
 
     def __setstate__(self, state):
         """Restore Fluid without AbstractState (can be rebuilt later)."""
         self.__dict__.update(state)
         self._AS = None  # Leave it unset or rebuild later
+        self._state_lock = RLock()
 
     def __init__(
         self,
@@ -199,6 +238,15 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
         # initialize_triple=True,
     ):
         backend = "HEOS" if backend is None else backend
+        if not isinstance(exceptions, (bool, np.bool_)) or not exceptions:
+            raise InvalidConfigurationError(
+                fluid_name=name,
+                provider="coolprop",
+                model="real_fluid",
+                request="exceptions",
+                reason="Constructor-level failure suppression is unsupported; use get_state(..., errors='mask') for per-element numerical failures.",
+                supported=(True,),
+            )
         configuration = build_configuration(
             name, "coolprop", "real_fluid", backend, identifier
         )
@@ -208,14 +256,6 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
         self.provider = "coolprop"
         self.model = "real_fluid"
         self._configuration = configuration
-        self._capabilities = FluidCapabilities(
-            input_pairs=SOURCE_PAIRS,
-            properties=SOURCE_PROPERTIES,
-            options=frozenset({"generalize_quality"}),
-            domain=FluidDomain(
-                description="CoolProp source-backend domain and phase restrictions."
-            ),
-        )
         try:
             self._AS = try_initialize_fluid(name, backend)
         except Exception as error:
@@ -227,10 +267,16 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
                 reason=str(error),
             ) from error
         self.abstract_state = self._AS
+        self._state_lock = RLock()
         self.exceptions = exceptions
         self.converged_flag = False
         self._references = initialize_source_references(name, backend, state=self._AS)
         self.reference_id = self._references.reference_id
+        from .source_context import SourceEvaluationContext
+
+        self._source_context = SourceEvaluationContext(
+            self._AS, self._references, name=name, backend=backend
+        )
 
         # Initialize variables
         self.sat_liq = None
@@ -247,11 +293,45 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
         self.p_max = self._AS.pmax()
         self.T_min = self._AS.Tmin()
         self.T_max = self._AS.Tmax()
+        self._T_min_accepted = self.T_min * (1 - _SOURCE_BOUNDARY_RTOL)
+        self._T_max_accepted = self.T_max * (1 + _SOURCE_BOUNDARY_RTOL)
+        self._p_max_accepted = self.p_max * (1 + _SOURCE_BOUNDARY_RTOL)
+        critical = self._references["critical_point"]
+        self._saturation_T_max = (
+            critical.reported_coordinates.get("temperature")
+            if critical.available
+            else None
+        )
+        self._saturation_p_max = (
+            critical.reported_coordinates.get("pressure")
+            if critical.available
+            else None
+        )
+        self._qt_endpoints_only = (
+            critical.classification == "pseudo_pure"
+            and self._AS.backend_name() == "HelmholtzEOSBackend"
+        )
+        domain_description = "Positive pressure/density and the selected CoolProp source's temperature/pressure limits; declared bounds admit a relative numerical tolerance of 1e-9 without clipping. Phase flashes may have further restrictions."
+        if self._qt_endpoints_only:
+            domain_description += " HEOS pseudo-pure QT flashes accept only quality endpoints 0 and 1; PQ flashes also accept fractional quality."
+        self._capabilities = FluidCapabilities(
+            input_pairs=SOURCE_PAIRS,
+            properties=SOURCE_PROPERTIES | DIAGNOSTIC_PROPERTIES,
+            options={"generalize_quality", "supersaturation"},
+            phase_operations={"saturation"},
+            error_modes={"raise", "mask"},
+            domain=FluidDomain(
+                description=domain_description,
+                bounds={
+                    "temperature": (self.T_min, self.T_max),
+                    "pressure": (0.0, self.p_max),
+                },
+            ),
+        )
 
         # # Define reference state
         # self.reference_state = self.critical_point
 
-    @_handle_computation_exceptions
     def get_state(
         self,
         input_type,
@@ -287,12 +367,11 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
         generalize_quality : bool, optional
             If True, requests the existing generalized reported-quality calculation.
         supersaturation : bool, optional
-            False is accepted. True remains unsupported until the ordinary
-            diagnostic path is validated in Phase 6; it does not select a
-            metastable branch.
+            Include available saturation-departure diagnostics. This does not
+            select a metastable branch. Locally undefined fields remain NaN.
         errors : {"raise", "mask"}, optional
-            Only "raise" is currently supported. Per-element numerical masking
-            is completed with the source evaluator's failure policy in Phase 6.
+            Raise a typed error at the first failing row-major element, or
+            preserve successful elements and encode failures in state.status.
 
         Returns
         -------
@@ -304,8 +383,8 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
         ------
         JaxPropError
             Invalid or unsupported requests are rejected before source evaluation.
-        RuntimeError
-            An existing source calculation fails with legacy exceptions enabled.
+        CalculationError
+            The source calculation fails after valid numerical inputs.
         """
         # Validate requests before any source calls, retaining typed failures.
         prop1_array, prop2_array = validate_request(
@@ -319,28 +398,15 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
             array_backend="numpy",
             options=options,
         )
-        shape = prop1_array.shape
         available = enabled_properties(self, supersaturation=supersaturation)
-
-        # Preallocate arrays for canonical properties
-        results = {name: np.empty(shape, dtype=np.float64) for name in available}
-
-        # Loop over all points
-        for idx in np.ndindex(shape):
-
-            # Compute fluid properties
-            props = core.compute_properties_coolprop(
-                self._AS,
-                input_type,
-                float(prop1_array[idx]),
-                float(prop2_array[idx]),
-                generalize_quality=generalize_quality,
-                supersaturation=supersaturation,
-            )
-
-            # Fill results dict with scalar values
-            for name in available:
-                results[name][idx] = np.float64(props.get(name, np.nan))
+        results, status = self._evaluate_state_data(
+            input_type,
+            prop1_array,
+            prop2_array,
+            generalize_quality=generalize_quality,
+            supersaturation=supersaturation,
+            errors=errors,
+        )
 
         # Store properties in a FluidState object
         state = FluidState(
@@ -351,10 +417,214 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
             reference_id=self.reference_id,
             available_properties=available,
             error_policy=errors,
+            status=status,
             **results,
         )
 
         return state
+
+    def _input_failure_status(self, input_type, first, second):
+        """Classify numerical input arrays once, independently of CP flashes."""
+        status = np.zeros(first.shape, dtype=np.int32)
+        invalid = ~np.isfinite(first) | ~np.isfinite(second)
+        outside = np.zeros(first.shape, dtype=bool)
+        for name, values in zip(_SOURCE_INPUT_FIELDS[input_type], (first, second)):
+            if name in ("pressure", "temperature", "density"):
+                invalid |= values <= 0
+            elif name == "quality_mass":
+                invalid |= (values < 0) | (values > 1)
+            if name == "temperature":
+                outside |= (values < self._T_min_accepted) | (
+                    values > self._T_max_accepted
+                )
+            elif name == "pressure":
+                outside |= values > self._p_max_accepted
+        if input_type == CP.QT_INPUTS and self._saturation_T_max is not None:
+            outside |= second > self._saturation_T_max
+        elif input_type == CP.PQ_INPUTS and self._saturation_p_max is not None:
+            outside |= first > self._saturation_p_max
+        if input_type == CP.QT_INPUTS and self._qt_endpoints_only:
+            outside |= (first > 0) & (first < 1)
+        status[invalid] = StatusCode.INVALID_INPUT
+        status[outside & ~invalid] = StatusCode.OUT_OF_DOMAIN
+        return status
+
+    def _numerical_error(self, input_type, first, second, index, code, cause=None):
+        request = INPUT_TYPE_MAP.get(input_type, str(input_type))
+        if code == StatusCode.INVALID_INPUT:
+            invalid = []
+            for name, value in zip(_SOURCE_INPUT_FIELDS[input_type], (first, second)):
+                if not math.isfinite(value):
+                    invalid.append(f"{name} must be finite (received {value!r})")
+                elif name in ("pressure", "temperature", "density") and value <= 0:
+                    invalid.append(f"{name} must be positive (received {value!r})")
+                elif name == "quality_mass" and not 0 <= value <= 1:
+                    invalid.append(
+                        f"quality_mass must lie in [0, 1] (received {value!r})"
+                    )
+            error_type = InvalidStateError
+            reason = "; ".join(invalid)
+        elif code == StatusCode.OUT_OF_DOMAIN:
+            error_type = OutOfDomainError
+            if cause is not None:
+                reason = str(cause)
+            elif (
+                input_type == CP.QT_INPUTS and self._qt_endpoints_only and 0 < first < 1
+            ):
+                reason = "HEOS pseudo-pure QT flashes require quality_mass 0 or 1; use PQ_INPUTS for fractional quality."
+            elif (
+                input_type == CP.QT_INPUTS
+                and self._saturation_T_max is not None
+                and second > self._saturation_T_max
+            ):
+                reason = f"Saturation temperature cannot exceed the reported critical temperature {self._saturation_T_max} K."
+            elif (
+                input_type == CP.PQ_INPUTS
+                and self._saturation_p_max is not None
+                and first > self._saturation_p_max
+            ):
+                reason = f"Saturation pressure cannot exceed the reported critical pressure {self._saturation_p_max} Pa."
+            else:
+                reason = f"Requested temperature/pressure exceeds the source domain: temperature [{self.T_min}, {self.T_max}] K, pressure (0, {self.p_max}] Pa."
+        else:
+            error_type = (
+                ConvergenceError
+                if code == StatusCode.NONCONVERGENCE
+                else CalculationError
+            )
+            reason = f"Source evaluation failed: {type(cause).__name__}: {cause}"
+        return error_type(
+            fluid_name=self.name,
+            provider=self.provider,
+            model=self.model,
+            request=request,
+            reason=reason,
+            index=index,
+        )
+
+    def _evaluate_state_data(
+        self,
+        input_type,
+        prop_1,
+        prop_2,
+        *,
+        generalize_quality=False,
+        supersaturation=False,
+        errors="raise",
+    ):
+        """Evaluate static-validated inputs for eager and callback consumers.
+
+        One lock guards the complete source/auxiliary-state transaction, because
+        independent pure callbacks may run concurrently. Numerical checks occur
+        once per request, not once per returned property. No source is rebuilt.
+        """
+        first = np.asarray(prop_1, dtype=np.float64)
+        second = np.asarray(prop_2, dtype=np.float64)
+        if first.shape != second.shape:
+            first, second = np.broadcast_arrays(first, second)
+        available = enabled_properties(self, supersaturation=supersaturation)
+        status = self._input_failure_status(input_type, first, second)
+        results = {
+            name: (
+                np.full(first.shape, np.nan, dtype=np.float64)
+                if errors == "mask"
+                else np.empty(first.shape, dtype=np.float64)
+            )
+            for name in available
+        }
+        with self._state_lock:
+            self.converged_flag = True
+            for index in np.ndindex(first.shape):
+                left, right = float(first[index]), float(second[index])
+                code = status[index]
+                if code:
+                    self.converged_flag = False
+                    if errors == "raise":
+                        raise self._numerical_error(
+                            input_type, left, right, index, code
+                        )
+                    continue
+                try:
+                    properties = core.compute_properties_coolprop(
+                        self._AS,
+                        input_type,
+                        left,
+                        right,
+                        generalize_quality=generalize_quality,
+                        supersaturation=supersaturation,
+                        source_context=self._source_context,
+                    )
+                    for name in _SOURCE_CORE_FIELDS:
+                        value = properties.get(name, np.nan)
+                        if not math.isfinite(value):
+                            raise ValueError(
+                                f"The source returned nonfinite core property {name!r}."
+                            )
+                        if (
+                            name in ("pressure", "temperature", "density")
+                            and value <= 0
+                        ):
+                            raise ValueError(
+                                f"The source returned nonpositive core property {name!r}."
+                            )
+                    # Apply the same cached acceptance precision as explicit
+                    # inputs, preserving recovered coordinates without clipping.
+                    temperature, pressure = (
+                        properties["temperature"],
+                        properties["pressure"],
+                    )
+                    if (
+                        temperature < self._T_min_accepted
+                        or temperature > self._T_max_accepted
+                        or pressure > self._p_max_accepted
+                    ):
+                        cause = ValueError(
+                            f"The resolved state (temperature={temperature} K, pressure={pressure} Pa) exceeds the source temperature/pressure domain."
+                        )
+                        code = StatusCode.OUT_OF_DOMAIN
+                    else:
+                        for name in available:
+                            value = properties.get(name, np.nan)
+                            results[name][index] = np.nan if value is None else value
+                        continue
+                except ConvergenceError as error:
+                    code, cause = StatusCode.NONCONVERGENCE, error
+                except (
+                    ValueError,
+                    RuntimeError,
+                    OverflowError,
+                    ZeroDivisionError,
+                    AttributeError,
+                    TypeError,
+                ) as error:
+                    code, cause = StatusCode.PROVIDER_FAILURE, error
+                self.converged_flag = False
+                status[index] = code
+                if errors == "raise":
+                    raise self._numerical_error(
+                        input_type, left, right, index, code, cause
+                    ) from cause
+                # A failed point may not retain partially written fields.
+                for values in results.values():
+                    values[index] = np.nan
+        return results, status
+
+    def get_state_saturation(self, input_type, prop_1, prop_2, *, errors="raise"):
+        """Evaluate a source saturation request with the ordinary state policy."""
+        if (
+            isinstance(input_type, (bool, np.bool_))
+            or not isinstance(input_type, Integral)
+            or input_type not in (CP.PQ_INPUTS, CP.QT_INPUTS)
+        ):
+            raise UnsupportedOperationError(
+                fluid_name=self.name,
+                provider=self.provider,
+                model=self.model,
+                request="saturation",
+                reason="Saturation evaluation requires PQ_INPUTS or QT_INPUTS.",
+                supported=("PQ_INPUTS", "QT_INPUTS"),
+            )
+        return self.get_state(input_type, prop_1, prop_2, errors=errors)
 
     @_handle_computation_exceptions
     def get_state_equilibrium(

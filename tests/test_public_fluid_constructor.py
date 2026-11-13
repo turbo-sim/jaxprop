@@ -213,7 +213,10 @@ def test_constructor_keeps_native_jax_transforms_and_model_tree(
     fluid, direct = configured_models[method]
     h = jnp.asarray([680e3, 700e3, 720e3])
     p = jnp.asarray(8e6)
-    evaluate = lambda enthalpy: fluid.get_state(jxp.HmassP_INPUTS, enthalpy, p)
+    policy = "mask" if method == "coolprop_jax" else "raise"
+    evaluate = lambda enthalpy: fluid.get_state(
+        jxp.HmassP_INPUTS, enthalpy, p, errors=policy
+    )
     eager = evaluate(h)
     compiled = jax.jit(evaluate)(h)
     vectorized = jax.vmap(evaluate)(h)
@@ -229,9 +232,9 @@ def test_constructor_keeps_native_jax_transforms_and_model_tree(
     # Callback models intentionally carry distinct opaque source handles as
     # static metadata. Their full tree keys differ across separate instances.
     actual_derivative = jax.jit(jax.grad(lambda x: evaluate(x).T))(700e3)
-    direct_derivative = jax.grad(lambda x: direct.get_state(jxp.HmassP_INPUTS, x, p).T)(
-        700e3
-    )
+    direct_derivative = jax.grad(
+        lambda x: direct.get_state(jxp.HmassP_INPUTS, x, p, errors=policy).T
+    )(700e3)
     assert np.isfinite(actual_derivative)
     np.testing.assert_allclose(
         actual_derivative, direct_derivative, rtol=1e-12, atol=1e-12

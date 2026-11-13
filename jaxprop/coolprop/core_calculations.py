@@ -7,6 +7,88 @@ from .. import math
 from .. import utils
 
 from ..helpers_props import PROPERTY_ALIASES, ALIAS_TO_CANONICAL, GAS_CONSTANT
+from .source_context import helper_state
+
+_OPTIONAL_PROPERTY_ERRORS = (
+    ValueError,
+    RuntimeError,
+    NotImplementedError,
+    AttributeError,
+    OverflowError,
+    ZeroDivisionError,
+)
+
+
+def _optional_value(function):
+    """An undefined response/transport field does not invalidate core state."""
+    try:
+        value = float(function())
+        return value if np.isfinite(value) else np.nan
+    except _OPTIONAL_PROPERTY_ERRORS:
+        return np.nan
+
+
+def _optional_divide(numerator, denominator):
+    if not np.isfinite(numerator) or not np.isfinite(denominator) or denominator == 0:
+        return np.nan
+    return _optional_value(lambda: numerator / denominator)
+
+
+class _DiagnosticStateView:
+    """Read original scalar inputs after legacy response helpers perturb AS."""
+
+    def __init__(self, state, properties, phase, quality):
+        self._state = state
+        self._properties = properties
+        self._phase = phase
+        self._quality = quality
+
+    def T(self):
+        return self._properties["temperature"]
+
+    def p(self):
+        return self._properties["pressure"]
+
+    def rhomass(self):
+        return self._properties["density"]
+
+    def hmass(self):
+        return self._properties["enthalpy"]
+
+    def smass(self):
+        return self._properties["entropy"]
+
+    def umass(self):
+        return self._properties["internal_energy"]
+
+    def phase(self):
+        return self._phase
+
+    def Q(self):
+        return self._quality
+
+    def __getattr__(self, name):
+        return getattr(self._state, name)
+
+
+def _add_optional_diagnostics(
+    state, properties, source_context=None, *, phase=None, quality=None
+):
+    if phase is None:
+        phase = state.phase()
+    if quality is None:
+        quality = _optional_value(state.Q)
+    original = _DiagnosticStateView(state, properties, phase, quality)
+    properties = calculate_supersaturation(
+        original, properties, source_context=source_context
+    )
+    properties["subcooling"] = _optional_value(
+        lambda: calculate_subcooling(original, source_context=source_context)
+    )
+    properties["superheating"] = _optional_value(
+        lambda: calculate_superheating(original, source_context=source_context)
+    )
+    return properties
 
 
 # Define valid phase change types and their aliases
@@ -17,19 +99,21 @@ PHASE_CHANGE_ALIASES = {
     "cavitation": "evaporation",
 }
 
+
 # Define NaN fallbacks for viscosity and thermal conductivity
 def get_conductivity(AS):
     # AS.conductivity()
     try:
         return AS.conductivity()
-    except ValueError:
+    except _OPTIONAL_PROPERTY_ERRORS:
         return np.nan
+
 
 def get_viscosity(AS):
     # AS.viscosity()
     try:
         return AS.viscosity()
-    except ValueError:
+    except _OPTIONAL_PROPERTY_ERRORS:
         return np.nan
 
 
@@ -37,10 +121,12 @@ def get_viscosity(AS):
 # Equilibrium property calculations in the single-phase region
 # ------------------------------------------------------------------------------------ #
 
+
 def compute_properties_1phase(
     abstract_state,
     generalize_quality=False,
     supersaturation=False,
+    source_context=None,
 ):
     """Extract single-phase properties from CoolProp abstract state.
     Returns dict with canonical property names.
@@ -54,21 +140,21 @@ def compute_properties_1phase(
     u = AS.umass()
     h = AS.hmass()
     s = AS.smass()
-    cv = AS.cvmass()
-    cp = AS.cpmass()
-    gamma = cp / cv
+    cv = _optional_value(AS.cvmass)
+    cp = _optional_value(AS.cpmass)
+    gamma = _optional_divide(cp, cv)
     M = AS.molar_mass()
     Z = p / (rho * (GAS_CONSTANT / M) * T)
 
     # --- thermodynamic properties involving derivatives
-    a = AS.speed_sound()
-    kappa_T = AS.isothermal_compressibility()
-    alpha_p = AS.isobaric_expansion_coefficient()
+    a = _optional_value(AS.speed_sound)
+    kappa_T = _optional_value(AS.isothermal_compressibility)
+    alpha_p = _optional_value(AS.isobaric_expansion_coefficient)
     K_s = rho * a**2
-    kappa_s = 1.0 / K_s
-    K_T = 1.0 / kappa_T
-    gruneisen = alpha_p / (kappa_T * rho * cv)
-    mu_JT = (alpha_p * T - 1.0) / (rho * cp)
+    kappa_s = _optional_divide(1.0, K_s)
+    K_T = _optional_divide(1.0, kappa_T)
+    gruneisen = _optional_divide(alpha_p, kappa_T * rho * cv)
+    mu_JT = _optional_divide(alpha_p * T - 1.0, rho * cp)
     mu_T = -mu_JT * cp
 
     # --- transport properties
@@ -77,11 +163,13 @@ def compute_properties_1phase(
 
     # --- quality
     if generalize_quality:
-        q_mass = calculate_generalized_quality(AS)
+        q_mass = _optional_value(
+            lambda: calculate_generalized_quality(AS, source_context=source_context)
+        )
         q_vol = np.nan
     else:
         try:
-            q_mass, q_vol = calculate_trimmed_quality(AS)
+            q_mass, q_vol = calculate_trimmed_quality(AS, source_context=source_context)
         except (ValueError, RuntimeError, NotImplementedError, AttributeError):
             # Single-phase core properties remain usable when the source has
             # no evaluable critical/saturation reference for quality inference.
@@ -125,18 +213,19 @@ def compute_properties_1phase(
 
     # --- extra saturation departures
     if supersaturation:
-        props = calculate_supersaturation(AS, props)
-        props["subcooling"] = calculate_subcooling(AS)
-        props["superheating"] = calculate_superheating(AS)
-
+        props = _add_optional_diagnostics(AS, props, source_context)
 
     return props
+
 
 # ------------------------------------------------------------------------------------ #
 # Equilibrium property calculations in the two-phase region
 # ------------------------------------------------------------------------------------ #
 
-def compute_properties_2phase(abstract_state, supersaturation=False):
+
+def compute_properties_2phase(
+    abstract_state, supersaturation=False, source_context=None
+):
     """Compute two-phase fluid properties from CoolProp abstract state
 
     Get two-phase properties from mixing rules and single-phase CoolProp properties
@@ -154,30 +243,32 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
     u = AS.umass()
     h = AS.hmass()
     s = AS.smass()
+    if supersaturation:
+        original_phase, original_quality = AS.phase(), AS.Q()
     try:
         surface_tension = AS.surface_tension()
     except Exception:
         surface_tension = np.nan
 
     # --- saturation states for mixing
-    cloned_AS = CP.AbstractState(AS.backend_name(), AS.fluid_names()[0])
+    cloned_AS = helper_state(AS, source_context)
     cloned_AS.update(CP.QT_INPUTS, 0.0, T)
     rho_L = cloned_AS.rhomass()
-    cp_L = cloned_AS.cpmass()
-    cv_L = cloned_AS.cvmass()
+    cp_L = _optional_value(cloned_AS.cpmass)
+    cv_L = _optional_value(cloned_AS.cvmass)
     k_L = get_conductivity(cloned_AS)
     mu_L = get_viscosity(cloned_AS)
-    a_L = cloned_AS.speed_sound()
-    dsdp_L = compute_dsdp_q(cloned_AS, p, quality=0.0)
+    a_L = _optional_value(cloned_AS.speed_sound)
+    dsdp_L = _optional_value(lambda: compute_dsdp_q(cloned_AS, p, quality=0.0))
 
     cloned_AS.update(CP.QT_INPUTS, 1.0, T)
     rho_V = cloned_AS.rhomass()
-    cp_V = cloned_AS.cpmass()
-    cv_V = cloned_AS.cvmass()
+    cp_V = _optional_value(cloned_AS.cpmass)
+    cv_V = _optional_value(cloned_AS.cvmass)
     k_V = get_conductivity(cloned_AS)
     mu_V = get_viscosity(cloned_AS)
-    a_V = cloned_AS.speed_sound()
-    dsdp_V = compute_dsdp_q(cloned_AS, p, quality=1.0)
+    a_V = _optional_value(cloned_AS.speed_sound)
+    dsdp_V = _optional_value(lambda: compute_dsdp_q(cloned_AS, p, quality=1.0))
 
     # --- volume/mass fractions
     vfrac_V = (rho - rho_L) / (rho_V - rho_L)
@@ -227,9 +318,11 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
         "isothermal_bulk_modulus": np.nan,
         "isothermal_compressibility": np.nan,
         "isobaric_expansion_coefficient": np.nan,
-        "gruneisen": compute_gruneisen(AS),
-        "isothermal_joule_thomson": compute_isothermal_joule_thomson(AS),
-        "joule_thomson": compute_joule_thomson(AS),
+        "gruneisen": _optional_value(lambda: compute_gruneisen(AS)),
+        "isothermal_joule_thomson": _optional_value(
+            lambda: compute_isothermal_joule_thomson(AS)
+        ),
+        "joule_thomson": _optional_value(lambda: compute_joule_thomson(AS)),
         "viscosity": mu,
         "conductivity": k,
         "quality_mass": mfrac_V,
@@ -241,9 +334,9 @@ def compute_properties_2phase(abstract_state, supersaturation=False):
     }
 
     if supersaturation:
-        props["subcooling"] = calculate_subcooling(AS)
-        props["superheating"] = calculate_superheating(AS)
-        props.update(calculate_supersaturation(AS, props))
+        props = _add_optional_diagnostics(
+            AS, props, source_context, phase=original_phase, quality=original_quality
+        )
 
     return props
 
@@ -302,11 +395,12 @@ def compute_gruneisen(AS, rel_du=1e-5):
         AS.update(CP.DmassUmass_INPUTS, rho, u0 + du)
         p2 = AS.p()
 
-        dpde = (p2 - p1) / (2. * du)
+        dpde = (p2 - p1) / (2.0 * du)
         Gamma = (1.0 / rho) * dpde
         return Gamma
     except Exception:
         return np.nan
+
 
 def compute_joule_thomson(AS, rel_dp=1e-5):
     """
@@ -327,7 +421,7 @@ def compute_joule_thomson(AS, rel_dp=1e-5):
         return mu_JT
     except Exception:
         return np.nan
-    
+
 
 def compute_isothermal_joule_thomson(AS, rel_dp=1e-5):
     """
@@ -354,7 +448,8 @@ def compute_isothermal_joule_thomson(AS, rel_dp=1e-5):
 # Property calculations using Helmholtz equations of state
 # ------------------------------------------------------------------------------------ #
 def _to_scalar(x):
-    return np.asarray(x).squeeze()      # remove all length-1 dimensions
+    return np.asarray(x).squeeze()  # remove all length-1 dimensions
+
 
 def compute_properties_metastable_rhoT(
     abstract_state, rho, T, supersaturation=False, generalize_quality=False
@@ -447,7 +542,6 @@ def compute_properties_metastable_rhoT(
     AS = abstract_state
     # AS.update(CP.DmassT_INPUTS, _to_scalar(rho), _to_scalar(T))
     AS.update(CP.DmassT_INPUTS, rho, T)
-    
 
     # Fluid constants
     R = GAS_CONSTANT
@@ -511,7 +605,6 @@ def compute_properties_metastable_rhoT(
     # Joule-Thomson
     mu_JT = (alpha_p * T - 1.0) / (rho * cp)
     mu_T = -mu_JT * cp
-
 
     # Canonical dict
     props = {
@@ -584,6 +677,7 @@ def compute_properties_coolprop(
     prop_2,
     generalize_quality=False,
     supersaturation=False,
+    source_context=None,
 ):
     r"""
     Set the thermodynamic state of the fluid based on input properties.
@@ -626,13 +720,14 @@ def compute_properties_coolprop(
             abstract_state,
             generalize_quality=generalize_quality,
             supersaturation=supersaturation,
+            source_context=source_context,
         )
     else:
         properties = compute_properties_2phase(
             abstract_state,
             supersaturation=supersaturation,
+            source_context=source_context,
         )
-
 
     return properties
 
@@ -640,6 +735,7 @@ def compute_properties_coolprop(
 # ------------------------------------------------------------------------------------ #
 # Property calculations using custom solver
 # ------------------------------------------------------------------------------------ #
+
 
 def compute_properties(
     abstract_state,
@@ -869,7 +965,6 @@ def _perform_flash_calculation(
     except KeyError:
         raise ValueError(f"Unknown property name or alias: {prop_2}")
 
-
     # Ensure prop_1_value and prop_2_value are scalar numbers
     if not utils.is_float(prop_1_value) or not utils.is_float(prop_2_value):
         msg = f"Both prop_1_value and prop_2_value must be scalar numbers. Received: prop_1_value={prop_1_value}, prop_2_value={prop_2_value}"
@@ -917,7 +1012,6 @@ def _perform_flash_calculation(
         rho_scale=rho_crit,
         T_scale=T_crit,
     )
-   
 
     # Define root-finding solver object
     solver = psv.NonlinearSystemSolver(
@@ -931,10 +1025,9 @@ def _perform_flash_calculation(
     )
     # print(f"rho_crit: {rho_crit}, T_crit: {T_crit}")
 
-
     # Define initial guess and solve the problem
     # x0 = np.asarray([rho_guess, T_guess])
-    
+
     x0_reduced = np.asarray([rho_guess / rho_crit, T_guess / T_crit])
     xf_reduced = solver.solve(x0_reduced)
     rho, T = xf_reduced[0] * rho_crit, xf_reduced[1] * T_crit
@@ -954,7 +1047,16 @@ def _perform_flash_calculation(
 class _FlashCalculationResidual(psv.NonlinearSystemProblem):
     """Class to compute the residual of property calculations"""
 
-    def __init__(self, prop_1, prop_1_value, prop_2, prop_2_value, function_handle, rho_scale, T_scale):
+    def __init__(
+        self,
+        prop_1,
+        prop_1_value,
+        prop_2,
+        prop_2_value,
+        function_handle,
+        rho_scale,
+        T_scale,
+    ):
         self.prop_1 = prop_1
         self.prop_2 = prop_2
         self.prop_1_value = prop_1_value
@@ -1029,7 +1131,6 @@ def blend_properties(
     props_metastable = props_metastable.to_dict()
     blending_variable = ALIAS_TO_CANONICAL[blending_variable]
 
-
     # Validate the normalized phase change
     if normalized_phase_change is None:
         msg = (
@@ -1055,10 +1156,10 @@ def blend_properties(
         prop_metastable = props_metastable.get(key, np.nan)
         props_blended[key] = prop_equilibrium * (1 - sigma) + prop_metastable * sigma
         # if utils.is_numeric(prop_equilibrium) and utils.is_numeric(prop_metastable):
-            # props_blended[key] = prop_equilibrium * (1 - sigma) + prop_metastable * sigma
+        # props_blended[key] = prop_equilibrium * (1 - sigma) + prop_metastable * sigma
         # else:
         #     props_blended[key] = None
-            
+
     # Add additional properties
     props_blended["x"] = x
     props_blended["sigma"] = sigma
@@ -1148,7 +1249,8 @@ def blend_properties(
 
 #     return quality.item()
 
-def calculate_generalized_quality(abstract_state, alpha=10):
+
+def calculate_generalized_quality(abstract_state, alpha=10, source_context=None):
     r"""
     Calculate the generalized quality of a fluid using specific entropy, extending the quality computation beyond
     the two-phase region by extrapolating entropy values.
@@ -1178,10 +1280,7 @@ def calculate_generalized_quality(abstract_state, alpha=10):
     """
     # Instantiate new abstract state to compute saturation properties without changing the state of the class
     AS = abstract_state
-    fluids = AS.fluid_names()  # AS.name does not work well for REFPROP backend
-    if len(fluids) != 1:
-        raise ValueError(f"Expected one fluid, got {fluids}")
-    cloned_AS = CP.AbstractState(AS.backend_name(), fluids[0])
+    cloned_AS = helper_state(AS, source_context)
 
     # Extend quality calculation beyond the two-phase region
     # Checking if subcritical using temperature works better than with pressure
@@ -1200,8 +1299,13 @@ def calculate_generalized_quality(abstract_state, alpha=10):
 
         T = AS.T()
         rho_crit, T_crit = AS.rhomass_critical(), AS.T_critical()
-        cloned_AS.update(CP.DmassT_INPUTS, rho_crit, T_crit)
-        s_crit = cloned_AS.smass()
+        if source_context is None:
+            cloned_AS.update(CP.DmassT_INPUTS, rho_crit, T_crit)
+            s_crit = cloned_AS.smass()
+        else:
+            s_crit = source_context.critical_entropy
+            if s_crit is None:
+                return np.nan
 
         T_hat = 1.5 * T_crit
         s_hat_liq = 1.1 * s_crit
@@ -1220,27 +1324,30 @@ def calculate_generalized_quality(abstract_state, alpha=10):
     return quality.item()
 
 
-def calculate_trimmed_quality(abstract_state):
+def calculate_trimmed_quality(abstract_state, source_context=None):
 
     # Instantiate new abstract state to compute saturation properties without changing the state of the class
     AS = abstract_state
-    fluids = AS.fluid_names()  # AS.name does not work well for REFPROP backend
-    if len(fluids) != 1:
-        raise ValueError(f"Expected one fluid, got {fluids}")
-    cloned_AS = CP.AbstractState(AS.backend_name(), fluids[0])
 
     # Retrieve single-phase properties
     is_two_phase = abstract_state.phase() == CP.iphase_twophase
     if not is_two_phase:
 
         # Determine quality based on actual vs critical entropy
-        rho_crit, T_crit = AS.rhomass_critical(), AS.T_critical()
-        cloned_AS.update(CP.DmassT_INPUTS, rho_crit, T_crit)
-        s_crit = cloned_AS.smass()
+        if source_context is None:
+            cloned_AS = helper_state(AS)
+            rho_crit, T_crit = AS.rhomass_critical(), AS.T_critical()
+            cloned_AS.update(CP.DmassT_INPUTS, rho_crit, T_crit)
+            s_crit = cloned_AS.smass()
+        else:
+            s_crit = source_context.critical_entropy
+            if s_crit is None:
+                return np.nan, np.nan
         frac_mass = 1.0 if abstract_state.smass() > s_crit else 0.0
         frac_vol = frac_mass
 
     else:
+        cloned_AS = helper_state(AS, source_context)
 
         # Saturated liquid density
         cloned_AS.update(CP.QT_INPUTS, 0.00, AS.T())
@@ -1255,13 +1362,10 @@ def calculate_trimmed_quality(abstract_state):
         frac_mass = (rho_mix - rho_L) / (rho_V - rho_L)
         frac_vol = (1 / rho_mix - 1 / rho_L) / (1 / rho_V - 1 / rho_L)
 
-
     return frac_mass, frac_vol
 
 
-
-
-def calculate_superheating(abstract_state):
+def calculate_superheating(abstract_state, source_context=None):
     r"""
     Calculate the degree of superheating for a given CoolProp abstract state.
 
@@ -1318,21 +1422,21 @@ def calculate_superheating(abstract_state):
     """
     # Instantiate new abstract state to compute saturation properties without changing the state of the class
     AS = abstract_state
-    fluids = AS.fluid_names()  # AS.name does not work well for REFPROP backend
-    if len(fluids) != 1:
-        raise ValueError(f"Expected one fluid, got {fluids}")
-    sat_AS = CP.AbstractState(AS.backend_name(), fluids[0])
+    sat_AS = helper_state(AS, source_context)
 
-    # Compute triple pressure
-    sat_AS.update(CP.QT_INPUTS, 1.00, AS.Ttriple())
-    p_triple = sat_AS.p()
+    p_critical = (
+        AS.p_critical() if source_context is None else source_context.critical_pressure
+    )
 
     # Check if the pressure is below the critical pressure of the fluid
-    if AS.p() < AS.p_critical():
+    if AS.p() < p_critical:
 
         # Compute triple pressure (needed to avoid error at low pressure)
-        sat_AS.update(CP.QT_INPUTS, 1.00, AS.Ttriple())
-        p_triple = sat_AS.p()
+        if source_context is None:
+            sat_AS.update(CP.QT_INPUTS, 1.00, AS.Ttriple())
+            p_triple = sat_AS.p()
+        else:
+            p_triple = source_context.triple_pressure_vapor
 
         # Set the saturation state of the fluid at the given pressure
         sat_AS.update(CP.PQ_INPUTS, max(p_triple, AS.p()), 1.00)
@@ -1351,7 +1455,11 @@ def calculate_superheating(abstract_state):
         # For states at or above the critical pressure, the concept of saturation temperature is not applicable
         # Instead, use a 'pseudo-critical' state for comparison, where the density is set to the critical density
         # but the pressure is the same as the state of interest
-        rho_crit = AS.rhomass_critical()
+        rho_crit = (
+            AS.rhomass_critical()
+            if source_context is None
+            else source_context.critical_density
+        )
         sat_AS.update(CP.DmassP_INPUTS, rho_crit, AS.p())
 
         # Define superheating as the difference in enthalpy from this 'pseudo-critical' state
@@ -1361,7 +1469,7 @@ def calculate_superheating(abstract_state):
     return superheating
 
 
-def calculate_subcooling(abstract_state):
+def calculate_subcooling(abstract_state, source_context=None):
     r"""
     Calculate the degree of subcooling for a given CoolProp abstract state.
 
@@ -1419,17 +1527,20 @@ def calculate_subcooling(abstract_state):
 
     # Instantiate new abstract state to compute saturation properties without changing the state of the class
     AS = abstract_state
-    fluids = AS.fluid_names()  # AS.name does not work well for REFPROP backend
-    if len(fluids) != 1:
-        raise ValueError(f"Expected one fluid, got {fluids}")
-    sat_AS = CP.AbstractState(AS.backend_name(), fluids[0])
+    sat_AS = helper_state(AS, source_context)
+    p_critical = (
+        AS.p_critical() if source_context is None else source_context.critical_pressure
+    )
 
     # Check if the pressure is below the critical pressure of the fluid
-    if AS.p() < AS.p_critical():
+    if AS.p() < p_critical:
 
         # Compute triple pressure (needed to avoid error at low pressure)
-        sat_AS.update(CP.QT_INPUTS, 0.00, AS.Ttriple())
-        p_triple = sat_AS.p()
+        if source_context is None:
+            sat_AS.update(CP.QT_INPUTS, 0.00, AS.Ttriple())
+            p_triple = sat_AS.p()
+        else:
+            p_triple = source_context.triple_pressure_liquid
 
         # Set the saturation state of the fluid at the given pressure
         sat_AS.update(CP.PQ_INPUTS, max(p_triple, AS.p()), 0.00)
@@ -1448,7 +1559,11 @@ def calculate_subcooling(abstract_state):
         # For states at or above the critical pressure, the concept of saturation temperature is not applicable
         # Instead, use a 'pseudo-critical' state for comparison, where the density is set to the critical density
         # but the pressure is the same as the state of interest
-        rho_crit = AS.rhomass_critical()
+        rho_crit = (
+            AS.rhomass_critical()
+            if source_context is None
+            else source_context.critical_density
+        )
         sat_AS.update(CP.DmassP_INPUTS, rho_crit, AS.p())
 
         # Define superheating as the difference in enthalpy from this 'pseudo-critical' state
@@ -1458,7 +1573,7 @@ def calculate_subcooling(abstract_state):
     return subcooling
 
 
-def calculate_supersaturation(abstract_state, props):
+def calculate_supersaturation(abstract_state, props, source_context=None):
     r"""
     Evaluate degree of supersaturation and supersaturation ratio.
 
@@ -1501,138 +1616,161 @@ def calculate_supersaturation(abstract_state, props):
         Thermodynamic properties including supersaturation properties
 
     """
-    # Compute triple pressure
+    # Use the bubble lower endpoint for bubble-temperature requests. In a
+    # pseudo-pure source it need not equal the dew endpoint pressure.
     AS = abstract_state
-    fluids = AS.fluid_names()  # AS.name does not work well for REFPROP backend
-    if len(fluids) != 1:
-        raise ValueError(f"Expected one fluid, got {fluids}")
-    AS = CP.AbstractState(AS.backend_name(), fluids[0])
-    AS.update(CP.QT_INPUTS, 1.00, AS.Ttriple())
-    p_triple = AS.p()
+    try:
+        AS = helper_state(AS, source_context)
+        if source_context is None:
+            AS.update(CP.QT_INPUTS, 0.00, AS.Ttriple())
+            p_triple = AS.p()
+            T_triple, T_critical, p_critical = (
+                AS.Ttriple(),
+                AS.T_critical(),
+                AS.p_critical(),
+            )
+        else:
+            p_triple = source_context.triple_pressure_liquid
+            T_triple = source_context.triple_temperature
+            T_critical = source_context.critical_temperature
+            p_critical = source_context.critical_pressure
+    except _OPTIONAL_PROPERTY_ERRORS:
+        for key in (
+            "pressure_saturation",
+            "supersaturation_ratio",
+            "temperature_saturation",
+            "supersaturation_degree",
+        ):
+            props[key] = np.nan
+        return props
 
     # Compute supersaturation for subcritical states
-    if AS.Ttriple() < props["temperature"] < AS.T_critical():
-        AS.update(CP.QT_INPUTS, 0.00, props["temperature"])
-        props["pressure_saturation"] = AS.p()
-        props["supersaturation_ratio"] = props["pressure"] / AS.p()
+    if T_triple < props["temperature"] < T_critical:
+        try:
+            AS.update(CP.QT_INPUTS, 0.00, props["temperature"])
+            props["pressure_saturation"] = AS.p()
+            props["supersaturation_ratio"] = props["pressure"] / AS.p()
+        except _OPTIONAL_PROPERTY_ERRORS:
+            props["pressure_saturation"] = props["supersaturation_ratio"] = np.nan
     else:
         props["pressure_saturation"] = np.nan
         props["supersaturation_ratio"] = np.nan
 
-    if p_triple < props["pressure"] < AS.p_critical():
-        AS.update(CP.PQ_INPUTS, props["pressure"], 0.00)
-        props["temperature_saturation"] = AS.T()
-        props["supersaturation_degree"] = props["temperature"] - AS.T()
+    if p_triple < props["pressure"] < p_critical:
+        try:
+            AS.update(CP.PQ_INPUTS, props["pressure"], 0.00)
+            props["temperature_saturation"] = AS.T()
+            props["supersaturation_degree"] = props["temperature"] - AS.T()
+        except _OPTIONAL_PROPERTY_ERRORS:
+            props["temperature_saturation"] = props["supersaturation_degree"] = np.nan
     else:
         props["temperature_saturation"] = np.nan
         props["supersaturation_degree"] = np.nan
 
     return props
 
+    # # ------------------------------------------------------------------------------------ #
+    # # Properties of a two-component mixture (e.g., water and nitrogen)
+    # # ------------------------------------------------------------------------------------ #
 
-# # ------------------------------------------------------------------------------------ #
-# # Properties of a two-component mixture (e.g., water and nitrogen)
-# # ------------------------------------------------------------------------------------ #
+    # def calculate_mixture_properties(props_1, props_2, y_1, y_2):
+    #     """
+    #     Calculate the thermodynamic properties of the mixture.
 
-# def calculate_mixture_properties(props_1, props_2, y_1, y_2):
-#     """
-#     Calculate the thermodynamic properties of the mixture.
+    #     TODO: add model equations and explanation
 
-#     TODO: add model equations and explanation
+    #     Parameters
+    #     ----------
+    #     state_1 : dict
+    #         Thermodynamic properties of fluid 1.
+    #     state_2 : dict
+    #         Thermodynamic properties of fluid 2.
+    #     y_1 : float
+    #         Mass fraction of fluid 1.
+    #     y_2 : float
+    #         Mass fraction of fluid 2.
 
-#     Parameters
-#     ----------
-#     state_1 : dict
-#         Thermodynamic properties of fluid 1.
-#     state_2 : dict
-#         Thermodynamic properties of fluid 2.
-#     y_1 : float
-#         Mass fraction of fluid 1.
-#     y_2 : float
-#         Mass fraction of fluid 2.
+    #     Returns
+    #     -------
+    #     mixture_properties : dict
+    #         A dictionary containing the mixture's properties.
+    #     """
 
-#     Returns
-#     -------
-#     mixture_properties : dict
-#         A dictionary containing the mixture's properties.
-#     """
+    #     # Validate mass fractions
+    #     if not utils.is_float(y_1) or not utils.is_float(y_2) or np.abs(y_1 + y_2 - 1) > 1e-12:
+    #         raise ValueError(f"The mass fractions must be floats and their sum must equal 1. Received y_1={y_1} and y_2={y_2}.")
 
-#     # Validate mass fractions
-#     if not utils.is_float(y_1) or not utils.is_float(y_2) or np.abs(y_1 + y_2 - 1) > 1e-12:
-#         raise ValueError(f"The mass fractions must be floats and their sum must equal 1. Received y_1={y_1} and y_2={y_2}.")
+    #     # Mass-averaged properties
+    #     cv = y_1 * props_1['cvmass'] + y_2 * props_2['cvmass']
+    #     cp = y_1 * props_1['cpmass'] + y_2 * props_2['cpmass']
+    #     umass = y_1 * props_1['umass'] + y_2 * props_2['umass']
+    #     hmass = y_1 * props_1['hmass'] + y_2 * props_2['hmass']
+    #     smass = y_1 * props_1['smass'] + y_2 * props_2['smass']
 
-#     # Mass-averaged properties
-#     cv = y_1 * props_1['cvmass'] + y_2 * props_2['cvmass']
-#     cp = y_1 * props_1['cpmass'] + y_2 * props_2['cpmass']
-#     umass = y_1 * props_1['umass'] + y_2 * props_2['umass']
-#     hmass = y_1 * props_1['hmass'] + y_2 * props_2['hmass']
-#     smass = y_1 * props_1['smass'] + y_2 * props_2['smass']    
-    
-#     # Enthalpy derivative for the two-component barotropic model
-#     alphaP_1 = props_1['isobaric_expansion_coefficient']
-#     alphaP_2 = props_2['isobaric_expansion_coefficient']
-#     dhdp_T_1 = (1 - props_1['T'] * alphaP_1) / props_1['rho']
-#     dhdp_T_2 = (1 - props_2['T'] * alphaP_2) / props_2['rho']
-#     dhdp_T = y_1 * dhdp_T_1 + y_2 * dhdp_T_2
+    #     # Enthalpy derivative for the two-component barotropic model
+    #     alphaP_1 = props_1['isobaric_expansion_coefficient']
+    #     alphaP_2 = props_2['isobaric_expansion_coefficient']
+    #     dhdp_T_1 = (1 - props_1['T'] * alphaP_1) / props_1['rho']
+    #     dhdp_T_2 = (1 - props_2['T'] * alphaP_2) / props_2['rho']
+    #     dhdp_T = y_1 * dhdp_T_1 + y_2 * dhdp_T_2
 
-#     # Compute volume fractions and void fraction
-#     rho = 1 / (y_1 / props_1['rho'] + y_2 / props_2['rho'])
-#     vol_1 = y_1 * rho/props_1['rhomass']
-#     vol_2 = y_2 * rho/props_2['rhomass']
-#     quality_mass = y_1 if props_1['rho'] < props_2['rho'] else vol_2
-#     quality_volume = vol_1 if props_1['rho'] < props_2['rho'] else vol_2
-    
-#     # Isothermal compressibility
-#     betaT_1 = props_1["isothermal_compressibility"]
-#     betaT_2 = props_2["isothermal_compressibility"]
-#     isothermal_compressibility = vol_1 * betaT_1 + vol_2 * betaT_2
-#     isothermal_bulk_modulus = 1 / isothermal_compressibility
+    #     # Compute volume fractions and void fraction
+    #     rho = 1 / (y_1 / props_1['rho'] + y_2 / props_2['rho'])
+    #     vol_1 = y_1 * rho/props_1['rhomass']
+    #     vol_2 = y_2 * rho/props_2['rhomass']
+    #     quality_mass = y_1 if props_1['rho'] < props_2['rho'] else vol_2
+    #     quality_volume = vol_1 if props_1['rho'] < props_2['rho'] else vol_2
 
-#     # Isentropic compressibility and speed of sound (Wood's formula)
-#     betaS_1 = props_1["isentropic_compressibility"]
-#     betaS_2 = props_2["isentropic_compressibility"]
-#     isentropic_compressibility = vol_1 * betaS_1 + vol_2 * betaS_2
-#     isentropic_bulk_modulus = 1 / isentropic_compressibility
-#     speed_sound = np.sqrt(isentropic_bulk_modulus / rho)
+    #     # Isothermal compressibility
+    #     betaT_1 = props_1["isothermal_compressibility"]
+    #     betaT_2 = props_2["isothermal_compressibility"]
+    #     isothermal_compressibility = vol_1 * betaT_1 + vol_2 * betaT_2
+    #     isothermal_bulk_modulus = 1 / isothermal_compressibility
 
-#     # Transport properties as volume averages
-#     conductivity = vol_1 * props_1['conductivity'] + vol_2 * props_2['conductivity']
-#     viscosity = vol_1 * props_1['viscosity'] + vol_2 * props_2['viscosity']
+    #     # Isentropic compressibility and speed of sound (Wood's formula)
+    #     betaS_1 = props_1["isentropic_compressibility"]
+    #     betaS_2 = props_2["isentropic_compressibility"]
+    #     isentropic_compressibility = vol_1 * betaS_1 + vol_2 * betaS_2
+    #     isentropic_bulk_modulus = 1 / isentropic_compressibility
+    #     speed_sound = np.sqrt(isentropic_bulk_modulus / rho)
 
-#     # Group up mixture properties
-#     props = {
-#         "mass_frac_1": y_1,
-#         "mass_frac_2": y_2,
-#         "vol_frac_1": vol_1,
-#         "vol_frac_2": vol_2,
-#         "mixture_ratio": y_1 / y_2,
-#         "quality_mass": quality_mass,
-#         "quality_volume": quality_volume,
-#         "pressure": props_1['p'],
-#         "temperature": props_1['T'],
-#         "density": rho,
-#         "enthalpy": hmass,
-#         "umass": umass,
-#         "smass": smass,
-#         "cvmass": cv,
-#         "isobaric_heat_capacity": cp,
-#         "isothermal_compressibility": isothermal_compressibility,
-#         "isothermal_bulk_modulus": isothermal_bulk_modulus,
-#         "isentropic_compressibility": isentropic_compressibility,
-#         "isentropic_bulk_modulus": isentropic_bulk_modulus,
-#         "speed_of_sound": speed_sound,
-#         "conductivity": conductivity,
-#         "viscosity": viscosity,
-#         "viscosity_kinematic": viscosity / rho,
-#         "dhdp_T": dhdp_T,
-#     }
+    #     # Transport properties as volume averages
+    #     conductivity = vol_1 * props_1['conductivity'] + vol_2 * props_2['conductivity']
+    #     viscosity = vol_1 * props_1['viscosity'] + vol_2 * props_2['viscosity']
 
-#     # # Add properties as aliases (if property exists)
-#     # for key, value in PROPERTY_ALIASES.items():
-#     #     props[key] = props.get(value, np.nan)
+    #     # Group up mixture properties
+    #     props = {
+    #         "mass_frac_1": y_1,
+    #         "mass_frac_2": y_2,
+    #         "vol_frac_1": vol_1,
+    #         "vol_frac_2": vol_2,
+    #         "mixture_ratio": y_1 / y_2,
+    #         "quality_mass": quality_mass,
+    #         "quality_volume": quality_volume,
+    #         "pressure": props_1['p'],
+    #         "temperature": props_1['T'],
+    #         "density": rho,
+    #         "enthalpy": hmass,
+    #         "umass": umass,
+    #         "smass": smass,
+    #         "cvmass": cv,
+    #         "isobaric_heat_capacity": cp,
+    #         "isothermal_compressibility": isothermal_compressibility,
+    #         "isothermal_bulk_modulus": isothermal_bulk_modulus,
+    #         "isentropic_compressibility": isentropic_compressibility,
+    #         "isentropic_bulk_modulus": isentropic_bulk_modulus,
+    #         "speed_of_sound": speed_sound,
+    #         "conductivity": conductivity,
+    #         "viscosity": viscosity,
+    #         "viscosity_kinematic": viscosity / rho,
+    #         "dhdp_T": dhdp_T,
+    #     }
+
+    #     # # Add properties as aliases (if property exists)
+    #     # for key, value in PROPERTY_ALIASES.items():
+    #     #     props[key] = props.get(value, np.nan)
 
     return props
-
 
 
 def calculate_mixture_properties_hp(h_mix, p_mix, AS1, AS2, R):
@@ -1661,7 +1799,7 @@ def calculate_mixture_properties_hp(h_mix, p_mix, AS1, AS2, R):
 
     ### --- Find the h of each fluid ---
     x1 = R / (R + 1)
-    x2 =  1 - x1
+    x2 = 1 - x1
 
     def residual_enthalpy(T, *args):
         AS1.update(CP.PT_INPUTS, p_mix, T)
@@ -1670,22 +1808,21 @@ def calculate_mixture_properties_hp(h_mix, p_mix, AS1, AS2, R):
         h2_guess = AS2.hmass()
         h_mix_guess = x1 * h1_guess + x2 * h2_guess
         return h_mix - h_mix_guess
-    
+
     # Temperature bounds (analogous to your JAX code)
     T_low = max(AS1.Ttriple(), AS2.Ttriple())
     T_high = min(AS1.T_critical(), AS2.T_critical()) * 5.0
 
-
     # Solve using root_scalar with Brent method
     sol_root = root_scalar(
         residual_enthalpy,
-        args=(AS1, AS2, x1, x2),    # your parameters
-        method='brentq',
+        args=(AS1, AS2, x1, x2),  # your parameters
+        method="brentq",
         bracket=[T_low, T_high],
-        xtol=1e-12,         # tolerance for convergence
-        rtol=1e-12
-        )
-    
+        xtol=1e-12,  # tolerance for convergence
+        rtol=1e-12,
+    )
+
     T_mix = sol_root.root
 
     AS1.update(CP.PT_INPUTS, p_mix, T_mix)
@@ -1699,14 +1836,17 @@ def calculate_mixture_properties_hp(h_mix, p_mix, AS1, AS2, R):
     rho = vol_1 * props_1["density"] + vol_2 * props_2["density"]
 
     # Mass-averaged properties
-    cv = x1 * props_1['isochoric_heat_capacity'] + x2 * props_2['isochoric_heat_capacity']
-    cp = x1 * props_1['isobaric_heat_capacity'] + x2 * props_2['isobaric_heat_capacity']
-    umass = x1 * props_1['internal_energy'] + x2 * props_2['internal_energy']
-    smass = x1 * props_1['entropy'] + x2 * props_2['entropy']
+    cv = (
+        x1 * props_1["isochoric_heat_capacity"]
+        + x2 * props_2["isochoric_heat_capacity"]
+    )
+    cp = x1 * props_1["isobaric_heat_capacity"] + x2 * props_2["isobaric_heat_capacity"]
+    umass = x1 * props_1["internal_energy"] + x2 * props_2["internal_energy"]
+    smass = x1 * props_1["entropy"] + x2 * props_2["entropy"]
 
     # Enthalpy derivative for the two-component barotropic model
-    kappaT_1 = props_1['isobaric_expansion_coefficient']
-    kappaT_2 = props_2['isobaric_expansion_coefficient']
+    kappaT_1 = props_1["isobaric_expansion_coefficient"]
+    kappaT_2 = props_2["isobaric_expansion_coefficient"]
     kappaT = vol_1 * kappaT_1 + vol_2 * kappaT_2
 
     # Isothermal compressibility
@@ -1715,19 +1855,17 @@ def calculate_mixture_properties_hp(h_mix, p_mix, AS1, AS2, R):
     kappaP = vol_1 * kappaP_1 + vol_2 * kappaP_2
     isothermal_bulk_modulus = 1 / kappaP
 
-
     # Isentropic compressibility and speed of sound (Wood's formula)
     betaS_1 = props_1["isentropic_compressibility"]
     betaS_2 = props_2["isentropic_compressibility"]
-    isentropic_compressibility = x1 * betaS_1 + x2 * betaS_2 # TODO: to be checked
+    isentropic_compressibility = x1 * betaS_1 + x2 * betaS_2  # TODO: to be checked
     isentropic_bulk_modulus = 1 / isentropic_compressibility
     speed_sound = (rho * kappaP - kappaT**2 * T_mix / cp) ** -0.5
 
-
     # Transport properties as volume averages
-    conductivity = vol_1 * props_1['conductivity'] + vol_2 * props_2['conductivity']
-    viscosity = vol_1 * props_1['viscosity'] + vol_2 * props_2['viscosity']
-    
+    conductivity = vol_1 * props_1["conductivity"] + vol_2 * props_2["conductivity"]
+    viscosity = vol_1 * props_1["viscosity"] + vol_2 * props_2["viscosity"]
+
     gruneisen = (rho * cp * kappaP / kappaT - T_mix * kappaT) ** -1
 
     # Group up mixture properties
@@ -1746,14 +1884,14 @@ def calculate_mixture_properties_hp(h_mix, p_mix, AS1, AS2, R):
         "isochoric_heat_capacity": cv,
         "isobaric_heat_capacity": cp,
         "isothermal_compressibility": kappaP,
-        "isobaric_expansion_coefficient":kappaT,
+        "isobaric_expansion_coefficient": kappaT,
         "isothermal_bulk_modulus": isothermal_bulk_modulus,
         "isentropic_compressibility": isentropic_compressibility,
         "isentropic_bulk_modulus": isentropic_bulk_modulus,
         "speed_of_sound": speed_sound,
         "conductivity": conductivity,
         "viscosity": viscosity,
-        "gruneisen":gruneisen,
+        "gruneisen": gruneisen,
     }
 
     return props_mix

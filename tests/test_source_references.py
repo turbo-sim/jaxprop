@@ -434,16 +434,18 @@ def test_source_and_references_share_the_same_constructed_reference_convention(
             return getattr(self.wrapped, name)
 
     monkeypatch.setattr(CP, "AbstractState", ReferenceEpoch)
-    fluid = jxp.Fluid("CO2")
+    source = CP.AbstractState("HEOS", "CO2")
+    references = references_module.initialize_source_references("CO2", state=source)
     assert len(constructed) == 1
-    source = fluid.abstract_state
-    anchor = fluid.references.anchor
+    anchor = references.anchor
     source.update(getattr(CP, anchor["input_pair"]), *anchor["inputs"])
     np.testing.assert_array_equal(anchor["enthalpy"], source.hmass())
     np.testing.assert_array_equal(anchor["entropy"], source.smass())
-    ordinary = fluid.get_state(jxp.PT_INPUTS, 1e5, 500.0)
-    np.testing.assert_array_equal(ordinary.h, source.hmass())
-    np.testing.assert_array_equal(ordinary.s, source.smass())
+    # A separately prepared diagnostic helper must have the same actual h/s
+    # convention. This fake changes it on every construction, so reject it
+    # explicitly rather than silently attach incompatible auxiliary state.
+    with pytest.raises(jxp.InvalidConfigurationError, match="[Rr]eference"):
+        jxp.Fluid("CO2")
 
 
 def test_binary_model_does_not_invent_unique_aggregate_phase_points():
@@ -574,16 +576,8 @@ print(json.dumps({
     assert all(outcomes.values()), outcomes
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AssertionError,
-    reason=(
-        "phase6: trimmed-quality inference clones the current global CoolProp "
-        "convention instead of using the configured source snapshot"
-    ),
-)
 def test_configured_source_quality_keeps_its_original_entropy_convention():
-    """Expose the legacy runtime clone without hiding unrelated core changes."""
+    """Configured quality and core values retain their original source gauge."""
     repo = Path(__file__).resolve().parents[1]
     script = r"""
 import json

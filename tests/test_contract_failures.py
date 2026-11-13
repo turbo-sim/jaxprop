@@ -117,11 +117,6 @@ def test_malformed_numeric_inputs_raise_informative_validation_errors(
     )
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AssertionError,
-    reason="phase6: source failures are wrapped as RuntimeError without structured indices",
-)
 def test_default_batch_failure_is_typed_and_reports_first_row_major_index(source_fluid):
     error = _assert_typed_failure(
         lambda: source_fluid.get_state(
@@ -160,11 +155,6 @@ def test_mask_mode_preserves_successful_elements_and_masks_only_failed_elements(
     np.testing.assert_allclose(np.asarray(state.p)[[0, 1], [0, 1]], [1e5, 2e5])
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AssertionError,
-    reason="phase6: callback execution does not validate transformed raise policy",
-)
 def test_outer_jit_requires_explicit_mask_policy():
     fluid = jxp.FluidJAX("CO2")
     _assert_typed_failure(

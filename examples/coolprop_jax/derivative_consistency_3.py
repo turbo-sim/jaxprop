@@ -19,12 +19,12 @@ print("state (HmassP_INPUTS):")
 for k in ("T", "p", "d", "h", "s", "a", "mu", "k", "gamma"):
     print(f"  {k:>5s}: {float(np.asarray(st[k])):+0.6f}")
 
-# scalar extractors
+# Scalar extractors use explicit mask mode for JAX transformations.
 def T_of(h, p):
-    return fluid.get_state(input_pair, h, p)["T"]
+    return fluid.get_state(input_pair, h, p, errors="mask")["T"]
 
 def rho_of(h, p):
-    return fluid.get_state(input_pair, h, p)["d"]
+    return fluid.get_state(input_pair, h, p, errors="mask")["d"]
 
 # forward-mode
 dT_dh = jax.jacfwd(T_of, argnums=0)(h0, p0)

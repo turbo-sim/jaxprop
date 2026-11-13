@@ -1,130 +1,294 @@
-import math
+"""CoolProp evaluation with eager typed errors and explicit JAX mask mode."""
+
+from functools import partial, update_wrapper
+from numbers import Integral
+
 import numpy as np
 import jax
 import jax.numpy as jnp
+from jax.custom_derivatives import SymbolicZero
 import equinox as eqx
-
-from functools import partial
-
 
 from .. import helpers_props as jxp
 from ..configuration import (
     FluidCapabilities,
     FluidConfiguration,
-    FluidDomain,
     build_configuration,
 )
-from ..fluid_api import SOURCE_PAIRS, SOURCE_PROPERTIES, checked_jit
+from ..errors import (
+    InvalidConfigurationError,
+    JaxPropError,
+    UnsupportedExecutionModeError,
+    UnsupportedOperationError,
+)
+from ..fluid_api import (
+    DIAGNOSTIC_PROPERTIES,
+    SOURCE_PROPERTIES,
+    enabled_properties,
+    validate_request,
+)
 from ..source_references import SourceReferencesMixin
 
-# output template for pure_callback (shapes/dtypes must be static)
+_EAGER_TRACE_STATE = jax.core.get_opaque_trace_state()
+_BASE_PROPERTY_NAMES = tuple(
+    name for name in jxp.PROPERTIES_CANONICAL if name in SOURCE_PROPERTIES
+)
+_EXTENDED_PROPERTY_NAMES = tuple(
+    name
+    for name in jxp.PROPERTIES_CANONICAL
+    if name in SOURCE_PROPERTIES | DIAGNOSTIC_PROPERTIES
+)
 
 
-def _make_template(shape):
-    """Return a pure_callback template dict with the given output shape."""
-    return {
-        k: jax.ShapeDtypeStruct(shape, jnp.float64) for k in jxp.PROPERTIES_CANONICAL
-    }
+def _names(supersaturation):
+    return _EXTENDED_PROPERTY_NAMES if supersaturation else _BASE_PROPERTY_NAMES
 
 
-def _get_props_python(input_type, x, y, fluid):
-    """Host-side evaluation. Accepts scalars or arrays and returns dict of ndarrays.
-    If the state is None or a property is missing/non-finite, fills with np.nan.
-    """
+def _make_template(shape, supersaturation=False):
+    return (
+        {
+            name: jax.ShapeDtypeStruct(shape, jnp.float64)
+            for name in _names(supersaturation)
+        },
+        jax.ShapeDtypeStruct(shape, jnp.int32),
+    )
+
+
+def _get_props_python(
+    input_type, x, y, fluid, generalize_quality=False, supersaturation=False
+):
+    """Return masked host data; static validation precedes this path."""
     x, y = np.broadcast_arrays(np.asarray(x), np.asarray(y))
-    results = {
-        name: np.empty(x.shape, dtype=np.float64) for name in jxp.PROPERTIES_CANONICAL
-    }
-
-    for i in np.ndindex(x.shape):
-        state = fluid.get_state(input_type, float(x[i]), float(y[i]))
-        if state is None:
-            # Fill all properties with NaN if state is invalid
-            for name in jxp.PROPERTIES_CANONICAL:
-                results[name][i] = np.nan
-        else:
-            state_dict = state.to_dict()
-            for name in jxp.PROPERTIES_CANONICAL:
-                val = state_dict.get(name, np.nan)
-                # Convert only if it's a finite number; otherwise force NaN
-                try:
-                    val_f = np.float64(val)
-                    results[name][i] = val_f if np.isfinite(val_f) else np.nan
-                except Exception:
-                    results[name][i] = np.nan
-
-    return results
+    properties, status = fluid._evaluate_state_data(
+        input_type,
+        x,
+        y,
+        generalize_quality=generalize_quality,
+        supersaturation=supersaturation,
+        errors="mask",
+    )
+    return (
+        {
+            name: np.asarray(properties[name], dtype=np.float64)
+            for name in _names(supersaturation)
+        },
+        np.asarray(status, dtype=np.int32),
+    )
 
 
-@partial(jax.custom_jvp, nondiff_argnums=(0, 3))
-def get_state(input_pair, x, y, fluid):
-    """
-    JAX-callable wrapper around CoolProp returning a dictionary of properties
-
-    Internally calls CoolProp via a host callback, using STATE_TEMPLATE
-    for shape/dtype specification. Supports JIT but not direct autodiff.
-    A custom JVP rule is registered to provide finite-difference gradients.
-    """
-
-    # determine broadcasted output shape at trace time
-    shape1 = jnp.shape(x)
-    shape2 = jnp.shape(y)
-    out_shape = np.broadcast_shapes(shape1, shape2)
-    template = _make_template(out_shape)
-
-    def local_eval(p1, p2):
-        # returns dict[str, float]; pure_callback will map to jnp scalars using _TEMPLATE
-        return _get_props_python(input_pair, p1, p2, fluid)
-
-    return jax.pure_callback(local_eval, template, x, y, vmap_method="broadcast_all")
+def _host_callback(input_pair, x, y, fluid, generalize_quality, supersaturation):
+    template = _make_template(
+        np.broadcast_shapes(jnp.shape(x), jnp.shape(y)), supersaturation
+    )
+    evaluate = partial(
+        _get_props_python,
+        input_pair,
+        fluid=fluid,
+        generalize_quality=generalize_quality,
+        supersaturation=supersaturation,
+    )
+    return jax.pure_callback(evaluate, template, x, y, vmap_method="broadcast_all")
 
 
-@get_state.defjvp
-def _get_state_jvp(input_state, fluid, primals, tangents):
-    """Custom JVP rule for get_props() using finite differences.
+@partial(jax.custom_jvp, nondiff_argnums=(0, 3, 4, 5))
+def _first_order_samples(input_pair, x, y, fluid, generalize_quality, supersaturation):
+    return _host_callback(input_pair, x, y, fluid, generalize_quality, supersaturation)
 
-    Approximates partial derivatives of each state property with respect
-    to the inputs (x, y) by evaluating CoolProp at slightly perturbed
-    states, then combines with tangents (x_dot, y_dot).
 
-    Returns
-    -------
-    base : dict
-        State evaluated at the primal inputs.
-    jvp : dict
-        Tangent state containing directional derivatives.
-    """
+@_first_order_samples.defjvp
+def _reject_higher_derivatives(
+    input_pair, fluid, generalize_quality, supersaturation, primals, tangents
+):
+    raise UnsupportedExecutionModeError(
+        fluid_name=fluid.name,
+        provider="coolprop_jax",
+        model=fluid.model,
+        request="derivative_order",
+        reason="The callback supports first-order finite-difference derivatives only; higher-order differentiation is unsupported.",
+        supported=("first-order",),
+    )
+
+
+@partial(jax.custom_jvp, nondiff_argnums=(0, 3, 4, 5))
+def _callback_state(input_pair, x, y, fluid, generalize_quality, supersaturation):
+    return _host_callback(input_pair, x, y, fluid, generalize_quality, supersaturation)
+
+
+def _callback_state_jvp(
+    input_pair, fluid, generalize_quality, supersaturation, primals, tangents
+):
+    """Forward differences with no work for symbolic-zero inputs."""
     x, y = primals
     x_dot, y_dot = tangents
-
-    # shapes and template (same logic as in primal)
-    out_shape = np.broadcast_shapes(jnp.shape(x), jnp.shape(y))
-    template = _make_template(out_shape)
-
-    # elementwise FD steps (broadcasted)
-    eps1 = 1e-6 * (jnp.abs(x) + 1.0)
-    eps2 = 1e-6 * (jnp.abs(y) + 1.0)
-
-    def local_eval(xx, yy):
-        return _get_props_python(input_state, xx, yy, fluid)
-
-    # base and perturbed evaluations (each returns dict of arrays)
-    props_base = jax.pure_callback(
-        local_eval, template, x, y, vmap_method="broadcast_all"
+    evaluate = partial(
+        _first_order_samples,
+        input_pair,
+        fluid=fluid,
+        generalize_quality=generalize_quality,
+        supersaturation=supersaturation,
     )
-    props_x = jax.pure_callback(
-        local_eval, template, x + eps1, y, vmap_method="broadcast_all"
-    )
-    props_y = jax.pure_callback(
-        local_eval, template, x, y + eps2, vmap_method="broadcast_all"
+    properties, status = evaluate(x, y)
+    contributions = []
+    for axis, (value, tangent) in enumerate(((x, x_dot), (y, y_dot))):
+        if (
+            isinstance(tangent, SymbolicZero)
+            or getattr(tangent, "dtype", None) == jax.dtypes.float0
+        ):
+            continue
+        step = 1e-6 * (jnp.abs(value) + 1.0)
+        perturbed, _ = evaluate(x + step, y) if axis == 0 else evaluate(x, y + step)
+        contributions.append(
+            {
+                name: (perturbed[name] - properties[name]) / step * tangent
+                for name in properties
+            }
+        )
+    numerical_tangent = {
+        name: sum((term[name] for term in contributions), jnp.zeros_like(value))
+        for name, value in properties.items()
+    }
+    status_tangent = np.zeros(status.shape, dtype=jax.dtypes.float0)
+    return (properties, status), (numerical_tangent, status_tangent)
+
+
+_callback_state.defjvp(_callback_state_jvp, symbolic_zeros=True)
+
+
+def get_state(input_pair, x, y, fluid):
+    """Compatibility numeric helper; use FluidJAX.get_state for policies."""
+    properties, _ = _callback_state(input_pair, x, y, fluid, False, False)
+    return properties
+
+
+@partial(jax.jit, static_argnames=("metadata",))
+def _assemble_state(properties, status, metadata):
+    name, identifier, provider, model, reference_id, available, errors = metadata
+    return jxp.FluidState(
+        fluid_name=name,
+        identifier=identifier,
+        provider=provider,
+        model=model,
+        reference_id=reference_id,
+        available_properties=available,
+        error_policy=errors,
+        status=status,
+        **properties
     )
 
-    # directional derivatives (broadcasted arithmetic)
-    df_dp1 = {k: (props_x[k] - props_base[k]) / eps1 for k in jxp.PROPERTIES_CANONICAL}
-    df_dp2 = {k: (props_y[k] - props_base[k]) / eps2 for k in jxp.PROPERTIES_CANONICAL}
-    jvp = {k: df_dp1[k] * x_dot + df_dp2[k] * y_dot for k in jxp.PROPERTIES_CANONICAL}
 
-    return props_base, jvp
+def _state_metadata(fluid, supersaturation, errors):
+    return (
+        fluid.name,
+        fluid.identifier,
+        fluid.provider,
+        fluid.model,
+        fluid.reference_id,
+        enabled_properties(fluid, supersaturation=supersaturation),
+        errors,
+    )
+
+
+def _eager_state(fluid, input_type, first, second, generalize_quality, supersaturation):
+    first, second = np.broadcast_arrays(np.asarray(first), np.asarray(second))
+    try:
+        properties, status = fluid.fluid._evaluate_state_data(
+            input_type,
+            first,
+            second,
+            generalize_quality=generalize_quality,
+            supersaturation=supersaturation,
+            errors="raise",
+        )
+    except JaxPropError as error:
+        mapped = type(error)(
+            fluid_name=fluid.name,
+            provider=fluid.provider,
+            model=fluid.model,
+            request=error.request,
+            reason=error.reason,
+            supported=error.supported,
+            index=error.index,
+            indices=error.indices,
+        )
+        raise mapped from (error.__cause__ or error)
+    return _assemble_state(
+        properties, status, _state_metadata(fluid, supersaturation, "raise")
+    )
+
+
+class _CallbackStateCall:
+    """Select eager errors or compiled masks without touching native JIT."""
+
+    def __init__(self, function):
+        update_wrapper(self, function)
+        self.compiled = jax.jit(
+            function,
+            static_argnames=(
+                "input_type",
+                "generalize_quality",
+                "supersaturation",
+                "errors",
+            ),
+        )
+
+    def __get__(self, instance, owner=None):
+        return self if instance is None else partial(self, instance)
+
+    def __call__(
+        self,
+        fluid,
+        input_type,
+        prop_1,
+        prop_2,
+        *,
+        generalize_quality=False,
+        supersaturation=False,
+        errors="raise",
+        **options
+    ):
+        first, second = validate_request(
+            fluid,
+            input_type,
+            prop_1,
+            prop_2,
+            generalize_quality=generalize_quality,
+            supersaturation=supersaturation,
+            errors=errors,
+            array_backend="jax",
+            options=options,
+        )
+        if errors == "raise":
+            # Also cover a traced closure with only constant inputs.
+            if (
+                isinstance(first, jax.core.Tracer)
+                or isinstance(second, jax.core.Tracer)
+                or jax.core.get_opaque_trace_state() != _EAGER_TRACE_STATE
+            ):
+                raise UnsupportedExecutionModeError(
+                    fluid_name=fluid.name,
+                    provider=fluid.provider,
+                    model=fluid.model,
+                    request="errors=raise",
+                    reason="JAX transformations require explicit errors='mask'; eager raising evaluation preserves typed source failures.",
+                    supported=("errors=mask",),
+                )
+            return _eager_state(
+                fluid,
+                input_type,
+                first,
+                second,
+                bool(generalize_quality),
+                bool(supersaturation),
+            )
+        return self.compiled(
+            fluid,
+            input_type,
+            first,
+            second,
+            generalize_quality=bool(generalize_quality),
+            supersaturation=bool(supersaturation),
+            errors="mask",
+        )
 
 
 class FluidJAX(SourceReferencesMixin, eqx.Module):
@@ -134,7 +298,7 @@ class FluidJAX(SourceReferencesMixin, eqx.Module):
     provider: str = eqx.field(static=True)
     model: str = eqx.field(static=True)
     reference_id: tuple = eqx.field(static=True)
-    fluid: object = eqx.field(static=True)  # raw CoolProp.AbstractState object
+    fluid: object = eqx.field(static=True)
     exceptions: bool = eqx.field(static=True)
     _configuration: FluidConfiguration = eqx.field(static=True)
     _capabilities: FluidCapabilities = eqx.field(static=True)
@@ -149,24 +313,33 @@ class FluidJAX(SourceReferencesMixin, eqx.Module):
         self._configuration = build_configuration(
             name, "coolprop_jax", "real_fluid", backend, identifier
         )
+        if not isinstance(exceptions, (bool, np.bool_)) or not bool(exceptions):
+            raise InvalidConfigurationError(
+                fluid_name=name,
+                provider="coolprop_jax",
+                model="real_fluid",
+                request="exceptions",
+                reason="Use per-call errors='mask' instead of legacy exceptions=False.",
+                supported=(True,),
+            )
         self.name = name
         self.backend = backend
-        self.exceptions = exceptions
+        self.exceptions = True
         self.identifier = identifier
         self.provider = "coolprop_jax"
         self.model = "real_fluid"
+        self.fluid = FluidCoolProp(name=name, backend=backend, identifier=identifier)
+        source_capabilities = self.fluid.capabilities
         self._capabilities = FluidCapabilities(
-            input_pairs=SOURCE_PAIRS,
-            properties=SOURCE_PROPERTIES,
+            input_pairs=source_capabilities.input_pairs,
+            properties=source_capabilities.properties,
+            options=source_capabilities.options,
+            phase_operations=source_capabilities.phase_operations,
+            error_modes=frozenset({"raise", "mask"}),
             jax_modes=frozenset({"eager", "jit", "vmap", "jvp", "grad"}),
             derivative_order=1,
             derivative_method="finite_difference",
-            domain=FluidDomain(
-                description="CoolProp source-backend domain via a host callback."
-            ),
-        )
-        self.fluid = FluidCoolProp(
-            name=name, backend=backend, exceptions=exceptions, identifier=identifier
+            domain=source_capabilities.domain,
         )
         self.reference_id = self.fluid.reference_id
         self._references = self.fluid.references
@@ -179,7 +352,7 @@ class FluidJAX(SourceReferencesMixin, eqx.Module):
     def capabilities(self):
         return self._capabilities
 
-    @checked_jit
+    @_CallbackStateCall
     def get_state(
         self,
         input_type,
@@ -188,20 +361,43 @@ class FluidJAX(SourceReferencesMixin, eqx.Module):
         *,
         generalize_quality=False,
         supersaturation=False,
-        errors="raise",
+        errors="raise"
     ):
-        """Return a state with the broadcast shape of the common numeric inputs."""
-        # The descriptor rejects unsupported diagnostics and validates numeric
-        # metadata before the callback/JIT boundary. Normalize lists in trace.
-        prop_1, prop_2 = jnp.asarray(prop_1), jnp.asarray(prop_2)
-        raw = get_state(input_type, prop_1, prop_2, self.fluid)
-        return jxp.FluidState(
-            fluid_name=self.name,
-            identifier=self.identifier,
-            provider=self.provider,
-            model=self.model,
-            reference_id=self.reference_id,
-            available_properties=self.capabilities.properties,
-            error_policy=errors,
-            **{k: raw[k] for k in jxp.PROPERTIES_CANONICAL},
+        """Evaluate eagerly with typed errors, or use explicit mask mode in JAX.
+
+        Derivatives are first-order forward finite differences over successful
+        source states, away from phase/domain boundaries.
+        """
+        if errors != "mask":
+            raise UnsupportedExecutionModeError(
+                fluid_name=self.name,
+                provider=self.provider,
+                model=self.model,
+                request="errors=raise",
+                reason="The compiled callback path requires errors='mask'.",
+                supported=("errors=mask",),
+            )
+        first, second = jnp.broadcast_arrays(jnp.asarray(prop_1), jnp.asarray(prop_2))
+        properties, status = _callback_state(
+            input_type, first, second, self.fluid, generalize_quality, supersaturation
         )
+        return _assemble_state(
+            properties, status, _state_metadata(self, supersaturation, errors)
+        )
+
+    def get_state_saturation(self, input_type, prop_1, prop_2, *, errors="raise"):
+        """Evaluate saturation through the common state path."""
+        if (
+            isinstance(input_type, (bool, np.bool_))
+            or not isinstance(input_type, Integral)
+            or input_type not in (jxp.PQ_INPUTS, jxp.QT_INPUTS)
+        ):
+            raise UnsupportedOperationError(
+                fluid_name=self.name,
+                provider=self.provider,
+                model=self.model,
+                request="saturation",
+                reason="Saturation evaluation accepts only PQ_INPUTS or QT_INPUTS.",
+                supported=("PQ_INPUTS", "QT_INPUTS"),
+            )
+        return self.get_state(input_type, prop_1, prop_2, errors=errors)

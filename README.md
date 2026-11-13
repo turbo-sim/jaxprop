@@ -53,6 +53,23 @@ the CoolProp source used for evaluation, table generation, calibration and
 reference data; it defaults to HEOS. Inspect `fluid.capabilities` before using
 phase operations, diagnostics or JAX transformations.
 
+CoolProp and its callback accept `errors="raise"` (default) or `errors="mask"`.
+Mask mode preserves successful batch elements and exposes failed elements as
+NaNs with integer `state.status` codes. Transformed callback calls require it:
+
+```python
+import jax
+
+temperature = jax.jit(
+    lambda h: callback.get_state(jxp.HmassP_INPUTS, h, 8e6, errors="mask").T
+)
+```
+
+The callback supports first-order finite-difference derivatives. Native
+perfect-gas and bicubic numerical failure policies remain in their planned
+phases; see the [public contract](z_PUBLIC_FLUID_CONTRACT.md) and
+[implementation checklist](z_IMPLEMENTATION_PLAN.md) for current support.
+
 <!-- research-software-metadata:start -->
 ## Development and citation
 

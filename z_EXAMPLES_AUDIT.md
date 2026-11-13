@@ -4,6 +4,8 @@ Audited on 13 November 2026 against Phase 5 commit `b647ffb` plus the small repa
 
 The subsequent constructor revision migrates 40 files, verifies unchanged expressions for all 74 constructor argument sets and reruns 19 representative programs successfully. [Constructor migration record](development/example_audit/constructor_migration.json). Advanced table modes and legacy failure studies remain explicit until their owning phases are implemented.
 
+Phase 6 separately reruns the three callback derivative programs and the three previously blocked undersaturation programs successfully, with unchanged numerical defaults/tolerances. Callback transformations now select explicit mask mode; ordinary requested diagnostics now work. All 65 programs still parse. The three bicubic midpoint programs and Diffrax receive minimal API compatibility edits with syntax verification only; their larger execution/physics work remains open. [Phase 6 record](development/example_audit/phase6_compatibility.json). The original table below remains the historical audit, not a claim about the later tree.
+
 | Outcome | Files |
 | --- | ---: |
 | Completed default active programs | 34 |

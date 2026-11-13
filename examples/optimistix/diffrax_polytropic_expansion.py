@@ -121,14 +121,16 @@ def polytropic_expansion(
 def _polytropic_odefun(t, y, args):
     p, h = t, y
     eta, fluid = args
-    rho = fluid.get_props(jxp.HmassP_INPUTS, h, p)["rho"]
+    # Diffrax traces the RHS; callback failures remain visible in state.status.
+    rho = fluid.get_state(jxp.HmassP_INPUTS, h, p, errors="mask")["rho"]
     return eta / rho
 
 
 def postprocess_ode(t, y, args):
     """compute derived outputs at save times"""
     p, h = t, y
-    state = fluid.get_state(jxp.HmassP_INPUTS, h, p)
+    _, fluid = args
+    state = fluid.get_state(jxp.HmassP_INPUTS, h, p, errors="mask")
     return state
 
 

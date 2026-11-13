@@ -106,7 +106,10 @@ def test_configuration_and_capabilities_are_immutable(case, fluids):
         capability.domain.phases,
     ):
         assert isinstance(value, frozenset)
-    assert capability.error_modes == frozenset({"raise"})
+    expected_modes = (
+        {"raise", "mask"} if case.id in {"coolprop", "coolprop_jax"} else {"raise"}
+    )
+    assert capability.error_modes == frozenset(expected_modes)
     with pytest.raises((FrozenInstanceError, AttributeError, TypeError)):
         configuration.name = "Water"
     with pytest.raises((FrozenInstanceError, AttributeError, TypeError)):
@@ -254,7 +257,7 @@ def test_malformed_arrays_fail_even_with_requested_numerical_masking(
     assert_context(captured.value, fluid, "HmassP_INPUTS")
 
 
-@pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
+@pytest.mark.parametrize("case", CONTRACT_CASES[2:], ids=lambda case: case.id)
 def test_unimplemented_numerical_mask_mode_is_rejected_explicitly(case, fluids):
     fluid = fluids[case.id]
     enthalpy = 500e3 if case.id == "binary_mixture" else 700e3

@@ -38,7 +38,7 @@ fluid_bicubic = jxp.Fluid(
     },
 )
 
-fluid_cp = jxp.FluidJAX(fluid_name, exceptions=False)  # Mind exceptions!
+fluid_cp = jxp.Fluid(fluid_name, method="coolprop_jax")
 
 # ---------------------------
 # Midpoint grid (evaluation points)
@@ -61,7 +61,7 @@ H_mesh, P_mesh = np.meshgrid(h_vals, p_vals, indexing="ij")
 test = fluid_bicubic.get_state(jxp.HmassP_INPUTS, 700e3, 5e6)
 print(test)
 interp_grid = fluid_bicubic.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
-true_grid   = fluid_cp.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
+true_grid   = fluid_cp.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh, errors="mask")
 
 # ---------------------------
 # Collect error statistics

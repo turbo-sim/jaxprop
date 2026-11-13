@@ -1,0 +1,21 @@
+{
+  "scope": "Phase 6 compatibility verification, using unchanged numerical defaults and derivative tolerances; not a timing comparison or completion of the Phase 14 example audit.",
+  "examples_ast_parsed": 65,
+  "executed_examples": [
+    {"file": "coolprop_jax/derivative_consistency_1.py", "exit_code": 0},
+    {"file": "coolprop_jax/derivative_consistency_2.py", "exit_code": 0},
+    {"file": "coolprop_jax/derivative_consistency_3.py", "exit_code": 0},
+    {"file": "props_undersaturation/demo_calculations.py", "exit_code": 0},
+    {"file": "props_undersaturation/subcooling_along_isobar.py", "exit_code": 0},
+    {"file": "props_undersaturation/superheating_along_isobar.py", "exit_code": 0}
+  ],
+  "changes": [
+    "Explicit errors='mask' for transformed callback examples.",
+    "Three bicubic midpoint programs use per-call mask mode instead of legacy exceptions=False.",
+    "Diffrax uses the current state API and passed fluid; its broader saved-output and derivative workflow remains Phase 14 work."
+  ],
+  "limitations": [
+    "The three bicubic midpoint programs and Diffrax received syntax verification only in this phase; complete scientific execution remains tracked separately."
+  ],
+  "local_execution_logs": "development/example_audit/results/phase6/summary.json"
+}

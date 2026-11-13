@@ -18,7 +18,30 @@ The [longer perfect-gas follow-up](constructor_batch_followup.json) uses four in
 
 All nine model leaves have the same values, dtypes and weak typing across versions. All 13 full-batch floating fields and integer statuses match bitwise, and the normalized full-batch optimized program is identical across eight workers (189 instructions, no callbacks). Same-process public/direct objects also have equal native types, actual inheritance, PyTrees and outputs. These checks found no constructor-specific numerical/runtime change or material repeatable CPU slowdown; they do not establish all workloads/devices. Initial construction costs are reported separately in the first record. Temporary source/worker/table copies were removed; the formal performance gate remains Phase 13.
 
-## Method and scope
+## Phase 6 source/callback contract check
+
+The [Phase 6 guard](phase6_validation.json) compares the completed source/callback policies with constructor commit `f03443a`. Four independent workers per version ran **serially** in ABBAABBA order after all correctness tests finished, with nine interleaved samples per warmed case, synchronized outputs, one-thread BLAS settings and independent 8-by-8 HEOS CO2 table caches. Setup is measured separately. Current compiled callback mask mode is compared with the previous valid-state default; optional diagnostics have no supported old equivalent and receive no old/new ratio.
+
+| Warmed complete call | Before | Phase 6 |
+| --- | ---: | ---: |
+| Perfect-gas scalar | 36.3 us | 35.9 us |
+| Perfect-gas batch, 1,024 | 92.1 us | 81.6 us |
+| Bicubic scalar | 113.6 us | 112.4 us |
+| Bicubic batch, 1,024 | 743.0 us | 733.9 us |
+| Direct source scalar | 573.0 us | 399.9 us |
+| Direct source batch, 32 | 8.876 ms | 3.931 ms |
+| Eager callback scalar | 1.139 ms | 0.244 ms |
+| Eager callback batch, 32 | 22.085 ms | 3.681 ms |
+| Compiled callback full batch, 32 | 22.044 ms | 4.006 ms |
+| Compiled callback temperature derivative | 1.910 ms | 0.674 ms |
+
+No material repeatable warmed slowdown appears in these workloads. Native temperature, derivative and full-batch optimized instruction programs have equal normalized hashes across all eight workers, with no callbacks: Phase 6 adds no native numerical work. Do not interpret the lower perfect-gas batch median as a kernel optimization; its program is unchanged and worker variation remains visible in the JSON. Native scalar/projection/bicubic differences are small. The source/callback improvements repeat across paired workers: constructor-prepared helper state and critical entropy remove repeated source initialization, eager callbacks use one compiled state assembly, and derivative callbacks skip inactive input perturbations. These are complete public-call timings, not raw EOS arithmetic timings.
+
+The cost moves to setup: direct source construction is **0.902 versus 1.291 ms** (+0.389 ms), and callback construction **1.097 versus 1.495 ms** (+0.398 ms), preparing and verifying a reference-compatible auxiliary state once. Perfect-gas construction is 2.860 versus 3.028 ms with mixed paired-worker variation; cached loading is 20.959 versus 20.620 ms, broadly comparable. No required validation is disabled.
+
+All **20,896 sampled scalar/status comparisons** match, including sampled common property fields and derivatives; unavailable fields match explicitly. Worker environments and per-version source hashes agree, and the current package matches the measured source hash. The final full HEOS/REFPROP suite passes **1,618 tests with 28 strict expected failures**, retaining all **54,272 numerical comparisons**, including **50,189 finite values**, with zero failures. [Correctness run](../test_audit/results/phase6/full_20261113_173309/summary.json). Temporary source copies, workers and tables were removed after preserving this record. This focused CPU/x64 guard does not complete the Phase 13 published-release/device/application gate.
+
+## Method and scope of the original PyPI checkpoint
 
 Six separate workers ran serially in baseline/current/current/baseline/baseline/current order. Each implementation has three workers and five samples per warmed workload, with multiple calls per sample and synchronized JAX outputs. Cold table construction has one sample per worker. Import paths, source hashes, dependencies, device/precision, and thread settings were verified.
 

@@ -38,15 +38,26 @@ def assert_metadata(state, fluid):
     assert state.providers == frozenset({fluid.provider})
     assert state.model == fluid.model
     assert state.reference_id == fluid.reference_id
-    assert state.available_properties == fluid.capabilities.properties
-    assert state.error_policy == "raise"
+    diagnostics = {
+        "subcooling",
+        "superheating",
+        "pressure_saturation",
+        "temperature_saturation",
+        "supersaturation_ratio",
+        "supersaturation_degree",
+    }
+    assert state.available_properties == fluid.capabilities.properties - diagnostics
+    assert state.error_policy == (
+        "mask" if fluid.provider == "coolprop_jax" else "raise"
+    )
 
 
 @pytest.mark.parametrize("case", JAX_CASES, ids=lambda case: case.id)
 def test_empty_broadcast_batches_preserve_full_state_eager_and_jitted(case, fluid):
     enthalpy = jnp.empty((0, 1))
     pressure = jnp.asarray([[7e6, 8e6, 9e6]])
-    evaluate = lambda h, p: fluid.get_state(jxp.HmassP_INPUTS, h, p)
+    policy = "mask" if case.id == "coolprop_jax" else "raise"
+    evaluate = lambda h, p: fluid.get_state(jxp.HmassP_INPUTS, h, p, errors=policy)
     eager = evaluate(enthalpy, pressure)
     compiled = jax.jit(evaluate)(enthalpy, pressure)
     jax.block_until_ready((eager, compiled))

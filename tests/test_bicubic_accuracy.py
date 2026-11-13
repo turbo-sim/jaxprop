@@ -3,6 +3,7 @@ import pytest
 import atexit
 import numpy as np
 import pandas as pd
+import CoolProp.CoolProp as CP
 import jaxprop as jxp
 import matplotlib.pyplot as plt
 
@@ -42,8 +43,10 @@ FLUID_CASES = [
     },
     {
         "fluid": "R134a",
-        "h_min": 500e3,
-        "h_max": 800e3,
+        # HEOS publishes Tmax=455 K. The former 500–800 kJ/kg domain
+        # extrapolated up to 641 K; retain a broad vapor domain below Tmax.
+        "h_min": 450e3,
+        "h_max": 550e3,
         "p_min": 2e3,
         "p_max": 20e5,
     },
@@ -87,7 +90,7 @@ def plot_table_domain(fluid_case):
     p_min, p_max = fluid_case["p_min"], fluid_case["p_max"]
 
     # Reference fluid (for plotting phase diagram)
-    fluid_ref = jxp.FluidJAX(fluid_name, exceptions=False)
+    fluid_ref = jxp.FluidJAX(fluid_name)
 
     # Plot phase diagram background
     fig, ax = fluid_ref.fluid.plot_phase_diagram(
@@ -158,6 +161,25 @@ def test_accuracy_sampling_uses_cell_centers_and_domain_boundaries():
         )
 
 
+@pytest.mark.parametrize("fluid_case", FLUID_CASES, ids=lambda case: case["fluid"])
+def test_accuracy_fixture_boundaries_respect_published_source_temperature_limits(
+    fluid_case,
+):
+    """Accuracy fixtures must test interpolation within the source EOS domain."""
+    source = CP.AbstractState("HEOS", fluid_case["fluid"])
+    minimum, maximum = source.Tmin(), source.Tmax()
+    enthalpies, pressures = sample_grids(fluid_case, num_nodes=64)["boundaries"]
+    for enthalpy, pressure in zip(enthalpies, pressures):
+        # Raw CoolProp accepts some extrapolated states, so inspect its result
+        # independently of the wrapper's domain-failure policy.
+        source.update(CP.HmassP_INPUTS, float(enthalpy), float(pressure))
+        temperature = source.T()
+        assert minimum <= temperature <= maximum, (
+            f"{fluid_case['fluid']}: h={enthalpy}, p={pressure} resolves to "
+            f"T={temperature} K outside [{minimum}, {maximum}] K"
+        )
+
+
 @pytest.mark.parametrize("fluid_case", FLUID_CASES)
 @pytest.mark.parametrize("grid_case", GRID_CASES)
 def test_bicubic_midpoint_accuracy(fluid_case, grid_case, tmp_path):
@@ -189,7 +211,7 @@ def test_bicubic_midpoint_accuracy(fluid_case, grid_case, tmp_path):
     )
 
     # Reference CoolProp model
-    fluid_cp = jxp.FluidJAX(fluid_name, exceptions=False)
+    fluid_cp = jxp.FluidJAX(fluid_name)
 
     failures = []
     for sample_name, (H_mesh, P_mesh) in sample_grids(fluid_case, N).items():

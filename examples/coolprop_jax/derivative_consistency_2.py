@@ -23,30 +23,31 @@ st = fluid.get_state(jxp.HmassP_INPUTS, test_h, test_P)
 # Header
 print(f"{'Property':<35} {'jax':>15} {'ref':>15} {'rel err':>15}")
 
+# Traced CoolProp callbacks use mask mode and expose failures through state.status.
 # Isobaric_heat_capacity: c_p = (∂h/∂T)_p
 name = "Isobaric_heat_capacity"
-f1 = jax.grad(lambda T: fluid.get_state(jxp.PT_INPUTS, st.p, T).h)(st.T)
+f1 = jax.grad(lambda T: fluid.get_state(jxp.PT_INPUTS, st.p, T, errors="mask").h)(st.T)
 f2 = st.isobaric_heat_capacity
 err = rel_err(name, f1, f2)
 print(f"{name:<35} {f1:15.6e} {f2:15.6e} {err:15.6e}")
 
 # Isochoric_heat_capacity: c_v = (∂e/∂T)_rho
 name = "Isochoric_heat_capacity"
-f1 = jax.grad(lambda T: fluid.get_state(jxp.DmassT_INPUTS, st.d, T).e)(st.T)
+f1 = jax.grad(lambda T: fluid.get_state(jxp.DmassT_INPUTS, st.d, T, errors="mask").e)(st.T)
 f2 = st.isochoric_heat_capacity
 err = rel_err(name, f1, f2)
 print(f"{name:<35} {f1:15.6e} {f2:15.6e} {err:15.6e}")
 
 # Isothermal_compressibility: κ_T = (1/ρ)(∂ρ/∂p)_T
 name = "Isothermal_compressibility"
-f1 = 1 / st.rho * jax.grad(lambda p: fluid.get_state(jxp.PT_INPUTS, p, st.T).rho)(st.p)
+f1 = 1 / st.rho * jax.grad(lambda p: fluid.get_state(jxp.PT_INPUTS, p, st.T, errors="mask").rho)(st.p)
 f2 = st.isothermal_compressibility
 err = rel_err(name, f1, f2)
 print(f"{name:<35} {f1:15.6e} {f2:15.6e} {err:15.6e}")
 
 # Isobaric_expansion_coefficient: α_p = -(1/ρ)(∂ρ/∂T)_p
 name = "Isobaric_expansion_coefficient"
-f1 = -1 / st.rho * jax.grad(lambda T: fluid.get_state(jxp.PT_INPUTS, st.p, T).rho)(st.T)
+f1 = -1 / st.rho * jax.grad(lambda T: fluid.get_state(jxp.PT_INPUTS, st.p, T, errors="mask").rho)(st.T)
 f2 = st.isobaric_expansion_coefficient
 err = rel_err(name, f1, f2)
 print(f"{name:<35} {f1:15.6e} {f2:15.6e} {err:15.6e}")
@@ -54,7 +55,7 @@ print(f"{name:<35} {f1:15.6e} {f2:15.6e} {err:15.6e}")
 # Speed_of_sound: a² = (∂p/∂ρ)_s
 name = "Speed_of_sound"
 f1 = jnp.sqrt(
-    jax.grad(lambda d: fluid.get_state(jxp.DmassSmass_INPUTS, d, st.s).p)(st.d)
+    jax.grad(lambda d: fluid.get_state(jxp.DmassSmass_INPUTS, d, st.s, errors="mask").p)(st.d)
 )
 f2 = st.speed_of_sound
 err = rel_err(name, f1, f2)
@@ -63,7 +64,7 @@ print(f"{name:<35} {f1:15.6e} {f2:15.6e} {err:15.6e}")
 # Gruneisen: Γ = (1/ρ)(∂p/∂e)_ρ
 name = "Gruneisen"
 f1 = (1 / st.rho) * jax.grad(
-    lambda e: fluid.get_state(jxp.DmassUmass_INPUTS, st.d, e).p
+    lambda e: fluid.get_state(jxp.DmassUmass_INPUTS, st.d, e, errors="mask").p
 )(st.u)
 f2 = st.gruneisen
 err = rel_err(name, f1, f2)
@@ -71,14 +72,14 @@ print(f"{name:<35} {f1:15.6e} {f2:15.6e} {err:15.6e}")
 
 # Joule_thomson: μ_JT = (∂T/∂p)_h
 name = "Joule_thomson"
-f1 = jax.grad(lambda p: fluid.get_state(jxp.HmassP_INPUTS, st.h, p).T)(st.p)
+f1 = jax.grad(lambda p: fluid.get_state(jxp.HmassP_INPUTS, st.h, p, errors="mask").T)(st.p)
 f2 = st.joule_thomson
 err = rel_err(name, f1, f2)
 print(f"{name:<35} {f1:15.6e} {f2:15.6e} {err:15.6e}")
 
 # Isothermal_joule_thomson: μ_T = (∂h/∂p)_T
 name = "Isothermal_joule_thomson"
-f1 = jax.grad(lambda p: fluid.get_state(jxp.PT_INPUTS, p, st.T).h)(st.p)
+f1 = jax.grad(lambda p: fluid.get_state(jxp.PT_INPUTS, p, st.T, errors="mask").h)(st.p)
 f2 = st.isothermal_joule_thomson
 err = rel_err(name, f1, f2)
 print(f"{name:<35} {f1:15.6e} {f2:15.6e} {err:15.6e}")
