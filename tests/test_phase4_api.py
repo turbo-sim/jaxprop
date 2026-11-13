@@ -78,14 +78,13 @@ def test_factory_retains_original_source_failure_as_cause():
     assert captured.value.reason
 
 
-def test_perfect_gas_cannot_silently_substitute_heos_for_requested_refprop():
-    # Source-reference phase 5 may add support. Until then fail instead of
-    # publishing a REFPROP label for constants obtained from HEOS.
+def test_perfect_gas_cannot_silently_substitute_heos_for_an_unavailable_backend():
     with pytest.raises(jxp.InvalidConfigurationError) as captured:
         jxp.create_fluid(
-            "CO2", provider="native", model="perfect_gas", backend="REFPROP"
+            "CO2", provider="native", model="perfect_gas", backend="MISSING_BACKEND"
         )
-    assert "backend" in captured.value.request
+    assert captured.value.request in {"backend", "source", "source_reference"}
+    assert captured.value.__cause__ is not None
     assert captured.value.reason
 
 

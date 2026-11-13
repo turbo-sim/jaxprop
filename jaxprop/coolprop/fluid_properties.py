@@ -14,6 +14,11 @@ from ..errors import (
     UnsupportedExecutionModeError,
 )
 from ..configuration import FluidCapabilities, FluidDomain, build_configuration
+from ..source_references import (
+    SourceReferencesMixin,
+    initialize_source_references,
+    composite_source_references,
+)
 from ..fluid_api import (
     SOURCE_PROPERTIES,
     LEGACY_MIXTURE_PROPERTIES,
@@ -113,7 +118,7 @@ def _handle_computation_exceptions(func):
     return wrapper
 
 
-class Fluid(ReadonlyConfigurationMixin):
+class Fluid(SourceReferencesMixin, ReadonlyConfigurationMixin):
     """
     Represents a fluid with various thermodynamic properties computed via CoolProp.
 
@@ -224,9 +229,8 @@ class Fluid(ReadonlyConfigurationMixin):
         self.abstract_state = self._AS
         self.exceptions = exceptions
         self.converged_flag = False
-        # Phase 5 replaces this construction identity with the source-reference
-        # fingerprint, including the actual energy/entropy reference convention.
-        self.reference_id = (self.model, backend, name)
+        self._references = initialize_source_references(name, backend, state=self._AS)
+        self.reference_id = self._references.reference_id
 
         # Initialize variables
         self.sat_liq = None
@@ -238,12 +242,6 @@ class Fluid(ReadonlyConfigurationMixin):
         self.q_mesh = None
         self.graphic_elements = {}
 
-        # Get critical and triple point properties
-        if is_pure_substance(self._AS):
-            self.critical_point = self._compute_critical_point()
-            self.triple_point_liquid = self._compute_triple_point_liquid()
-            self.triple_point_vapor = self._compute_triple_point_vapor()
-
         # Pressure and temperature limits
         self.p_min = 1
         self.p_max = self._AS.pmax()
@@ -252,32 +250,6 @@ class Fluid(ReadonlyConfigurationMixin):
 
         # # Define reference state
         # self.reference_state = self.critical_point
-
-    def _compute_critical_point(self):
-        """Calculate the properties at the critical point"""
-        d_crit = self._AS.rhomass_critical()
-        T_crit = self._AS.T_critical()
-        p_crit = self._AS.p_critical()
-        # state_crit = self.get_state(CP.DmassT_INPUTS, d_crit*1.1, T_crit-1e-12)
-        # try:
-        #     state_crit = self.get_state(CP.DmassT_INPUTS, d_crit, T_crit - 1e-5)
-        # except:
-        #     state_crit = self.get_state(CP.PT_INPUTS, p_crit, T_crit - 1e-3)
-        # state_crit = self.get_state(DmassT_INPUTS, rho_crit, T_crit-1e-12)
-        try:
-            state_crit = self.get_state(CP.DmassT_INPUTS, d_crit, T_crit - 1e-5)
-        except:
-            state_crit = self.get_state(CP.PT_INPUTS, p_crit, T_crit - 1e-5)
-
-        return state_crit
-
-    def _compute_triple_point_liquid(self):
-        """Calculate the properties at the triple point (liquid state)"""
-        return self.get_state(CP.QT_INPUTS, 0.00, self._AS.Ttriple())
-
-    def _compute_triple_point_vapor(self):
-        """Calculate the properties at the triple point (vapor state)"""
-        return self.get_state(CP.QT_INPUTS, 1.00, self._AS.Ttriple())
 
     @_handle_computation_exceptions
     def get_state(
@@ -846,7 +818,7 @@ class Fluid(ReadonlyConfigurationMixin):
 # ------------------------------------------------------------------------------------ #
 
 
-class FluidMix(ReadonlyConfigurationMixin):
+class FluidMix(SourceReferencesMixin, ReadonlyConfigurationMixin):
     """
     Represents a binary fluid mixture with thermodynamic properties
     calculated using the `calculate_mixture_properties_hp()` function.
@@ -860,6 +832,7 @@ class FluidMix(ReadonlyConfigurationMixin):
             "model",
             "identifier",
             "reference_id",
+            "_references",
             "mixture_ratio",
             "fluid_1",
             "fluid_2",
@@ -967,17 +940,20 @@ class FluidMix(ReadonlyConfigurationMixin):
                 description="Legacy scalar common-pressure/common-temperature binary model."
             ),
         )
-        self.reference_id = (
-            self.model,
-            backend,
-            self.fluid_1,
-            self.fluid_2,
-            mixture_ratio,
-        )
-
         # Initialize AbstractStates for each component
         self._AS1 = try_initialize_fluid(self.fluid_1, backend)
         self._AS2 = try_initialize_fluid(self.fluid_2, backend)
+        components = tuple(
+            initialize_source_references(component, backend, state=state)
+            for component, state in (
+                (self.fluid_1, self._AS1),
+                (self.fluid_2, self._AS2),
+            )
+        )
+        self._references = composite_source_references(
+            name, backend, components, mixture_ratio
+        )
+        self.reference_id = self._references.reference_id
 
         # # Temperature and pressure limits (approximate from components)
         # self.p_min = max(1.0, min(self._AS1.pmin(), self._AS2.pmin()))

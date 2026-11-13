@@ -210,11 +210,6 @@ def test_supported_gradient_with_mask_policy_matches_independent_perfect_gas_ide
     np.testing.assert_allclose(jax.grad(enthalpy)(500.0), cp, rtol=1e-12)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AttributeError,
-    reason="phase5: shared source-reference records are absent on fluid objects",
-)
 def test_source_reference_records_match_across_real_fluid_and_perfect_gas(
     source_fluid, perfect_gas
 ):
@@ -232,11 +227,6 @@ def test_source_reference_records_match_across_real_fluid_and_perfect_gas(
         )
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AttributeError,
-    reason="phase5: pseudo-pure Air reference records and interpretation are absent",
-)
 def test_air_preserves_distinct_lower_saturation_endpoints_and_evaluable_ordinary_states():
     fluid = jxp.Fluid("Air")
     ordinary = fluid.get_state(jxp.PT_INPUTS, 1e5, 300.0)

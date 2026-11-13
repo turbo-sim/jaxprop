@@ -15,6 +15,7 @@ from ..configuration import (
     build_configuration,
 )
 from ..fluid_api import SOURCE_PAIRS, SOURCE_PROPERTIES, checked_jit
+from ..source_references import SourceReferencesMixin
 
 # output template for pure_callback (shapes/dtypes must be static)
 
@@ -126,7 +127,7 @@ def _get_state_jvp(input_state, fluid, primals, tangents):
     return props_base, jvp
 
 
-class FluidJAX(eqx.Module):
+class FluidJAX(SourceReferencesMixin, eqx.Module):
     name: str = eqx.field(static=True)
     backend: str = eqx.field(static=True)
     identifier: str = eqx.field(static=True)
@@ -137,6 +138,7 @@ class FluidJAX(eqx.Module):
     exceptions: bool = eqx.field(static=True)
     _configuration: FluidConfiguration = eqx.field(static=True)
     _capabilities: FluidCapabilities = eqx.field(static=True)
+    _references: object = eqx.field(static=True)
 
     def __init__(
         self, name: str, backend: str = "HEOS", exceptions: bool = True, identifier=None
@@ -167,6 +169,7 @@ class FluidJAX(eqx.Module):
             name=name, backend=backend, exceptions=exceptions, identifier=identifier
         )
         self.reference_id = self.fluid.reference_id
+        self._references = self.fluid.references
 
     @property
     def configuration(self):

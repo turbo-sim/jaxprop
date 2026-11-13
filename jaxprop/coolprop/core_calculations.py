@@ -80,7 +80,12 @@ def compute_properties_1phase(
         q_mass = calculate_generalized_quality(AS)
         q_vol = np.nan
     else:
-        q_mass, q_vol = calculate_trimmed_quality(AS)
+        try:
+            q_mass, q_vol = calculate_trimmed_quality(AS)
+        except (ValueError, RuntimeError, NotImplementedError, AttributeError):
+            # Single-phase core properties remain usable when the source has
+            # no evaluable critical/saturation reference for quality inference.
+            q_mass, q_vol = np.nan, np.nan
 
     # --- canonical dict
     props = {

@@ -26,6 +26,7 @@ from .helpers_jax import *
 from .helpers_props import *
 from .errors import *
 from .configuration import *
+from .source_references import *
 from .fluid_api import StatusCode
 from .factory import create_fluid
 

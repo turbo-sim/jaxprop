@@ -164,11 +164,21 @@ def test_invalid_perfect_gas_calibration_is_rejected(value):
     assert captured.value.request == "T_ref"
 
 
-def test_perfect_gas_does_not_claim_unimplemented_source_backend_selection():
-    with pytest.raises(InvalidConfigurationError) as captured:
-        create_fluid("CO2", provider="native", model="perfect_gas", backend="REFPROP")
-    assert captured.value.request == "backend"
-    assert captured.value.supported == ("HEOS",)
+def test_perfect_gas_factory_forwards_the_selected_source_backend(monkeypatch):
+    module = importlib.import_module("jaxprop.perfect_gas.perfect_gas")
+    received = []
+    result = object()
+
+    def construct(**kwargs):
+        received.append(kwargs)
+        return result
+
+    monkeypatch.setattr(module, "FluidPerfectGas", construct)
+    actual = create_fluid(
+        "CO2", provider="native", model="perfect_gas", backend="REFPROP"
+    )
+    assert actual is result
+    assert len(received) == 1 and received[0]["backend"] == "REFPROP"
 
 
 def test_constructor_source_failure_preserves_the_original_cause(monkeypatch):

@@ -13,6 +13,7 @@ import pytest
 from jaxprop import InvalidConfigurationError
 from jaxprop.bicubic import cache_metadata
 from jaxprop.bicubic.cache_metadata import metadata_fingerprint, source_signature
+from jaxprop.source_references import source_reference_metadata
 from utilities import get_available_backends
 
 
@@ -40,6 +41,10 @@ def test_aliases_produce_the_same_canonical_source_signature():
     assert alias["deterministic_cache_identity"] is True
     assert alias["coolprop_version"] == CP.get_global_param_string("version")
     assert alias["coolprop_git_revision"] == CP.get_global_param_string("gitrevision")
+    assert (
+        alias["source_reference_id"]
+        == source_reference_metadata("CO2", "HEOS")["reference_id"]
+    )
     json.dumps(alias, allow_nan=False)
 
 
@@ -49,6 +54,11 @@ def test_sources_have_a_reproducible_finite_reference_anchor(backend, name):
     first = source_signature(name, backend)
     assert first == source_signature(name, backend)
     component = first["components"][0]
+    reference = source_reference_metadata(name, backend)
+    assert first["source_reference_id"] == component["source_reference_id"]
+    assert first["source_reference_id"] == reference["reference_id"]
+    assert component["reference_anchor"] == reference["reference_anchor"]
+    hash(first["source_reference_id"])
     assert component["composition"] == {"basis": "mole", "fractions": [1.0]}
     anchor = component["reference_anchor"]
     assert anchor["input_pair"] in {"DmassT_INPUTS", "PT_INPUTS"}
@@ -224,6 +234,12 @@ def test_binary_source_identity_contains_both_sources_and_the_unrounded_mass_rat
     assert first["composition"]["component_1_to_2"] == 0.104
     assert first["composition"]["basis"] == "mass_ratio"
     assert sum(first["composition"]["mass_fractions"]) == pytest.approx(1.0)
+    assert first["source_reference_id"] == (
+        "binary_mixture",
+        tuple(item["source_reference_id"] for item in first["components"]),
+        ("mass_ratio", 0.104),
+    )
+    assert first["source_reference_id"] != second["source_reference_id"]
     assert metadata_fingerprint(first) != metadata_fingerprint(second)
 
 
@@ -278,7 +294,17 @@ def test_coolprop_version_changes_are_part_of_source_identity(monkeypatch):
 
     monkeypatch.setattr(CP, "get_global_param_string", changed_version)
     changed = source_signature("CO2", "HEOS")
-    assert previous["components"] == changed["components"]
+    before_component, after_component = (
+        previous["components"][0],
+        changed["components"][0],
+    )
+    assert before_component["native_definition"] == after_component["native_definition"]
+    assert before_component["reference_anchor"] == after_component["reference_anchor"]
+    assert (
+        before_component["source_reference_id"]
+        != after_component["source_reference_id"]
+    )
+    assert previous["source_reference_id"] != changed["source_reference_id"]
     assert metadata_fingerprint(previous) != metadata_fingerprint(changed)
 
 
@@ -354,6 +380,7 @@ def test_reference_and_configuration_changes_invalidate_in_an_isolated_process()
 import json
 import CoolProp.CoolProp as CP
 from jaxprop.bicubic.cache_metadata import source_signature, metadata_fingerprint
+from jaxprop.source_references import source_reference_metadata
 
 def probe():
     state = CP.AbstractState("HEOS", "CO2")
@@ -374,6 +401,8 @@ print(json.dumps({
     "unchanged_default": ordinary_before == ordinary_after,
     "unchanged_custom": custom_before == custom_after,
     "reference_changed": before["components"][0]["reference_anchor"] != changed_reference["components"][0]["reference_anchor"],
+    "shared_reference_id_changed": before["source_reference_id"] != changed_reference["source_reference_id"],
+    "shared_reference_id_matches": changed_reference["source_reference_id"] == source_reference_metadata("CO2", "HEOS")["reference_id"],
     "reference_fingerprint_changed": metadata_fingerprint(before) != metadata_fingerprint(changed_reference),
     "configuration_fingerprint_changed": metadata_fingerprint(changed_reference) != metadata_fingerprint(changed_configuration),
 }))

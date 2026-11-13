@@ -566,6 +566,28 @@ def test_unverifiable_source_never_reads_or_publishes_a_persistent_cache(
     assert sorted(path.name for path in directory.iterdir()) == ["cache.pkl"]
 
 
+def test_reference_change_during_initialization_rejects_mislabeled_cache(
+    cache_factory, monkeypatch
+):
+    create, generated, _ = cache_factory
+    original = create()
+    target = _cache_path(original)
+    previous = target.read_bytes()
+    signature = deepcopy(original.metadata["source_signature"])
+    signature["source_reference_id"] = ("real_fluid", "different_reference")
+    monkeypatch.setattr(
+        interpolation, "source_signature", lambda *args: deepcopy(signature)
+    )
+
+    with pytest.raises(
+        jxp.InvalidConfigurationError, match="changed during table initialization"
+    ) as captured:
+        create()
+    assert captured.value.request == "source_reference"
+    assert generated == ["equilibrium"]
+    assert target.read_bytes() == previous
+
+
 def test_source_change_during_generation_rejects_publication_and_preserves_old_cache(
     cache_factory,
     monkeypatch,

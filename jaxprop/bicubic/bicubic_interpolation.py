@@ -17,6 +17,11 @@ from tqdm import tqdm
 from ..errors import CalculationError, InvalidConfigurationError, UnsupportedOptionError
 from ..configuration import build_configuration, FluidCapabilities, FluidDomain
 from ..fluid_api import checked_jit, SOURCE_PROPERTIES, LEGACY_MIXTURE_PROPERTIES
+from ..source_references import (
+    SourceReferencesMixin,
+    initialize_source_references,
+    composite_source_references,
+)
 from .cache_metadata import metadata_fingerprint, source_signature
 from .table_cache import (
     CACHE_FORMAT_VERSION,
@@ -27,7 +32,7 @@ from .table_cache import (
 )
 
 
-class FluidBicubic(eqx.Module):
+class FluidBicubic(SourceReferencesMixin, eqx.Module):
     r"""
     Fluid model using bicubic property interpolation on an enthalpy-pressure grid.
 
@@ -93,7 +98,7 @@ class FluidBicubic(eqx.Module):
     table_mode: str = eqx.field(static=True)
     mixture_ratio: float = eqx.field(static=True)
     metastable_phase: str = eqx.field(static=True)
-    critical_point: dict = eqx.field(static=True)
+    _references: object = eqx.field(static=True)
     _configuration: object = eqx.field(static=True, default=None)
     _capabilities: object = eqx.field(static=True, default=None)
 
@@ -237,11 +242,6 @@ class FluidBicubic(eqx.Module):
         self.identifier = identifier
         self.provider = "bicubic"
         self.model = "binary_mixture" if mixture_ratio is not None else "real_fluid"
-        self.reference_id = (
-            (self.model, backend, fluid_name, mixture_ratio)
-            if mixture_ratio is not None
-            else (self.model, backend, fluid_name)
-        )
         self.metastable_phase = metastable_phase
         self.N_p_sat = N_p_sat
         self.table_mode = (
@@ -298,32 +298,32 @@ class FluidBicubic(eqx.Module):
         self.delta_h = float(self.h_vals[1] - self.h_vals[0])
         self.delta_logP = float(self.logP_vals[1] - self.logP_vals[0])
 
-        # Get critical and triple point properties
-        if self.mixture_ratio is None:
-            fluid = jxp.Fluid(self.fluid_name, self.backend)
-            try:
-                self.critical_point = fluid.critical_point
-                self.logP_sat_vals = jnp.linspace(
-                    np.log(self.p_min),
-                    np.log(self.critical_point["pressure"] * 0.98),
-                    self.N_p_sat,
-                )
-                self.delta_logP_sat = float(
-                    self.logP_sat_vals[1] - self.logP_sat_vals[0]
-                )
-            except (AttributeError, LookupError, TypeError, ValueError):
-                self.critical_point = None
-                self.logP_sat_vals = None
-                self.delta_logP_sat = None
+        # Reference snapshots contain immutable scalar metadata, never static
+        # FluidState arrays. Their availability is independent of table mode.
+        if is_mixture:
+            components = tuple(
+                initialize_source_references(component, backend)
+                for component in fluid_name[: -len("_mixture")].split("_")
+            )
+            self._references = composite_source_references(
+                fluid_name, backend, components, mixture_ratio
+            )
         else:
-            self.critical_point = None
+            self._references = initialize_source_references(fluid_name, backend)
+        self.reference_id = self._references.reference_id
+        critical = self._references["critical_point"]
+        if critical.available and self.p_min < 0.98 * critical.properties["pressure"]:
+            self.logP_sat_vals = jnp.linspace(
+                np.log(self.p_min),
+                np.log(critical.properties["pressure"] * 0.98),
+                self.N_p_sat,
+            )
+            self.delta_logP_sat = float(self.logP_sat_vals[1] - self.logP_sat_vals[0])
+        else:
             self.logP_sat_vals = None
             self.delta_logP_sat = None
 
-        if metastable_phase is not None and (
-            self.logP_sat_vals is None
-            or self.p_min >= float(self.critical_point.p) * 0.98
-        ):
+        if metastable_phase is not None and self.logP_sat_vals is None:
             invalid(
                 "saturation_domain",
                 "Metastable table construction requires available source saturation data and p_min < 0.98*p_critical.",
@@ -343,6 +343,7 @@ class FluidBicubic(eqx.Module):
             Path(__file__).parents[1] / "coolprop" / "fluid_properties.py",
             Path(__file__).parents[1] / "fluid_state.py",
             Path(__file__).parents[1] / "property_schema.py",
+            Path(__file__).parents[1] / "source_references.py",
         )
         code_identity = {
             str(path.relative_to(Path(__file__).parents[1])): hashlib.sha256(
@@ -405,6 +406,15 @@ class FluidBicubic(eqx.Module):
                 ),
             ),
         )
+        if (
+            self.metadata["source_signature"].get("source_reference_id")
+            != self.reference_id
+        ):
+            raise InvalidConfigurationError(
+                **context,
+                request="source_reference",
+                reason="Source reference convention changed during table initialization.",
+            )
         if table_name is None:
             label = "".join(c if c.isalnum() or c in "_-" else "_" for c in fluid_name)[
                 :48

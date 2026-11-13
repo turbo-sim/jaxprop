@@ -132,12 +132,6 @@ def create_fluid(
 
     source_backend = "HEOS" if backend is None else backend
     if model == "perfect_gas":
-        if source_backend != "HEOS":
-            invalid(
-                "backend",
-                "The current perfect-gas calibration supports HEOS only.",
-                ("HEOS",),
-            )
         unknown = set(physical) - {"T_ref", "p_ref"}
         if unknown:
             invalid(
@@ -244,7 +238,9 @@ def create_fluid(
             )
         from .perfect_gas.perfect_gas import FluidPerfectGas
 
-        return FluidPerfectGas(name=name, identifier=identifier, **physical)
+        return FluidPerfectGas(
+            name=name, backend=source_backend, identifier=identifier, **physical
+        )
     except JaxPropError:
         raise
     except OSError as error:

@@ -99,7 +99,15 @@ class ReadonlyConfigurationMixin:
     """Protect configuration identity while allowing source-state/plot updates."""
 
     _configuration_fields = frozenset(
-        {"name", "backend", "provider", "model", "identifier", "reference_id"}
+        {
+            "name",
+            "backend",
+            "provider",
+            "model",
+            "identifier",
+            "reference_id",
+            "_references",
+        }
     )
 
     def __setattr__(self, name, value):

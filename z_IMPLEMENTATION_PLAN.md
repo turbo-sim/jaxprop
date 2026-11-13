@@ -12,7 +12,7 @@ Check an implementation item when its source/test changes are present and its re
 
 Implement and verify one coherent change at a time. Start with tests for its intended behavior, implement the change, run the affected tests, and then run the shared contract/numerical checks relevant to its callers. Use the full HEOS suite at the phase boundaries. Run the declared optional-backend and slow integration cases before completing their corresponding release scope. Revisit completed items when a later change alters their contract.
 
-The checked preparation items record completed audit work. Phases 1 through 4 are complete: the numerical test foundation is repaired, the [public fluid contract](z_PUBLIC_FLUID_CONTRACT.md) fixes the intended interface, the shared state foundation is implemented, and the shared construction/request layer is verified. Remaining model/reference, integration, and performance verification work is in Phases 5 through 13. The earlier array-aware diagnostic experiment is retained as historical evidence.
+The checked preparation items record completed audit work. Phases 1 through 5 are complete: the numerical test foundation is repaired, the [public fluid contract](z_PUBLIC_FLUID_CONTRACT.md) fixes the intended interface, the shared state/construction/request layers are verified, and source-reference initialization is consistent across evaluators. Remaining model, integration, and performance verification work is in Phases 6 through 13. The earlier array-aware diagnostic experiment is retained as historical evidence.
 
 ## Completed preparation
 
@@ -126,16 +126,24 @@ Acceptance covers provider selection, immutable metadata/capabilities, common or
 
 ## Phase 5 Initialize CoolProp source-reference data for every fluid object
 
-- [ ] Implement one dedicated CoolProp initialization path for critical and liquid/vapor triple-reference points, independently of the selected evaluator.
-- [ ] Expose source fluid/composition, backend/version, reference convention, point interpretation, availability, and failure reason. Reuse immutable source-reference data consistently.
-- [ ] Replace Phase 3's provisional construction/reference IDs with source-reference fingerprints, including actual source enthalpy/entropy anchor values, model parameters, and component reference identities. Detect changed global CoolProp reference conventions and carry the fingerprint into table cache validation.
-- [ ] Separate array-valued reference states from Equinox static metadata. The bicubic `critical_point` is currently an array-valued state marked static and still emits warnings. Keep static fields limited to immutable non-array configuration; separate the reference container from the numerical evaluator or retain its arrays dynamically. Verify warning removal without weakening JAX behavior or cache identity.
-- [ ] Populate applicable source-reference points for perfect-gas and bicubic objects while enforcing their own evaluation capabilities. Extend perfect-gas calibration to the selected source backend; Phase 4 explicitly restricts it to HEOS until this is implemented.
-- [ ] Support pseudo-pure Air and refrigerant blends with explicit classification and interpretation of their lower saturation endpoints, preserving distinct liquid/vapor pressures.
-- [ ] Handle unavailable or ambiguous reference points individually, with informative errors on explicit access and usable ordinary calculations where supported.
-- [ ] Record reported reference coordinates and any numerical evaluation offsets. Define availability of singular/undefined properties at critical states.
+- [x] Implement one dedicated CoolProp initialization path for critical and liquid/vapor triple-reference points, independently of the selected evaluator.
+- [x] Expose source fluid/composition, backend/version, reference convention, point interpretation, availability, and failure reason. Reuse immutable source-reference data consistently.
+- [x] Replace Phase 3's provisional construction/reference IDs with source-reference fingerprints, including actual source enthalpy/entropy anchor values, model parameters, and component reference identities. Detect changed global CoolProp reference conventions and carry the fingerprint into table cache validation.
+- [x] Separate array-valued reference states from Equinox static metadata. Reference records retain only immutable scalar metadata; explicit state access materializes NumPy arrays outside the static evaluator records. Verify warning removal without weakening JAX behavior or cache identity.
+- [x] Populate applicable source-reference points for perfect-gas and bicubic objects while enforcing their own evaluation capabilities. Extend perfect-gas calibration to the selected source backend, with HEOS and REFPROP tests.
+- [x] Support pseudo-pure Air and refrigerant blends with explicit classification and interpretation of their lower saturation endpoints, preserving distinct liquid/vapor pressures.
+- [x] Handle unavailable or ambiguous reference points individually, with informative errors on explicit access and usable ordinary calculations where supported.
+- [x] Record reported reference coordinates and any numerical evaluation offsets. Define availability of singular/undefined properties at critical states.
 
 Acceptance includes matching source-reference metadata across evaluators for CO2 and Water, graceful Air initialization, and reference availability alongside perfect-gas rejection of quality/saturation evaluation.
+
+The shared [source-reference implementation](jaxprop/source_references.py) initializes each point independently, resolves source aliases, fingerprints actual h/s anchors, and stores frozen primitive records. Supplied fresh source objects keep ordinary source evaluation and reference snapshots on the same construction convention. Critical coordinates are attempted exactly before explicit recorded fallbacks; singular response properties remain unavailable. Composite binary records deliberately have no aggregate critical/triple points and expose their component reference records. Full native cache provenance remains enforced in addition to the shared source ID, with an initialization-race guard before table generation/publication.
+
+Focused HEOS + REFPROP verification passed **304 cases with 12 existing strict expected failures**, including 43 new source-reference cases. The native/shared-contract run passed **165 cases with 14 expected failures**, and metadata/cache checks passed **40 + 69 cases plus one new initialization-race case**. No static-reference warnings remain.
+
+The full HEOS + REFPROP run on 13 November 2026 passed **1,267 tests with 26 strict expected failures, zero unexpected failures, and zero skips**. All **54,272 numerical comparisons** passed, retaining **50,189 finite values and 4,083 paired-unavailable values** exactly as in Phase 4. Its 33 warnings are deliberately exercised cache-regeneration diagnostics. [Full result](development/test_audit/results/phase5/full_20261113_133321/summary.json). Two cases added after collection separately verified the forced critical-coordinate fallback (**1 passed**) and recorded the existing runtime quality/reference gap (**1 strict expected failure**). [Final reference edges](development/test_audit/results/phase5/final_reference_edges.xml). The source-reference module now has 44 passing cases plus that narrow Phase 6 expected failure.
+
+The matched [Phase 5 timing guard](development/performance/phase5_validation.json) uses four independent workers per version against Phase 4 commit `49aea3d`, nine interleaved samples per native workload and synchronized CPU/x64 results. No material repeatable warmed-call regression appeared: perfect-gas scalar/batch medians changed from 36.0/109.6 to 34.3/111.6 microseconds; bicubic from 118.5/793.1 to 117.3/808.8 microseconds. Normalized temperature-projection instructions are unchanged; all 38 sampled supported fields and two derivatives agree. Five-sample warmed construction checks improve direct source from 4.72 to 0.97 milliseconds and perfect gas from 6.68 to 3.12 milliseconds. Cached-loading medians are 25.73 versus 22.08 milliseconds, with substantial paired variability retained. Full cache validation stays enabled. Temporary benchmark source/workers/tables were removed. Application/device coverage and the formal release gate remain Phase 13.
 
 ## Phase 6 Bring ordinary CoolProp and FluidJAX onto the contract
 
@@ -143,6 +151,7 @@ Acceptance includes matching source-reference metadata across evaluators for CO2
 - [ ] Resolve diagnostic option semantics, including generalized quality, subcooling, superheating, and saturation departures, with explicit support declarations. Add the uniform source/callback saturation entry point and its capability only after validation; ordinary quality input pairs already work.
 - [ ] Give `FluidJAX` dedicated eager, outer-JIT, vectorization, batch failure, and derivative tests, including list/array acceptance and identity preservation.
 - [ ] Validate callback derivative accuracy over representative input scales and document supported transformation modes and derivative order.
+- [ ] Preserve a configured source's reference convention in runtime quality/phase helper clones. `calculate_trimmed_quality` currently compares an old object's entropy with a newly constructed critical entropy under the current process-global convention. The isolated strict regression `test_configured_source_quality_keeps_its_original_entropy_convention` exposes a changed quality after an external entropy shift while core values and stored references remain stable. Reconcile clone-based helpers without changing global settings or adding repeated source initialization to native evaluators.
 
 Acceptance requires the same source-compatible values and common behavior through both evaluators, with capabilities explaining the supported execution modes.
 
@@ -154,6 +163,7 @@ Acceptance requires the same source-compatible values and common behavior throug
 - [ ] Complete available core properties, including internal energy and a defined gas-state marker.
 - [ ] Complete the perfect-gas derivative properties defined by the model, including expansion/compressibility, bulk moduli, and Joule-Thomson behavior. Test their consistency with the gas constant, heat capacities, and sound speed before declaring them available.
 - [ ] Adopt and document the chosen enthalpy/entropy reference conventions, updating forward and inverse equations consistently.
+- [ ] Define identity for dynamically modified model views. Constructor fingerprints include actual calibrated constants, but low-level `eqx.tree_at` edits used in differentiation/optimization retain the original static identity. Provide a supported reconfiguration/materialization path that refreshes identity before persisting or combining changed physical models, while keeping numerical parameters dynamic under JIT.
 - [ ] Replace silent invalid-input clipping with the selected domain/failure policy, and explicitly reject phase-equilibrium inputs and properties.
 - [ ] Add independent ideal-gas identities, off-calibration conditions, transport checks, batch cases, and advertised JAX derivative tests.
 - [ ] Define a derivative-result schema or explicit quantity-kind metadata for property-gradient helpers, including derivative units and primal validity. Prevent derivative-valued fields from being combined with ordinary thermodynamic state values.

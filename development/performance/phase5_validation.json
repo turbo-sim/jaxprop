@@ -1,0 +1,374 @@
+{
+  "baseline_commit": "49aea3d5ca00ed7c832fc44e3ae4c583fe6dafbc",
+  "scope": "Focused phase5 followup: four independent workers per version in ABBAABBA order, nine interleaved samples per worker, synchronized CPU/x64. Eight-node HEOS table. Temporary source/workers/tables removed. Equivalent supported full-state outputs; includes setup measurements separately. Not formal Phase13 acceptance.",
+  "rows": [
+    {
+      "case": "perfect_gas_scalar",
+      "before_us": 36.003699999999995,
+      "after_us": 34.32299999999999,
+      "ratio": 0.9533186866905345,
+      "paired_ratios": [
+        0.9037182524836845,
+        0.9445466758486777,
+        1.0074595292703021,
+        0.9951774109930915
+      ]
+    },
+    {
+      "case": "perfect_gas_batch1024",
+      "before_us": 109.639,
+      "after_us": 111.608,
+      "ratio": 1.0179589379691534,
+      "paired_ratios": [
+        1.0309254787387334,
+        1.1138939702186585,
+        0.9409954880301962,
+        1.0217601499187607
+      ]
+    },
+    {
+      "case": "perfect_gas_compiled_T",
+      "before_us": 4.0827,
+      "after_us": 3.94745,
+      "ratio": 0.966872412864036,
+      "paired_ratios": [
+        0.8999038527573655,
+        0.9962555316010439,
+        0.977211940942946,
+        1.0138088392397884
+      ]
+    },
+    {
+      "case": "perfect_gas_compiled_dTdh",
+      "before_us": 3.948425,
+      "after_us": 3.90085,
+      "ratio": 0.9879508918112919,
+      "paired_ratios": [
+        0.9351241950321988,
+        0.9757603769466806,
+        0.98319665639051,
+        0.991354695431472
+      ]
+    },
+    {
+      "case": "perfect_gas_kernel_scalar",
+      "before_us": 31.722499999999997,
+      "after_us": 30.2511,
+      "ratio": 0.9536165182441486,
+      "paired_ratios": [
+        0.8867222041234235,
+        0.9751962976444285,
+        0.9428573185429324,
+        0.9801057336093129
+      ]
+    },
+    {
+      "case": "bicubic_scalar",
+      "before_us": 118.452,
+      "after_us": 117.29670000000002,
+      "ratio": 0.9902466822003851,
+      "paired_ratios": [
+        0.9740027972221645,
+        1.0005376605289154,
+        1.003283619039972,
+        1.0037447588828565
+      ]
+    },
+    {
+      "case": "bicubic_batch1024",
+      "before_us": 793.1305,
+      "after_us": 808.777,
+      "ratio": 1.0197275227721039,
+      "paired_ratios": [
+        0.97932729537726,
+        0.9999852834950719,
+        1.0534194485364927,
+        1.0334722890955625
+      ]
+    },
+    {
+      "case": "bicubic_compiled_T",
+      "before_us": 3.872575,
+      "after_us": 3.8612,
+      "ratio": 0.9970626779339329,
+      "paired_ratios": [
+        0.9641829634605391,
+        1.1484875656003586,
+        0.9849013070321117,
+        0.9923713472976468
+      ]
+    },
+    {
+      "case": "bicubic_compiled_dTdh",
+      "before_us": 4.3187,
+      "after_us": 4.237825000000001,
+      "ratio": 0.981273299835599,
+      "paired_ratios": [
+        0.997221777605012,
+        1.0315347561789434,
+        0.9535988677719371,
+        0.9630187280666196
+      ]
+    },
+    {
+      "case": "bicubic_kernel_scalar",
+      "before_us": 115.9479,
+      "after_us": 113.8956,
+      "ratio": 0.9822998087934321,
+      "paired_ratios": [
+        0.9634732423924449,
+        0.8911311671390798,
+        1.0515704300023676,
+        0.9894201566138778
+      ]
+    },
+    {
+      "case": "perfect_gas_construction",
+      "before_us": 6678.795,
+      "after_us": 3118.045,
+      "ratio": 0.46685741963932115,
+      "paired_ratios": [
+        0.44899951621128054,
+        0.465574870605033,
+        0.4736359067703641,
+        0.48935190227962344
+      ]
+    },
+    {
+      "case": "source_construction",
+      "before_us": 4715.483333333334,
+      "after_us": 972.2566666666667,
+      "ratio": 0.206183883589169,
+      "paired_ratios": [
+        0.20238537806683374,
+        0.24522888632106526,
+        0.20341220054615713,
+        0.21249748867918256
+      ]
+    },
+    {
+      "case": "bicubic_cached_loading",
+      "before_us": 25725.933333333334,
+      "after_us": 22083.3,
+      "ratio": 0.8584061737960915,
+      "paired_ratios": [
+        1.5867442271312902,
+        0.8112266071424187,
+        0.7962263545850149,
+        0.8680118654801187
+      ]
+    }
+  ],
+  "optimized_ir": {
+    "perfect_gas": {
+      "before": {
+        "instructions": [
+          "f64[] parameter(0)",
+          "f64[] constant(0.00093224839486281215)",
+          "f64[] multiply(%value, %value)",
+          "f64[] constant(1)",
+          "f64[] maximum(%value, %value)",
+          "pred[] is-finite(%value)",
+          "f64[] constant(nan)",
+          "f64[] select(%value, %value, %value)",
+          "f64[] parameter(0)",
+          "f64[] fusion(%value), kind=kLoop, calls=%value"
+        ],
+        "callbacks": false,
+        "instruction_count": 10
+      },
+      "after": {
+        "instructions": [
+          "f64[] parameter(0)",
+          "f64[] constant(0.00093224839486281215)",
+          "f64[] multiply(%value, %value)",
+          "f64[] constant(1)",
+          "f64[] maximum(%value, %value)",
+          "pred[] is-finite(%value)",
+          "f64[] constant(nan)",
+          "f64[] select(%value, %value, %value)",
+          "f64[] parameter(0)",
+          "f64[] fusion(%value), kind=kLoop, calls=%value"
+        ],
+        "callbacks": false,
+        "instruction_count": 10
+      }
+    },
+    "bicubic": {
+      "before": {
+        "instructions": [
+          "f64[] parameter(0)",
+          "pred[] is-finite(%value)",
+          "f64[] constant(nan)",
+          "f64[] select(%value, %value, %value)",
+          "f64[7,7,16]{2,1,0} constant({...})",
+          "s64[] constant(6)",
+          "s64[] constant(0)",
+          "f64[] parameter(0)",
+          "f64[] constant(-600000)",
+          "f64[] add(%value, %value)",
+          "f64[] constant(2.7999999999999935e-05)",
+          "f64[] multiply(%value, %value)",
+          "f64[] floor(%value)",
+          "s64[] convert(%value)",
+          "s64[] maximum(%value, %value)",
+          "s64[] minimum(%value, %value)",
+          "s64[] constant(3)",
+          "f64[1,1,16]{2,1,0} dynamic-slice(%value, %value, %value, %value), dynamic_slice_sizes={1,1,16}",
+          "f64[16]{0} bitcast(%value)",
+          "f64[4]{0} constant({1, 0.75801586549418243, 0.5745880523408945, 0.43554685979779972})",
+          "f64[4,4]{1,0} broadcast(%value), dimensions={0}",
+          "f64[1]{0} constant({1})",
+          "f64[] convert(%value)",
+          "f64[] subtract(%value, %value)",
+          "f64[1]{0} bitcast(%value)",
+          "f64[] multiply(%value, %value)",
+          "f64[1]{0} bitcast(%value)",
+          "f64[] multiply(%value, %value)",
+          "f64[1]{0} bitcast(%value)",
+          "f64[4]{0} concatenate(%value, %value, %value, %value), dimensions={0}",
+          "f64[4,4]{1,0} broadcast(%value), dimensions={1}",
+          "f64[4,4]{1,0} multiply(%value, %value)",
+          "f64[16]{0} bitcast(%value)",
+          "f64[] dot(%value, %value), lhs_contracting_dims={0}, rhs_contracting_dims={0}",
+          "f64[] parameter(0)",
+          "f64[] fusion(%value), kind=kLoop, calls=%value",
+          "f64[] fusion(%value), kind=kLoop, calls=%value"
+        ],
+        "callbacks": false,
+        "instruction_count": 37
+      },
+      "after": {
+        "instructions": [
+          "f64[] parameter(0)",
+          "pred[] is-finite(%value)",
+          "f64[] constant(nan)",
+          "f64[] select(%value, %value, %value)",
+          "f64[7,7,16]{2,1,0} constant({...})",
+          "s64[] constant(6)",
+          "s64[] constant(0)",
+          "f64[] parameter(0)",
+          "f64[] constant(-600000)",
+          "f64[] add(%value, %value)",
+          "f64[] constant(2.7999999999999935e-05)",
+          "f64[] multiply(%value, %value)",
+          "f64[] floor(%value)",
+          "s64[] convert(%value)",
+          "s64[] maximum(%value, %value)",
+          "s64[] minimum(%value, %value)",
+          "s64[] constant(3)",
+          "f64[1,1,16]{2,1,0} dynamic-slice(%value, %value, %value, %value), dynamic_slice_sizes={1,1,16}",
+          "f64[16]{0} bitcast(%value)",
+          "f64[4]{0} constant({1, 0.75801586549418243, 0.5745880523408945, 0.43554685979779972})",
+          "f64[4,4]{1,0} broadcast(%value), dimensions={0}",
+          "f64[1]{0} constant({1})",
+          "f64[] convert(%value)",
+          "f64[] subtract(%value, %value)",
+          "f64[1]{0} bitcast(%value)",
+          "f64[] multiply(%value, %value)",
+          "f64[1]{0} bitcast(%value)",
+          "f64[] multiply(%value, %value)",
+          "f64[1]{0} bitcast(%value)",
+          "f64[4]{0} concatenate(%value, %value, %value, %value), dimensions={0}",
+          "f64[4,4]{1,0} broadcast(%value), dimensions={1}",
+          "f64[4,4]{1,0} multiply(%value, %value)",
+          "f64[16]{0} bitcast(%value)",
+          "f64[] dot(%value, %value), lhs_contracting_dims={0}, rhs_contracting_dims={0}",
+          "f64[] parameter(0)",
+          "f64[] fusion(%value), kind=kLoop, calls=%value",
+          "f64[] fusion(%value), kind=kLoop, calls=%value"
+        ],
+        "callbacks": false,
+        "instruction_count": 37
+      }
+    }
+  },
+  "after_kernel_us": {
+    "perfect_gas": 30.2511,
+    "bicubic": 113.8956
+  },
+  "measured_date": "2026-11-13",
+  "current_source_sha256": "2617d9aacf8d6d7e014cac66b54e9c25cc755cdbcb3a73dc4136195a49f76579",
+  "source_hash_method": "Sorted jaxprop/**/*.py relative POSIX path, NUL, exact bytes, NUL; SHA256.",
+  "environment": {
+    "python": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]",
+    "dependencies": {
+      "jax": "0.6.2",
+      "jaxlib": "0.6.2",
+      "numpy": "2.4.4",
+      "CoolProp": "7.2.0",
+      "equinox": "0.12.2",
+      "scipy": "1.17.1"
+    },
+    "hardware": {
+      "platform": "Windows-11-10.0.26300-SP0",
+      "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+      "cpu_count": 28
+    },
+    "conditions": {
+      "backend": "cpu",
+      "x64": true
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "XLA_FLAGS": null
+    }
+  },
+  "method": {
+    "workers_per_version": 4,
+    "worker_order": [
+      "before1",
+      "after1",
+      "after2",
+      "before2",
+      "before3",
+      "after3",
+      "after4",
+      "before4"
+    ],
+    "samples_per_worker_per_case": 9,
+    "warm_calls_per_case": 20,
+    "calls_per_sample": {
+      "scalar": 500,
+      "batch1024": 100,
+      "compiled_projection": 2000
+    },
+    "synchronization": "jax.block_until_ready after every measured call",
+    "aggregation": "Pooled per-case sample medians; paired ratios compare worker medians.",
+    "table": {
+      "fluid": "CO2",
+      "backend": "HEOS",
+      "h_bounds_J_per_kg": [
+        600000,
+        850000
+      ],
+      "p_bounds_Pa": [
+        5000000,
+        12000000
+      ],
+      "N_h": 8,
+      "N_p": 8,
+      "N_p_sat": 4,
+      "coarse_step": 1
+    },
+    "correctness": "All 38 supported scalar fields across the two models match in all eight workers at rtol/atol 1e-7 with paired NaNs allowed; two temperature derivatives match at rtol/atol 1e-12.",
+    "compiler_comparison": "Normalized optimized temperature-projection instruction structure; names normalized and compiler-elided array constants are not reconstructed.",
+    "setup": {
+      "warm_calls_per_case": 2,
+      "samples_per_worker": 5,
+      "calls_per_sample": {
+        "perfect_gas_construction": 10,
+        "source_construction": 15,
+        "bicubic_cached_loading": 3
+      },
+      "scope": "Repeated warmed construction/loading; excludes first import, first JAX initialization and fresh table generation."
+    }
+  },
+  "optimized_temperature_structure_equal": {
+    "perfect_gas": true,
+    "bicubic": true
+  }
+}

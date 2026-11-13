@@ -7,6 +7,7 @@ from .. import helpers_props as jxp
 from ..configuration import build_configuration, FluidCapabilities, FluidDomain
 from ..errors import InvalidConfigurationError, UnsupportedOperationError
 from ..fluid_api import checked_jit
+from ..source_references import SourceReferencesMixin
 
 
 # ----------------------------------------------------------------------------- #
@@ -36,7 +37,7 @@ class PerfectGasConstants(eqx.Module):
         return "PerfectGasConstants(\n" + ",\n".join(lines) + "\n)"
 
 
-def get_constants(fluid_name, T_ref, p_ref, dT=100.0):
+def get_constants(fluid_name, T_ref, p_ref, dT=100.0, *, backend="HEOS"):
     """
     Compute perfect-gas constants from a real-fluid model at a reference state,
     and estimate Sutherland constants using offset temperatures.
@@ -52,6 +53,8 @@ def get_constants(fluid_name, T_ref, p_ref, dT=100.0):
     dT : float, optional
         Temperature offset used to evaluate `mu` and `k` at T_ref ± dT for
         Sutherland constant estimation [K]. Default is 100.0.
+    backend : str, optional
+        CoolProp source backend used for calibration. Default is "HEOS".
 
     Returns
     -------
@@ -74,8 +77,13 @@ def get_constants(fluid_name, T_ref, p_ref, dT=100.0):
     ZeroDivisionError
         If the Sutherland estimation becomes numerically unstable.
     """
-    # Calculate fluid constants at the reference pressure and temperature
-    fluid = Fluid(name=fluid_name, backend="HEOS")
+    return _get_constants_from_source(
+        Fluid(name=fluid_name, backend=backend), T_ref, p_ref, dT
+    )
+
+
+def _get_constants_from_source(fluid, T_ref, p_ref, dT=100.0):
+    # Share the selected source and its initialized reference snapshot.
     state = fluid.get_state(jxp.PT_INPUTS, p_ref, T_ref)
     R = jnp.asarray(jxp.GAS_CONSTANT / fluid.abstract_state.molar_mass())
     cp = jnp.asarray(state["cp"])
@@ -302,7 +310,7 @@ PROPERTY_CALCULATORS = {
 }
 
 
-class FluidPerfectGas(eqx.Module):
+class FluidPerfectGas(SourceReferencesMixin, eqx.Module):
     constants: PerfectGasConstants = eqx.field(static=False)
     fluid_name: str = eqx.field(static=True, default=None)
     identifier: str = eqx.field(static=True, default=None)
@@ -312,6 +320,7 @@ class FluidPerfectGas(eqx.Module):
     backend: str = eqx.field(static=True, default="HEOS")
     _configuration: object = eqx.field(static=True, default=None)
     _capabilities: object = eqx.field(static=True, default=None)
+    _references: object = eqx.field(static=True, default=None)
 
     def __init__(
         self, name, T_ref=300.0, p_ref=101_325.0, identifier=None, *, backend=None
@@ -325,15 +334,6 @@ class FluidPerfectGas(eqx.Module):
             identifier,
             model_options={"T_ref": T_ref, "p_ref": p_ref},
         )
-        if backend != "HEOS":
-            raise InvalidConfigurationError(
-                fluid_name=name,
-                provider=self.provider,
-                model=self.model,
-                request="backend",
-                reason="Perfect-gas calibration currently supports HEOS only.",
-                supported=("HEOS",),
-            )
         from numbers import Real
         import math
 
@@ -379,10 +379,31 @@ class FluidPerfectGas(eqx.Module):
                 phases={"gas"},
             ),
         )
-        self.constants = get_constants(name, T_ref, p_ref)
+        try:
+            source = Fluid(name=name, backend=backend)
+        except InvalidConfigurationError as error:
+            raise InvalidConfigurationError(
+                fluid_name=name,
+                provider=self.provider,
+                model=self.model,
+                request=error.request,
+                reason=error.reason,
+            ) from error
+        self.constants = _get_constants_from_source(source, T_ref, p_ref)
         self.fluid_name = name
         self.identifier = identifier
-        self.reference_id = (self.model, "HEOS", name, T_ref, p_ref)
+        self._references = source.references
+        self.reference_id = (
+            self.model,
+            source.reference_id,
+            ("calibration", float(T_ref), float(p_ref)),
+            (
+                "constants",
+                tuple(
+                    (key, float(value)) for key, value in vars(self.constants).items()
+                ),
+            ),
+        )
 
     @property
     def name(self):

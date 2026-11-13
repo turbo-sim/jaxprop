@@ -15,6 +15,10 @@ import re
 import CoolProp.CoolProp as CP
 
 from ..errors import InvalidConfigurationError
+from ..source_references import (
+    reference_anchor as _reference_anchor,
+    source_reference_metadata,
+)
 
 
 def metadata_fingerprint(metadata):
@@ -266,68 +270,6 @@ def _configuration_error(fluid_name, request, reason, *, mixture=False):
     )
 
 
-def _reference_anchor(state):
-    """Evaluate a reproducible physical anchor independently of h/s offsets.
-
-    Density/temperature anchors avoid phase-selection dependence and are tried
-    above the reported critical temperature. Backends without critical data can
-    use fixed pressure/temperature anchors. Failure to evaluate any anchor must
-    prevent cache reuse rather than manufacture an unknown reference identity.
-    """
-    attempts = []
-    try:
-        temperature = float(state.T_critical()) * 1.2
-        density = float(state.rhomass_critical()) * 0.1
-        if not all(
-            math.isfinite(value) and value > 0 for value in (temperature, density)
-        ):
-            raise ValueError("Nonfinite or nonpositive critical coordinates")
-        candidates = [(CP.DmassT_INPUTS, density, temperature)]
-    except (ValueError, RuntimeError, NotImplementedError, AttributeError) as error:
-        attempts.append(error)
-        candidates = []
-
-    # Fixed candidates stay independent of the current energy/entropy offsets.
-    candidates.extend(
-        (CP.PT_INPUTS, pressure, temperature)
-        for pressure, temperature in (
-            (101325.0, 300.0),
-            (101325.0, 500.0),
-            (1e6, 500.0),
-            (1e5, 1000.0),
-        )
-    )
-    for input_pair, first, second in candidates:
-        try:
-            state.update(input_pair, first, second)
-            anchor = {
-                "input_pair": (
-                    "DmassT_INPUTS" if input_pair == CP.DmassT_INPUTS else "PT_INPUTS"
-                ),
-                "inputs": [float(first), float(second)],
-                "density": float(state.rhomass()),
-                "temperature": float(state.T()),
-                "pressure": float(state.p()),
-                "enthalpy": float(state.hmass()),
-                "entropy": float(state.smass()),
-            }
-            if not all(
-                math.isfinite(anchor[key])
-                for key in ("density", "temperature", "pressure", "enthalpy", "entropy")
-            ):
-                raise ValueError("Reference anchor contains nonfinite core properties")
-            if any(anchor[key] <= 0 for key in ("density", "temperature", "pressure")):
-                raise ValueError(
-                    "Reference anchor has nonpositive physical coordinates"
-                )
-            return anchor
-        except (ValueError, RuntimeError, NotImplementedError, OverflowError) as error:
-            attempts.append(error)
-    raise ValueError(
-        "No deterministic source-reference anchor could be evaluated"
-    ) from attempts[-1]
-
-
 def _component_signature(fluid_name, backend, configuration):
     try:
         state = CP.AbstractState(backend, fluid_name)
@@ -344,11 +286,13 @@ def _component_signature(fluid_name, backend, configuration):
             raise ValueError("The source provided an invalid composition")
         if not math.isclose(sum(mole_fractions), 1.0, abs_tol=1e-12, rel_tol=0.0):
             raise ValueError("Source mole fractions do not sum to one")
+        reference = source_reference_metadata(fluid_name, backend, state=state)
         signature = {
             "backend": state.backend_name(),
             "fluid_names": canonical_names,
             "composition": {"basis": "mole", "fractions": mole_fractions},
-            "reference_anchor": _reference_anchor(state),
+            "reference_anchor": reference["reference_anchor"],
+            "source_reference_id": reference["reference_id"],
         }
         if predefined_mixture:
             signature["composition"]["predefined_mixture"] = canonical_names[0]
@@ -474,6 +418,15 @@ def source_signature(fluid_name, backend, mixture_ratio=None):
         ) from error
     if composition is not None:
         signature["composition"] = composition
+        signature["source_reference_id"] = (
+            "binary_mixture",
+            tuple(item["source_reference_id"] for item in signature["components"]),
+            ("mass_ratio", ratio),
+        )
+    else:
+        signature["source_reference_id"] = signature["components"][0][
+            "source_reference_id"
+        ]
     signature["deterministic_cache_identity"] = all(
         item["native_definition"]["available"]
         or item.get("native_files", {}).get("available", False)
