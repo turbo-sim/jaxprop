@@ -48,7 +48,7 @@ for i, s in enumerate(s_array):
         solver_algorithm="lm",
     )
     states_liquid.append(state)
-states_liquid = jxp.states_to_dict(states_liquid)
+states_liquid = jxp.FluidState.stack(states_liquid)
 
 # Compute states from superheated vapor to spinodal point
 s1 = fluid.triple_point_vapor.s
@@ -69,7 +69,7 @@ for i, s in enumerate(s_array):
         solver_algorithm="lm",
     )
     states_vapor.append(state)
-states_vapor = jxp.states_to_dict(states_vapor)
+states_vapor = jxp.FluidState.stack(states_vapor)
 
 # Compute equilibrium process
 s1 = fluid.triple_point_liquid.s
@@ -80,8 +80,11 @@ states_equilibrium = []
 for i, s in enumerate(s_array):
     state = fluid.get_state(jxp.PSmass_INPUTS, p, s)
     states_equilibrium.append(state)
-states_equilibrium = jxp.states_to_dict(states_equilibrium)
+states_equilibrium = jxp.FluidState.stack(states_equilibrium)
 
+
+# Optional saturation diagnostics are undefined outside their physical region.
+# Plot their raw NaNs as gaps; keep checked access for core state properties.
 
 # -------------------------------------------------------------------- #
 # Plot supersaturation degree along isobar
@@ -131,9 +134,9 @@ ax2.set_xlabel("Entropy (J/kg/K)")
 ax2.set_ylabel("Supersaturation degree (K)")
 limits1 = 2 * np.asarray([-1, 1]) * np.maximum(np.abs(spndl_vap[y1]), np.abs(spndl_liq[y1]))
 ax2.set_ylim(limits1)
-ax2.plot(states_liquid[x], states_liquid[y1], color=colors[0])
+ax2.plot(states_liquid[x], states_liquid.raw_property(y1), color=colors[0])
 ax2.plot(spndl_liq[x], spndl_liq[y1], marker="o", color=colors[0], label="Metastable liquid")
-ax2.plot(states_vapor[x], states_vapor[y1], color=colors[1])
+ax2.plot(states_vapor[x], states_vapor.raw_property(y1), color=colors[1])
 ax2.plot(spndl_vap[x], spndl_vap[y1], marker="o", color=colors[1], label="Metastable vapor")
 ax2.legend(loc="upper right")
 ax2.axhline(y=0, color="black")
@@ -167,17 +170,17 @@ fluid.plot_phase_diagram(
 
 # Plot equilibrium states
 print(spndl_liq[x], )
-print(spndl_liq["p_saturation"])
+print(spndl_liq["pressure_saturation"])
 ax1.plot(
     states_liquid[x],
-    states_liquid["p_saturation"],
+    states_liquid.raw_property("pressure_saturation"),
     color="black",
     linestyle="--",
     label="Equilibrium pressure",
 )
 ax1.plot(
     states_vapor[x],
-    states_vapor["p_saturation"],
+    states_vapor.raw_property("pressure_saturation"),
     color="black",
     linestyle="--",
 
@@ -197,9 +200,9 @@ y1 = "supersaturation_ratio"
 ax2.set_xlabel("Entropy (J/kg/K)")
 ax2.set_ylabel("Supersaturation ratio")
 ax2.set_ylim([0, 2])
-ax2.plot(states_liquid[x], states_liquid[y1], color=colors[0])
+ax2.plot(states_liquid[x], states_liquid.raw_property(y1), color=colors[0])
 ax2.plot(spndl_liq[x], spndl_liq[y1], marker="o", color=colors[0], label="Metastable liquid")
-ax2.plot(states_vapor[x], states_vapor[y1], color=colors[1])
+ax2.plot(states_vapor[x], states_vapor.raw_property(y1), color=colors[1])
 ax2.plot(spndl_vap[x], spndl_vap[y1], marker="o", color=colors[1], label="Metastable vapor")
 ax2.legend(loc="upper right")
 ax2.axhline(y=1, color="black")

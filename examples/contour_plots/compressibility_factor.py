@@ -24,7 +24,8 @@ ax_1.set_xlim([x_range.min(), x_range.max()])
 ax_1.set_ylim([y_range.min(), y_range.max()])
 
 # Compute properties and plot contour
-states = fluid.get_states(jxp.SmassT_INPUTS, x_range, y_range)
+x_grid, y_grid = np.meshgrid(x_range, y_range)
+states = fluid.get_state(jxp.SmassT_INPUTS, x_grid, y_grid)
 levels = np.concatenate((np.linspace(0.0, 0.95, 20), [0.99]))  # 0.0 to 1.0 in 0.1 steps
 colors = plt.get_cmap("Greys")(np.linspace(1.0, 0.4, len(levels) - 1))  # custom grey scale
 cmap = mpl.colors.ListedColormap(colors)
@@ -41,5 +42,3 @@ plt.tight_layout(pad=1)
 # Show figures
 if not os.environ.get("DISABLE_PLOTS"):
     plt.show()
-
-    

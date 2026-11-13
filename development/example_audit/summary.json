@@ -1,0 +1,933 @@
+{
+  "date": "2026-11-13",
+  "base_commit": "b647ffbcd184e4e9c71a03bfe25392fa12c9e641",
+  "inventory": 65,
+  "syntax_checks": "65/65 pass after resolving one existing merge conflict",
+  "counts": {
+    "completed": 34,
+    "needs_input": 2,
+    "timeout": 8,
+    "deferred_failure": 17,
+    "fixture_completed": 1,
+    "inactive": 3
+  },
+  "scope": "Actual unchanged-resolution programs in isolated headless subprocesses. One converter uses an explicit generated fixture; other input-dependent and commented-only files are separate. Default timeout 75-90 seconds; final N100 spinodal retry allowed 180 seconds. Groups ran concurrently, so elapsed times are not benchmarks. Existing numerical checks retained; script completion does not certify unchecked formulas or dormant helper functions.",
+  "modified_example_files": [
+    "examples/bicubic_interpolation/demo_solver_consistency.py",
+    "examples/bicubic_interpolation/demo_table_interpolation.py",
+    "examples/contour_plots/compressibility_factor.py",
+    "examples/contour_plots/demo_joule_thomson.py",
+    "examples/contour_plots/isentropic_cooling.py",
+    "examples/contour_plots/pressure_isolines.py",
+    "examples/optimistix/demo_ideal_gas.py",
+    "examples/perfect_gas/demo_perfect_gas_eos.py",
+    "examples/props_supersaturation/supersaturation_along_isentrope.py",
+    "examples/props_supersaturation/supersaturation_along_isobar.py",
+    "examples/props_supersaturation/supersaturation_along_spinodal.py",
+    "examples/props_undersaturation/quality_along_isolines.py",
+    "examples/props_undersaturation/subcooling_along_isobar.py",
+    "examples/props_undersaturation/superheating_along_isobar.py",
+    "examples/two_phase_derivatives/enthalpy_derivatives.py",
+    "examples/two_phase_derivatives/gibbs_saturation.py"
+  ],
+  "library_fix": "Saturation curve assembly copies only the critical endpoint into caller fluid/identifier metadata, retaining canonical source references unchanged.",
+  "verification": "48 passed, 1 existing expected failure across saturation-identity and source-reference regression tests (HEOS and REFPROP).",
+  "rows": [
+    {
+      "path": "examples/basic_calculations/solver_coolprop.py",
+      "status": "completed",
+      "detail": "Full default script completed with original numerical settings.",
+      "seconds": 10.153,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/source_phase/basic_calculations/solver_coolprop/stdout.log",
+        "development/example_audit/results/source_phase/basic_calculations/solver_coolprop/stderr.log"
+      ],
+      "source_sha256": "2be4ac38a707befc83c52a46fd4b69c6fb40fdf202919cab423d01efc58f52b6"
+    },
+    {
+      "path": "examples/basic_calculations/solver_equilibrium.py",
+      "status": "completed",
+      "detail": "Full default script completed with original numerical settings.",
+      "seconds": 4.453,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/source_phase/basic_calculations/solver_equilibrium/stdout.log",
+        "development/example_audit/results/source_phase/basic_calculations/solver_equilibrium/stderr.log"
+      ],
+      "source_sha256": "f3d69c4f3b2e846029f35dcac01956c2b24a2779244e1e4e0fe4a5bbeb2f2283"
+    },
+    {
+      "path": "examples/basic_calculations/solver_metastable.py",
+      "status": "completed",
+      "detail": "Full default script completed with original numerical settings.",
+      "seconds": 5.196,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/source_phase/rerun_render/basic_calculations/solver_metastable/stdout.log",
+        "development/example_audit/results/source_phase/rerun_render/basic_calculations/solver_metastable/stderr.log"
+      ],
+      "source_sha256": "e8020374ed1c655ec93111fcaf263daec0ac5ed95b6a0addf3230d0c3ed46f01"
+    },
+    {
+      "path": "examples/bicubic_interpolation/convert_pkl_to_csv.py",
+      "status": "needs_input",
+      "detail": "Hardcoded script-relative fluid_tables/CO2_200x200.pkl; writesxlsx despitecsvfilename. No user source-folder table/export touched. Needs explicitinput/output CLI andpandas/openpyxl documentation.",
+      "seconds": null,
+      "deferred_phases": [
+        14
+      ],
+      "logs": [],
+      "source_sha256": "2339a791e4b05ea8021e52ddd6b18a5d2bc7c957852c2b3cea27568cd25db6cf",
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_derivatives_jax.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 19.24215639999602,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/bicubic/demo_derivatives_jax/rerun.log"
+      ],
+      "source_sha256": "6132468cbdd53f41bb6d5b352814e60ba0c2058d49975681cd66b8c708351182",
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_grid_convergence.py",
+      "status": "timeout",
+      "detail": "Unchanged full default workload exceeded75-second per-script audit limit. Partial generation is not a pass; add explicit quick/full CLI modes in examples phase and rerun full workloads separately.",
+      "seconds": 75.05549409998639,
+      "deferred_phases": [
+        8,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/bicubic/demo_grid_convergence/run.log"
+      ],
+      "source_sha256": "f3cdf6d8a5614225544b81896cf67bd9ef1c1ad205fc78dd25bb9398316537e6",
+      "timeout_seconds": 75,
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_interpolation_midpoints.py",
+      "status": "timeout",
+      "detail": "Unchanged full default workload exceeded75-second per-script audit limit. Partial generation is not a pass; add explicit quick/full CLI modes in examples phase and rerun full workloads separately.",
+      "seconds": 75.04868669999996,
+      "deferred_phases": [
+        8,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/bicubic/demo_interpolation_midpoints/run.log"
+      ],
+      "source_sha256": "19f12b8f34b8145162db8f6ad39bfc09d52c8be499fc102e08d0cfe8fb584d69",
+      "timeout_seconds": 75,
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_interpolation_midpoints_metastable.py",
+      "status": "deferred_failure",
+      "detail": "Nitrogen metastable source evaluation does not converge at p=3 MPa, h approximately0 J/kg. Defer solver/domain work to Phase8.",
+      "seconds": 8.985669300003792,
+      "deferred_phases": [
+        8,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/bicubic/demo_interpolation_midpoints_metastable/run.log"
+      ],
+      "source_sha256": "4d8fc2ebc90d6ed0c744bdb850b7bba2954c056c66ad9bf51408e13d42cf02dc",
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_interpolation_serial.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 27.411919399994076,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/bicubic/demo_interpolation_serial/run.log"
+      ],
+      "source_sha256": "61c3e2a77216847a58d36a15212145d050ed3612069edc9d44d574b300c5d778",
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_interpolation_vectorized.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 18.43802410000353,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/bicubic/demo_interpolation_vectorized/run.log"
+      ],
+      "source_sha256": "e41c3059719c4d0e2d1d55ebb5711d6ccd47931ae01e81463ce98f629682909d",
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_metastable_calculations.py",
+      "status": "deferred_failure",
+      "detail": "Water120x120 metastable continuation stops inside requested grid at index(112,119); generator correctly refuses copied/extrapolated cells. Defer domain/continuation work to Phase8.",
+      "seconds": 16.96030870001414,
+      "deferred_phases": [
+        8,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/bicubic/demo_metastable_calculations/run.log"
+      ],
+      "source_sha256": "1acf562fada672c2a8a7c40aa455dcaa6dbb25a34130411f92e6b43dd4b13950",
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_metastable_single_point_comparison.py",
+      "status": "timeout",
+      "detail": "Unchanged full default workload exceeded75-second per-script audit limit. Partial generation is not a pass; add explicit quick/full CLI modes in examples phase and rerun full workloads separately.",
+      "seconds": 75.05542710000009,
+      "deferred_phases": [
+        8,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/bicubic/demo_metastable_single_point_comparison/run.log"
+      ],
+      "source_sha256": "f05f9533dc5a53b1fd16cfaef39e5d3ffa58f81d038191eb4aba0df73cf3907c",
+      "timeout_seconds": 75,
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_midpoints_metastable_comparison.py",
+      "status": "timeout",
+      "detail": "Unchanged full default workload exceeded75-second per-script audit limit. Partial generation is not a pass; add explicit quick/full CLI modes in examples phase and rerun full workloads separately.",
+      "seconds": 75.06313100000261,
+      "deferred_phases": [
+        8,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/bicubic/demo_midpoints_metastable_comparison/run.log"
+      ],
+      "source_sha256": "776e1ddb6c142153e37f09d8125933c13cc430ef43680cf0e3a6b81528007554",
+      "timeout_seconds": 75,
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_saturation_midpoints.py",
+      "status": "deferred_failure",
+      "detail": "Nitrogen metastable source evaluation does not converge at p=200 kPa, h=-100 kJ/kg; current strict table generation rejects the incomplete physical grid. Defer solver/domain work to Phase8.",
+      "seconds": 48.9072645999986,
+      "deferred_phases": [
+        8,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/bicubic/demo_saturation_midpoints/run.log"
+      ],
+      "source_sha256": "4abde34a0fd7acfad29a024047c828e3ee95c2338aedd5f45acde17e19842b50",
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_solver_consistency.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 22.866770499997074,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/bicubic/demo_solver_consistency/rerun.log"
+      ],
+      "source_sha256": "4f440ec22de2d72abecbe7b5eb5b583cf858a139f995acb72c10d1ff2ca9c1a4",
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance.",
+      "minimal_fix": "Compare only enabled properties and access raw arrays for optional unavailable fields; assert identical NaN patterns first. Existing8 input pairs,32x32 grid,and1e-12 tolerance preserved.188416 relative values pass."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_table_generation.py",
+      "status": "timeout",
+      "detail": "Unchanged full default workload exceeded75-second per-script audit limit. Partial generation is not a pass; add explicit quick/full CLI modes in examples phase and rerun full workloads separately.",
+      "seconds": 75.05319710000185,
+      "deferred_phases": [
+        8,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/bicubic/demo_table_generation/run.log"
+      ],
+      "source_sha256": "e7f68343121eeacdc18ec8d4473aa14ce67552b2e30b6de81df3ac6de3cb5b1b",
+      "timeout_seconds": 75,
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_table_interpolation.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 19.686829700003727,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/bicubic/demo_table_interpolation/run.log"
+      ],
+      "source_sha256": "57e7efdb31ffac7243988620a7a70b28023befbadd5590072c36f14f838c1372",
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance.",
+      "minimal_fix": "Resolved pre-existing Git conflict markers by retaining the existing coherent30x30 quick-demo branch: CO2 h200?600 kJ/kg,p2?20 MPa, evaluates500 kJ/kg at12 MPa. Resolution was already one original branch; no audit-only rescaling."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_table_interpolation_with_saturation.py",
+      "status": "timeout",
+      "detail": "Unchanged full default workload exceeded75-second per-script audit limit. Partial generation is not a pass; add explicit quick/full CLI modes in examples phase and rerun full workloads separately.",
+      "seconds": 75.04123839999374,
+      "deferred_phases": [
+        8,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/bicubic/demo_table_interpolation_with_saturation/run.log"
+      ],
+      "source_sha256": "527a791ca1df98ab32555fb4302cd6fdefb87cd708583dc7b21c7fda70423518",
+      "timeout_seconds": 75,
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_two_phase_speed_sound.py",
+      "status": "timeout",
+      "detail": "Unchanged full default workload exceeded75-second per-script audit limit. Partial generation is not a pass; add explicit quick/full CLI modes in examples phase and rerun full workloads separately.",
+      "seconds": 75.04976520000491,
+      "deferred_phases": [
+        8,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/bicubic/demo_two_phase_speed_sound/run.log"
+      ],
+      "source_sha256": "d163829580729279f7427921e9f55f74dcfae69561dc744f06d78fc34895d3b2",
+      "timeout_seconds": 75,
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/export_pkl_to_c_binary.py",
+      "status": "fixture_completed",
+      "detail": "Actual CLI export completed with explicit valid fresh30x30 fixture andbinaryheader shape/propertycount validated. No claim a default input file is shipped.",
+      "seconds": 1.2694748999929288,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/bicubic/export_fixture/run.log"
+      ],
+      "source_sha256": "b0763ceb1b55e7f36ac782362bf37bc126d45873cdfef8f64c91ee6b8e3497c6",
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/bicubic_interpolation/plot_metastable_point.py",
+      "status": "needs_input",
+      "detail": "Requires legacy relative demo_metastable_table_generation/water_meta_liquid_20x20.pkl; no input artifact exists in isolated fresh cwd. It also uses a legacy table-schema reader needing migration.",
+      "seconds": 4.3674850999959745,
+      "deferred_phases": [
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/bicubic/plot_metastable_point/run.log"
+      ],
+      "source_sha256": "f9abe1a55d67fb5ec8711d5de3ec0207227153084764deb3f527dabbd43b4b7d",
+      "execution_scope": "Headless Agg with original numerical defaults; isolated per-script cwd; this is execution checking, not timing acceptance."
+    },
+    {
+      "path": "examples/blending_calculations/blending_condensing.py",
+      "status": "deferred_failure",
+      "detail": "Library blending path calls .to_dict() on a dict; repair the common blending state/schema in Phase 10.",
+      "seconds": 7.25,
+      "deferred_phases": [
+        10,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/source_phase/rerun_render/blending_calculations/blending_condensing/stdout.log",
+        "development/example_audit/results/source_phase/rerun_render/blending_calculations/blending_condensing/stderr.log"
+      ],
+      "source_sha256": "6451dd86b6a1f0fd3189d440f15a8eb9f33061dd09873325c867c36f77b83473"
+    },
+    {
+      "path": "examples/blending_calculations/blending_flashing.py",
+      "status": "deferred_failure",
+      "detail": "Library blending path calls .to_dict() on a dict; repair the common blending state/schema in Phase 10.",
+      "seconds": 5.909,
+      "deferred_phases": [
+        10,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/source_phase/rerun_render/blending_calculations/blending_flashing/stdout.log",
+        "development/example_audit/results/source_phase/rerun_render/blending_calculations/blending_flashing/stderr.log"
+      ],
+      "source_sha256": "c03b12eda4706084b519f85f29e563631fe2ae5ff59bc0b10699d9e6638fa72f"
+    },
+    {
+      "path": "examples/contour_plots/compressibility_factor.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 9.027822000003653,
+      "deferred_phases": null,
+      "logs": [
+        "development\\example_audit\\results\\root\\20261113_141322\\contour_plots\\compressibility_factor/stdout.log",
+        "development\\example_audit\\results\\root\\20261113_141322\\contour_plots\\compressibility_factor/stderr.log"
+      ],
+      "source_sha256": "9e16ce7b15c732cccbd159fa11e851e7d9453cce28552ce3ddd5eca1cee7e1cd",
+      "timeout_seconds": 90
+    },
+    {
+      "path": "examples/contour_plots/demo_joule_thomson.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 11.620539999988978,
+      "deferred_phases": null,
+      "logs": [
+        "development\\example_audit\\results\\root\\20261113_141322\\contour_plots\\demo_joule_thomson/stdout.log",
+        "development\\example_audit\\results\\root\\20261113_141322\\contour_plots\\demo_joule_thomson/stderr.log"
+      ],
+      "source_sha256": "b7ce8b2e6126b9dacef462bb2bf5785b560b8ac3bec127b22544b467665a696d",
+      "timeout_seconds": 90
+    },
+    {
+      "path": "examples/contour_plots/isentropic_cooling.py",
+      "status": "deferred_failure",
+      "detail": "The nitrogen pressure/entropy grid reaches a CoolProp flash failure. Keep this source/domain failure explicit; do not change the grid or suppress invalid core results.",
+      "seconds": 15.10866189999797,
+      "deferred_phases": [
+        6,
+        14
+      ],
+      "logs": [
+        "development\\example_audit\\results\\root\\20261113_141322\\contour_plots\\isentropic_cooling/stdout.log",
+        "development\\example_audit\\results\\root\\20261113_141322\\contour_plots\\isentropic_cooling/stderr.log"
+      ],
+      "source_sha256": "d279aa48d381eed7e09c543e647e12929473bd8cc65f84505500f43a9e7b03e5",
+      "timeout_seconds": 90
+    },
+    {
+      "path": "examples/contour_plots/pressure_isolines.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 7.731490499994834,
+      "deferred_phases": null,
+      "logs": [
+        "development\\example_audit\\results\\root\\20261113_141322\\contour_plots\\pressure_isolines/stdout.log",
+        "development\\example_audit\\results\\root\\20261113_141322\\contour_plots\\pressure_isolines/stderr.log"
+      ],
+      "source_sha256": "0114250f34ddba13973ccd49210be34d5e21513225a4a9cc0aa30b3d7ba55680",
+      "timeout_seconds": 90
+    },
+    {
+      "path": "examples/contour_plots/pressure_isolines_timing.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 17.92582580000453,
+      "deferred_phases": null,
+      "logs": [
+        "development\\example_audit\\results\\root\\20261113_141322\\contour_plots\\pressure_isolines_timing/stdout.log",
+        "development\\example_audit\\results\\root\\20261113_141322\\contour_plots\\pressure_isolines_timing/stderr.log"
+      ],
+      "source_sha256": "abb8102e787b0cd9ab45b72354b1f87524040d5d511a3ad9a37c695d71816d38",
+      "timeout_seconds": 90
+    },
+    {
+      "path": "examples/coolprop_jax/coolprop_broadcast.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 11.300908399993205,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/initial/coolprop_jax/coolprop_broadcast/stdout.log",
+        "development/example_audit/results/jax_models/initial/coolprop_jax/coolprop_broadcast/stderr.log"
+      ],
+      "source_sha256": "583219d8657d29add48a3d136e9350a69e74208de9721ce631d733f34ba5ee8d"
+    },
+    {
+      "path": "examples/coolprop_jax/derivative_consistency_1.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 5.976793900001212,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/initial/coolprop_jax/derivative_consistency_1/stdout.log",
+        "development/example_audit/results/jax_models/initial/coolprop_jax/derivative_consistency_1/stderr.log"
+      ],
+      "source_sha256": "8c012eac97d160642baf019473b45594b4720b744f85d26b1c83b989f4387a84"
+    },
+    {
+      "path": "examples/coolprop_jax/derivative_consistency_2.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 5.131265999996685,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/initial/coolprop_jax/derivative_consistency_2/stdout.log",
+        "development/example_audit/results/jax_models/initial/coolprop_jax/derivative_consistency_2/stderr.log"
+      ],
+      "source_sha256": "c2356e2151f6272a2d2e5fb75f39b173358fef8625329b7785570b2813806c44"
+    },
+    {
+      "path": "examples/coolprop_jax/derivative_consistency_3.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 5.554617300003883,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/initial/coolprop_jax/derivative_consistency_3/stdout.log",
+        "development/example_audit/results/jax_models/initial/coolprop_jax/derivative_consistency_3/stderr.log"
+      ],
+      "source_sha256": "889e58b0aeac1d9b9ed627401a387546360d5c19e3a052deb481f08272eae555"
+    },
+    {
+      "path": "examples/mixture_properties/test_cal_prop.py",
+      "status": "timeout",
+      "detail": "Default 100x100 binary table reached approximately49% after90s; no resolution reduction attempted and no completion claim.",
+      "seconds": 90.08506499999203,
+      "deferred_phases": [
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/jax_models/initial/mixture_properties/test_cal_prop/stdout.log",
+        "development/example_audit/results/jax_models/initial/mixture_properties/test_cal_prop/stderr.log"
+      ],
+      "source_sha256": "ca4839d508d7d245fa54792cdde05b33b3753d82c771cbbba068089ad0320b19",
+      "timeout_seconds": 90
+    },
+    {
+      "path": "examples/optimistix/demo_ideal_gas.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 4.300125300011132,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/fixed/optimistix/demo_ideal_gas/stdout.log",
+        "development/example_audit/results/jax_models/fixed/optimistix/demo_ideal_gas/stderr.log"
+      ],
+      "source_sha256": "9cddfe37718eb79c2ded46cf2c761b2f252b744a3621e4ef19ac52a846e34092"
+    },
+    {
+      "path": "examples/optimistix/demo_minimize.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 1.7487644999928307,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/initial/optimistix/demo_minimize/stdout.log",
+        "development/example_audit/results/jax_models/initial/optimistix/demo_minimize/stderr.log"
+      ],
+      "source_sha256": "bab5bfef5aa8e3014f3e7bfab7b977913b807f50c771371a92a8209de9c72d0f"
+    },
+    {
+      "path": "examples/optimistix/demo_minimize_io.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 2.06428859999869,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/initial/optimistix/demo_minimize_io/stdout.log",
+        "development/example_audit/results/jax_models/initial/optimistix/demo_minimize_io/stderr.log"
+      ],
+      "source_sha256": "a31f1e8f92e6578c65ff1507c1f83255c09943a3b3d097852a604613e09c4d5e"
+    },
+    {
+      "path": "examples/optimistix/demo_root_find.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 2.088428400005796,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/initial/optimistix/demo_root_find/stdout.log",
+        "development/example_audit/results/jax_models/initial/optimistix/demo_root_find/stderr.log"
+      ],
+      "source_sha256": "8216c0886e2de1a0c6c098f1513a2b89e6df3232b63996cb04249c9227f9015f"
+    },
+    {
+      "path": "examples/optimistix/diffrax_polytropic_expansion.py",
+      "status": "deferred_failure",
+      "detail": "Diffrax ODE uses obsolete get_props, global state in parameter-dependent code, and full-state postprocessing; requires coordinated ODE/gradient repair.",
+      "seconds": 6.048233599998639,
+      "deferred_phases": [
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/jax_models/initial/optimistix/diffrax_polytropic_expansion/stdout.log",
+        "development/example_audit/results/jax_models/initial/optimistix/diffrax_polytropic_expansion/stderr.log"
+      ],
+      "source_sha256": "a596d10e2f79c3c0a90c81e12925b79970bf90f9532a12d55d536b7eafabca70"
+    },
+    {
+      "path": "examples/optimistix/diffrax_rosenbrock.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 2.019426200000453,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/initial/optimistix/diffrax_rosenbrock/stdout.log",
+        "development/example_audit/results/jax_models/initial/optimistix/diffrax_rosenbrock/stderr.log"
+      ],
+      "source_sha256": "11439558fe5b1869c2fb69de44ef2486f98fd2f5069b3a3b343ee796b281e8ef"
+    },
+    {
+      "path": "examples/perfect_gas/demo_perfect_gas_eos.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 4.42134879999503,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/fixed/perfect_gas/demo_perfect_gas_eos/stdout.log",
+        "development/example_audit/results/jax_models/fixed/perfect_gas/demo_perfect_gas_eos/stderr.log"
+      ],
+      "source_sha256": "23ddfa75d852aa42604d8107dbe575ff3b1df36fccc34f709e58d346ece7f6f8"
+    },
+    {
+      "path": "examples/perfect_gas/demo_perfect_gas_gradients.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 6.625115899994853,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/initial/perfect_gas/demo_perfect_gas_gradients/stdout.log",
+        "development/example_audit/results/jax_models/initial/perfect_gas/demo_perfect_gas_gradients/stderr.log"
+      ],
+      "source_sha256": "e8d161c84d592302ace1fdfe022ed0b599955c031722798cc0086fe63c666a22"
+    },
+    {
+      "path": "examples/perfect_gas/demo_sutherland.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 5.585550400006468,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/initial/perfect_gas/demo_sutherland/stdout.log",
+        "development/example_audit/results/jax_models/initial/perfect_gas/demo_sutherland/stderr.log"
+      ],
+      "source_sha256": "5463947e7c460df1a62eadeb7090c733c8470b2308bdb3eb88a73dd71b274196"
+    },
+    {
+      "path": "examples/perfect_gas/polytropic_compression.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 6.802980399996159,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/initial/perfect_gas/polytropic_compression/stdout.log",
+        "development/example_audit/results/jax_models/initial/perfect_gas/polytropic_compression/stderr.log"
+      ],
+      "source_sha256": "9b07ad76710d812fa168b37233a9e3706734af7a12829ff9aa749b534853e546"
+    },
+    {
+      "path": "examples/props_supersaturation/supersaturation_along_isentrope.py",
+      "status": "deferred_failure",
+      "detail": "Library blending path calls .to_dict() on a dict; repair the common blending state/schema in Phase 10.",
+      "seconds": 4.105,
+      "deferred_phases": [
+        10,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/source_phase/rerun_render/props_supersaturation/supersaturation_along_isentrope/stdout.log",
+        "development/example_audit/results/source_phase/rerun_render/props_supersaturation/supersaturation_along_isentrope/stderr.log"
+      ],
+      "source_sha256": "b022533f25e62b721d496d8fd38dd691df4471c9c4d953a9b210521474914ee1",
+      "minimal_fix": "Replace states_to_dict with FluidState.stack; larger blending schema repair is deferred."
+    },
+    {
+      "path": "examples/props_supersaturation/supersaturation_along_isobar.py",
+      "status": "completed",
+      "detail": "Full default script completed with original numerical settings.",
+      "seconds": 64.951,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/source_phase/final_optional_gaps/props_supersaturation/supersaturation_along_isobar/stdout.log",
+        "development/example_audit/results/source_phase/final_optional_gaps/props_supersaturation/supersaturation_along_isobar/stderr.log"
+      ],
+      "source_sha256": "7f78c4e6665fbe69e93ac783a0d81af3f17e380fed95cddf806358404a3f0e26",
+      "minimal_fix": "Replace states_to_dict with FluidState.stack; use canonical saturation names and raw optional diagnostics for NaN plotting gaps."
+    },
+    {
+      "path": "examples/props_supersaturation/supersaturation_along_spinodal.py",
+      "status": "completed",
+      "detail": "Full default script completed with original numerical settings.",
+      "seconds": 102.866,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/source_phase/final_optional_gaps/props_supersaturation/supersaturation_along_spinodal/stdout.log",
+        "development/example_audit/results/source_phase/final_optional_gaps/props_supersaturation/supersaturation_along_spinodal/stderr.log"
+      ],
+      "source_sha256": "67b48936bc13422cc6ad9d643940b921892a48ed4e28cc9494900e555b121248",
+      "minimal_fix": "Use canonical saturation names and raw optional diagnostics for physically undefined NaN plotting gaps."
+    },
+    {
+      "path": "examples/props_undersaturation/demo_calculations.py",
+      "status": "deferred_failure",
+      "detail": "Ordinary Fluid.get_state explicitly rejects supersaturation=True pending diagnostic implementation; retain the feature rather than dropping it.",
+      "seconds": 6.546,
+      "deferred_phases": [
+        6,
+        10,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/source_phase/props_undersaturation/demo_calculations/stdout.log",
+        "development/example_audit/results/source_phase/props_undersaturation/demo_calculations/stderr.log"
+      ],
+      "source_sha256": "2a653b180c11ddd1f495d68db615b500308e5bdf39081ea04a24a7e2ccfa1374"
+    },
+    {
+      "path": "examples/props_undersaturation/quality_along_isolines.py",
+      "status": "completed",
+      "detail": "Full default script completed with original numerical settings.",
+      "seconds": 19.29,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/source_phase/rerun_render/props_undersaturation/quality_along_isolines/stdout.log",
+        "development/example_audit/results/source_phase/rerun_render/props_undersaturation/quality_along_isolines/stderr.log"
+      ],
+      "source_sha256": "f4f0f952c05d0b5ac34c4b6def663368eec1d000b2222c884883875cbb6015c8",
+      "minimal_fix": "Replace removed get_states with get_state and explicit Cartesian broadcast axes."
+    },
+    {
+      "path": "examples/props_undersaturation/subcooling_along_isobar.py",
+      "status": "deferred_failure",
+      "detail": "Ordinary Fluid.get_state explicitly rejects supersaturation=True pending diagnostic implementation; retain the feature rather than dropping it.",
+      "seconds": 3.328,
+      "deferred_phases": [
+        6,
+        10,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/source_phase/rerun_render/props_undersaturation/subcooling_along_isobar/stdout.log",
+        "development/example_audit/results/source_phase/rerun_render/props_undersaturation/subcooling_along_isobar/stderr.log"
+      ],
+      "source_sha256": "4aff086b7876e634697ba31570c1c7fcef46c33c8aa8668ea0548909481d885a",
+      "minimal_fix": "Replace removed get_states with get_state and explicit Cartesian broadcast axes; retain requested diagnostics."
+    },
+    {
+      "path": "examples/props_undersaturation/superheating_along_isobar.py",
+      "status": "deferred_failure",
+      "detail": "Ordinary Fluid.get_state explicitly rejects supersaturation=True pending diagnostic implementation; retain the feature rather than dropping it.",
+      "seconds": 3.378,
+      "deferred_phases": [
+        6,
+        10,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/source_phase/rerun_render/props_undersaturation/superheating_along_isobar/stdout.log",
+        "development/example_audit/results/source_phase/rerun_render/props_undersaturation/superheating_along_isobar/stderr.log"
+      ],
+      "source_sha256": "1c2b2647d92d5ce45a0f4875b150f6f35c25a49c02cd507aa45c6e930ebfa3b9",
+      "minimal_fix": "Replace removed get_states with get_state and explicit Cartesian broadcast axes; retain requested diagnostics."
+    },
+    {
+      "path": "examples/speed_of_sound/relaxation_hierarchy.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 9.441761599999154,
+      "deferred_phases": null,
+      "logs": [
+        "development\\example_audit\\results\\root\\20261113_141322\\speed_of_sound\\relaxation_hierarchy/stdout.log",
+        "development\\example_audit\\results\\root\\20261113_141322\\speed_of_sound\\relaxation_hierarchy/stderr.log"
+      ],
+      "source_sha256": "6092f8f9e8dc14e34bcce5da6e4dd7180e14c3d1738a191122f8cbeb6f6473ac",
+      "timeout_seconds": 90
+    },
+    {
+      "path": "examples/spinodal_lines/spinodal_lines.py",
+      "status": "deferred_failure",
+      "detail": "Library compute_property_grid_rhoT refers to removed states_to_dict_2d (NameError).",
+      "seconds": 50.559,
+      "deferred_phases": [
+        10,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/source_phase/spinodal_lines/spinodal_lines/stdout.log",
+        "development/example_audit/results/source_phase/spinodal_lines/spinodal_lines/stderr.log"
+      ],
+      "source_sha256": "12d58d213f9707e196cd25d4aac5aebff7faa9e0e49bbbacecd59abf65153749"
+    },
+    {
+      "path": "examples/spinodal_lines/spinodal_lines_PT.py",
+      "status": "completed",
+      "detail": "Full default script completed with original numerical settings.",
+      "seconds": 47.563,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/source_phase/spinodal_lines/spinodal_lines_PT/stdout.log",
+        "development/example_audit/results/source_phase/spinodal_lines/spinodal_lines_PT/stderr.log"
+      ],
+      "source_sha256": "fab8347d275c414a0bbd4caacf78150b0b1ddf979738dfbdd72338d1d1f34296"
+    },
+    {
+      "path": "examples/transport_properties/fluid_troubleshooting.py",
+      "status": "inactive",
+      "detail": "Entire file is comments/blank; no runnable demonstration.",
+      "seconds": null,
+      "deferred_phases": [
+        14
+      ],
+      "logs": [
+        "development\\example_audit\\results\\root\\20261113_141322\\transport_properties\\fluid_troubleshooting/stdout.log",
+        "development\\example_audit\\results\\root\\20261113_141322\\transport_properties\\fluid_troubleshooting/stderr.log"
+      ],
+      "source_sha256": "1af33384404edd0abe5befd76063b638b16090f29e8f91bb81be41fa399491c7",
+      "timeout_seconds": 90
+    },
+    {
+      "path": "examples/transport_properties/plot_surface_tension.py",
+      "status": "inactive",
+      "detail": "Entire file is comments/blank; no runnable demonstration.",
+      "seconds": null,
+      "deferred_phases": [
+        14
+      ],
+      "logs": [
+        "development\\example_audit\\results\\root\\20261113_141322\\transport_properties\\plot_surface_tension/stdout.log",
+        "development\\example_audit\\results\\root\\20261113_141322\\transport_properties\\plot_surface_tension/stderr.log"
+      ],
+      "source_sha256": "12008faa21e0673d5868f943204165c7c61ed894ec0707cbc47a080db478b76a",
+      "timeout_seconds": 90
+    },
+    {
+      "path": "examples/transport_properties/trying_refprop.py",
+      "status": "inactive",
+      "detail": "Entire file is comments/blank; no runnable demonstration.",
+      "seconds": null,
+      "deferred_phases": [
+        14
+      ],
+      "logs": [
+        "development\\example_audit\\results\\root\\20261113_141322\\transport_properties\\trying_refprop/stdout.log",
+        "development\\example_audit\\results\\root\\20261113_141322\\transport_properties\\trying_refprop/stderr.log"
+      ],
+      "source_sha256": "ece4bbc3492a3d6a2ccf5a1a46cb07aad8d6ea07f53f3d0f1eea2c569707524e",
+      "timeout_seconds": 90
+    },
+    {
+      "path": "examples/two_component/water_nitrogen_calculations.py",
+      "status": "deferred_failure",
+      "detail": "Unexported/unimplemented FluidTwoComponent or get_mixture_state; common binary model is Phase 9.",
+      "seconds": 5.752152200002456,
+      "deferred_phases": [
+        9,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/jax_models/initial/two_component/water_nitrogen_calculations/stdout.log",
+        "development/example_audit/results/jax_models/initial/two_component/water_nitrogen_calculations/stderr.log"
+      ],
+      "source_sha256": "8455c2b7b0120526de5462437308ef3510a2e901cd4db463a10e65515ea27029"
+    },
+    {
+      "path": "examples/two_component/water_nitrogen_consistency.py",
+      "status": "deferred_failure",
+      "detail": "Unexported/unimplemented FluidTwoComponent or get_mixture_state; common binary model is Phase 9.",
+      "seconds": 4.427767400004086,
+      "deferred_phases": [
+        9,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/jax_models/initial/two_component/water_nitrogen_consistency/stdout.log",
+        "development/example_audit/results/jax_models/initial/two_component/water_nitrogen_consistency/stderr.log"
+      ],
+      "source_sha256": "d3977d55ff1200dc1a9948ceb4c3d9378f42db61a77a16f841cd559d452ec465"
+    },
+    {
+      "path": "examples/two_component/water_nitrogen_example.py",
+      "status": "deferred_failure",
+      "detail": "Unexported/unimplemented FluidTwoComponent or get_mixture_state; common binary model is Phase 9.",
+      "seconds": 3.7875943000108236,
+      "deferred_phases": [
+        9,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/jax_models/initial/two_component/water_nitrogen_example/stdout.log",
+        "development/example_audit/results/jax_models/initial/two_component/water_nitrogen_example/stderr.log"
+      ],
+      "source_sha256": "d1f4808d999b9b5d13a927e7630f76bc88291b8984b719c0cd26b62e5016375b"
+    },
+    {
+      "path": "examples/two_component/water_nitrogen_speed_sound.py",
+      "status": "deferred_failure",
+      "detail": "Unexported/unimplemented FluidTwoComponent or get_mixture_state; common binary model is Phase 9.",
+      "seconds": 4.755037900002208,
+      "deferred_phases": [
+        9,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/jax_models/initial/two_component/water_nitrogen_speed_sound/stdout.log",
+        "development/example_audit/results/jax_models/initial/two_component/water_nitrogen_speed_sound/stderr.log"
+      ],
+      "source_sha256": "a36f916b3f3d390b7fc37750944dcc33ec3feb1cf7bef4f685a4a9ec778663ae"
+    },
+    {
+      "path": "examples/two_phase_derivatives/check_gruneisen.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 4.786373499999172,
+      "deferred_phases": null,
+      "logs": [
+        "development\\example_audit\\results\\root\\20261113_141322\\two_phase_derivatives\\check_gruneisen/stdout.log",
+        "development\\example_audit\\results\\root\\20261113_141322\\two_phase_derivatives\\check_gruneisen/stderr.log"
+      ],
+      "source_sha256": "c66ce6d60aeb340b2d6e4bcfacd116506a69f779347d18ab4f25c62ee6dceae8",
+      "timeout_seconds": 90
+    },
+    {
+      "path": "examples/two_phase_derivatives/check_speed_sound.py",
+      "status": "completed",
+      "detail": "Active script completed with its documented defaults.",
+      "seconds": 5.001921699993545,
+      "deferred_phases": null,
+      "logs": [
+        "development\\example_audit\\results\\root\\20261113_141322\\two_phase_derivatives\\check_speed_sound/stdout.log",
+        "development\\example_audit\\results\\root\\20261113_141322\\two_phase_derivatives\\check_speed_sound/stderr.log"
+      ],
+      "source_sha256": "22e9729f220c1d476a5006fd3c9b3daac0926243891a431fa511a4fdcad00019",
+      "timeout_seconds": 90
+    },
+    {
+      "path": "examples/two_phase_derivatives/enthalpy_derivatives.py",
+      "status": "completed",
+      "detail": "Printed numerical density derivative-4.08581323e5 vsanalytic-408581.3258311399; script has no assertion.",
+      "seconds": 4.389555600006133,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/additional/two_phase_derivatives/enthalpy_derivatives/stdout.log",
+        "development/example_audit/results/jax_models/additional/two_phase_derivatives/enthalpy_derivatives/stderr.log"
+      ],
+      "source_sha256": "729cb0ef23ddf8cc4225bd891b79189b06cc1bfeccbdd9b90bb36b51d3dd8459",
+      "execution_scope": "Default active script run with headless figure drawing, isolated cwd, 90second limit.",
+      "minimal_fix": "Correct helper import namespace and remove unavailable legacyalias import from active startup; copied unused helper remains deferred and explicitly documented."
+    },
+    {
+      "path": "examples/two_phase_derivatives/gibbs_saturation.py",
+      "status": "completed",
+      "detail": "Printed saturation-pressure disagreement with CoolProp is1.063728e-03percent; script does not assert an accuracy budget.",
+      "seconds": 3.9539019000076223,
+      "deferred_phases": null,
+      "logs": [
+        "development/example_audit/results/jax_models/additional/two_phase_derivatives/gibbs_saturation/stdout.log",
+        "development/example_audit/results/jax_models/additional/two_phase_derivatives/gibbs_saturation/stderr.log"
+      ],
+      "source_sha256": "9e4e791f1b1befe727023944d41ba4b519e260a23109fa92e8487bb1978efa88",
+      "execution_scope": "Default active script run with headless figure drawing, isolated cwd, 90second limit.",
+      "minimal_fix": "Import metastable helper from jaxprop.coolprop and use its canonical dictionary keys; brackets/equations unchanged."
+    },
+    {
+      "path": "examples/two_phase_derivatives/saturation_derivatives.py",
+      "status": "deferred_failure",
+      "detail": "Active copied two-phase model uses obsolete PROPERTY_ALIAS, nested raw-state schemas and the removed states_to_dict helper; broader repair deferred.",
+      "seconds": 4.129873799989582,
+      "deferred_phases": [
+        10,
+        14
+      ],
+      "logs": [
+        "development/example_audit/results/jax_models/additional/two_phase_derivatives/saturation_derivatives/stdout.log",
+        "development/example_audit/results/jax_models/additional/two_phase_derivatives/saturation_derivatives/stderr.log"
+      ],
+      "source_sha256": "391b3fc79f585fdd8db0052a2f7319a395c1b3052845e2d83699b8c486f60682",
+      "execution_scope": "Default active script run with headless figure drawing, isolated cwd, 90second limit."
+    }
+  ]
+}

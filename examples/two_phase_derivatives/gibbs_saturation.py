@@ -1,6 +1,6 @@
 
 import CoolProp as CP
-from jaxprop import compute_properties_metastable_rhoT
+from jaxprop.coolprop import compute_properties_metastable_rhoT
 from scipy.optimize import brentq
 
 def gibbs_difference_rhoT(p_trial, T, fluid):
@@ -17,8 +17,8 @@ def gibbs_difference_rhoT(p_trial, T, fluid):
     # Compute root
     props_liq = compute_properties_metastable_rhoT(fluid, rho_liq, T)
     props_vap = compute_properties_metastable_rhoT(fluid, rho_vap, T)
-    g_liq = props_liq["hmass"] - props_liq["T"]* props_liq["smass"]
-    g_vap = props_vap["hmass"] - props_vap["T"]* props_vap["smass"]
+    g_liq = props_liq["enthalpy"] - props_liq["temperature"]* props_liq["entropy"]
+    g_vap = props_vap["enthalpy"] - props_vap["temperature"]* props_vap["entropy"]
     
     return g_liq - g_vap
 
@@ -26,7 +26,7 @@ def gibbs_difference_rhoT(p_trial, T, fluid):
 def find_rho_for_p(AS, T, p_target, bracket):
     def residual(rho):
         props = compute_properties_metastable_rhoT(AS, rho, T)
-        return props["p"] - p_target
+        return props["pressure"] - p_target
 
     return brentq(residual, *bracket, xtol=1e-12)
 

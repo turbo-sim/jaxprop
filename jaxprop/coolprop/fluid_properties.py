@@ -1066,9 +1066,22 @@ def compute_saturation_line(fluid, N=100, dT_crit=0.5):
     # t2 = np.asarray([])
     T_sat = (1 - np.concatenate([t1, t2])) * fluid.critical_point.T
 
-    # Collect states in lists
-    liq_states = [fluid.critical_point]  # start with critical point
-    vap_states = [fluid.critical_point]
+    # Source references keep canonical source identity. A plotted curve belongs
+    # to the caller's fluid/stream, matching its ordinary saturation states.
+    reference = fluid.critical_point
+    critical_state = FluidState(
+        fluid_name=fluid.name,
+        identifier=fluid.identifier,
+        provider=reference.provider,
+        model=reference.model,
+        reference_id=reference.reference_id,
+        status=reference.status,
+        error_policy=reference.error_policy,
+        available_properties=reference.available_properties,
+        **reference.to_dict(),
+    )
+    liq_states = [critical_state]
+    vap_states = [critical_state]
 
     for T in T_sat:
         liq_states.append(fluid.get_state(CP.QT_INPUTS, 0.00, T))

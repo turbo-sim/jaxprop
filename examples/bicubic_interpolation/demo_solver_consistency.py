@@ -82,7 +82,9 @@ tests = [
 ]
 
 col_names = [jxp.INPUT_TYPE_MAP[it] for it, _, _ in tests]
-props_to_check = jxp.PROPERTIES_CANONICAL
+props_to_check = [
+    prop for prop in jxp.PROPERTIES_CANONICAL if state_ref.supports_property(prop)
+]
 
 
 abs_errors_table = {prop: [] for prop in props_to_check}
@@ -103,10 +105,15 @@ for input_type, v1, v2 in tests:
     timings.append(time.perf_counter() - start)
 
     for prop in props_to_check:
-        abs_errors_table[prop].append(interp[prop]-state_ref[prop])
-        rel_errors_table[prop].append(interp[prop]/state_ref[prop] - 1.0)
-        abs_norm_table[prop].append(l2_absolute_error(interp[prop], state_ref[prop]))
-        rel_norm_table[prop].append(l2_relative_error(interp[prop], state_ref[prop]))
+        value = interp.raw_property(prop)
+        reference = state_ref.raw_property(prop)
+        # Optional fields can be undefined throughout this gas-only domain.
+        # Compare their availability before comparing the raw numerical arrays.
+        np.testing.assert_array_equal(np.isnan(value), np.isnan(reference))
+        abs_errors_table[prop].append(value-reference)
+        rel_errors_table[prop].append(value/reference - 1.0)
+        abs_norm_table[prop].append(l2_absolute_error(value, reference))
+        rel_norm_table[prop].append(l2_relative_error(value, reference))
 
 
 # ---------------------------

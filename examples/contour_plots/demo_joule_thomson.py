@@ -25,7 +25,11 @@ for ax, z_prop, title in zip(axes, props_to_plot, titles):
     
     # contour plot
     levels = 12
-    cs = ax.contourf(states[x_prop], states[y_prop], states[z_prop], levels=levels)
+    # Leave locally undefined response properties as gaps in the contour.
+    values = np.ma.masked_where(
+        ~np.asarray(states.property_valid(z_prop)), states.raw_property(z_prop)
+    )
+    cs = ax.contourf(states[x_prop], states[y_prop], values, levels=levels)
     cbar = fig.colorbar(cs, ax=ax, pad=0.02)
     cbar.set_label(jxp.LABEL_MAPPING.get(z_prop, z_prop))
 

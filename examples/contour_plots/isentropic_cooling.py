@@ -18,9 +18,10 @@ y_prop = "p"
 z_prop = "Z"
 x_range = np.linspace(500, 9000, 50)
 y_range = np.logspace(np.log10(1e3), np.log10(1e8), 50)
-states1 = fluid.get_states(jxp.PSmass_INPUTS, y_range, x_range)
-states2 = fluid.get_states(jxp.PSmass_INPUTS, y_range+1e-3*y_range, x_range)
-prop = (states2["T"] - states1["T"]) / (1e-3*y_range)
+p_grid, s_grid = np.meshgrid(y_range, x_range, indexing="ij")
+states1 = fluid.get_state(jxp.PSmass_INPUTS, p_grid, s_grid)
+states2 = fluid.get_state(jxp.PSmass_INPUTS, p_grid + 1e-3*p_grid, s_grid)
+prop = (states2["T"] - states1["T"]) / (1e-3*p_grid)
 
 # Create figure
 fig_1, ax_1 = plt.subplots(figsize=(6, 5))
@@ -57,9 +58,10 @@ y_prop = "p"
 z_prop = "Z"
 x_range = np.linspace(2500, 5750, 100)
 y_range = np.logspace(np.log10(2e4), np.log10(2e7), 100)
-states1 = fluid.get_states(jxp.PSmass_INPUTS, y_range, x_range)
-states2 = fluid.get_states(jxp.PSmass_INPUTS, y_range+1e-3*y_range, x_range)
-prop = (states2["T"] - states1["T"]) / (1e-3*y_range)
+p_grid, s_grid = np.meshgrid(y_range, x_range, indexing="ij")
+states1 = fluid.get_state(jxp.PSmass_INPUTS, p_grid, s_grid)
+states2 = fluid.get_state(jxp.PSmass_INPUTS, p_grid + 1e-3*p_grid, s_grid)
+prop = (states2["T"] - states1["T"]) / (1e-3*p_grid)
 
 # Create figure
 fig_1, ax_1 = plt.subplots(figsize=(6, 5))
@@ -89,5 +91,3 @@ plt.tight_layout(pad=1)
 # Show figures
 if not os.environ.get("DISABLE_PLOTS"):
     plt.show()
-
-    

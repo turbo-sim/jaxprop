@@ -64,9 +64,9 @@ state_out_meta = states_metastable[-1]
 state_out_blend = states_blended[-1]
 
 # Convert lists to dicts of arrays
-states_equilibrium = jxp.states_to_dict(states_equilibrium)
-states_metastable = jxp.states_to_dict(states_metastable)
-states_blended = jxp.states_to_dict(states_blended)
+states_equilibrium = jxp.FluidState.stack(states_equilibrium)
+states_metastable = jxp.FluidState.stack(states_metastable)
+states_blended = jxp.FluidState.stack(states_blended)
 
 # Print properties at the inlet and outlet
 msgs = [
@@ -230,9 +230,9 @@ state_out_meta = states_metastable[-1]
 state_out_blend = states_blended[-1]
 
 # Convert lists to dicts of arrays
-states_equilibrium = jxp.states_to_dict(states_equilibrium)
-states_metastable = jxp.states_to_dict(states_metastable)
-states_blended = jxp.states_to_dict(states_blended)
+states_equilibrium = jxp.FluidState.stack(states_equilibrium)
+states_metastable = jxp.FluidState.stack(states_metastable)
+states_blended = jxp.FluidState.stack(states_blended)
 
 # Print properties at the inlet and outlet
 msgs = [

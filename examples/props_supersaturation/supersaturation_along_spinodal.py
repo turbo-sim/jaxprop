@@ -20,6 +20,9 @@ fluid.spdl_liq = spinodal_liq
 fluid.spdl_vap = spinodal_vap
 
 
+# Optional saturation diagnostics are undefined outside their physical region.
+# Plot their raw NaNs as gaps; keep checked access for core state properties.
+
 # -------------------------------------------------------------------- #
 # Plot supersaturation temperature along spinodal line
 # -------------------------------------------------------------------- #
@@ -44,9 +47,9 @@ fluid.plot_phase_diagram(
 )
 
 ax1.plot(spinodal_liq[x], spinodal_liq["T"], color=colors[0], linestyle="-", label=r"$T_\text{spinodal,liquid}$")
-ax1.plot(spinodal_liq[x], spinodal_liq["T_saturation"], color=colors[0], linestyle="--", label=r"$T_\text{sat}(p_\text{spinodal,liquid})$")
+ax1.plot(spinodal_liq[x], spinodal_liq.raw_property("temperature_saturation"), color=colors[0], linestyle="--", label=r"$T_\text{sat}(p_\text{spinodal,liquid})$")
 ax1.plot(spinodal_vap[x], spinodal_vap["T"], color=colors[1], linestyle="-", label=r"$T_\text{spinodal,vapor}$")
-ax1.plot(spinodal_vap[x], spinodal_vap["T_saturation"], color=colors[1], linestyle="--", label=r"$T_\text{sat}(p_\text{spinodal,vapor})$")
+ax1.plot(spinodal_vap[x], spinodal_vap.raw_property("temperature_saturation"), color=colors[1], linestyle="--", label=r"$T_\text{sat}(p_\text{spinodal,vapor})$")
 ax1.legend(loc="upper left")
 
 # Plot the degree of supersaturation on the second subplot
@@ -54,8 +57,8 @@ y1 = "supersaturation_degree"
 ax2.set_xlabel("Entropy (J/kg/K)")
 ax2.set_ylabel("Supersaturation degree (K)")
 ax2.axhline(y=0, color="black")
-ax2.plot(spinodal_liq[x], spinodal_liq[y1], color=colors[0], label="Liquid supersaturation degree")
-ax2.plot(spinodal_vap[x], spinodal_vap[y1], color=colors[1], label="Vapor supersaturation degree")
+ax2.plot(spinodal_liq[x], spinodal_liq.raw_property(y1), color=colors[0], label="Liquid supersaturation degree")
+ax2.plot(spinodal_vap[x], spinodal_vap.raw_property(y1), color=colors[1], label="Vapor supersaturation degree")
 ax2.legend(loc="lower right")
 
 jxp.savefig_in_formats(fig, os.path.join(outdir, f"supersaturation_along_spinodal_Ts_{fluid.name}"))
@@ -85,9 +88,9 @@ fluid.plot_phase_diagram(
 )
 
 ax1.plot(spinodal_liq[x], spinodal_liq["p"], color=colors[0], linestyle="-", label=r"$p_\text{spinodal,liquid}$")
-ax1.plot(spinodal_liq[x], spinodal_liq["p_saturation"], color=colors[0], linestyle="--", label=r"$p_\text{sat}(T_\text{spinodal,liquid})$")
+ax1.plot(spinodal_liq[x], spinodal_liq.raw_property("pressure_saturation"), color=colors[0], linestyle="--", label=r"$p_\text{sat}(T_\text{spinodal,liquid})$")
 ax1.plot(spinodal_vap[x], spinodal_vap["p"], color=colors[1], linestyle="-", label=r"$p_\text{spinodal,vapor}$")
-ax1.plot(spinodal_vap[x], spinodal_vap["p_saturation"], color=colors[1], linestyle="--", label=r"$p_\text{sat}(T_\text{spinodal,vapor})$")
+ax1.plot(spinodal_vap[x], spinodal_vap.raw_property("pressure_saturation"), color=colors[1], linestyle="--", label=r"$p_\text{sat}(T_\text{spinodal,vapor})$")
 ax1.legend(loc="upper left")
 
 # Plot the supersaturation on the second subplot
@@ -96,8 +99,8 @@ ax2.set_xlabel("Entropy (J/kg/K)")
 ax2.set_ylabel("Supersaturation ratio")
 ax2.set_ylim([0, 2])
 ax2.axhline(y=1, color="black")
-ax2.plot(spinodal_liq[x], spinodal_liq[y1], color=colors[0], label="Liquid supersaturation ratio")
-ax2.plot(spinodal_vap[x], spinodal_vap[y1], color=colors[1], label="Vapor supersaturation ratio")
+ax2.plot(spinodal_liq[x], spinodal_liq.raw_property(y1), color=colors[0], label="Liquid supersaturation ratio")
+ax2.plot(spinodal_vap[x], spinodal_vap.raw_property(y1), color=colors[1], label="Vapor supersaturation ratio")
 ax2.legend(loc="upper left")
 jxp.savefig_in_formats(fig, os.path.join(outdir, f"supersaturation_along_spinodal_ps_{fluid.name}"))
 

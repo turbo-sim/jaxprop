@@ -34,7 +34,8 @@ fig, ax = fluid.plot_phase_diagram("s", "T", axes=ax, plot_quality_isolines=True
 # Plot pressure isobars
 range_x = np.linspace(s_min, s_max, 51) * 1e3
 range_y = np.linspace(T_min, T_max, 51) + 273.15
-prop_dict = fluid.get_states(jxp.SmassT_INPUTS, range_x, range_y, generalize_quality=False)
+x_grid, y_grid = np.meshgrid(range_x, range_y)
+prop_dict = fluid.get_state(jxp.SmassT_INPUTS, x_grid, y_grid, generalize_quality=False)
 contour = ax.contour(
     prop_dict["s"],
     prop_dict["T"],

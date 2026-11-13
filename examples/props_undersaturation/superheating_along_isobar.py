@@ -32,7 +32,7 @@ s_array = np.linspace(s1 + delta_s / 8, s2 + delta_s / 16, 100)
 
 # Subcritical cases
 p_array = np.asarray([0.6, 0.7, 0.8, 0.9, 0.99]) * fluid.critical_point.p
-states = fluid.get_states(jxp.PSmass_INPUTS, p_array, s_array, supersaturation=True)
+states = fluid.get_state(jxp.PSmass_INPUTS, p_array[None, :], s_array[:, None], supersaturation=True)
 colormap = cm.magma(np.linspace(0.1, 0.7, len(p_array)))
 for i in range(states[prop_x].shape[-1]):
     ax1.plot(
@@ -52,7 +52,7 @@ for i in range(states[prop_x].shape[-1]):
 
 # Supercritical cases
 p_array = np.asarray([1.01, 1.1, 1.2, 1.3, 1.4]) * fluid.critical_point.p
-states = fluid.get_states(jxp.PSmass_INPUTS, p_array, s_array, supersaturation=True)
+states = fluid.get_state(jxp.PSmass_INPUTS, p_array[None, :], s_array[:, None], supersaturation=True)
 colormap = cm.magma(np.linspace(0.7, 0.1, len(p_array)))
 for i in range(states[prop_x].shape[-1]):
     ax1.plot(

@@ -20,15 +20,16 @@ Air and pseudo-pure refrigerants retain distinct liquid/vapor lower saturation e
 
 The remaining sections specify the complete target. Their numerical/reference/model requirements are not weakened by this staged boundary.
 
+The revised construction target below uses `Fluid(..., method=...)` as the common object initializer. This syntax is planned before Phase 6: the current package still exports a CoolProp-specific `Fluid` class and the generic `create_fluid` function. The validated routing, metadata, and reference implementation will be reused.
+
 ## Construction and identity
 
 ```python
-fluid = jxp.create_fluid(
+fluid = jxp.Fluid(
     name="CO2",
-    provider="bicubic",
+    method="bicubic",
     backend="HEOS",
     identifier="working_fluid",
-    model="real_fluid",
     table_options={
         "h_min": 400e3, "h_max": 800e3,
         "p_min": 8e6, "p_max": 30e6,
@@ -38,17 +39,17 @@ fluid = jxp.create_fluid(
 state = fluid.get_state(jxp.HmassP_INPUTS, 500e3, 10e6)
 ```
 
-The public factory signature is `create_fluid(name, provider="coolprop", backend=None, identifier=None, *, model="real_fluid", table_options=None, model_options=None)`. `name` is a nonempty source-fluid name, or a user label for a composite model. Selector strings are the exact lowercase values below. Unknown selectors, incompatible combinations, unrecognized settings, and settings for an inapplicable provider raise `InvalidConfigurationError` before evaluation.
+The target public initializer is `Fluid(name, method="coolprop", backend=None, identifier=None, *, table_options=None, model_options=None)`. `name` is a nonempty source-fluid name, or a user label for a composite model. `method` is one exact lowercase selection below; it maps to separate physical-model and numerical-provider metadata internally. Consumers do not need to specify the implementation value `provider="native"` to request a perfect gas. Unknown selections, incompatible combinations, unrecognized settings, and settings for an inapplicable method raise `InvalidConfigurationError` before evaluation.
 
-| Physical model `model` | Numerical `provider` | Meaning |
-| --- | --- | --- |
-| `real_fluid` | `coolprop` | Direct CoolProp source-EOS evaluation. |
-| `real_fluid` | `coolprop_jax` | The same source EOS through the JAX host-callback evaluator. |
-| `real_fluid` | `bicubic` | JaxProp interpolation tables generated from that source EOS. |
-| `perfect_gas` | `native` | Constant-heat-capacity perfect gas, calibrated from the named CoolProp source. |
-| `binary_mixture` | `native` | One common-pressure/common-temperature binary model, evaluated using its component fluid objects. |
+| `method` | Physical `model` metadata | Numerical `provider` metadata | Meaning |
+| --- | --- | --- | --- |
+| `coolprop` | `real_fluid` | `coolprop` | Direct CoolProp source-EOS evaluation. |
+| `coolprop_jax` | `real_fluid` | `coolprop_jax` | The same source EOS through the JAX host-callback evaluator. |
+| `bicubic` | `real_fluid` | `bicubic` | JaxProp interpolation tables generated from that source EOS. |
+| `perfect_gas` | `perfect_gas` | `native` | Constant-heat-capacity perfect gas, calibrated from the named CoolProp source. |
+| `binary_mixture` | `binary_mixture` | `native` | Future common-pressure/common-temperature binary model, evaluated using its component fluid objects in Phase 9. |
 
-`backend` selects the CoolProp **source**, such as `HEOS` or explicitly requested `REFPROP`. For a single source, `None` resolves to `HEOS`. It does not select JaxProp's interpolation provider. `provider="bicubic"` is independent of CoolProp's own tabular backend names. An unavailable requested source raises a configuration error with its original cause; it must not silently fall back to another source.
+`backend` selects the CoolProp **source**, such as `HEOS` or explicitly requested `REFPROP`. For a single source, `None` resolves to `HEOS`. It does not select JaxProp's interpolation method. `method="bicubic"` is independent of CoolProp's own tabular backend names. The selected source also supplies bicubic tables and perfect-gas calibration/reference data. An unavailable requested source raises a configuration error with its original cause; it must not silently fall back to another source.
 
 All fluid objects expose immutable configuration metadata: `name`, `provider`, `model`, `backend`, and `identifier`. `name` preserves the supplied fluid name, and returned states preserve it as `fluid_name`. An omitted identifier is `None`; an explicit string, including the empty string, is preserved exactly. Source canonicalization is recorded separately in source-reference metadata. Table creation/loading belongs to JaxProp and occurs during construction, outside repeated numerical calls.
 
@@ -58,7 +59,7 @@ For `bicubic`, `table_options` requires finite `h_min < h_max`, positive `p_min 
 
 Table reuse requires an exact complete generation manifest, including mode/composition, numerical settings, versions, source/reference fingerprints, and property schema. Identifiers, storage locations, and the inverse-guess stride do not alter table identity. Default filenames include a manifest digest so different settings coexist. Validate payload shapes, dtype, and finite core data before reuse, retaining legitimate optional NaNs. Corrupt or incompatible caches are regenerated; a failed generation/write preserves the prior file. Publication is atomic. If source provenance cannot be verified, generation may proceed but persistent cache reuse/publication is disabled with an explicit diagnostic. A matching cache manifest does not replace independent interpolation/derivative accuracy checks.
 
-Public class constructors must accept the same applicable identity and configuration vocabulary as the factory. The factory is the recommended entry point for consumers; retaining legacy signatures is optional. It must return the advertised evaluator without an application-side adapter.
+`Fluid(...)` is the recommended common object initializer. Selection, validation, source-reference initialization, and table creation/loading happen once during construction. Repeated `get_state` calls use the selected numerical implementation, preserving its native JAX PyTree, dynamic numerical inputs, compilation reuse, and supported transformations. Public concrete constructors retain the same applicable identity/configuration vocabulary. Returned-object type/introspection and compatibility-alias behavior are specified and tested during the constructor revision; they must not accidentally preserve the old meaning that every `Fluid` is a direct CoolProp object. Retaining legacy signatures is optional.
 
 ## Property calls and input units
 

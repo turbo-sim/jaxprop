@@ -7,7 +7,8 @@ from pysolver_view import approx_derivative
 
 
 import CoolProp as CP
-from jaxprop import get_conductivity, get_viscosity, compute_dsdp_q, GAS_CONSTANT, calculate_subcooling, calculate_superheating, calculate_supersaturation, PROPERTY_ALIAS
+from jaxprop import GAS_CONSTANT
+from jaxprop.coolprop import get_conductivity, get_viscosity, compute_dsdp_q, calculate_subcooling, calculate_superheating, calculate_supersaturation
 
 
 # TODO:
@@ -17,6 +18,9 @@ from jaxprop import get_conductivity, get_viscosity, compute_dsdp_q, GAS_CONSTAN
 # Then check if the derivatives of enthalpy are corrrect against finite difference
 # Finally chekc if the formulas for the speed of sound for derivatives of entropy and enthalpy check out
 
+# This unused exploratory helper retains its legacy alias/nested-state schema;
+# its migration is deferred to the examples refresh. The runnable demo below
+# uses the package evaluator directly.
 def compute_properties_2phase(abstract_state, supersaturation=False):
     """Compute two-phase fluid properties from CoolProp abstract state
 

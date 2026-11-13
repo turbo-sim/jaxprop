@@ -71,20 +71,25 @@ states = {
 
 # Choose reference
 ref_state = state_PT
-tol = 1e-16
-props_to_check = jxp.PROPERTIES_CANONICAL
+# Inverse-pair round trips accumulate a few double-precision rounding units.
+tol = 8 * np.finfo(np.float64).eps
+# Unsupported properties are explicit errors, rather than NaN placeholders.
+# Compare every property enabled by this physical model.
+props_to_check = sorted(ref_state.available_properties)
 
 violations = []
 
 for name, state in states.items():
+    if state.available_properties != ref_state.available_properties:
+        raise ValueError(f"{name}: property availability differs from PT")
     for prop in props_to_check:
 
         # Get values
         val_ref = ref_state[prop]
         val = state[prop]
 
-        # Skip if reference value is NaN → nothing to check
-        if np.isnan(val_ref):
+        if not np.isfinite(val_ref) or not np.isfinite(val):
+            violations.append((name, prop, "nonfinite"))
             continue
 
         # Check error
@@ -95,8 +100,8 @@ for name, state in states.items():
 if violations:
     msg_lines = ["The following state property checks failed:"]
     for name, prop, err in violations:
-        if err == "NaN":
-            msg_lines.append(f"  - {name}: {prop} is NaN but reference is not")
+        if err == "nonfinite":
+            msg_lines.append(f"  - {name}: {prop} or its PT reference is nonfinite")
         else:
             msg_lines.append(f"  - {name}: {prop} relative error = {err:.3e}")
     raise ValueError("\n".join(msg_lines))
