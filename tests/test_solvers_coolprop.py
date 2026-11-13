@@ -5,14 +5,18 @@ import numpy as np
 import jaxprop.coolprop as cpx
 import pandas as pd
 
-from utilities import get_reference_state, assert_consistent_values, get_available_backends
+from utilities import (
+    get_reference_state,
+    assert_consistent_values,
+    get_available_backends,
+)
 
 # import CoolProp.CoolProp as CP
 # CP.set_config_bool(CP.ENABLE_SUPERANCILLARIES, True)
 
 
 # Consistency statistics
-CONSISTENCY_LOG = []  
+CONSISTENCY_LOG = []
 PRINT_STATISTICS = os.environ.get("PRINT_STATISTICS") == "1"
 
 # Tolerances for comparison
@@ -142,7 +146,16 @@ def test_default_solver_consistency(fluid_name, backend, state_label):
                 continue
 
             # Check values are consistent
-            v_new = state_new.raw_property(key)
+            if state_new.supports_property(key):
+                v_new = state_new.raw_property(key)
+            else:
+                # Disabled diagnostics used to occupy NaN schema slots. Keep
+                # checking those unavailable reference values while asserting
+                # the new explicit unsupported-property behavior.
+                assert np.all(np.isnan(np.asarray(v_ref))), key
+                with pytest.raises(jxp.UnsupportedPropertyError):
+                    state_new.raw_property(key)
+                v_new = np.full_like(np.asarray(v_ref), np.nan, dtype=float)
             assert_consistent_values(
                 v_ref,
                 v_new,
@@ -157,12 +170,13 @@ def test_default_solver_consistency(fluid_name, backend, state_label):
                 prop2=prop2,
                 tolerance=TOL,
                 log_list=CONSISTENCY_LOG,
-                raise_error=True
+                raise_error=True,
             )
 
 
 # Print consistency summary
 log_name = os.path.splitext(os.path.basename(__file__))[0]
+
 
 def print_log_summary():
     if PRINT_STATISTICS:
@@ -174,6 +188,7 @@ def print_log_summary():
         else:
             print(f"\n[INFO] {log_name} log is empty.")
 
+
 atexit.register(print_log_summary)
 
 
@@ -184,4 +199,3 @@ if __name__ == "__main__":
     # pytest.main([__file__])
     pytest.main([__file__, "-v"])
     # # pytest.main([__file__, "-vv"])
-

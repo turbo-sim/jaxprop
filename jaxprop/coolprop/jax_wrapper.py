@@ -8,13 +8,22 @@ from functools import partial
 
 
 from .. import helpers_props as jxp
-
+from ..configuration import (
+    FluidCapabilities,
+    FluidConfiguration,
+    FluidDomain,
+    build_configuration,
+)
+from ..fluid_api import SOURCE_PAIRS, SOURCE_PROPERTIES, checked_jit
 
 # output template for pure_callback (shapes/dtypes must be static)
 
+
 def _make_template(shape):
     """Return a pure_callback template dict with the given output shape."""
-    return {k: jax.ShapeDtypeStruct(shape, jnp.float64) for k in jxp.PROPERTIES_CANONICAL}
+    return {
+        k: jax.ShapeDtypeStruct(shape, jnp.float64) for k in jxp.PROPERTIES_CANONICAL
+    }
 
 
 def _get_props_python(input_type, x, y, fluid):
@@ -22,7 +31,9 @@ def _get_props_python(input_type, x, y, fluid):
     If the state is None or a property is missing/non-finite, fills with np.nan.
     """
     x, y = np.broadcast_arrays(np.asarray(x), np.asarray(y))
-    results = {name: np.empty(x.shape, dtype=np.float64) for name in jxp.PROPERTIES_CANONICAL}
+    results = {
+        name: np.empty(x.shape, dtype=np.float64) for name in jxp.PROPERTIES_CANONICAL
+    }
 
     for i in np.ndindex(x.shape):
         state = fluid.get_state(input_type, float(x[i]), float(y[i]))
@@ -42,6 +53,7 @@ def _get_props_python(input_type, x, y, fluid):
                     results[name][i] = np.nan
 
     return results
+
 
 @partial(jax.custom_jvp, nondiff_argnums=(0, 3))
 def get_state(input_pair, x, y, fluid):
@@ -96,16 +108,23 @@ def _get_state_jvp(input_state, fluid, primals, tangents):
         return _get_props_python(input_state, xx, yy, fluid)
 
     # base and perturbed evaluations (each returns dict of arrays)
-    props_base = jax.pure_callback(local_eval, template, x, y, vmap_method="broadcast_all")
-    props_x = jax.pure_callback(local_eval, template, x + eps1, y, vmap_method="broadcast_all")
-    props_y = jax.pure_callback(local_eval, template, x, y + eps2, vmap_method="broadcast_all")
+    props_base = jax.pure_callback(
+        local_eval, template, x, y, vmap_method="broadcast_all"
+    )
+    props_x = jax.pure_callback(
+        local_eval, template, x + eps1, y, vmap_method="broadcast_all"
+    )
+    props_y = jax.pure_callback(
+        local_eval, template, x, y + eps2, vmap_method="broadcast_all"
+    )
 
     # directional derivatives (broadcasted arithmetic)
     df_dp1 = {k: (props_x[k] - props_base[k]) / eps1 for k in jxp.PROPERTIES_CANONICAL}
     df_dp2 = {k: (props_y[k] - props_base[k]) / eps2 for k in jxp.PROPERTIES_CANONICAL}
-    jvp    = {k: df_dp1[k] * x_dot + df_dp2[k] * y_dot for k in jxp.PROPERTIES_CANONICAL}
+    jvp = {k: df_dp1[k] * x_dot + df_dp2[k] * y_dot for k in jxp.PROPERTIES_CANONICAL}
 
     return props_base, jvp
+
 
 class FluidJAX(eqx.Module):
     name: str = eqx.field(static=True)
@@ -116,32 +135,70 @@ class FluidJAX(eqx.Module):
     reference_id: tuple = eqx.field(static=True)
     fluid: object = eqx.field(static=True)  # raw CoolProp.AbstractState object
     exceptions: bool = eqx.field(static=True)
+    _configuration: FluidConfiguration = eqx.field(static=True)
+    _capabilities: FluidCapabilities = eqx.field(static=True)
 
     def __init__(
-        self, name: str, backend: str="HEOS", exceptions: bool=True, identifier=None
+        self, name: str, backend: str = "HEOS", exceptions: bool = True, identifier=None
     ):
         from .fluid_properties import Fluid
+
+        backend = "HEOS" if backend is None else backend
+        self._configuration = build_configuration(
+            name, "coolprop_jax", "real_fluid", backend, identifier
+        )
         self.name = name
         self.backend = backend
         self.exceptions = exceptions
         self.identifier = identifier
         self.provider = "coolprop_jax"
         self.model = "real_fluid"
+        self._capabilities = FluidCapabilities(
+            input_pairs=SOURCE_PAIRS,
+            properties=SOURCE_PROPERTIES,
+            jax_modes=frozenset({"eager", "jit", "vmap", "jvp", "grad"}),
+            derivative_order=1,
+            derivative_method="finite_difference",
+            domain=FluidDomain(
+                description="CoolProp source-backend domain via a host callback."
+            ),
+        )
         self.fluid = Fluid(
             name=name, backend=backend, exceptions=exceptions, identifier=identifier
         )
         self.reference_id = self.fluid.reference_id
 
-    @eqx.filter_jit
-    def get_state(self, input_pair, x, y):
-        """Return a CoolPropState with fields shaped like broadcast(x, y)."""
-        raw = get_state(input_pair, x, y, self.fluid)
+    @property
+    def configuration(self):
+        return self._configuration
+
+    @property
+    def capabilities(self):
+        return self._capabilities
+
+    @checked_jit
+    def get_state(
+        self,
+        input_type,
+        prop_1,
+        prop_2,
+        *,
+        generalize_quality=False,
+        supersaturation=False,
+        errors="raise",
+    ):
+        """Return a state with the broadcast shape of the common numeric inputs."""
+        # The descriptor rejects unsupported diagnostics and validates numeric
+        # metadata before the callback/JIT boundary. Normalize lists in trace.
+        prop_1, prop_2 = jnp.asarray(prop_1), jnp.asarray(prop_2)
+        raw = get_state(input_type, prop_1, prop_2, self.fluid)
         return jxp.FluidState(
             fluid_name=self.name,
             identifier=self.identifier,
             provider=self.provider,
             model=self.model,
             reference_id=self.reference_id,
-            available_properties=frozenset(jxp.PROPERTIES_CANONICAL),
+            available_properties=self.capabilities.properties,
+            error_policy=errors,
             **{k: raw[k] for k in jxp.PROPERTIES_CANONICAL},
         )

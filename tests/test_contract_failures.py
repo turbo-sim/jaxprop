@@ -97,11 +97,6 @@ def test_invalid_perfect_gas_states_are_rejected_without_clipping(
     )
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AssertionError,
-    reason="phase4: malformed arrays do not yet use the common typed validation",
-)
 @pytest.mark.parametrize(
     "pressure,temperature",
     [
@@ -140,7 +135,7 @@ def test_default_batch_failure_is_typed_and_reports_first_row_major_index(source
 
 @pytest.mark.xfail(
     strict=True,
-    raises=TypeError,
+    raises=(TypeError, jxp.UnsupportedExecutionModeError),
     reason="phase7: perfect gas has no per-element mask/status failure mode",
 )
 def test_mask_mode_preserves_successful_elements_and_masks_only_failed_elements(
@@ -183,7 +178,7 @@ def test_outer_jit_requires_explicit_mask_policy():
 
 @pytest.mark.xfail(
     strict=True,
-    raises=TypeError,
+    raises=(TypeError, jxp.UnsupportedExecutionModeError),
     reason="phase7: JAX perfect-gas state/status output does not accept mask mode",
 )
 def test_jit_returns_full_state_identity_and_per_element_status(perfect_gas):
@@ -202,7 +197,7 @@ def test_jit_returns_full_state_identity_and_per_element_status(perfect_gas):
 
 @pytest.mark.xfail(
     strict=True,
-    raises=TypeError,
+    raises=(TypeError, jxp.UnsupportedExecutionModeError),
     reason="phase7: native gradient path does not accept explicit mask policy",
 )
 def test_supported_gradient_with_mask_policy_matches_independent_perfect_gas_identity(
@@ -281,11 +276,6 @@ def test_unavailable_at_a_valid_state_is_distinct_from_an_unsupported_property(
     assert bool(state.valid)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AttributeError,
-    reason="phase4: factory configuration validation has not been implemented",
-)
 @pytest.mark.parametrize(
     "settings",
     [
@@ -308,11 +298,6 @@ def test_incompatible_or_unknown_factory_settings_raise_configuration_errors(set
     assert captured.value.request
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AttributeError,
-    reason="phase4: common factory defaults are not implemented",
-)
 def test_factory_defaults_select_direct_real_fluid_heos_without_a_stream_identifier():
     fluid = jxp.create_fluid("CO2")
     assert fluid.name == "CO2"
@@ -322,11 +307,6 @@ def test_factory_defaults_select_direct_real_fluid_heos_without_a_stream_identif
     assert fluid.identifier is None
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AssertionError,
-    reason="phase4: unknown or invalid evaluation options lack typed validation",
-)
 @pytest.mark.parametrize(
     "options,option_request",
     [
@@ -362,11 +342,6 @@ def test_perfect_gas_calibration_matches_source_enthalpy_entropy_and_heat_capaci
     np.testing.assert_allclose(state.gamma, state.cp / state.cv, rtol=1e-12)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AssertionError,
-    reason="phase6: empty source batches lose singleton axes",
-)
 def test_empty_broadcast_batch_preserves_shape_without_source_evaluation(
     source_fluid, monkeypatch
 ):

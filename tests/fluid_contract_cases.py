@@ -110,9 +110,6 @@ def build_current_fluid(case, table_dir, identifier=None):
             mixture_ratio=0.1,
         )
     constructor = getattr(jxp, case.current_class)
-    # FluidJAX does not yet accept identifier, including an explicit None.
-    if case.id == "coolprop_jax" and identifier is None:
-        return constructor(name=case.name, backend="HEOS")
     return constructor(name=case.name, backend="HEOS", identifier=identifier)
 
 

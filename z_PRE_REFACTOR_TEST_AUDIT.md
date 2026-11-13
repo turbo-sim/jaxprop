@@ -38,6 +38,16 @@ The performance work adds 62 passing regression cases: constructor/collection/ru
 
 The complete HEOS + REFPROP suite reports **936 passed, 78 strict expected failures, zero unexpected failures, and zero skips**, retaining all 84,950 numerical comparisons with zero failures. [Full verification](development/test_audit/results/jax_efficiency/full_20261113_094055/summary.json). The compact [performance report](development/performance/README.md) preserves the final matched comparison; disposable benchmarking scaffolding and intermediate artifacts have been removed. The formal performance gate and remaining capability/reference/model/domain work stay open in the implementation plan.
 
+## Phase 4 shared API coverage
+
+The shared factory/configuration/request layer is implemented. New [factory/configuration tests](tests/test_fluid_factory.py) add 67 cases and [shared API tests](tests/test_phase4_api.py) add 158, including immutable snapshots/identity/composition, typed selectors/options/dtypes/shapes, honest capabilities, unsupported diagnostics/modes, named statuses, invalid legacy ratios, and extra callback input pairs. Target minimums remain fixed separately: missing PG core properties belong to Phase 7 and component-based binary construction/inversions to Phase 9.
+
+The complete HEOS + REFPROP run passed **1,208 tests with 28 strict expected failures, zero unexpected failures, and zero skips**. [Full result](development/test_audit/results/phase4/full_20261113_111610/summary.json). The final contract/native execution run passed **396 cases with 28 expected failures**, including eight review cases added after full-suite collection and the final static-validation path. [Final checks](development/test_audit/results/phase4/final_contract.xml).
+
+A further [JAX interface review](tests/test_phase4_jax_edges.py) added **five passing cases**: callback/bicubic/perfect-gas empty broadcast batches preserve full states in eager and outer-JIT execution, and native bicubic/perfect-gas HP/PT alternation reuses one compilation per pair while values change. No production fix was needed. Timing thresholds are deliberately separate from these deterministic compilation/behavior tests; the compact [Phase 4 performance check](development/performance/phase4_validation.json) records the independent serial measurements.
+
+All **50,189 finite numerical comparisons are preserved**, with zero failures. Paired-unavailable checks decrease from 34,761 to 4,083, for 54,272 total comparisons: the removed entries were NaN placeholders for now-unsupported properties. Capability/unsupported-property assertions cover that distinction; tests do not restore fake availability to keep a historical counter constant. Source and bicubic numerical tests continue to enforce their existing finite-value, shape, inverse, and local-error tolerances.
+
 The findings and baseline below describe the starting state before these test repairs. The implementation checklist records current completion and the remaining coverage work.
 
 ## Executed baseline

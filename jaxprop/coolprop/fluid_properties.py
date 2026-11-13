@@ -8,6 +8,20 @@ import pysolver_view as psv
 from functools import wraps
 
 from . import core_calculations as core
+from ..errors import (
+    InvalidConfigurationError,
+    JaxPropError,
+    UnsupportedExecutionModeError,
+)
+from ..configuration import FluidCapabilities, FluidDomain, build_configuration
+from ..fluid_api import (
+    SOURCE_PROPERTIES,
+    LEGACY_MIXTURE_PROPERTIES,
+    SOURCE_PAIRS,
+    ReadonlyConfigurationMixin,
+    enabled_properties,
+    validate_request,
+)
 
 from ..helpers_props import (
     FluidState,
@@ -15,7 +29,6 @@ from ..helpers_props import (
     LABEL_MAPPING,
     PROPERTIES_CANONICAL,
 )
-
 
 # def _handle_computation_exceptions(func):
 #     @wraps(func)
@@ -47,9 +60,10 @@ from ..helpers_props import (
 
 #     return wrapper
 
+
 def _handle_computation_exceptions(func):
     # Fast parameter-name mapping (no inspect call inside the hot loop)
-    arg_names = func.__code__.co_varnames[1:func.__code__.co_argcount]  # skip self
+    arg_names = func.__code__.co_varnames[1 : func.__code__.co_argcount]  # skip self
 
     @wraps(func)
     def wrapper(self, *args, **kwargs):
@@ -61,6 +75,9 @@ def _handle_computation_exceptions(func):
             result = func(self, *args, **kwargs)
             self.converged_flag = True
             return result
+        except JaxPropError:
+            self.converged_flag = False
+            raise
         except Exception as e:
             self.converged_flag = False
             if not self.exceptions:
@@ -73,7 +90,9 @@ def _handle_computation_exceptions(func):
             prop_2_value = call.get("prop_2_value", call.get("prop_2", None))
 
             if input_type is not None:
-                label = INPUT_TYPE_MAP.get(input_type, f"Unknown input type ({input_type})")
+                label = INPUT_TYPE_MAP.get(
+                    input_type, f"Unknown input type ({input_type})"
+                )
                 msg = (
                     "Thermodynamic property calculations failed:\n"
                     f"  Input type : {label}\n"
@@ -93,7 +112,8 @@ def _handle_computation_exceptions(func):
 
     return wrapper
 
-class Fluid:
+
+class Fluid(ReadonlyConfigurationMixin):
     """
     Represents a fluid with various thermodynamic properties computed via CoolProp.
 
@@ -173,16 +193,37 @@ class Fluid:
         # initialize_critical=True,
         # initialize_triple=True,
     ):
+        backend = "HEOS" if backend is None else backend
+        configuration = build_configuration(
+            name, "coolprop", "real_fluid", backend, identifier
+        )
         self.name = name
         self.backend = backend
-        # self._AS = CP.AbstractState(backend, name)
-        self._AS = try_initialize_fluid(name, backend)
-        self.abstract_state = self._AS
-        self.exceptions = exceptions
-        self.converged_flag = False
         self.identifier = identifier
         self.provider = "coolprop"
         self.model = "real_fluid"
+        self._configuration = configuration
+        self._capabilities = FluidCapabilities(
+            input_pairs=SOURCE_PAIRS,
+            properties=SOURCE_PROPERTIES,
+            options=frozenset({"generalize_quality"}),
+            domain=FluidDomain(
+                description="CoolProp source-backend domain and phase restrictions."
+            ),
+        )
+        try:
+            self._AS = try_initialize_fluid(name, backend)
+        except Exception as error:
+            raise InvalidConfigurationError(
+                fluid_name=name,
+                provider=self.provider,
+                model=self.model,
+                request="source",
+                reason=str(error),
+            ) from error
+        self.abstract_state = self._AS
+        self.exceptions = exceptions
+        self.converged_flag = False
         # Phase 5 replaces this construction identity with the source-reference
         # fingerprint, including the actual energy/entropy reference convention.
         self.reference_id = (self.model, backend, name)
@@ -238,9 +279,18 @@ class Fluid:
         """Calculate the properties at the triple point (vapor state)"""
         return self.get_state(CP.QT_INPUTS, 1.00, self._AS.Ttriple())
 
-
     @_handle_computation_exceptions
-    def get_state(self, input_type, prop_1, prop_2, generalize_quality=False, supersaturation=False):
+    def get_state(
+        self,
+        input_type,
+        prop_1,
+        prop_2,
+        *,
+        generalize_quality=False,
+        supersaturation=False,
+        errors="raise",
+        **options,
+    ):
         r"""
         Set the thermodynamic state of the fluid using the CoolProp low-level interface.
 
@@ -263,29 +313,45 @@ class Fluid:
         prop_2 : float or array_like
             The second property value corresponding to the input type.
         generalize_quality : bool, optional
-            If True, extends quality-based inputs beyond the strict two-phase limits.
+            If True, requests the existing generalized reported-quality calculation.
         supersaturation : bool, optional
-            If True, allows evaluation of metastable (supersaturated) states.
+            False is accepted. True remains unsupported until the ordinary
+            diagnostic path is validated in Phase 6; it does not select a
+            metastable branch.
+        errors : {"raise", "mask"}, optional
+            Only "raise" is currently supported. Per-element numerical masking
+            is completed with the source evaluator's failure policy in Phase 6.
 
         Returns
         -------
-        dict
-            A dictionary containing arrays of canonical thermodynamic properties, each with the same
-            shape as the broadcasted inputs. Metadata fields such as ``fluid_name`` and ``identifier``
-            are included as scalars.
+        FluidState
+            Enabled canonical properties with the exact broadcast input shape,
+            immutable identity metadata, status, and property availability.
 
         Raises
         ------
-        Exception
-            If ``throw_exceptions`` is enabled and an error occurs during property calculation,
-            the original exception is re-raised.
+        JaxPropError
+            Invalid or unsupported requests are rejected before source evaluation.
+        RuntimeError
+            An existing source calculation fails with legacy exceptions enabled.
         """
-        # Broadcast inputs to common shape
-        prop1_array, prop2_array = np.broadcast_arrays(prop_1, prop_2)
+        # Validate requests before any source calls, retaining typed failures.
+        prop1_array, prop2_array = validate_request(
+            self,
+            input_type,
+            prop_1,
+            prop_2,
+            generalize_quality=generalize_quality,
+            supersaturation=supersaturation,
+            errors=errors,
+            array_backend="numpy",
+            options=options,
+        )
         shape = prop1_array.shape
+        available = enabled_properties(self, supersaturation=supersaturation)
 
         # Preallocate arrays for canonical properties
-        results = {name: np.empty(shape, dtype=np.float64) for name in PROPERTIES_CANONICAL}
+        results = {name: np.empty(shape, dtype=np.float64) for name in available}
 
         # Loop over all points
         for idx in np.ndindex(shape):
@@ -301,13 +367,9 @@ class Fluid:
             )
 
             # Fill results dict with scalar values
-            for name in PROPERTIES_CANONICAL:
+            for name in available:
                 results[name][idx] = np.float64(props.get(name, np.nan))
 
-        # Squeeze singleton dimensions to restore natural shape
-        for name in results:
-            results[name] = np.squeeze(results[name])
-            
         # Store properties in a FluidState object
         state = FluidState(
             fluid_name=self.name,
@@ -315,12 +377,12 @@ class Fluid:
             provider=self.provider,
             model=self.model,
             reference_id=self.reference_id,
-            available_properties=frozenset(PROPERTIES_CANONICAL),
+            available_properties=available,
+            error_policy=errors,
             **results,
         )
 
         return state
-    
 
     @_handle_computation_exceptions
     def get_state_equilibrium(
@@ -382,12 +444,12 @@ class Fluid:
         rhoT_guess=None,
         supersaturation=True,
         generalize_quality=True,
-        solver_algorithm="lm", # hybr
+        solver_algorithm="lm",  # hybr
         solver_tolerance=1e-6,
         solver_max_iterations=100,
         print_convergence=False,
     ):
-        
+
         # print(f"Calculating metastable state for {self.name} with inputs: {prop_1}={prop_1_value}, {prop_2}={prop_2_value}")
         # TODO: add vectorization
         r"""
@@ -495,25 +557,33 @@ class Fluid:
 
         return (
             FluidState(
-                fluid_name=self.name, identifier=self.identifier,
-                provider=self.provider, model=self.model,
+                fluid_name=self.name,
+                identifier=self.identifier,
+                provider=self.provider,
+                model=self.model,
                 reference_id=self.reference_id,
-                available_properties=frozenset(PROPERTIES_CANONICAL), **blended,
+                available_properties=frozenset(PROPERTIES_CANONICAL),
+                **blended,
             ),
             FluidState(
-                fluid_name=self.name, identifier=self.identifier,
-                provider=self.provider, model=self.model,
+                fluid_name=self.name,
+                identifier=self.identifier,
+                provider=self.provider,
+                model=self.model,
                 reference_id=self.reference_id,
-                available_properties=frozenset(PROPERTIES_CANONICAL), **equilibrium,
+                available_properties=frozenset(PROPERTIES_CANONICAL),
+                **equilibrium,
             ),
             FluidState(
-                fluid_name=self.name, identifier=self.identifier,
-                provider=self.provider, model=self.model,
+                fluid_name=self.name,
+                identifier=self.identifier,
+                provider=self.provider,
+                model=self.model,
                 reference_id=self.reference_id,
-                available_properties=frozenset(PROPERTIES_CANONICAL), **metastable,
+                available_properties=frozenset(PROPERTIES_CANONICAL),
+                **metastable,
             ),
         )
-    
 
     def plot_phase_diagram(
         self,
@@ -776,11 +846,25 @@ class Fluid:
 # ------------------------------------------------------------------------------------ #
 
 
-class FluidMix:
+class FluidMix(ReadonlyConfigurationMixin):
     """
     Represents a binary fluid mixture with thermodynamic properties
     calculated using the `calculate_mixture_properties_hp()` function.
     """
+
+    _configuration_fields = frozenset(
+        {
+            "name",
+            "backend",
+            "provider",
+            "model",
+            "identifier",
+            "reference_id",
+            "mixture_ratio",
+            "fluid_1",
+            "fluid_2",
+        }
+    )
 
     def __getstate__(self):
         """Strip CoolProp AbstractStates to make the object pickleable."""
@@ -817,6 +901,24 @@ class FluidMix:
         identifier : str, optional
             Optional user-specified identifier.
         """
+        backend = "HEOS" if backend is None else backend
+        # Validate common identity before the legacy component-name parser.
+        build_configuration(name, "native", "binary_mixture", backend, identifier)
+        from numbers import Real
+
+        if (
+            isinstance(mixture_ratio, (bool, np.bool_))
+            or not isinstance(mixture_ratio, Real)
+            or not np.isfinite(mixture_ratio)
+            or mixture_ratio < 0
+        ):
+            raise InvalidConfigurationError(
+                fluid_name=name,
+                provider="native",
+                model="binary_mixture",
+                request="mixture_ratio",
+                reason="Provide a finite nonnegative scalar component mass ratio.",
+            )
         self.name = name
         self.backend = backend
         self.exceptions = exceptions
@@ -828,19 +930,49 @@ class FluidMix:
 
         # Parse mixture name
         if not name.lower().endswith("_mixture"):
-            raise ValueError(
-                f"Invalid mixture name '{name}'. Expected format like 'water_nitrogen_mixture'."
+            raise InvalidConfigurationError(
+                fluid_name=name,
+                provider=self.provider,
+                model=self.model,
+                request="name",
+                reason="Expected a legacy binary name such as 'water_nitrogen_mixture'.",
             )
 
         # Extract fluid component names
         parts = name.replace("_mixture", "").split("_")
         if len(parts) != 2:
-            raise ValueError(
-                f"Expected exactly two components for a binary mixture, got: {parts}"
+            raise InvalidConfigurationError(
+                fluid_name=name,
+                provider=self.provider,
+                model=self.model,
+                request="name",
+                reason=f"Expected exactly two component names, got: {parts}.",
             )
         self.fluid_1, self.fluid_2 = parts
+        self._configuration = build_configuration(
+            name,
+            self.provider,
+            self.model,
+            backend,
+            identifier,
+            model_options={
+                "component_names": (self.fluid_1, self.fluid_2),
+                "mixture_ratio": mixture_ratio,
+            },
+        )
+        self._capabilities = FluidCapabilities(
+            input_pairs=frozenset({CP.HmassP_INPUTS}),
+            properties=LEGACY_MIXTURE_PROPERTIES,
+            domain=FluidDomain(
+                description="Legacy scalar common-pressure/common-temperature binary model."
+            ),
+        )
         self.reference_id = (
-            self.model, backend, self.fluid_1, self.fluid_2, mixture_ratio
+            self.model,
+            backend,
+            self.fluid_1,
+            self.fluid_2,
+            mixture_ratio,
         )
 
         # Initialize AbstractStates for each component
@@ -854,10 +986,17 @@ class FluidMix:
         # self.T_max = min(self._AS1.Tmax(), self._AS2.Tmax())
 
     @_handle_computation_exceptions
-    def get_state(self, 
-                input_type,
-                prop_1: float,
-                prop_2: float):
+    def get_state(
+        self,
+        input_type,
+        prop_1,
+        prop_2,
+        *,
+        generalize_quality=False,
+        supersaturation=False,
+        errors="raise",
+        **options,
+    ):
         """
         Compute the thermodynamic state of the mixture at given h and p.
 
@@ -875,12 +1014,30 @@ class FluidMix:
         FluidState
             Object containing the computed mixture thermodynamic properties.
         """
-        if not input_type == 20:
-            raise Exception("Inputs rather than p-h are not supported yet")
+        prop_1, prop_2 = validate_request(
+            self,
+            input_type,
+            prop_1,
+            prop_2,
+            generalize_quality=generalize_quality,
+            supersaturation=supersaturation,
+            errors=errors,
+            array_backend="numpy",
+            options=options,
+        )
+        if prop_1.shape:
+            raise UnsupportedExecutionModeError(
+                fluid_name=self.name,
+                provider=self.provider,
+                model=self.model,
+                request="batch evaluation",
+                reason="The legacy binary model supports scalar evaluation only until Phase 9.",
+                supported=("scalar",),
+            )
 
         props_mix = core.calculate_mixture_properties_hp(
-            h_mix=prop_1,
-            p_mix=prop_2,
+            h_mix=float(prop_1),
+            p_mix=float(prop_2),
             AS1=self._AS1,
             AS2=self._AS2,
             R=self.mixture_ratio,
@@ -896,7 +1053,8 @@ class FluidMix:
             provider=self.provider,
             model=self.model,
             reference_id=self.reference_id,
-            available_properties=frozenset(PROPERTIES_CANONICAL),
+            available_properties=self.capabilities.properties,
+            error_policy=errors,
             **props_mix,
         )
 
@@ -1531,6 +1689,7 @@ def compute_quality_grid(fluid, num_points, quality_levels, dT_crit=1.0):
 
     # Vectorized property evaluation
     return fluid.get_state(CP.QT_INPUTS, Q, T)
+
 
 # def compute_property_grid(
 #     fluid,

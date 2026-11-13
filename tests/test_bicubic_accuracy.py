@@ -6,7 +6,6 @@ import pandas as pd
 import jaxprop as jxp
 import matplotlib.pyplot as plt
 
-
 # -------------------------------------------------------
 # Fluid-specific domains
 # -------------------------------------------------------
@@ -63,6 +62,7 @@ GRID_CASES = [
 # Utility
 # -------------------------------------------------------
 
+
 def mean_absolute_percentage_error(a, b):
     """Mean Absolute Percentage Error (MAPE) between arrays a and b."""
     a_flat = np.ravel(a)
@@ -91,10 +91,7 @@ def plot_table_domain(fluid_case):
 
     # Plot phase diagram background
     fig, ax = fluid_ref.fluid.plot_phase_diagram(
-        x_prop="enthalpy",
-        y_prop="pressure",
-        x_scale="linear",
-        y_scale="log"
+        x_prop="enthalpy", y_prop="pressure", x_scale="linear", y_scale="log"
     )
 
     # Draw interpolation domain box
@@ -104,6 +101,7 @@ def plot_table_domain(fluid_case):
     fig.tight_layout(pad=1)
 
     return fig, ax
+
 
 # -------------------------------------------------------
 # Tests
@@ -121,18 +119,22 @@ def sample_grids(fluid_case, num_nodes):
     h_edges = np.sort(np.concatenate((h_nodes, h_centers)))
     p_edges = np.sort(np.concatenate((np.exp(log_p_nodes), p_centers)))
     boundary_grid = (
-        np.concatenate((
-            np.full(p_edges.shape, fluid_case["h_min"]),
-            np.full(p_edges.shape, fluid_case["h_max"]),
-            h_edges,
-            h_edges,
-        )),
-        np.concatenate((
-            p_edges,
-            p_edges,
-            np.full(h_edges.shape, fluid_case["p_min"]),
-            np.full(h_edges.shape, fluid_case["p_max"]),
-        )),
+        np.concatenate(
+            (
+                np.full(p_edges.shape, fluid_case["h_min"]),
+                np.full(p_edges.shape, fluid_case["h_max"]),
+                h_edges,
+                h_edges,
+            )
+        ),
+        np.concatenate(
+            (
+                p_edges,
+                p_edges,
+                np.full(h_edges.shape, fluid_case["p_min"]),
+                np.full(h_edges.shape, fluid_case["p_max"]),
+            )
+        ),
     )
     return {"cell_centers": center_grid, "boundaries": boundary_grid}
 
@@ -148,10 +150,7 @@ def test_accuracy_sampling_uses_cell_centers_and_domain_boundaries():
     h_boundary, p_boundary = grids["boundaries"]
     assert h_boundary.shape == p_boundary.shape == (28,)
     assert np.all(
-        (h_boundary == 0)
-        | (h_boundary == 6)
-        | (p_boundary == 1)
-        | (p_boundary == 64)
+        (h_boundary == 0) | (h_boundary == 6) | (p_boundary == 1) | (p_boundary == 64)
     )
     for enthalpy, pressure in ((0, 1), (0, 64), (6, 1), (6, 64), (0, 2), (3, 64)):
         assert np.any(
@@ -176,14 +175,16 @@ def test_bicubic_midpoint_accuracy(fluid_case, grid_case, tmp_path):
     N = grid_case["N"]
     tol = grid_case["tol"]
 
-
     # Build bicubic interpolant
     fluid_bicubic = jxp.FluidBicubic(
         fluid_name=fluid_name,
         backend="HEOS",
-        h_min=h_min, h_max=h_max,
-        p_min=p_min, p_max=p_max,
-        N_h=N, N_p=N,
+        h_min=h_min,
+        h_max=h_max,
+        p_min=p_min,
+        p_max=p_max,
+        N_h=N,
+        N_p=N,
         table_dir=str(tmp_path),
     )
 
@@ -195,13 +196,25 @@ def test_bicubic_midpoint_accuracy(fluid_case, grid_case, tmp_path):
         interp_grid = fluid_bicubic.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
         true_grid = fluid_cp.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
         for prop in jxp.PROPERTIES_CANONICAL:
+            assert interp_grid.supports_property(prop) == true_grid.supports_property(
+                prop
+            ), prop
+            if not interp_grid.supports_property(prop):
+                assert prop not in CORE_PROPERTIES
+                with pytest.raises(jxp.UnsupportedPropertyError):
+                    interp_grid.raw_property(prop)
+                with pytest.raises(jxp.UnsupportedPropertyError):
+                    true_grid.raw_property(prop)
+                continue
             interp_val = np.asarray(interp_grid.raw_property(prop))
             true_val = np.asarray(true_grid.raw_property(prop))
             context = f"{fluid_name} N={N} {sample_name} prop={prop}"
             assert interp_val.shape == true_val.shape == H_mesh.shape, context
             if prop in CORE_PROPERTIES:
                 assert np.all(np.isfinite(true_val)), f"{context}: invalid reference"
-                assert np.all(np.isfinite(interp_val)), f"{context}: invalid interpolant"
+                assert np.all(
+                    np.isfinite(interp_val)
+                ), f"{context}: invalid interpolant"
             np.testing.assert_array_equal(
                 np.isnan(interp_val), np.isnan(true_val), err_msg=context
             )
@@ -217,7 +230,8 @@ def test_bicubic_midpoint_accuracy(fluid_case, grid_case, tmp_path):
                 failures.append(f"{context}: mean error {err:.6e}% >= {tol:.6e}%")
             if prop in CORE_PROPERTIES:
                 local_error = (
-                    100 * np.abs(interp_val[mask] - true_val[mask])
+                    100
+                    * np.abs(interp_val[mask] - true_val[mask])
                     / np.maximum(np.abs(true_val[mask]), 1e-30)
                 )
                 maximum_error = float(np.max(local_error))
@@ -230,14 +244,17 @@ def test_bicubic_midpoint_accuracy(fluid_case, grid_case, tmp_path):
 
 def log_result(fluid_name, N, prop, err, tol):
     """Append one result to the global log."""
-    INTERP_LOG.append({
-        "fluid": fluid_name,
-        "N": N,
-        "property": prop,
-        "MAPE": err,
-        "tol": tol,
-        "pass": err < tol
-    })
+    INTERP_LOG.append(
+        {
+            "fluid": fluid_name,
+            "N": N,
+            "property": prop,
+            "MAPE": err,
+            "tol": tol,
+            "pass": err < tol,
+        }
+    )
+
 
 def print_log_summary():
     """Print summary of interpolation errors after all tests (even if pytest fails)."""

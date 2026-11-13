@@ -7,14 +7,17 @@ except ImportError:
     pass
 else:
     import sys
+
     sys.excepthook = IPython.core.ultratb.FormattedTB(call_pdb=False)
 
 
 # print("I am fixing the error")
 
 import os
+
 os.environ["JAX_PLATFORM_NAME"] = "cpu"
 import jax
+
 jax.config.update("jax_enable_x64", True)
 
 from .graphics import *
@@ -22,6 +25,9 @@ from .utils import *
 from .helpers_jax import *
 from .helpers_props import *
 from .errors import *
+from .configuration import *
+from .fluid_api import StatusCode
+from .factory import create_fluid
 
 # Import subpackages
 from . import coolprop
@@ -32,6 +38,7 @@ from . import bicubic
 from .perfect_gas import FluidPerfectGas
 from .coolprop import Fluid, FluidJAX, FluidMix
 from .bicubic import FluidBicubic
+
 # from .two_component import FluidTwoComponent, get_mixture_state
 
 

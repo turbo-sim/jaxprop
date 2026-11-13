@@ -6,8 +6,6 @@ import pandas as pd
 import jax.numpy as jnp
 import jaxprop as jxp
 
-
-
 # -------------------------------------------------------
 # Settings
 # -------------------------------------------------------
@@ -68,13 +66,17 @@ def bicubic_case(request, tmp_path_factory):
     fluid = jxp.FluidBicubic(
         fluid_name=fluid_case["fluid"],
         backend="HEOS",
-        h_min=fluid_case["h_min"], h_max=fluid_case["h_max"],
-        p_min=fluid_case["p_min"], p_max=fluid_case["p_max"],
-        N_h=GRID_SIZE, N_p=GRID_SIZE,
+        h_min=fluid_case["h_min"],
+        h_max=fluid_case["h_max"],
+        p_min=fluid_case["p_min"],
+        p_max=fluid_case["p_max"],
+        N_h=GRID_SIZE,
+        N_p=GRID_SIZE,
         table_dir=str(tmp_path_factory.mktemp("bicubic_consistency")),
         coarse_step=1,
     )
     return fluid_case, fluid
+
 
 # -------------------------------------------------------
 # Test
@@ -111,6 +113,14 @@ def test_solver_consistency(bicubic_case, input_type):
 
     # Compare property by property
     for prop in jxp.PROPERTIES_CANONICAL:
+        assert state_ref.supports_property(prop) == interp.supports_property(prop), prop
+        if not state_ref.supports_property(prop):
+            assert prop not in CORE_PROPERTIES
+            with pytest.raises(jxp.UnsupportedPropertyError):
+                state_ref.raw_property(prop)
+            with pytest.raises(jxp.UnsupportedPropertyError):
+                interp.raw_property(prop)
+            continue
         ref_val = np.array(state_ref.raw_property(prop))
         interp_val = np.array(interp.raw_property(prop))
         context = f"{fluid_name} {jxp.INPUT_TYPE_MAP[input_type]} {prop}"
@@ -119,8 +129,11 @@ def test_solver_consistency(bicubic_case, input_type):
             assert np.all(np.isfinite(ref_val)), f"{context}: invalid HP baseline"
             assert np.all(np.isfinite(interp_val)), f"{context}: invalid inverse"
             np.testing.assert_allclose(
-                interp_val, ref_val,
-                rtol=CONSISTENCY_TOL, atol=CONSISTENCY_TOL, err_msg=context,
+                interp_val,
+                ref_val,
+                rtol=CONSISTENCY_TOL,
+                atol=CONSISTENCY_TOL,
+                err_msg=context,
             )
         np.testing.assert_array_equal(
             np.isnan(interp_val), np.isnan(ref_val), err_msg=context
@@ -131,10 +144,9 @@ def test_solver_consistency(bicubic_case, input_type):
         mask = np.isfinite(ref_val)
         if not np.any(mask):
             continue
-        
+
         rel_err = l2_relative_error(interp_val[mask], ref_val[mask])
         log_result(fluid_name, input_type, prop, rel_err, CONSISTENCY_TOL)
-
 
         assert rel_err < CONSISTENCY_TOL, (
             f"[{fluid_name}] input={jxp.INPUT_TYPE_MAP[input_type]} "
@@ -149,14 +161,16 @@ def test_bicubic_input_pair_contract():
 
 def log_result(fluid_name, input_type, prop, rel_err, tol):
     """Append one result to the global consistency log."""
-    CONSISTENCY_LOG.append({
-        "fluid": fluid_name,
-        "input_type": jxp.INPUT_TYPE_MAP[input_type],
-        "property": prop,
-        "rel_L2_error": rel_err,
-        "tol": tol,
-        "pass": rel_err < tol,
-    })
+    CONSISTENCY_LOG.append(
+        {
+            "fluid": fluid_name,
+            "input_type": jxp.INPUT_TYPE_MAP[input_type],
+            "property": prop,
+            "rel_L2_error": rel_err,
+            "tol": tol,
+            "pass": rel_err < tol,
+        }
+    )
 
 
 def print_log_summary():
@@ -171,6 +185,7 @@ def print_log_summary():
     else:
         print("\n[INFO] Consistency log is empty.")
 
+
 atexit.register(print_log_summary)
 
 
@@ -181,4 +196,3 @@ if __name__ == "__main__":
     PRINT_STATISTICS = os.environ.get("PRINT_STATISTICS") == "1"
     pytest.main([__file__, "-v"])
     # test_solver_consistency(FLUID_CASES[1], INPUT_TYPES[4])
-

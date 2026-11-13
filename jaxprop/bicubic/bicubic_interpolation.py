@@ -4,7 +4,6 @@ import pickle
 import copy
 import hashlib
 import inspect
-from functools import partial
 from pathlib import Path
 import warnings
 import numpy as np
@@ -16,6 +15,8 @@ import jaxprop.coolprop as jxp
 from tqdm import tqdm
 
 from ..errors import CalculationError, InvalidConfigurationError, UnsupportedOptionError
+from ..configuration import build_configuration, FluidCapabilities, FluidDomain
+from ..fluid_api import checked_jit, SOURCE_PROPERTIES, LEGACY_MIXTURE_PROPERTIES
 from .cache_metadata import metadata_fingerprint, source_signature
 from .table_cache import (
     CACHE_FORMAT_VERSION,
@@ -93,17 +94,19 @@ class FluidBicubic(eqx.Module):
     mixture_ratio: float = eqx.field(static=True)
     metastable_phase: str = eqx.field(static=True)
     critical_point: dict = eqx.field(static=True)
+    _configuration: object = eqx.field(static=True, default=None)
+    _capabilities: object = eqx.field(static=True, default=None)
 
     def __init__(
         self,
-        fluid_name: str,
-        backend: str,
-        h_min: float,
-        h_max: float,
-        p_min: float,
-        p_max: float,
-        N_h: int,
-        N_p: int,
+        fluid_name: str = None,
+        backend: str = "HEOS",
+        h_min: float = None,
+        h_max: float = None,
+        p_min: float = None,
+        p_max: float = None,
+        N_h: int = None,
+        N_p: int = None,
         N_p_sat: int = 60,
         mixture_ratio: float = None,
         metastable_phase: str = None,
@@ -112,7 +115,20 @@ class FluidBicubic(eqx.Module):
         identifier: str = None,
         table_name: str = None,
         table_dir: str = "fluid_tables",
+        *,
+        name: str = None,
     ):
+        if name is not None:
+            if fluid_name is not None and fluid_name != name:
+                raise InvalidConfigurationError(
+                    fluid_name=name,
+                    provider="bicubic",
+                    model="real_fluid",
+                    request="name",
+                    reason="name and fluid_name describe different sources.",
+                )
+            fluid_name = name
+        backend = "HEOS" if backend is None else backend
         # Validate static configuration before allocating grids or evaluating
         # reference states. Invalid options must never produce an empty cache.
         context = dict(fluid_name=fluid_name, provider="bicubic", model="real_fluid")
@@ -240,6 +256,41 @@ class FluidBicubic(eqx.Module):
         self.table_dir = os.fspath(table_dir)
         self.grad_method = gradient_method
         self.coarse_step = coarse_step
+        self._configuration = build_configuration(
+            fluid_name,
+            self.provider,
+            self.model,
+            backend,
+            identifier,
+            table_options=dict(
+                h_min=h_min,
+                h_max=h_max,
+                p_min=p_min,
+                p_max=p_max,
+                N_h=N_h,
+                N_p=N_p,
+                N_p_sat=N_p_sat,
+                coarse_step=coarse_step,
+                gradient_method=gradient_method,
+                table_name=table_name,
+                table_dir=table_dir,
+                mixture_ratio=mixture_ratio,
+                metastable_phase=metastable_phase,
+            ),
+        )
+        self._capabilities = FluidCapabilities(
+            input_pairs=frozenset(self.PROPERTY_CALCULATORS),
+            properties=LEGACY_MIXTURE_PROPERTIES if is_mixture else SOURCE_PROPERTIES,
+            jax_modes={"eager", "jit", "vmap", "jvp", "grad"},
+            derivative_order=1,
+            derivative_method="autodiff",
+            domain=FluidDomain(
+                description=f"{self.table_mode} interpolation table; strict bounds/failure policy awaits Phase 8.",
+                bounds={"enthalpy": (h_min, h_max), "pressure": (p_min, p_max)},
+                phases={self.table_mode},
+                extrapolation=True,
+            ),
+        )
 
         # Create h and logP grids
         self.h_vals = jnp.linspace(self.h_min, self.h_max, self.N_h)
@@ -369,6 +420,18 @@ class FluidBicubic(eqx.Module):
         self._table = {
             name: entry for name, entry in table.items() if name != "metadata"
         }
+
+    @property
+    def name(self):
+        return self.fluid_name
+
+    @property
+    def configuration(self):
+        return self._configuration
+
+    @property
+    def capabilities(self):
+        return self._capabilities
 
     @property
     def table(self):
@@ -1222,10 +1285,15 @@ class FluidBicubic(eqx.Module):
 
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
-            val = f0[k]
-            grad_h = (fh[k] - f0[k]) / eps_h
-            grad_p = (fp[k] - f0[k]) / eps_p
-            grad_hp = (fhp[k] - fh[k] - fp[k] + f0[k]) / (eps_h * eps_p)
+            val = f0.get(k, np.nan)
+            grad_h = (fh.get(k, np.nan) - f0.get(k, np.nan)) / eps_h
+            grad_p = (fp.get(k, np.nan) - f0.get(k, np.nan)) / eps_p
+            grad_hp = (
+                fhp.get(k, np.nan)
+                - fh.get(k, np.nan)
+                - fp.get(k, np.nan)
+                + f0.get(k, np.nan)
+            ) / (eps_h * eps_p)
             grads[k] = (val, grad_h, grad_p, grad_hp)
         return grads
 
@@ -1243,10 +1311,15 @@ class FluidBicubic(eqx.Module):
 
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
-            val = f0[k]
-            grad_h = (fhp[k] - fhm[k]) / (2.0 * eps_h)
-            grad_p = (fph[k] - fpm[k]) / (2.0 * eps_p)
-            grad_hp = (fh_p[k] - fh_m[k] - fm_p[k] + fm_m[k]) / (4.0 * eps_h * eps_p)
+            val = f0.get(k, np.nan)
+            grad_h = (fhp.get(k, np.nan) - fhm.get(k, np.nan)) / (2.0 * eps_h)
+            grad_p = (fph.get(k, np.nan) - fpm.get(k, np.nan)) / (2.0 * eps_p)
+            grad_hp = (
+                fh_p.get(k, np.nan)
+                - fh_m.get(k, np.nan)
+                - fm_p.get(k, np.nan)
+                + fm_m.get(k, np.nan)
+            ) / (4.0 * eps_h * eps_p)
             grads[k] = (val, grad_h, grad_p, grad_hp)
         return grads
 
@@ -1291,10 +1364,15 @@ class FluidBicubic(eqx.Module):
 
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
-            val = f0[k]
-            grad_h = (fh[k] - f0[k]) / eps_h
-            grad_p = (fp[k] - f0[k]) / eps_p
-            grad_hp = (fhp[k] - fh[k] - fp[k] + f0[k]) / (eps_h * eps_p)
+            val = f0.get(k, np.nan)
+            grad_h = (fh.get(k, np.nan) - f0.get(k, np.nan)) / eps_h
+            grad_p = (fp.get(k, np.nan) - f0.get(k, np.nan)) / eps_p
+            grad_hp = (
+                fhp.get(k, np.nan)
+                - fh.get(k, np.nan)
+                - fp.get(k, np.nan)
+                + f0.get(k, np.nan)
+            ) / (eps_h * eps_p)
             grads[k] = (val, grad_h, grad_p, grad_hp)
 
         # print("grads:",grads.items())
@@ -1309,8 +1387,8 @@ class FluidBicubic(eqx.Module):
 
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
-            val = f0[k]
-            grad_p = (fp[k] - f0[k]) / eps_p
+            val = f0.get(k, np.nan)
+            grad_p = (fp.get(k, np.nan) - f0.get(k, np.nan)) / eps_p
             grads[k] = (val, grad_p)
         return grads
 
@@ -1322,8 +1400,8 @@ class FluidBicubic(eqx.Module):
 
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
-            val = f0[k]
-            grad_p = (fp_plus[k] - fp_minus[k]) / 2 * eps_p
+            val = f0.get(k, np.nan)
+            grad_p = (fp_plus.get(k, np.nan) - fp_minus.get(k, np.nan)) / 2 * eps_p
             grads[k] = (val, grad_p)
         return grads
 
@@ -1346,10 +1424,19 @@ class FluidBicubic(eqx.Module):
         ),
     }
 
-    @partial(jax.jit, static_argnames=("input_type",))
-    def get_state(self, input_type, val1, val2):
+    @checked_jit
+    def get_state(
+        self,
+        input_type,
+        prop_1,
+        prop_2,
+        *,
+        generalize_quality=False,
+        supersaturation=False,
+        errors="raise",
+    ):
         """Evaluate dynamic numeric inputs; only the input-pair selector is static."""
-        val1, val2 = jnp.asarray(val1), jnp.asarray(val2)
+        val1, val2 = jnp.asarray(prop_1), jnp.asarray(prop_2)
         val1, val2 = jnp.broadcast_arrays(val1, val2)
 
         # Scalar evaluation needs neither a length-one vmap nor tree reshaping.
@@ -1431,7 +1518,7 @@ class FluidBicubic(eqx.Module):
             provider=self.provider,
             model=self.model,
             reference_id=self.reference_id,
-            available_properties=frozenset(jxp.PROPERTIES_CANONICAL),
+            available_properties=self.capabilities.properties,
             **props,
         )
 

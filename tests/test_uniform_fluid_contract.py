@@ -103,8 +103,18 @@ def test_fixed_conformance_matrix_covers_current_and_consolidated_models():
     assert len(SOURCE_PAIRS) == 10 and len(BINARY_PAIRS) == 3
 
 
-@pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
-@pending(4, "the common create_fluid factory is not exported", AttributeError)
+@pytest.mark.parametrize(
+    "case",
+    parameters_with_gaps(
+        {
+            "binary_mixture": pending(
+                9,
+                "component-based binary construction awaits mixture consolidation",
+                (jxp.InvalidConfigurationError, jxp.UnsupportedOperationError),
+            )
+        }
+    ),
+)
 def test_common_factory_constructs_each_advertised_model(case, tmp_path):
     fluid = jxp.create_fluid(**factory_arguments(case, tmp_path))
     assert fluid.name == case.name
@@ -119,23 +129,49 @@ def test_default_identifier_is_none(case, fluid_objects):
 
 
 @pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
-@pending(4, "provider/model/capabilities metadata is not published", AttributeError)
 def test_metadata_and_capability_queries(case, fluid_objects):
     fluid = fluid_objects[case.id]
     assert fluid.name == case.name
     assert fluid.provider == case.provider and fluid.model == case.model
     capability = fluid.capabilities
-    assert set(getattr(jxp, name) for name in case.required_pairs) <= set(
-        capability.input_pairs
-    )
-    assert set(CORE_PROPERTIES) <= set(capability.properties)
-    for attribute in ("options", "phase_operations", "jax_modes", "domain"):
+    # Metadata must describe implemented functionality rather than advertise
+    # the later model-completion targets below before they exist.
+    assert jxp.HmassP_INPUTS in capability.input_pairs
+    assert set(SHAPE_PROPERTIES) <= set(capability.properties)
+    assert set(capability.properties) <= set(jxp.PROPERTIES_CANONICAL)
+    assert baseline(fluid, case.id).available_properties <= set(capability.properties)
+    for attribute in (
+        "options",
+        "phase_operations",
+        "jax_modes",
+        "domain",
+        "error_modes",
+    ):
         assert hasattr(capability, attribute)
     if case.model == "perfect_gas":
         assert jxp.QT_INPUTS not in capability.input_pairs
         assert jxp.PQ_INPUTS not in capability.input_pairs
         assert "quality_mass" not in capability.properties
         assert "saturation" not in capability.phase_operations
+
+
+@pytest.mark.parametrize(
+    "case",
+    parameters_with_gaps(
+        {
+            "perfect_gas": pending(
+                7, "perfect gas still omits required internal energy"
+            ),
+            "binary_mixture": pending(9, "binary PT/PS support awaits consolidation"),
+        }
+    ),
+)
+def test_target_capability_minimums_remain_explicit(case, fluid_objects):
+    capability = fluid_objects[case.id].capabilities
+    assert set(getattr(jxp, name) for name in case.required_pairs) <= set(
+        capability.input_pairs
+    )
+    assert set(CORE_PROPERTIES) <= set(capability.properties)
 
 
 @pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
@@ -149,20 +185,7 @@ def test_explicit_identifier_reaches_returned_state(case, tmp_path):
     assert baseline(fluid, case.id).identifier == "working_fluid"
 
 
-@pytest.mark.parametrize(
-    "case",
-    parameters_with_gaps(
-        {
-            "coolprop_jax": pending(
-                6, "FluidJAX uses input_pair/x/y keywords", TypeError
-            ),
-            "bicubic": pending(8, "FluidBicubic uses val1/val2 keywords", TypeError),
-            "perfect_gas": pending(
-                7, "FluidPerfectGas uses input_pair/x/y keywords", TypeError
-            ),
-        }
-    ),
-)
+@pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
 def test_common_property_keyword_vocabulary(case, fluid_objects):
     fluid = fluid_objects[case.id]
     enthalpy = 500e3 if case.id == "binary_mixture" else 700e3
@@ -171,25 +194,7 @@ def test_common_property_keyword_vocabulary(case, fluid_objects):
     np.testing.assert_allclose(result.p, 8e6, rtol=1e-10)
 
 
-@pytest.mark.parametrize(
-    "case",
-    parameters_with_gaps(
-        {
-            "coolprop_jax": pending(
-                6, "FluidJAX rejects explicit disabled diagnostics", TypeError
-            ),
-            "bicubic": pending(
-                8, "FluidBicubic rejects explicit disabled diagnostics", TypeError
-            ),
-            "perfect_gas": pending(
-                7, "FluidPerfectGas rejects explicit disabled diagnostics", TypeError
-            ),
-            "binary_mixture": pending(
-                9, "FluidMix rejects explicit disabled diagnostics", RuntimeError
-            ),
-        }
-    ),
-)
+@pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
 def test_disabled_diagnostics_are_noops_for_every_model(case, fluid_objects):
     fluid = fluid_objects[case.id]
     reference = baseline(fluid, case.id)
@@ -244,14 +249,12 @@ SHAPE_PARAMETERS = []
 for _case in CONTRACT_CASES:
     for _label, _h, _p, _shape in SHAPES:
         _marks = []
-        if _case.id == "coolprop" and _label in ("singleton", "singleton_matrix"):
-            _marks = [pending(6, "Fluid squeezes singleton axes")]
         if _case.id == "binary_mixture" and _label != "scalar":
             _marks = [
                 pending(
                     9,
                     "FluidMix only evaluates scalar inputs",
-                    (RuntimeError, AssertionError),
+                    (RuntimeError, AssertionError, jxp.UnsupportedExecutionModeError),
                 )
             ]
         if _case.id == "binary_mixture":
@@ -276,14 +279,13 @@ def test_numeric_fields_preserve_exact_broadcast_shape(
     "case",
     parameters_with_gaps(
         {
-            "coolprop": pending(
-                6, "Fluid squeezes singleton axes before constructing its state"
-            ),
             "perfect_gas": pending(
                 7, "Perfect gas still omits the required internal energy"
             ),
             "binary_mixture": pending(
-                9, "FluidMix does not yet evaluate broadcast batches", RuntimeError
+                9,
+                "FluidMix does not yet evaluate broadcast batches",
+                (RuntimeError, jxp.UnsupportedExecutionModeError),
             ),
         }
     ),
@@ -321,14 +323,10 @@ for _case in CONTRACT_CASES:
         _marks = []
         if _case.id == "binary_mixture":
             _marks = [
-                pending(9, "FluidMix rejects array-like batch inputs", RuntimeError)
-            ]
-        if _case.id == "coolprop_jax" and _kind == "list":
-            _marks = [
                 pending(
-                    6,
-                    "list inputs are not normalized before JAX evaluation",
-                    TypeError,
+                    9,
+                    "FluidMix rejects array-like batch inputs",
+                    (RuntimeError, jxp.UnsupportedExecutionModeError),
                 )
             ]
         ARRAY_PARAMETERS.append(
@@ -354,7 +352,11 @@ for _case in CONTRACT_CASES:
         _marks = []
         if _case.id == "binary_mixture" and _pair != "HmassP_INPUTS":
             _marks = [
-                pending(9, "FluidMix has only the HmassP inversion", RuntimeError)
+                pending(
+                    9,
+                    "FluidMix has only the HmassP inversion",
+                    (RuntimeError, jxp.UnsupportedInputPairError),
+                )
             ]
         PAIR_PARAMETERS.append(
             pytest.param(_case, _pair, id=f"{_case.id}-{_pair}", marks=_marks)
@@ -396,7 +398,6 @@ def test_source_evaluators_accept_quality_endpoint_pairs(
 @pytest.mark.parametrize(
     "pair_name,first,second", [("QT_INPUTS", 0.0, 270.0), ("PQ_INPUTS", 1e6, 1.0)]
 )
-@pending(7, "perfect-gas quality input rejection is an uninformative dispatch KeyError")
 def test_perfect_gas_quality_inputs_raise_informative_typed_errors(
     pair_name, first, second, fluid_objects
 ):
@@ -409,7 +410,6 @@ def test_perfect_gas_quality_inputs_raise_informative_typed_errors(
 
 
 @pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
-@pending(4, "molar input pairs do not yet have a uniform explicit rejection")
 def test_molar_input_pairs_are_rejected_without_implicit_conversion(
     case, fluid_objects
 ):
@@ -432,7 +432,6 @@ def test_perfect_gas_quality_property_access_is_explicit(access, fluid_objects):
     assert_typed_error(read, "UnsupportedPropertyError", "quality_mass")
 
 
-@pending(7, "perfect gas has no uniform saturation operation")
 def test_perfect_gas_saturation_operation_is_explicitly_rejected(fluid_objects):
     fluid = fluid_objects["perfect_gas"]
     assert_typed_error(
@@ -444,7 +443,6 @@ def test_perfect_gas_saturation_operation_is_explicitly_rejected(fluid_objects):
 
 @pytest.mark.parametrize("case", CONTRACT_CASES[2:], ids=lambda case: case.id)
 @pytest.mark.parametrize("option", ["generalize_quality", "supersaturation"])
-@pending(4, "unsupported diagnostics are currently rejected as signature TypeErrors")
 def test_unsupported_diagnostic_options_have_explicit_errors(
     case, option, fluid_objects
 ):

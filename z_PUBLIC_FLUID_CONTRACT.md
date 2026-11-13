@@ -4,6 +4,18 @@ This is the target interface for the fluid refactor. Applications select a physi
 
 Phase 2 fixes these requirements and adds executable conformance cases. The current implementation does not yet satisfy the complete contract. Strict expected failures in the tests identify the implementation phases that remain; the [implementation checklist](z_IMPLEMENTATION_PLAN.md) tracks their completion.
 
+## Implemented shared layer after Phase 4
+
+`create_fluid`, immutable `configuration`/`capabilities` records, the common ordinary `get_state` keywords, typed static-request validation, real-input broadcasting, honest property enabling, and named `StatusCode` values are implemented. Factories return actual evaluator classes; setup stays outside repeated calls. Configuration snapshots cannot be changed through the caller's option dictionaries or public identity/composition fields.
+
+Capabilities report current implementation, rather than the target minimums below. Direct/callback source evaluators support twelve tested mass pairs, pure bicubic tables eight, perfect gas six, and the direct legacy binary model only scalar HP. Ordinary source/callback/pure-table states enable 25 properties, perfect gas 13, and legacy binary 22. Direct source generalized quality is retained where verified; disabled diagnostics and inapplicable properties are explicitly unsupported. The current bicubic domain record truthfully reports legacy extrapolation until Phase 8 enforces the target bounds policy.
+
+The component-object binary factory route remains unavailable until Phase 9 implements that model; it raises an informative configuration error after validating settings. Perfect-gas calibration currently accepts HEOS only; other source backends are rejected until Phase 5 extends calibration/reference initialization. Missing PG properties/reference offsets remain Phase 7.
+
+`error_modes={"raise"}` describes the accepted current call mode. The target numerical/per-element mask policies and transformed error restrictions remain implementation requirements in Phases 6–9: `errors="mask"` is rejected explicitly instead of silently returning unvalidated statuses, while valid-state transformed calls remain usable. Legacy `exceptions=False` behavior is outside the factory path and is reconciled in those provider phases. Source references remain Phase 5. Standalone uniform saturation operations are not advertised before validation; the bicubic pressure-only raw-dictionary helper remains a legacy path for Phase 8, and perfect gas explicitly rejects saturation.
+
+The remaining sections specify the complete target. Their numerical/reference/model requirements are not weakened by this staged boundary.
+
 ## Construction and identity
 
 ```python

@@ -15,18 +15,19 @@ from .errors import (
     UnsupportedPropertyError,
 )
 from .property_schema import ALIAS_TO_CANONICAL, PROPERTY_ALIASES, PROPERTIES_CANONICAL
+from .fluid_api import StatusCode
 
 
 @jax.jit
 def _jax_property_valid(value, status):
     """Materialize a requested mask in one compiled array operation."""
-    return jnp.isfinite(value) & (status == 0)
+    return jnp.isfinite(value) & (status == StatusCode.SUCCESS)
 
 
 @jax.jit
 def _jax_property_validity(properties, status):
     """Materialize serialization masks together, avoiding per-field dispatch."""
-    successful = status == 0
+    successful = status == StatusCode.SUCCESS
     return {
         name: jnp.isfinite(value) & successful for name, value in properties.items()
     }
@@ -196,7 +197,7 @@ class FluidState(eqx.Module):
                     **context,
                 )
             masks[canonical] = mask
-        status_array = xp.array(0 if status is None else status)
+        status_array = xp.array(StatusCode.SUCCESS if status is None else status)
         if (
             not np.issubdtype(status_array.dtype, np.integer)
             or status_array.dtype == np.bool_
@@ -205,7 +206,8 @@ class FluidState(eqx.Module):
                 request="status", reason="Status must contain integer codes.", **context
             )
         if not isinstance(status_array, jax.core.Tracer) and np.any(
-            (np.asarray(status_array) < 0) | (np.asarray(status_array) > 4)
+            (np.asarray(status_array) < StatusCode.SUCCESS)
+            | (np.asarray(status_array) > StatusCode.PROVIDER_FAILURE)
         ):
             raise InvalidStateError(
                 request="status",
@@ -234,7 +236,7 @@ class FluidState(eqx.Module):
         )
         if xp is np:
             self.status.setflags(write=False)
-        successful = self.status == 0
+        successful = self.status == StatusCode.SUCCESS
         self._data = {}
         for name in PROPERTIES_CANONICAL:
             if name not in normalized:
@@ -284,7 +286,7 @@ class FluidState(eqx.Module):
 
     @property
     def valid(self):
-        return self.status == 0
+        return self.status == StatusCode.SUCCESS
 
     def supports_property(self, name):
         return ALIAS_TO_CANONICAL.get(name) in self.available_properties
@@ -313,7 +315,7 @@ class FluidState(eqx.Module):
             self.status, (jax.Array, jax.core.Tracer)
         ):
             return _jax_property_valid(value, self.status)
-        valid = np.asarray(np.isfinite(value) & (self.status == 0))
+        valid = np.asarray(np.isfinite(value) & (self.status == StatusCode.SUCCESS))
         valid.setflags(write=False)
         return valid
 
@@ -330,7 +332,7 @@ class FluidState(eqx.Module):
             # Inspect concrete storage directly rather than launching a tiny
             # JAX validity kernel and immediately synchronizing it to the host.
             concrete_valid = np.isfinite(np.asarray(value)) & (
-                np.asarray(self.status) == 0
+                np.asarray(self.status) == StatusCode.SUCCESS
             )
             all_valid = (
                 bool(concrete_valid)

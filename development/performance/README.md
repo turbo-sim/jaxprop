@@ -1,6 +1,10 @@
 # Native JAX performance checkpoint
 
-Measured on 13 November 2026 against the unchanged published JaxProp 0.5.8 wheel. This compact checkpoint retains the final result; disposable intermediate workers, extracted packages, profiles, lowered compiler output, and exploratory scripts have been removed. The complete release performance gate remains Phase 13 of the [implementation plan](../../z_IMPLEMENTATION_PLAN.md).
+Measured on 13 November 2026 against the unchanged published JaxProp 0.5.8 wheel, before Phase 4. This compact checkpoint retains that result; disposable intermediate workers, extracted packages, profiles, lowered compiler output, and exploratory scripts have been removed. The complete release performance gate remains Phase 13 of the [implementation plan](../../z_IMPLEMENTATION_PLAN.md).
+
+A later compact [Phase 4 guard](phase4_validation.json) compares the shared-validation implementation with committed native-JAX snapshot `a9e2c92`. Four independent workers per version ran serially in ABBAABBA order, with nine interleaved samples per workload and synchronized CPU/x64 outputs. Small independent HEOS tables and sampled temperature checks keep this a focused interface regression check. Temporary workers/source/tables were removed; the formal release comparison remains Phase 13.
+
+The longer follow-up did not reproduce the initial short guard's perfect-gas slowdown. Full-state scalar medians were 41.2 versus 42.3 microseconds (+2.5%); 1,024-state batches were 142.9 versus 145.8 microseconds (+2.0%), within the observed worker variation. Bicubic scalar/batch medians improved from 206.2/1,424.7 to 135.4/823.4 microseconds; current full states intentionally exclude unsupported placeholders. Short compiled temperature/derivative timings remain noisy, with no repeatable regression. The normalized optimized temperature-projection instruction structure is unchanged (10 perfect-gas instructions and 37 bicubic instructions), without callbacks. Separate current public/kernel measurements suggest approximately 6 microseconds of perfect-gas and 10 microseconds of bicubic scalar request/binding overhead. These results support no material repeatable slowdown for the tested warmed workloads; they do not establish all devices, construction/loading costs, or application performance.
 
 ## Method and scope
 

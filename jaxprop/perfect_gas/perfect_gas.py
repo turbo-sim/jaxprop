@@ -1,10 +1,12 @@
 import jax
-from functools import partial
 import jax.numpy as jnp
 import equinox as eqx
 
 from ..coolprop import Fluid
 from .. import helpers_props as jxp
+from ..configuration import build_configuration, FluidCapabilities, FluidDomain
+from ..errors import InvalidConfigurationError, UnsupportedOperationError
+from ..fluid_api import checked_jit
 
 
 # ----------------------------------------------------------------------------- #
@@ -307,22 +309,121 @@ class FluidPerfectGas(eqx.Module):
     provider: str = eqx.field(static=True, default="native")
     model: str = eqx.field(static=True, default="perfect_gas")
     reference_id: tuple = eqx.field(static=True, default=None)
+    backend: str = eqx.field(static=True, default="HEOS")
+    _configuration: object = eqx.field(static=True, default=None)
+    _capabilities: object = eqx.field(static=True, default=None)
 
-    def __init__(self, name, T_ref=300.0, p_ref=101_325.0, identifier=None):
+    def __init__(
+        self, name, T_ref=300.0, p_ref=101_325.0, identifier=None, *, backend=None
+    ):
+        backend = "HEOS" if backend is None else backend
+        self._configuration = build_configuration(
+            name,
+            self.provider,
+            self.model,
+            backend,
+            identifier,
+            model_options={"T_ref": T_ref, "p_ref": p_ref},
+        )
+        if backend != "HEOS":
+            raise InvalidConfigurationError(
+                fluid_name=name,
+                provider=self.provider,
+                model=self.model,
+                request="backend",
+                reason="Perfect-gas calibration currently supports HEOS only.",
+                supported=("HEOS",),
+            )
+        from numbers import Real
+        import math
+
+        for key, value in (("T_ref", T_ref), ("p_ref", p_ref)):
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, Real)
+                or not math.isfinite(value)
+                or value <= 0
+            ):
+                raise InvalidConfigurationError(
+                    fluid_name=name,
+                    provider=self.provider,
+                    model=self.model,
+                    request=key,
+                    reason="Calibration coordinates must be finite positive real scalars.",
+                )
+        self.backend = backend
+        self._capabilities = FluidCapabilities(
+            input_pairs=frozenset(PROPERTY_CALCULATORS),
+            properties=frozenset(
+                {
+                    "temperature",
+                    "pressure",
+                    "density",
+                    "enthalpy",
+                    "entropy",
+                    "viscosity",
+                    "conductivity",
+                    "speed_of_sound",
+                    "heat_capacity_ratio",
+                    "isobaric_heat_capacity",
+                    "isochoric_heat_capacity",
+                    "compressibility_factor",
+                    "gruneisen",
+                }
+            ),
+            jax_modes=frozenset({"eager", "jit", "vmap", "jvp", "grad"}),
+            derivative_order=1,
+            derivative_method="autodiff",
+            domain=FluidDomain(
+                description="Perfect-gas approximation; physical clipping/failure policy awaits Phase 7.",
+                phases={"gas"},
+            ),
+        )
         self.constants = get_constants(name, T_ref, p_ref)
         self.fluid_name = name
         self.identifier = identifier
         self.reference_id = (self.model, "HEOS", name, T_ref, p_ref)
 
-    @partial(jax.jit, static_argnames=("input_pair",))
-    def get_state(self, input_pair, x, y):
+    @property
+    def name(self):
+        return self.fluid_name
+
+    @property
+    def configuration(self):
+        return self._configuration
+
+    @property
+    def capabilities(self):
+        return self._capabilities
+
+    def get_state_saturation(self, *args, **kwargs):
+        raise UnsupportedOperationError(
+            fluid_name=self.name,
+            provider=self.provider,
+            model=self.model,
+            request="saturation",
+            reason="A perfect gas has no phase-equilibrium states.",
+            supported=tuple(sorted(self.capabilities.phase_operations)),
+        )
+
+    @checked_jit
+    def get_state(
+        self,
+        input_type,
+        prop_1,
+        prop_2,
+        *,
+        generalize_quality=False,
+        supersaturation=False,
+        errors="raise",
+    ):
         """Evaluate with dynamic numerical inputs and a static pair selector.
 
         The model is already a numerical PyTree with static identity metadata,
         so native JIT avoids filtered-method binding and per-value compilation.
         """
-        x, y = jnp.asarray(x), jnp.asarray(y)
-        props = PROPERTY_CALCULATORS[input_pair](x, y, self.constants)
+        x, y = jnp.asarray(prop_1), jnp.asarray(prop_2)
+        props = PROPERTY_CALCULATORS[input_type](x, y, self.constants)
         return jxp.FluidState(
             fluid_name=self.fluid_name,
             identifier=self.identifier,
@@ -330,6 +431,7 @@ class FluidPerfectGas(eqx.Module):
             model=self.model,
             reference_id=self.reference_id,
             available_properties=frozenset(props),
+            error_policy=errors,
             **props,
         )
 
