@@ -1,5 +1,7 @@
 # Native JAX performance checkpoint
 
+The latest [perfect-gas repair report](pg_hotpath/README.md) supersedes the older PG timing conclusions below for the current 22-property model. Eager full-state calls are faster than PyPI 0.5.8, while compiled full batches remain 31–38% slower. The user accepted this tradeoff on 13 November 2026, completing Phase 7 acceptance and allowing Phase 8 to proceed. Broader Phase 13 comparisons remain pending. Historical checkpoints are retained as measurements of their own source versions.
+
 Measured on 13 November 2026 against the unchanged published JaxProp 0.5.8 wheel, before Phase 4. This compact checkpoint retains that result; disposable intermediate workers, extracted packages, profiles, lowered compiler output, and exploratory scripts have been removed. The complete release performance gate remains Phase 13 of the [implementation plan](../../z_IMPLEMENTATION_PLAN.md).
 
 A later compact [Phase 4 guard](phase4_validation.json) compares the shared-validation implementation with committed native-JAX snapshot `a9e2c92`. Four independent workers per version ran serially in ABBAABBA order, with nine interleaved samples per workload and synchronized CPU/x64 outputs. Small independent HEOS tables and sampled temperature checks keep this a focused interface regression check. Temporary workers/source/tables were removed; the formal release comparison remains Phase 13.
@@ -41,6 +43,21 @@ The cost moves to setup: direct source construction is **0.902 versus 1.291 ms**
 
 All **20,896 sampled scalar/status comparisons** match, including sampled common property fields and derivatives; unavailable fields match explicitly. Worker environments and per-version source hashes agree, and the current package matches the measured source hash. The final full HEOS/REFPROP suite passes **1,618 tests with 28 strict expected failures**, retaining all **54,272 numerical comparisons**, including **50,189 finite values**, with zero failures. [Correctness run](../test_audit/results/phase6/full_20261113_173309/summary.json). Temporary source copies, workers and tables were removed after preserving this record. This focused CPU/x64 guard does not complete the Phase 13 published-release/device/application gate.
 
+## Phase 7 perfect-gas equations and numerical policies
+
+The initial Phase 7 guard compared the 22-property model with Phase 6 commit
+`385c977`, including unchanged bicubic controls. It identified PG batch
+regressions and compiler duplication; a targeted status-output experiment
+confirmed that numerical validity was being copied into property loops.
+These findings prompted the guarded native-state repair.
+
+The [accepted final record](pg_hotpath/README.md) supersedes those intermediate
+runs and retains the comparison against untouched PyPI 0.5.8 and the pre-repair
+Phase 7 source. The user accepted the remaining compiled tradeoff on
+13 November 2026. Phase 7 is complete; further optimization remains optional
+in Phases 11/13. [Final case summaries](pg_hotpath/results.json) and
+[correctness verification](pg_hotpath/verification.json) are retained;
+intermediate timing records, workers and scripts have been removed.
 ## Method and scope of the original PyPI checkpoint
 
 Six separate workers ran serially in baseline/current/current/baseline/baseline/current order. Each implementation has three workers and five samples per warmed workload, with multiple calls per sample and synchronized JAX outputs. Cold table construction has one sample per worker. Import paths, source hashes, dependencies, device/precision, and thread settings were verified.

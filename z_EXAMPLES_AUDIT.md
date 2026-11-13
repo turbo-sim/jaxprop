@@ -6,6 +6,8 @@ The subsequent constructor revision migrates 40 files, verifies unchanged expres
 
 Phase 6 separately reruns the three callback derivative programs and the three previously blocked undersaturation programs successfully, with unchanged numerical defaults/tolerances. Callback transformations now select explicit mask mode; ordinary requested diagnostics now work. All 65 programs still parse. The three bicubic midpoint programs and Diffrax receive minimal API compatibility edits with syntax verification only; their larger execution/physics work remains open. [Phase 6 record](development/example_audit/phase6_compatibility.json). The original table below remains the historical audit, not a claim about the later tree.
 
+Phase 7 reruns all four perfect-gas programs and the callback/broadcast program successfully at unchanged scientific defaults/tolerances, including the existing strict derivative and Hessian checks. Native transformed PG calls now select mask mode, and the derivative example describes its distinct derivative quantity. The Optimistix ideal-gas example remains a recorded failure: its solver reaches the correct pressure but the dimensional energy residual stalls near $1.16\times10^{-10}$ J/kg against $10^{-10}$ absolute tolerance. Residual scaling/acceptance belongs to Phase 14; no tolerance, iteration limit or case was relaxed. All 65 programs parse and the Sutherland figure renders. [Phase 7 record](development/example_audit/phase7_compatibility.json).
+
 | Outcome | Files |
 | --- | ---: |
 | Completed default active programs | 34 |

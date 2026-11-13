@@ -65,9 +65,21 @@ temperature = jax.jit(
 )
 ```
 
-The callback supports first-order finite-difference derivatives. Native
-perfect-gas and bicubic numerical failure policies remain in their planned
-phases; see the [public contract](z_PUBLIC_FLUID_CONTRACT.md) and
+The callback supports first-order finite-difference derivatives. Perfect gas
+supports `raise`, `mask` and `clip`; its transformed calls require explicit
+mask or clip mode. For example:
+
+```python
+adjusted = gas.get_state(jxp.PT_INPUTS, -1.0, 300.0, errors="clip")
+print(adjusted.p, adjusted.clipped, adjusted.status)
+```
+
+Clipping returns a consistent adjusted state with a clipping flag. Nonfinite
+inputs remain failed elements. Perfect gas now preserves calibrated source
+enthalpy/entropy and heat capacity with consistent ideal-gas equations, enabling
+22 properties. Gradient helpers return `PropertyDerivatives` with SI units and
+a separate `.primal` state. Bicubic numerical policies remain Phase 8 work;
+inspect capabilities and the [public contract](z_PUBLIC_FLUID_CONTRACT.md) or
 [implementation checklist](z_IMPLEMENTATION_PLAN.md) for current support.
 
 <!-- research-software-metadata:start -->

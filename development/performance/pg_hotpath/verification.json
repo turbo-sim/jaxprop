@@ -1,0 +1,20 @@
+{
+  "test_backends": [
+    "HEOS",
+    "REFPROP"
+  ],
+  "counts": {
+    "passed": 1983,
+    "xfailed": 15
+  },
+  "property_comparisons": 54272,
+  "finite_values_compared": 50189,
+  "unavailable_values_checked": 4083,
+  "failed_comparisons": 0,
+  "seconds": 483.9654420000006,
+  "full_run": "development/test_audit/results/pg_hotpath/full_20261113_204434",
+  "source_sha256": "38e0c041191302b5021595727f24dfa6aa325f4fd1c7353a682026cdfcdcc644",
+  "source_matches_benchmark": true,
+  "additional_repair_tests": 97,
+  "benchmark_same_physics_comparisons": 147854
+}

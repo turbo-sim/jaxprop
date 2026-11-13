@@ -1,0 +1,4723 @@
+{
+  "measured_utc": "2026-11-13T19:31:54.253041+00:00",
+  "quick": false,
+  "scope": "Matched serial CPU/x64 perfect-gas regression and official PyPI comparison. No package/dependency patches. Source-calibrated model equations differ from PyPI: temperatures/pressures and each model's own identities are checked, not equality of enthalpy offsets or heat capacities. Complete old/new state payloads and common-13 outputs are both reported. Component consumers are bounded ideal-gas surrogates, not full ThermOpt application acceptance.",
+  "pypi_baseline": {
+    "package": "jaxprop",
+    "version": "0.5.8",
+    "resolved_utc": "2026-11-13T18:24:55.131691+00:00",
+    "metadata_url": "https://pypi.org/pypi/jaxprop/json",
+    "download_url": "https://files.pythonhosted.org/packages/5b/21/62a2e3f7f6719b1870fbb66f4bd99dccdeec3e82854cf74dd74b45bcd9e8/jaxprop-0.5.8-py3-none-any.whl",
+    "filename": "jaxprop-0.5.8-py3-none-any.whl",
+    "sha256": "3b6db9bfa5bd9ee37a4c3441f92f86b772e0c88ce8609bf76d32c322fbc795a3",
+    "upload_time_utc": "2026-10-28T11:23:58.378231Z",
+    "requires_python": "<3.14,>=3.11"
+  },
+  "method": {
+    "order": [
+      "pypi1",
+      "slow1",
+      "current1",
+      "current2",
+      "slow2",
+      "pypi2",
+      "pypi3",
+      "slow3",
+      "current3",
+      "current4",
+      "slow4",
+      "pypi4"
+    ],
+    "workers_per_version": 4,
+    "samples_per_workload_per_worker": 12,
+    "warm_calls": 25,
+    "synchronization": "jax.block_until_ready after every measured call",
+    "threads": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1"
+    },
+    "calls_per_sample": {
+      "public_PT_raise_scalar": 300,
+      "public_PT_raise_batch1024": 100,
+      "public_HP_raise_scalar": 300,
+      "public_HP_raise_batch1024": 100,
+      "public_PS_raise_scalar": 300,
+      "public_PS_raise_batch1024": 100,
+      "public_HS_raise_scalar": 300,
+      "public_HS_raise_batch1024": 100,
+      "public_rhoP_raise_scalar": 300,
+      "public_rhoP_raise_batch1024": 100,
+      "public_rhoH_raise_scalar": 300,
+      "public_rhoH_raise_batch1024": 100,
+      "public_PT_mask_scalar": 300,
+      "public_PT_mask_batch1024": 100,
+      "public_PT_clip_scalar": 300,
+      "public_PT_clip_batch1024": 100,
+      "public_PT_raise_array_scalar": 300,
+      "public_HP_mask_scalar": 300,
+      "public_HP_mask_batch1024": 100,
+      "public_HP_clip_scalar": 300,
+      "public_HP_clip_batch1024": 100,
+      "public_HP_raise_array_scalar": 300,
+      "compiled_T_scalar": 2000,
+      "compiled_dTdh_scalar": 2000,
+      "compiled_common13_batch1024": 200,
+      "compiled_full_batch1024": 150,
+      "compiled_all_properties_batch1024": 150,
+      "compiled_common13_array_pressure_batch1024": 200,
+      "compiled_full_array_pressure_batch1024": 150,
+      "compiled_T_batch1024": 1000,
+      "compiled_vmap_HP_full_batch1024": 150,
+      "compiled_vmap_HP_T_batch1024": 1000,
+      "compiled_all_properties_scalar": 500,
+      "eager_existing_state_all_properties_export_batch1024": 100,
+      "compiled_dTdh_batch1024": 1000,
+      "compiled_common13_scalar": 1000,
+      "compiled_common13_status_batch1024": 200,
+      "public_HP_broadcast32x32": 100,
+      "compressor_eager": 100,
+      "compressor_compiled": 1000,
+      "compressor_gradient": 1000,
+      "compressor_batch64": 500,
+      "heat_exchanger_compiled128": 500,
+      "heat_exchanger_gradient128": 500,
+      "diagnostic_raw_PT_batch1024": 300,
+      "diagnostic_policy_HP_batch1024": 300,
+      "diagnostic_native_state_assembly_batch1024": 300
+    },
+    "first_call": "Recorded separately; excluded from warmed results.",
+    "changing_python_values": "Fresh unique scalar inputs, includes compilation; separate from warmed runtime.",
+    "legacy_policies": "PyPI does not expose mask/clip; those valid-state counterpart labels use its untouched default call. Synthetic status output in the legacy common-plus-status consumer is a zero array for this all-valid fixture, not a source policy.",
+    "array_pressure_cases": "Natural compiled HP consumers close over scalar pressure; additional matched-array-pressure consumers pass full-shape pressure arrays to all versions. Original natural cases remain unchanged.",
+    "all_properties_exports": "The complete public to_dict() export is materialized and synchronized, including deferred masks. PyPI exports its 38-field schema with unavailable placeholders; current exports its 22 enabled physical fields. Exact field/buffer counts are reported. Existing-state eager export excludes state evaluation and is not additive with fused compiled calls."
+  },
+  "environment": {
+    "python": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]",
+    "versions": {
+      "jax": "0.6.2",
+      "jaxlib": "0.6.2",
+      "numpy": "2.4.4",
+      "CoolProp": "7.2.0",
+      "equinox": "0.12.2",
+      "scipy": "1.17.1"
+    },
+    "device": "TFRT_CPU_0",
+    "x64": true,
+    "threads": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1"
+    },
+    "xla_flags": null,
+    "process_affinity": {
+      "requested_logical_cpus": null,
+      "original_mask": 268435455,
+      "effective_mask": 268435455,
+      "system_mask": 268435455,
+      "effective_logical_cpus": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27
+      ],
+      "topology_label": "Logical CPU indices only; performance/efficiency core class is not inferred.",
+      "scope": "This worker process only; parent/user applications are unchanged."
+    }
+  },
+  "source_hash_method": "Sorted jaxprop/**/*.py relative POSIX path, NUL, exact bytes, NUL; SHA256.",
+  "source_hashes": {
+    "pypi": "858de0f7945b8fcb21e6af9c146b0c150e7101e2e722c4328511a3b3d2a88da0",
+    "slow": "1b363759a3396ab9e4d9e24866636abdb4ad42f4a46af21655cef9c42384a47e",
+    "current": "38e0c041191302b5021595727f24dfa6aa325f4fd1c7353a682026cdfcdcc644"
+  },
+  "integrity": {
+    "worker_environments_equal": true,
+    "per_version_source_hashes_equal": true,
+    "current_package_matches_measured_hash": true
+  },
+  "correctness": {
+    "same_physics_slow_current_comparisons": 147854,
+    "differences": [],
+    "all_workers_own_ideal_checks_passed": true
+  },
+  "model_physics": {
+    "pypi": {
+      "R": 188.92291716844883,
+      "cp": 1072.6754859654739,
+      "gamma": 1.213773542322613,
+      "h_ref": 643605.2915792844,
+      "s_ref": 3411.4394664414313,
+      "calibration_T": 600.0,
+      "calibration_p": 100000.0,
+      "source_calibration_h": 799926.2785167483,
+      "source_calibration_cp": 1076.2311010953802,
+      "target_T": 500.0,
+      "target_p": 8000000.0,
+      "own_ideal_checks_passed": true,
+      "policy_parity_passed": false,
+      "compressor_work_matches_ideal": true,
+      "compressor_gradient_matches_analytic": true,
+      "heat_exchanger_gradient_matches_analytic": true
+    },
+    "slow": {
+      "R": 188.92291716844883,
+      "cp": 1076.2311010953802,
+      "gamma": 1.2129169104835016,
+      "h_ref": 799926.2785167483,
+      "s_ref": 3411.4394664414313,
+      "calibration_T": 600.0,
+      "calibration_p": 100000.0,
+      "source_calibration_h": 799926.2785167483,
+      "source_calibration_cp": 1076.2311010953802,
+      "target_T": 500.0,
+      "target_p": 8000000.0,
+      "own_ideal_checks_passed": true,
+      "policy_parity_passed": true,
+      "compressor_work_matches_ideal": true,
+      "compressor_gradient_matches_analytic": true,
+      "heat_exchanger_gradient_matches_analytic": true
+    },
+    "current": {
+      "R": 188.92291716844883,
+      "cp": 1076.2311010953802,
+      "gamma": 1.2129169104835016,
+      "h_ref": 799926.2785167483,
+      "s_ref": 3411.4394664414313,
+      "calibration_T": 600.0,
+      "calibration_p": 100000.0,
+      "source_calibration_h": 799926.2785167483,
+      "source_calibration_cp": 1076.2311010953802,
+      "target_T": 500.0,
+      "target_p": 8000000.0,
+      "own_ideal_checks_passed": true,
+      "policy_parity_passed": true,
+      "compressor_work_matches_ideal": true,
+      "compressor_gradient_matches_analytic": true,
+      "heat_exchanger_gradient_matches_analytic": true
+    }
+  },
+  "returned_fields_and_buffers": {
+    "pypi": {
+      "public_PT_raise_scalar": {
+        "numeric_fields": 38,
+        "fully_finite_fields": 13,
+        "unavailable_fields": 25,
+        "dynamic_array_leaves": 13,
+        "dynamic_array_elements": 13,
+        "field_shapes": {
+          "pressure": [],
+          "temperature": [],
+          "density": [],
+          "enthalpy": [],
+          "entropy": [],
+          "internal_energy": [],
+          "compressibility_factor": [],
+          "isobaric_heat_capacity": [],
+          "isochoric_heat_capacity": [],
+          "heat_capacity_ratio": [],
+          "speed_of_sound": [],
+          "isothermal_compressibility": [],
+          "isentropic_compressibility": [],
+          "isothermal_bulk_modulus": [],
+          "isentropic_bulk_modulus": [],
+          "isobaric_expansion_coefficient": [],
+          "isothermal_joule_thomson": [],
+          "joule_thomson": [],
+          "gruneisen": [],
+          "viscosity": [],
+          "conductivity": [],
+          "is_two_phase": [],
+          "quality_mass": [],
+          "quality_volume": [],
+          "surface_tension": [],
+          "subcooling": [],
+          "superheating": [],
+          "pressure_saturation": [],
+          "temperature_saturation": [],
+          "supersaturation_degree": [],
+          "supersaturation_ratio": [],
+          "mixture_ratio": [],
+          "mass_frac_1": [],
+          "mass_frac_2": [],
+          "vol_frac_1": [],
+          "vol_frac_2": [],
+          "drho_dp": [],
+          "drho_dh": []
+        }
+      },
+      "public_PT_raise_batch1024": {
+        "numeric_fields": 38,
+        "fully_finite_fields": 13,
+        "unavailable_fields": 25,
+        "dynamic_array_leaves": 13,
+        "dynamic_array_elements": 13312,
+        "field_shapes": {
+          "pressure": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "internal_energy": [],
+          "compressibility_factor": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "isothermal_compressibility": [],
+          "isentropic_compressibility": [],
+          "isothermal_bulk_modulus": [],
+          "isentropic_bulk_modulus": [],
+          "isobaric_expansion_coefficient": [],
+          "isothermal_joule_thomson": [],
+          "joule_thomson": [],
+          "gruneisen": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "is_two_phase": [],
+          "quality_mass": [],
+          "quality_volume": [],
+          "surface_tension": [],
+          "subcooling": [],
+          "superheating": [],
+          "pressure_saturation": [],
+          "temperature_saturation": [],
+          "supersaturation_degree": [],
+          "supersaturation_ratio": [],
+          "mixture_ratio": [],
+          "mass_frac_1": [],
+          "mass_frac_2": [],
+          "vol_frac_1": [],
+          "vol_frac_2": [],
+          "drho_dp": [],
+          "drho_dh": []
+        }
+      },
+      "public_HP_clip_batch1024": {
+        "numeric_fields": 38,
+        "fully_finite_fields": 13,
+        "unavailable_fields": 25,
+        "dynamic_array_leaves": 13,
+        "dynamic_array_elements": 13312,
+        "field_shapes": {
+          "pressure": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "internal_energy": [],
+          "compressibility_factor": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "isothermal_compressibility": [],
+          "isentropic_compressibility": [],
+          "isothermal_bulk_modulus": [],
+          "isentropic_bulk_modulus": [],
+          "isobaric_expansion_coefficient": [],
+          "isothermal_joule_thomson": [],
+          "joule_thomson": [],
+          "gruneisen": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "is_two_phase": [],
+          "quality_mass": [],
+          "quality_volume": [],
+          "surface_tension": [],
+          "subcooling": [],
+          "superheating": [],
+          "pressure_saturation": [],
+          "temperature_saturation": [],
+          "supersaturation_degree": [],
+          "supersaturation_ratio": [],
+          "mixture_ratio": [],
+          "mass_frac_1": [],
+          "mass_frac_2": [],
+          "vol_frac_1": [],
+          "vol_frac_2": [],
+          "drho_dp": [],
+          "drho_dh": []
+        }
+      },
+      "public_HP_broadcast32x32": {
+        "numeric_fields": 38,
+        "fully_finite_fields": 13,
+        "unavailable_fields": 25,
+        "dynamic_array_leaves": 13,
+        "dynamic_array_elements": 2400,
+        "field_shapes": {
+          "pressure": [
+            1,
+            32
+          ],
+          "temperature": [
+            32,
+            1
+          ],
+          "density": [
+            32,
+            32
+          ],
+          "enthalpy": [
+            32,
+            1
+          ],
+          "entropy": [
+            32,
+            32
+          ],
+          "internal_energy": [],
+          "compressibility_factor": [
+            32,
+            1
+          ],
+          "isobaric_heat_capacity": [
+            32,
+            1
+          ],
+          "isochoric_heat_capacity": [
+            32,
+            1
+          ],
+          "heat_capacity_ratio": [
+            32,
+            1
+          ],
+          "speed_of_sound": [
+            32,
+            1
+          ],
+          "isothermal_compressibility": [],
+          "isentropic_compressibility": [],
+          "isothermal_bulk_modulus": [],
+          "isentropic_bulk_modulus": [],
+          "isobaric_expansion_coefficient": [],
+          "isothermal_joule_thomson": [],
+          "joule_thomson": [],
+          "gruneisen": [
+            32,
+            1
+          ],
+          "viscosity": [
+            32,
+            1
+          ],
+          "conductivity": [
+            32,
+            1
+          ],
+          "is_two_phase": [],
+          "quality_mass": [],
+          "quality_volume": [],
+          "surface_tension": [],
+          "subcooling": [],
+          "superheating": [],
+          "pressure_saturation": [],
+          "temperature_saturation": [],
+          "supersaturation_degree": [],
+          "supersaturation_ratio": [],
+          "mixture_ratio": [],
+          "mass_frac_1": [],
+          "mass_frac_2": [],
+          "vol_frac_1": [],
+          "vol_frac_2": [],
+          "drho_dp": [],
+          "drho_dh": []
+        }
+      },
+      "compiled_full_batch1024": {
+        "numeric_fields": 38,
+        "fully_finite_fields": 13,
+        "unavailable_fields": 25,
+        "dynamic_array_leaves": 38,
+        "dynamic_array_elements": 12314,
+        "field_shapes": {
+          "pressure": [],
+          "temperature": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "internal_energy": [],
+          "compressibility_factor": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "isothermal_compressibility": [],
+          "isentropic_compressibility": [],
+          "isothermal_bulk_modulus": [],
+          "isentropic_bulk_modulus": [],
+          "isobaric_expansion_coefficient": [],
+          "isothermal_joule_thomson": [],
+          "joule_thomson": [],
+          "gruneisen": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "is_two_phase": [],
+          "quality_mass": [],
+          "quality_volume": [],
+          "surface_tension": [],
+          "subcooling": [],
+          "superheating": [],
+          "pressure_saturation": [],
+          "temperature_saturation": [],
+          "supersaturation_degree": [],
+          "supersaturation_ratio": [],
+          "mixture_ratio": [],
+          "mass_frac_1": [],
+          "mass_frac_2": [],
+          "vol_frac_1": [],
+          "vol_frac_2": [],
+          "drho_dp": [],
+          "drho_dh": []
+        }
+      },
+      "compiled_full_array_pressure_batch1024": {
+        "numeric_fields": 38,
+        "fully_finite_fields": 13,
+        "unavailable_fields": 25,
+        "dynamic_array_leaves": 38,
+        "dynamic_array_elements": 13337,
+        "field_shapes": {
+          "pressure": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "internal_energy": [],
+          "compressibility_factor": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "isothermal_compressibility": [],
+          "isentropic_compressibility": [],
+          "isothermal_bulk_modulus": [],
+          "isentropic_bulk_modulus": [],
+          "isobaric_expansion_coefficient": [],
+          "isothermal_joule_thomson": [],
+          "joule_thomson": [],
+          "gruneisen": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "is_two_phase": [],
+          "quality_mass": [],
+          "quality_volume": [],
+          "surface_tension": [],
+          "subcooling": [],
+          "superheating": [],
+          "pressure_saturation": [],
+          "temperature_saturation": [],
+          "supersaturation_degree": [],
+          "supersaturation_ratio": [],
+          "mixture_ratio": [],
+          "mass_frac_1": [],
+          "mass_frac_2": [],
+          "vol_frac_1": [],
+          "vol_frac_2": [],
+          "drho_dp": [],
+          "drho_dh": []
+        }
+      },
+      "compiled_vmap_HP_full_batch1024": {
+        "numeric_fields": 38,
+        "fully_finite_fields": 13,
+        "unavailable_fields": 25,
+        "dynamic_array_leaves": 38,
+        "dynamic_array_elements": 38912,
+        "field_shapes": {
+          "pressure": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "internal_energy": [
+            1024
+          ],
+          "compressibility_factor": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "isothermal_compressibility": [
+            1024
+          ],
+          "isentropic_compressibility": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [
+            1024
+          ],
+          "isentropic_bulk_modulus": [
+            1024
+          ],
+          "isobaric_expansion_coefficient": [
+            1024
+          ],
+          "isothermal_joule_thomson": [
+            1024
+          ],
+          "joule_thomson": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "is_two_phase": [
+            1024
+          ],
+          "quality_mass": [
+            1024
+          ],
+          "quality_volume": [
+            1024
+          ],
+          "surface_tension": [
+            1024
+          ],
+          "subcooling": [
+            1024
+          ],
+          "superheating": [
+            1024
+          ],
+          "pressure_saturation": [
+            1024
+          ],
+          "temperature_saturation": [
+            1024
+          ],
+          "supersaturation_degree": [
+            1024
+          ],
+          "supersaturation_ratio": [
+            1024
+          ],
+          "mixture_ratio": [
+            1024
+          ],
+          "mass_frac_1": [
+            1024
+          ],
+          "mass_frac_2": [
+            1024
+          ],
+          "vol_frac_1": [
+            1024
+          ],
+          "vol_frac_2": [
+            1024
+          ],
+          "drho_dp": [
+            1024
+          ],
+          "drho_dh": [
+            1024
+          ]
+        }
+      },
+      "compiled_all_properties_batch1024": {
+        "numeric_fields": 38,
+        "fully_finite_fields": 13,
+        "unavailable_fields": 25,
+        "dynamic_array_leaves": 38,
+        "dynamic_array_elements": 12314,
+        "field_shapes": {
+          "compressibility_factor": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "drho_dh": [],
+          "drho_dp": [],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "internal_energy": [],
+          "is_two_phase": [],
+          "isentropic_bulk_modulus": [],
+          "isentropic_compressibility": [],
+          "isobaric_expansion_coefficient": [],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [],
+          "isothermal_compressibility": [],
+          "isothermal_joule_thomson": [],
+          "joule_thomson": [],
+          "mass_frac_1": [],
+          "mass_frac_2": [],
+          "mixture_ratio": [],
+          "pressure": [],
+          "pressure_saturation": [],
+          "quality_mass": [],
+          "quality_volume": [],
+          "speed_of_sound": [
+            1024
+          ],
+          "subcooling": [],
+          "superheating": [],
+          "supersaturation_degree": [],
+          "supersaturation_ratio": [],
+          "surface_tension": [],
+          "temperature": [
+            1024
+          ],
+          "temperature_saturation": [],
+          "viscosity": [
+            1024
+          ],
+          "vol_frac_1": [],
+          "vol_frac_2": []
+        }
+      }
+    },
+    "slow": {
+      "public_PT_raise_scalar": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 23,
+        "dynamic_array_elements": 23,
+        "field_shapes": {
+          "compressibility_factor": [],
+          "conductivity": [],
+          "density": [],
+          "enthalpy": [],
+          "entropy": [],
+          "gruneisen": [],
+          "heat_capacity_ratio": [],
+          "internal_energy": [],
+          "is_two_phase": [],
+          "isentropic_bulk_modulus": [],
+          "isentropic_compressibility": [],
+          "isobaric_expansion_coefficient": [],
+          "isobaric_heat_capacity": [],
+          "isochoric_heat_capacity": [],
+          "isothermal_bulk_modulus": [],
+          "isothermal_compressibility": [],
+          "isothermal_joule_thomson": [],
+          "joule_thomson": [],
+          "pressure": [],
+          "speed_of_sound": [],
+          "temperature": [],
+          "viscosity": []
+        }
+      },
+      "public_PT_raise_batch1024": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 23,
+        "dynamic_array_elements": 23552,
+        "field_shapes": {
+          "compressibility_factor": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "internal_energy": [
+            1024
+          ],
+          "is_two_phase": [
+            1024
+          ],
+          "isentropic_bulk_modulus": [
+            1024
+          ],
+          "isentropic_compressibility": [
+            1024
+          ],
+          "isobaric_expansion_coefficient": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [
+            1024
+          ],
+          "isothermal_compressibility": [
+            1024
+          ],
+          "isothermal_joule_thomson": [
+            1024
+          ],
+          "joule_thomson": [
+            1024
+          ],
+          "pressure": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ]
+        }
+      },
+      "public_HP_clip_batch1024": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 24,
+        "dynamic_array_elements": 24576,
+        "field_shapes": {
+          "compressibility_factor": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "internal_energy": [
+            1024
+          ],
+          "is_two_phase": [
+            1024
+          ],
+          "isentropic_bulk_modulus": [
+            1024
+          ],
+          "isentropic_compressibility": [
+            1024
+          ],
+          "isobaric_expansion_coefficient": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [
+            1024
+          ],
+          "isothermal_compressibility": [
+            1024
+          ],
+          "isothermal_joule_thomson": [
+            1024
+          ],
+          "joule_thomson": [
+            1024
+          ],
+          "pressure": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ]
+        }
+      },
+      "public_HP_broadcast32x32": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 23,
+        "dynamic_array_elements": 23552,
+        "field_shapes": {
+          "compressibility_factor": [
+            32,
+            32
+          ],
+          "conductivity": [
+            32,
+            32
+          ],
+          "density": [
+            32,
+            32
+          ],
+          "enthalpy": [
+            32,
+            32
+          ],
+          "entropy": [
+            32,
+            32
+          ],
+          "gruneisen": [
+            32,
+            32
+          ],
+          "heat_capacity_ratio": [
+            32,
+            32
+          ],
+          "internal_energy": [
+            32,
+            32
+          ],
+          "is_two_phase": [
+            32,
+            32
+          ],
+          "isentropic_bulk_modulus": [
+            32,
+            32
+          ],
+          "isentropic_compressibility": [
+            32,
+            32
+          ],
+          "isobaric_expansion_coefficient": [
+            32,
+            32
+          ],
+          "isobaric_heat_capacity": [
+            32,
+            32
+          ],
+          "isochoric_heat_capacity": [
+            32,
+            32
+          ],
+          "isothermal_bulk_modulus": [
+            32,
+            32
+          ],
+          "isothermal_compressibility": [
+            32,
+            32
+          ],
+          "isothermal_joule_thomson": [
+            32,
+            32
+          ],
+          "joule_thomson": [
+            32,
+            32
+          ],
+          "pressure": [
+            32,
+            32
+          ],
+          "speed_of_sound": [
+            32,
+            32
+          ],
+          "temperature": [
+            32,
+            32
+          ],
+          "viscosity": [
+            32,
+            32
+          ]
+        }
+      },
+      "compiled_full_batch1024": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 23,
+        "dynamic_array_elements": 23552,
+        "field_shapes": {
+          "compressibility_factor": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "internal_energy": [
+            1024
+          ],
+          "is_two_phase": [
+            1024
+          ],
+          "isentropic_bulk_modulus": [
+            1024
+          ],
+          "isentropic_compressibility": [
+            1024
+          ],
+          "isobaric_expansion_coefficient": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [
+            1024
+          ],
+          "isothermal_compressibility": [
+            1024
+          ],
+          "isothermal_joule_thomson": [
+            1024
+          ],
+          "joule_thomson": [
+            1024
+          ],
+          "pressure": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ]
+        }
+      },
+      "compiled_full_array_pressure_batch1024": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 23,
+        "dynamic_array_elements": 23552,
+        "field_shapes": {
+          "compressibility_factor": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "internal_energy": [
+            1024
+          ],
+          "is_two_phase": [
+            1024
+          ],
+          "isentropic_bulk_modulus": [
+            1024
+          ],
+          "isentropic_compressibility": [
+            1024
+          ],
+          "isobaric_expansion_coefficient": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [
+            1024
+          ],
+          "isothermal_compressibility": [
+            1024
+          ],
+          "isothermal_joule_thomson": [
+            1024
+          ],
+          "joule_thomson": [
+            1024
+          ],
+          "pressure": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ]
+        }
+      },
+      "compiled_vmap_HP_full_batch1024": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 23,
+        "dynamic_array_elements": 23552,
+        "field_shapes": {
+          "compressibility_factor": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "internal_energy": [
+            1024
+          ],
+          "is_two_phase": [
+            1024
+          ],
+          "isentropic_bulk_modulus": [
+            1024
+          ],
+          "isentropic_compressibility": [
+            1024
+          ],
+          "isobaric_expansion_coefficient": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [
+            1024
+          ],
+          "isothermal_compressibility": [
+            1024
+          ],
+          "isothermal_joule_thomson": [
+            1024
+          ],
+          "joule_thomson": [
+            1024
+          ],
+          "pressure": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ]
+        }
+      },
+      "compiled_all_properties_batch1024": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 22,
+        "dynamic_array_elements": 22528,
+        "field_shapes": {
+          "compressibility_factor": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "internal_energy": [
+            1024
+          ],
+          "is_two_phase": [
+            1024
+          ],
+          "isentropic_bulk_modulus": [
+            1024
+          ],
+          "isentropic_compressibility": [
+            1024
+          ],
+          "isobaric_expansion_coefficient": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [
+            1024
+          ],
+          "isothermal_compressibility": [
+            1024
+          ],
+          "isothermal_joule_thomson": [
+            1024
+          ],
+          "joule_thomson": [
+            1024
+          ],
+          "pressure": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ]
+        }
+      }
+    },
+    "current": {
+      "public_PT_raise_scalar": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 23,
+        "dynamic_array_elements": 23,
+        "field_shapes": {
+          "compressibility_factor": [],
+          "conductivity": [],
+          "density": [],
+          "enthalpy": [],
+          "entropy": [],
+          "gruneisen": [],
+          "heat_capacity_ratio": [],
+          "internal_energy": [],
+          "is_two_phase": [],
+          "isentropic_bulk_modulus": [],
+          "isentropic_compressibility": [],
+          "isobaric_expansion_coefficient": [],
+          "isobaric_heat_capacity": [],
+          "isochoric_heat_capacity": [],
+          "isothermal_bulk_modulus": [],
+          "isothermal_compressibility": [],
+          "isothermal_joule_thomson": [],
+          "joule_thomson": [],
+          "pressure": [],
+          "speed_of_sound": [],
+          "temperature": [],
+          "viscosity": []
+        }
+      },
+      "public_PT_raise_batch1024": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 23,
+        "dynamic_array_elements": 23552,
+        "field_shapes": {
+          "compressibility_factor": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "internal_energy": [
+            1024
+          ],
+          "is_two_phase": [
+            1024
+          ],
+          "isentropic_bulk_modulus": [
+            1024
+          ],
+          "isentropic_compressibility": [
+            1024
+          ],
+          "isobaric_expansion_coefficient": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [
+            1024
+          ],
+          "isothermal_compressibility": [
+            1024
+          ],
+          "isothermal_joule_thomson": [
+            1024
+          ],
+          "joule_thomson": [
+            1024
+          ],
+          "pressure": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ]
+        }
+      },
+      "public_HP_clip_batch1024": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 24,
+        "dynamic_array_elements": 24576,
+        "field_shapes": {
+          "compressibility_factor": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "internal_energy": [
+            1024
+          ],
+          "is_two_phase": [
+            1024
+          ],
+          "isentropic_bulk_modulus": [
+            1024
+          ],
+          "isentropic_compressibility": [
+            1024
+          ],
+          "isobaric_expansion_coefficient": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [
+            1024
+          ],
+          "isothermal_compressibility": [
+            1024
+          ],
+          "isothermal_joule_thomson": [
+            1024
+          ],
+          "joule_thomson": [
+            1024
+          ],
+          "pressure": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ]
+        }
+      },
+      "public_HP_broadcast32x32": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 23,
+        "dynamic_array_elements": 23552,
+        "field_shapes": {
+          "compressibility_factor": [
+            32,
+            32
+          ],
+          "conductivity": [
+            32,
+            32
+          ],
+          "density": [
+            32,
+            32
+          ],
+          "enthalpy": [
+            32,
+            32
+          ],
+          "entropy": [
+            32,
+            32
+          ],
+          "gruneisen": [
+            32,
+            32
+          ],
+          "heat_capacity_ratio": [
+            32,
+            32
+          ],
+          "internal_energy": [
+            32,
+            32
+          ],
+          "is_two_phase": [
+            32,
+            32
+          ],
+          "isentropic_bulk_modulus": [
+            32,
+            32
+          ],
+          "isentropic_compressibility": [
+            32,
+            32
+          ],
+          "isobaric_expansion_coefficient": [
+            32,
+            32
+          ],
+          "isobaric_heat_capacity": [
+            32,
+            32
+          ],
+          "isochoric_heat_capacity": [
+            32,
+            32
+          ],
+          "isothermal_bulk_modulus": [
+            32,
+            32
+          ],
+          "isothermal_compressibility": [
+            32,
+            32
+          ],
+          "isothermal_joule_thomson": [
+            32,
+            32
+          ],
+          "joule_thomson": [
+            32,
+            32
+          ],
+          "pressure": [
+            32,
+            32
+          ],
+          "speed_of_sound": [
+            32,
+            32
+          ],
+          "temperature": [
+            32,
+            32
+          ],
+          "viscosity": [
+            32,
+            32
+          ]
+        }
+      },
+      "compiled_full_batch1024": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 23,
+        "dynamic_array_elements": 23552,
+        "field_shapes": {
+          "compressibility_factor": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "internal_energy": [
+            1024
+          ],
+          "is_two_phase": [
+            1024
+          ],
+          "isentropic_bulk_modulus": [
+            1024
+          ],
+          "isentropic_compressibility": [
+            1024
+          ],
+          "isobaric_expansion_coefficient": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [
+            1024
+          ],
+          "isothermal_compressibility": [
+            1024
+          ],
+          "isothermal_joule_thomson": [
+            1024
+          ],
+          "joule_thomson": [
+            1024
+          ],
+          "pressure": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ]
+        }
+      },
+      "compiled_full_array_pressure_batch1024": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 23,
+        "dynamic_array_elements": 23552,
+        "field_shapes": {
+          "compressibility_factor": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "internal_energy": [
+            1024
+          ],
+          "is_two_phase": [
+            1024
+          ],
+          "isentropic_bulk_modulus": [
+            1024
+          ],
+          "isentropic_compressibility": [
+            1024
+          ],
+          "isobaric_expansion_coefficient": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [
+            1024
+          ],
+          "isothermal_compressibility": [
+            1024
+          ],
+          "isothermal_joule_thomson": [
+            1024
+          ],
+          "joule_thomson": [
+            1024
+          ],
+          "pressure": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ]
+        }
+      },
+      "compiled_vmap_HP_full_batch1024": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 23,
+        "dynamic_array_elements": 23552,
+        "field_shapes": {
+          "compressibility_factor": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "internal_energy": [
+            1024
+          ],
+          "is_two_phase": [
+            1024
+          ],
+          "isentropic_bulk_modulus": [
+            1024
+          ],
+          "isentropic_compressibility": [
+            1024
+          ],
+          "isobaric_expansion_coefficient": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [
+            1024
+          ],
+          "isothermal_compressibility": [
+            1024
+          ],
+          "isothermal_joule_thomson": [
+            1024
+          ],
+          "joule_thomson": [
+            1024
+          ],
+          "pressure": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ]
+        }
+      },
+      "compiled_all_properties_batch1024": {
+        "numeric_fields": 22,
+        "fully_finite_fields": 22,
+        "unavailable_fields": 0,
+        "dynamic_array_leaves": 22,
+        "dynamic_array_elements": 22528,
+        "field_shapes": {
+          "compressibility_factor": [
+            1024
+          ],
+          "conductivity": [
+            1024
+          ],
+          "density": [
+            1024
+          ],
+          "enthalpy": [
+            1024
+          ],
+          "entropy": [
+            1024
+          ],
+          "gruneisen": [
+            1024
+          ],
+          "heat_capacity_ratio": [
+            1024
+          ],
+          "internal_energy": [
+            1024
+          ],
+          "is_two_phase": [
+            1024
+          ],
+          "isentropic_bulk_modulus": [
+            1024
+          ],
+          "isentropic_compressibility": [
+            1024
+          ],
+          "isobaric_expansion_coefficient": [
+            1024
+          ],
+          "isobaric_heat_capacity": [
+            1024
+          ],
+          "isochoric_heat_capacity": [
+            1024
+          ],
+          "isothermal_bulk_modulus": [
+            1024
+          ],
+          "isothermal_compressibility": [
+            1024
+          ],
+          "isothermal_joule_thomson": [
+            1024
+          ],
+          "joule_thomson": [
+            1024
+          ],
+          "pressure": [
+            1024
+          ],
+          "speed_of_sound": [
+            1024
+          ],
+          "temperature": [
+            1024
+          ],
+          "viscosity": [
+            1024
+          ]
+        }
+      }
+    }
+  },
+  "optimized_programs": {
+    "pypi": {
+      "T": {
+        "instruction_count": 7,
+        "normalized_sha256": "a7b781ce1576fe298be17f8f20ff3a68380c8ed8f73927b011e6f2a9136c9b34",
+        "contains_callback": false,
+        "fusion_count": 1
+      },
+      "dTdh": {
+        "instruction_count": 18,
+        "normalized_sha256": "84841bb8659883fee6d54b9528ab0ed0d011b1643f05af45cb72a7473c96f6e3",
+        "contains_callback": false,
+        "fusion_count": 1
+      },
+      "common13_batch1024": {
+        "instruction_count": 122,
+        "normalized_sha256": "6b7fda039384cebb965af56601cc9557e8d5b2b768f4469d043e8958a8ba149a",
+        "contains_callback": false,
+        "fusion_count": 7
+      },
+      "full_batch1024": {
+        "instruction_count": 148,
+        "normalized_sha256": "46cb6d0ceb14a11bd542cc8eb6b64e1a425dbb5ae8ecacabd89922840efef60a",
+        "contains_callback": false,
+        "fusion_count": 7
+      },
+      "all_properties_batch1024": {
+        "instruction_count": 148,
+        "normalized_sha256": "ba568445fde19fc4354da11e5bec31696d4ddf52dece7135fbc1b83bc723a1b6",
+        "contains_callback": false,
+        "fusion_count": 7
+      },
+      "common13_array_pressure_batch1024": {
+        "instruction_count": 127,
+        "normalized_sha256": "3cd919a7bbebda77e763e17184d3264c385a8fcf7168b3b21354dc817184576a",
+        "contains_callback": false,
+        "fusion_count": 7
+      },
+      "full_array_pressure_batch1024": {
+        "instruction_count": 153,
+        "normalized_sha256": "b544fd98809a21235d2a076c33846eb0a9e5ab3a7d2a010205432c5e2d4b6144",
+        "contains_callback": false,
+        "fusion_count": 7
+      },
+      "T_batch1024": {
+        "instruction_count": 9,
+        "normalized_sha256": "2e941cdf64dd16e70e171d08867f16f4d7ed02d072d81059495d1a181848f49b",
+        "contains_callback": false,
+        "fusion_count": 1
+      },
+      "vmap_HP_full_batch1024": {
+        "instruction_count": 148,
+        "normalized_sha256": "87845a6706f9c072522f9b9070ea4431ff508eabf7113e2f92d43ed66492cbf4",
+        "contains_callback": false,
+        "fusion_count": 7
+      },
+      "vmap_HP_T_batch1024": {
+        "instruction_count": 9,
+        "normalized_sha256": "2e941cdf64dd16e70e171d08867f16f4d7ed02d072d81059495d1a181848f49b",
+        "contains_callback": false,
+        "fusion_count": 1
+      },
+      "common13_status_batch1024": {
+        "instruction_count": 124,
+        "normalized_sha256": "bb2bc4d314a1a8aa3dda27cae374c9cda0bfff5d9d4c1a63ff0a4e40680fbc2a",
+        "contains_callback": false,
+        "fusion_count": 7
+      }
+    },
+    "slow": {
+      "T": {
+        "instruction_count": 72,
+        "normalized_sha256": "0debaaa8bff02498e4cdef03b53fc5130acbf6be801b136755f0b59df43a4532",
+        "contains_callback": false,
+        "fusion_count": 1
+      },
+      "dTdh": {
+        "instruction_count": 87,
+        "normalized_sha256": "1ffc84da9b481850ee9c9116a921cd40323035e1a34c803079d520128c0edca2",
+        "contains_callback": false,
+        "fusion_count": 1
+      },
+      "common13_batch1024": {
+        "instruction_count": 1379,
+        "normalized_sha256": "570c4509081a2e48a5b83c312713a7eb30f104e6973b5339ec9f0d79887265a6",
+        "contains_callback": false,
+        "fusion_count": 16
+      },
+      "full_batch1024": {
+        "instruction_count": 541,
+        "normalized_sha256": "c3a176218d4a20254a5c12c6b0d16b55954d617f2020e78baadcc9581cb181ab",
+        "contains_callback": false,
+        "fusion_count": 24
+      },
+      "all_properties_batch1024": {
+        "instruction_count": 1970,
+        "normalized_sha256": "ddae4e77740b8012a77e321edb34cb3a0981974cbcf9cd2de74b1c3c72999693",
+        "contains_callback": false,
+        "fusion_count": 22
+      },
+      "common13_array_pressure_batch1024": {
+        "instruction_count": 1729,
+        "normalized_sha256": "2cc32e5e27ec35fbc66277d08b126bb358abcdc37d8739c51e003b551ae2dfb3",
+        "contains_callback": false,
+        "fusion_count": 17
+      },
+      "full_array_pressure_batch1024": {
+        "instruction_count": 603,
+        "normalized_sha256": "6377b626bcb855cdcbbd5fbe16c39d075e4ca21218f1ef8cc9098598b918d346",
+        "contains_callback": false,
+        "fusion_count": 24
+      },
+      "T_batch1024": {
+        "instruction_count": 98,
+        "normalized_sha256": "46a3de440917c6b3a906a57cb145a426cfd15502de72ede9749524e53f72096f",
+        "contains_callback": false,
+        "fusion_count": 1
+      },
+      "vmap_HP_full_batch1024": {
+        "instruction_count": 541,
+        "normalized_sha256": "c3a176218d4a20254a5c12c6b0d16b55954d617f2020e78baadcc9581cb181ab",
+        "contains_callback": false,
+        "fusion_count": 24
+      },
+      "vmap_HP_T_batch1024": {
+        "instruction_count": 98,
+        "normalized_sha256": "46a3de440917c6b3a906a57cb145a426cfd15502de72ede9749524e53f72096f",
+        "contains_callback": false,
+        "fusion_count": 1
+      },
+      "common13_status_batch1024": {
+        "instruction_count": 433,
+        "normalized_sha256": "7b2ce3f8a97b501d7f7ecd0cc221085c62b1e72fb8a4260a852f845e20e5b15c",
+        "contains_callback": false,
+        "fusion_count": 17
+      }
+    },
+    "current": {
+      "T": {
+        "instruction_count": 48,
+        "normalized_sha256": "be70919e40ea87c3c172c137f402bf58f03f65fc1c34d71193604a89dbbc610c",
+        "contains_callback": false,
+        "fusion_count": 1
+      },
+      "dTdh": {
+        "instruction_count": 63,
+        "normalized_sha256": "90b8b9642966d4bd55a343b888308c2b03a0574778d6086f2580c34da676c8fb",
+        "contains_callback": false,
+        "fusion_count": 1
+      },
+      "common13_batch1024": {
+        "instruction_count": 561,
+        "normalized_sha256": "bc7d23e58567d589007ff71192564aecaef522ea2e855e3b466da200013493ce",
+        "contains_callback": false,
+        "fusion_count": 36
+      },
+      "full_batch1024": {
+        "instruction_count": 784,
+        "normalized_sha256": "b644de6d58b76804dbe7c59b35e3b018bd9d2b18221a9df12e80c512c0824bb7",
+        "contains_callback": false,
+        "fusion_count": 53
+      },
+      "all_properties_batch1024": {
+        "instruction_count": 694,
+        "normalized_sha256": "2f342ee04ab8fe055827828a3d14f0ac5951e804fd4a5636a3c9733cde776f1b",
+        "contains_callback": false,
+        "fusion_count": 52
+      },
+      "common13_array_pressure_batch1024": {
+        "instruction_count": 582,
+        "normalized_sha256": "913dd17b4538fcc788c9acbaa323b1e4b671d77766164830cbd929c0b8c9f95f",
+        "contains_callback": false,
+        "fusion_count": 36
+      },
+      "full_array_pressure_batch1024": {
+        "instruction_count": 821,
+        "normalized_sha256": "cac23d6f49ed60d098c4e0fc2fbedccfc626ce7dd4742eb312e2f0223312b180",
+        "contains_callback": false,
+        "fusion_count": 53
+      },
+      "T_batch1024": {
+        "instruction_count": 135,
+        "normalized_sha256": "c6deedaac5c6c7f8f452a700b69ad380c6845359146b4eb18ecb92169e4567b4",
+        "contains_callback": false,
+        "fusion_count": 5
+      },
+      "vmap_HP_full_batch1024": {
+        "instruction_count": 1385,
+        "normalized_sha256": "d01e202e3e63d750be60448baf4924e88814bf64c42af894a9cdfae0c55632ce",
+        "contains_callback": false,
+        "fusion_count": 22
+      },
+      "vmap_HP_T_batch1024": {
+        "instruction_count": 62,
+        "normalized_sha256": "dea1e14f4fb55c296445d2652002e0eadb17b5f5e1b90ce83797a0076f2138ac",
+        "contains_callback": false,
+        "fusion_count": 1
+      },
+      "common13_status_batch1024": {
+        "instruction_count": 642,
+        "normalized_sha256": "a4562dafd470d9ac7657eda735932aae5b457a0a370b92ae91aef7d42bf491c8",
+        "contains_callback": false,
+        "fusion_count": 37
+      }
+    }
+  },
+  "model_construction": {
+    "pypi": {
+      "median_us": 6976.879999999999,
+      "iqr_us": [
+        6846.33,
+        7314.450000000001
+      ]
+    },
+    "slow": {
+      "median_us": 3127.23,
+      "iqr_us": [
+        3026.915,
+        3264.46
+      ]
+    },
+    "current": {
+      "median_us": 4150.83,
+      "iqr_us": [
+        4066.585,
+        4559.09
+      ]
+    }
+  },
+  "first_call_us": {
+    "pypi1": {
+      "public_PT_raise_scalar": 24048.0,
+      "public_PT_raise_batch1024": 37411.8,
+      "public_HP_raise_scalar": 25038.2,
+      "public_HP_raise_batch1024": 30076.8,
+      "public_PS_raise_scalar": 24140.0,
+      "public_PS_raise_batch1024": 33304.9,
+      "public_HS_raise_scalar": 23044.6,
+      "public_HS_raise_batch1024": 31504.6,
+      "public_rhoP_raise_scalar": 21457.1,
+      "public_rhoP_raise_batch1024": 28693.3,
+      "public_rhoH_raise_scalar": 21702.0,
+      "public_rhoH_raise_batch1024": 30263.1,
+      "public_PT_mask_scalar": 319.6,
+      "public_PT_mask_batch1024": 363.1,
+      "public_PT_clip_scalar": 127.2,
+      "public_PT_clip_batch1024": 193.6,
+      "public_PT_raise_array_scalar": 22150.5,
+      "public_HP_mask_scalar": 125.5,
+      "public_HP_mask_batch1024": 424.1,
+      "public_HP_clip_scalar": 124.3,
+      "public_HP_clip_batch1024": 194.7,
+      "public_HP_raise_array_scalar": 22038.1,
+      "compiled_T_scalar": 15048.1,
+      "compiled_dTdh_scalar": 23101.0,
+      "compiled_common13_batch1024": 28914.0,
+      "compiled_full_batch1024": 27471.3,
+      "compiled_all_properties_batch1024": 28867.1,
+      "compiled_common13_array_pressure_batch1024": 25921.7,
+      "compiled_full_array_pressure_batch1024": 26097.8,
+      "compiled_T_batch1024": 12463.3,
+      "compiled_vmap_HP_full_batch1024": 35200.0,
+      "compiled_vmap_HP_T_batch1024": 12710.7,
+      "compiled_all_properties_scalar": 20525.7,
+      "eager_existing_state_all_properties_export_batch1024": 790.3,
+      "compiled_dTdh_batch1024": 30495.0,
+      "compiled_common13_scalar": 17940.3,
+      "compiled_common13_status_batch1024": 27315.1,
+      "public_HP_broadcast32x32": 37968.5,
+      "compressor_eager": 71472.6,
+      "compressor_compiled": 19126.1,
+      "compressor_gradient": 51635.9,
+      "compressor_batch64": 52121.2,
+      "heat_exchanger_compiled128": 48142.2,
+      "heat_exchanger_gradient128": 51486.3
+    },
+    "slow1": {
+      "public_PT_raise_scalar": 90908.1,
+      "public_PT_raise_batch1024": 105454.1,
+      "public_HP_raise_scalar": 78451.8,
+      "public_HP_raise_batch1024": 93331.2,
+      "public_PS_raise_scalar": 85767.7,
+      "public_PS_raise_batch1024": 102103.5,
+      "public_HS_raise_scalar": 90479.8,
+      "public_HS_raise_batch1024": 102542.1,
+      "public_rhoP_raise_scalar": 75164.4,
+      "public_rhoP_raise_batch1024": 90337.3,
+      "public_rhoH_raise_scalar": 73327.5,
+      "public_rhoH_raise_batch1024": 85077.5,
+      "public_PT_mask_scalar": 73577.7,
+      "public_PT_mask_batch1024": 91393.9,
+      "public_PT_clip_scalar": 80126.9,
+      "public_PT_clip_batch1024": 95667.6,
+      "public_PT_raise_array_scalar": 370.7,
+      "public_HP_mask_scalar": 74358.5,
+      "public_HP_mask_batch1024": 96487.8,
+      "public_HP_clip_scalar": 78863.6,
+      "public_HP_clip_batch1024": 94993.5,
+      "public_HP_raise_array_scalar": 409.4,
+      "compiled_T_scalar": 33784.2,
+      "compiled_dTdh_scalar": 81391.3,
+      "compiled_common13_batch1024": 113856.5,
+      "compiled_full_batch1024": 77474.4,
+      "compiled_all_properties_batch1024": 119177.1,
+      "compiled_common13_array_pressure_batch1024": 99955.7,
+      "compiled_full_array_pressure_batch1024": 71553.5,
+      "compiled_T_batch1024": 42066.7,
+      "compiled_vmap_HP_full_batch1024": 96592.1,
+      "compiled_vmap_HP_T_batch1024": 43508.1,
+      "compiled_all_properties_scalar": 79427.1,
+      "eager_existing_state_all_properties_export_batch1024": 14.7,
+      "compiled_dTdh_batch1024": 97387.9,
+      "compiled_common13_scalar": 66647.6,
+      "compiled_common13_status_batch1024": 61951.7,
+      "public_HP_broadcast32x32": 105597.7,
+      "compressor_eager": 176875.2,
+      "compressor_compiled": 85699.3,
+      "compressor_gradient": 202481.9,
+      "compressor_batch64": 197948.7,
+      "heat_exchanger_compiled128": 138637.3,
+      "heat_exchanger_gradient128": 200317.2,
+      "diagnostic_raw_PT_batch1024": 38963.1
+    },
+    "current1": {
+      "public_PT_raise_scalar": 63066.6,
+      "public_PT_raise_batch1024": 83287.7,
+      "public_HP_raise_scalar": 55877.5,
+      "public_HP_raise_batch1024": 74478.3,
+      "public_PS_raise_scalar": 57987.8,
+      "public_PS_raise_batch1024": 77230.1,
+      "public_HS_raise_scalar": 62784.5,
+      "public_HS_raise_batch1024": 79091.5,
+      "public_rhoP_raise_scalar": 56154.0,
+      "public_rhoP_raise_batch1024": 81810.2,
+      "public_rhoH_raise_scalar": 54944.7,
+      "public_rhoH_raise_batch1024": 71751.1,
+      "public_PT_mask_scalar": 85994.5,
+      "public_PT_mask_batch1024": 121069.0,
+      "public_PT_clip_scalar": 78804.0,
+      "public_PT_clip_batch1024": 128754.3,
+      "public_PT_raise_array_scalar": 446.5,
+      "public_HP_mask_scalar": 89463.1,
+      "public_HP_mask_batch1024": 124908.7,
+      "public_HP_clip_scalar": 87380.4,
+      "public_HP_clip_batch1024": 136698.5,
+      "public_HP_raise_array_scalar": 361.3,
+      "compiled_T_scalar": 23316.9,
+      "compiled_dTdh_scalar": 58838.3,
+      "compiled_common13_batch1024": 100398.1,
+      "compiled_full_batch1024": 99379.1,
+      "compiled_all_properties_batch1024": 97180.3,
+      "compiled_common13_array_pressure_batch1024": 82180.4,
+      "compiled_full_array_pressure_batch1024": 100579.0,
+      "compiled_T_batch1024": 35739.6,
+      "compiled_vmap_HP_full_batch1024": 96504.3,
+      "compiled_vmap_HP_T_batch1024": 26720.5,
+      "compiled_all_properties_scalar": 56416.1,
+      "eager_existing_state_all_properties_export_batch1024": 13.4,
+      "compiled_dTdh_batch1024": 80409.1,
+      "compiled_common13_scalar": 48383.6,
+      "compiled_common13_status_batch1024": 81814.4,
+      "public_HP_broadcast32x32": 160445.4,
+      "compressor_eager": 197616.2,
+      "compressor_compiled": 54528.2,
+      "compressor_gradient": 135571.7,
+      "compressor_batch64": 107472.9,
+      "heat_exchanger_compiled128": 161654.6,
+      "heat_exchanger_gradient128": 245599.3,
+      "diagnostic_raw_PT_batch1024": 39477.4,
+      "diagnostic_policy_HP_batch1024": 32458.1,
+      "diagnostic_native_state_assembly_batch1024": 39131.4
+    },
+    "current2": {
+      "public_PT_raise_scalar": 63785.5,
+      "public_PT_raise_batch1024": 83576.9,
+      "public_HP_raise_scalar": 57410.4,
+      "public_HP_raise_batch1024": 77924.7,
+      "public_PS_raise_scalar": 59256.3,
+      "public_PS_raise_batch1024": 73432.5,
+      "public_HS_raise_scalar": 61126.7,
+      "public_HS_raise_batch1024": 77703.7,
+      "public_rhoP_raise_scalar": 56494.2,
+      "public_rhoP_raise_batch1024": 81213.6,
+      "public_rhoH_raise_scalar": 53886.5,
+      "public_rhoH_raise_batch1024": 71172.2,
+      "public_PT_mask_scalar": 86946.8,
+      "public_PT_mask_batch1024": 123796.5,
+      "public_PT_clip_scalar": 77468.4,
+      "public_PT_clip_batch1024": 123290.1,
+      "public_PT_raise_array_scalar": 376.7,
+      "public_HP_mask_scalar": 85340.2,
+      "public_HP_mask_batch1024": 116991.2,
+      "public_HP_clip_scalar": 80014.7,
+      "public_HP_clip_batch1024": 122964.1,
+      "public_HP_raise_array_scalar": 377.2,
+      "compiled_T_scalar": 23149.0,
+      "compiled_dTdh_scalar": 58288.2,
+      "compiled_common13_batch1024": 98678.5,
+      "compiled_full_batch1024": 100217.0,
+      "compiled_all_properties_batch1024": 93599.4,
+      "compiled_common13_array_pressure_batch1024": 80880.4,
+      "compiled_full_array_pressure_batch1024": 99801.5,
+      "compiled_T_batch1024": 34846.1,
+      "compiled_vmap_HP_full_batch1024": 95972.3,
+      "compiled_vmap_HP_T_batch1024": 26593.7,
+      "compiled_all_properties_scalar": 57054.1,
+      "eager_existing_state_all_properties_export_batch1024": 14.6,
+      "compiled_dTdh_batch1024": 75860.0,
+      "compiled_common13_scalar": 45916.9,
+      "compiled_common13_status_batch1024": 80833.2,
+      "public_HP_broadcast32x32": 157819.5,
+      "compressor_eager": 200372.5,
+      "compressor_compiled": 52920.3,
+      "compressor_gradient": 140978.3,
+      "compressor_batch64": 111249.2,
+      "heat_exchanger_compiled128": 164742.5,
+      "heat_exchanger_gradient128": 253402.5,
+      "diagnostic_raw_PT_batch1024": 38633.3,
+      "diagnostic_policy_HP_batch1024": 33567.0,
+      "diagnostic_native_state_assembly_batch1024": 38850.3
+    },
+    "slow2": {
+      "public_PT_raise_scalar": 89909.9,
+      "public_PT_raise_batch1024": 104922.9,
+      "public_HP_raise_scalar": 79964.3,
+      "public_HP_raise_batch1024": 96170.1,
+      "public_PS_raise_scalar": 84847.6,
+      "public_PS_raise_batch1024": 97937.6,
+      "public_HS_raise_scalar": 91479.0,
+      "public_HS_raise_batch1024": 106627.3,
+      "public_rhoP_raise_scalar": 76097.1,
+      "public_rhoP_raise_batch1024": 91212.7,
+      "public_rhoH_raise_scalar": 75421.2,
+      "public_rhoH_raise_batch1024": 86600.1,
+      "public_PT_mask_scalar": 73936.2,
+      "public_PT_mask_batch1024": 106753.7,
+      "public_PT_clip_scalar": 84719.7,
+      "public_PT_clip_batch1024": 94097.2,
+      "public_PT_raise_array_scalar": 447.2,
+      "public_HP_mask_scalar": 72072.6,
+      "public_HP_mask_batch1024": 82793.0,
+      "public_HP_clip_scalar": 79931.9,
+      "public_HP_clip_batch1024": 96682.5,
+      "public_HP_raise_array_scalar": 454.3,
+      "compiled_T_scalar": 32315.1,
+      "compiled_dTdh_scalar": 72429.6,
+      "compiled_common13_batch1024": 101158.1,
+      "compiled_full_batch1024": 70281.0,
+      "compiled_all_properties_batch1024": 107583.1,
+      "compiled_common13_array_pressure_batch1024": 93044.9,
+      "compiled_full_array_pressure_batch1024": 73099.3,
+      "compiled_T_batch1024": 41063.6,
+      "compiled_vmap_HP_full_batch1024": 95454.6,
+      "compiled_vmap_HP_T_batch1024": 39646.3,
+      "compiled_all_properties_scalar": 78873.4,
+      "eager_existing_state_all_properties_export_batch1024": 15.8,
+      "compiled_dTdh_batch1024": 97524.5,
+      "compiled_common13_scalar": 65142.0,
+      "compiled_common13_status_batch1024": 64623.8,
+      "public_HP_broadcast32x32": 108472.8,
+      "compressor_eager": 169908.0,
+      "compressor_compiled": 88351.6,
+      "compressor_gradient": 187804.2,
+      "compressor_batch64": 187478.6,
+      "heat_exchanger_compiled128": 135691.1,
+      "heat_exchanger_gradient128": 206382.5,
+      "diagnostic_raw_PT_batch1024": 41666.0
+    },
+    "pypi2": {
+      "public_PT_raise_scalar": 24197.4,
+      "public_PT_raise_batch1024": 35093.7,
+      "public_HP_raise_scalar": 24696.7,
+      "public_HP_raise_batch1024": 30058.6,
+      "public_PS_raise_scalar": 26612.7,
+      "public_PS_raise_batch1024": 30191.1,
+      "public_HS_raise_scalar": 24455.8,
+      "public_HS_raise_batch1024": 30206.2,
+      "public_rhoP_raise_scalar": 23941.3,
+      "public_rhoP_raise_batch1024": 31148.5,
+      "public_rhoH_raise_scalar": 22783.8,
+      "public_rhoH_raise_batch1024": 30208.8,
+      "public_PT_mask_scalar": 305.0,
+      "public_PT_mask_batch1024": 312.3,
+      "public_PT_clip_scalar": 157.0,
+      "public_PT_clip_batch1024": 210.8,
+      "public_PT_raise_array_scalar": 23007.7,
+      "public_HP_mask_scalar": 127.3,
+      "public_HP_mask_batch1024": 275.7,
+      "public_HP_clip_scalar": 122.5,
+      "public_HP_clip_batch1024": 214.0,
+      "public_HP_raise_array_scalar": 22542.0,
+      "compiled_T_scalar": 14446.5,
+      "compiled_dTdh_scalar": 25015.9,
+      "compiled_common13_batch1024": 29789.1,
+      "compiled_full_batch1024": 27745.9,
+      "compiled_all_properties_batch1024": 29192.1,
+      "compiled_common13_array_pressure_batch1024": 26850.7,
+      "compiled_full_array_pressure_batch1024": 27350.7,
+      "compiled_T_batch1024": 12921.8,
+      "compiled_vmap_HP_full_batch1024": 36285.6,
+      "compiled_vmap_HP_T_batch1024": 12930.8,
+      "compiled_all_properties_scalar": 19770.7,
+      "eager_existing_state_all_properties_export_batch1024": 830.3,
+      "compiled_dTdh_batch1024": 31005.8,
+      "compiled_common13_scalar": 17853.1,
+      "compiled_common13_status_batch1024": 25277.1,
+      "public_HP_broadcast32x32": 36184.0,
+      "compressor_eager": 72510.6,
+      "compressor_compiled": 19763.7,
+      "compressor_gradient": 56437.8,
+      "compressor_batch64": 52513.0,
+      "heat_exchanger_compiled128": 47744.5,
+      "heat_exchanger_gradient128": 49798.4
+    },
+    "pypi3": {
+      "public_PT_raise_scalar": 23864.6,
+      "public_PT_raise_batch1024": 37639.6,
+      "public_HP_raise_scalar": 25230.2,
+      "public_HP_raise_batch1024": 32667.2,
+      "public_PS_raise_scalar": 26315.4,
+      "public_PS_raise_batch1024": 33491.9,
+      "public_HS_raise_scalar": 24945.2,
+      "public_HS_raise_batch1024": 34676.7,
+      "public_rhoP_raise_scalar": 22495.4,
+      "public_rhoP_raise_batch1024": 29917.3,
+      "public_rhoH_raise_scalar": 22851.3,
+      "public_rhoH_raise_batch1024": 30449.3,
+      "public_PT_mask_scalar": 221.1,
+      "public_PT_mask_batch1024": 377.6,
+      "public_PT_clip_scalar": 127.5,
+      "public_PT_clip_batch1024": 267.6,
+      "public_PT_raise_array_scalar": 22815.0,
+      "public_HP_mask_scalar": 127.9,
+      "public_HP_mask_batch1024": 280.6,
+      "public_HP_clip_scalar": 145.5,
+      "public_HP_clip_batch1024": 208.3,
+      "public_HP_raise_array_scalar": 21943.6,
+      "compiled_T_scalar": 14205.0,
+      "compiled_dTdh_scalar": 24800.0,
+      "compiled_common13_batch1024": 31821.9,
+      "compiled_full_batch1024": 26568.7,
+      "compiled_all_properties_batch1024": 28786.2,
+      "compiled_common13_array_pressure_batch1024": 26995.4,
+      "compiled_full_array_pressure_batch1024": 29239.3,
+      "compiled_T_batch1024": 12541.9,
+      "compiled_vmap_HP_full_batch1024": 37670.9,
+      "compiled_vmap_HP_T_batch1024": 13458.5,
+      "compiled_all_properties_scalar": 21549.3,
+      "eager_existing_state_all_properties_export_batch1024": 823.5,
+      "compiled_dTdh_batch1024": 31289.9,
+      "compiled_common13_scalar": 17403.0,
+      "compiled_common13_status_batch1024": 27690.2,
+      "public_HP_broadcast32x32": 37404.9,
+      "compressor_eager": 71519.0,
+      "compressor_compiled": 19872.6,
+      "compressor_gradient": 50665.9,
+      "compressor_batch64": 55310.1,
+      "heat_exchanger_compiled128": 49300.1,
+      "heat_exchanger_gradient128": 49929.7
+    },
+    "slow3": {
+      "public_PT_raise_scalar": 92424.1,
+      "public_PT_raise_batch1024": 111323.3,
+      "public_HP_raise_scalar": 80096.4,
+      "public_HP_raise_batch1024": 94028.2,
+      "public_PS_raise_scalar": 86622.0,
+      "public_PS_raise_batch1024": 97006.7,
+      "public_HS_raise_scalar": 90811.7,
+      "public_HS_raise_batch1024": 105905.9,
+      "public_rhoP_raise_scalar": 75214.3,
+      "public_rhoP_raise_batch1024": 88006.5,
+      "public_rhoH_raise_scalar": 75417.8,
+      "public_rhoH_raise_batch1024": 85046.9,
+      "public_PT_mask_scalar": 73774.3,
+      "public_PT_mask_batch1024": 86485.4,
+      "public_PT_clip_scalar": 81677.6,
+      "public_PT_clip_batch1024": 96026.1,
+      "public_PT_raise_array_scalar": 419.5,
+      "public_HP_mask_scalar": 72613.5,
+      "public_HP_mask_batch1024": 83189.1,
+      "public_HP_clip_scalar": 77354.1,
+      "public_HP_clip_batch1024": 90821.5,
+      "public_HP_raise_array_scalar": 353.5,
+      "compiled_T_scalar": 30687.5,
+      "compiled_dTdh_scalar": 71630.8,
+      "compiled_common13_batch1024": 101153.0,
+      "compiled_full_batch1024": 68697.8,
+      "compiled_all_properties_batch1024": 104118.5,
+      "compiled_common13_array_pressure_batch1024": 96442.0,
+      "compiled_full_array_pressure_batch1024": 72209.3,
+      "compiled_T_batch1024": 40047.3,
+      "compiled_vmap_HP_full_batch1024": 95210.2,
+      "compiled_vmap_HP_T_batch1024": 40599.8,
+      "compiled_all_properties_scalar": 76688.4,
+      "eager_existing_state_all_properties_export_batch1024": 71.5,
+      "compiled_dTdh_batch1024": 95887.7,
+      "compiled_common13_scalar": 63076.3,
+      "compiled_common13_status_batch1024": 62850.4,
+      "public_HP_broadcast32x32": 108713.1,
+      "compressor_eager": 166454.4,
+      "compressor_compiled": 84625.6,
+      "compressor_gradient": 182642.0,
+      "compressor_batch64": 184591.0,
+      "heat_exchanger_compiled128": 132906.9,
+      "heat_exchanger_gradient128": 199475.9,
+      "diagnostic_raw_PT_batch1024": 40112.8
+    },
+    "current3": {
+      "public_PT_raise_scalar": 66293.8,
+      "public_PT_raise_batch1024": 85820.4,
+      "public_HP_raise_scalar": 54714.5,
+      "public_HP_raise_batch1024": 74977.7,
+      "public_PS_raise_scalar": 59001.5,
+      "public_PS_raise_batch1024": 79750.8,
+      "public_HS_raise_scalar": 61338.8,
+      "public_HS_raise_batch1024": 83173.9,
+      "public_rhoP_raise_scalar": 55464.3,
+      "public_rhoP_raise_batch1024": 85386.2,
+      "public_rhoH_raise_scalar": 57750.5,
+      "public_rhoH_raise_batch1024": 79781.3,
+      "public_PT_mask_scalar": 88819.4,
+      "public_PT_mask_batch1024": 151225.5,
+      "public_PT_clip_scalar": 77652.9,
+      "public_PT_clip_batch1024": 126760.9,
+      "public_PT_raise_array_scalar": 421.4,
+      "public_HP_mask_scalar": 82775.7,
+      "public_HP_mask_batch1024": 121203.8,
+      "public_HP_clip_scalar": 82102.2,
+      "public_HP_clip_batch1024": 129570.0,
+      "public_HP_raise_array_scalar": 358.3,
+      "compiled_T_scalar": 24065.3,
+      "compiled_dTdh_scalar": 58903.2,
+      "compiled_common13_batch1024": 97251.2,
+      "compiled_full_batch1024": 102916.9,
+      "compiled_all_properties_batch1024": 99790.0,
+      "compiled_common13_array_pressure_batch1024": 84640.3,
+      "compiled_full_array_pressure_batch1024": 98558.1,
+      "compiled_T_batch1024": 36627.9,
+      "compiled_vmap_HP_full_batch1024": 97989.7,
+      "compiled_vmap_HP_T_batch1024": 28133.2,
+      "compiled_all_properties_scalar": 59975.0,
+      "eager_existing_state_all_properties_export_batch1024": 24.1,
+      "compiled_dTdh_batch1024": 83766.1,
+      "compiled_common13_scalar": 49575.3,
+      "compiled_common13_status_batch1024": 85895.6,
+      "public_HP_broadcast32x32": 162933.6,
+      "compressor_eager": 211724.3,
+      "compressor_compiled": 57537.9,
+      "compressor_gradient": 158697.9,
+      "compressor_batch64": 119656.4,
+      "heat_exchanger_compiled128": 191047.6,
+      "heat_exchanger_gradient128": 316128.9,
+      "diagnostic_raw_PT_batch1024": 47631.6,
+      "diagnostic_policy_HP_batch1024": 40718.7,
+      "diagnostic_native_state_assembly_batch1024": 50481.2
+    },
+    "current4": {
+      "public_PT_raise_scalar": 67098.0,
+      "public_PT_raise_batch1024": 88759.8,
+      "public_HP_raise_scalar": 57056.0,
+      "public_HP_raise_batch1024": 85048.7,
+      "public_PS_raise_scalar": 62383.4,
+      "public_PS_raise_batch1024": 83515.1,
+      "public_HS_raise_scalar": 64421.2,
+      "public_HS_raise_batch1024": 84072.3,
+      "public_rhoP_raise_scalar": 60700.2,
+      "public_rhoP_raise_batch1024": 92486.7,
+      "public_rhoH_raise_scalar": 61297.3,
+      "public_rhoH_raise_batch1024": 78975.9,
+      "public_PT_mask_scalar": 90318.7,
+      "public_PT_mask_batch1024": 123083.4,
+      "public_PT_clip_scalar": 80092.5,
+      "public_PT_clip_batch1024": 125805.9,
+      "public_PT_raise_array_scalar": 400.9,
+      "public_HP_mask_scalar": 83036.2,
+      "public_HP_mask_batch1024": 120144.0,
+      "public_HP_clip_scalar": 86131.2,
+      "public_HP_clip_batch1024": 129038.4,
+      "public_HP_raise_array_scalar": 409.2,
+      "compiled_T_scalar": 26246.7,
+      "compiled_dTdh_scalar": 60727.5,
+      "compiled_common13_batch1024": 103561.1,
+      "compiled_full_batch1024": 105657.0,
+      "compiled_all_properties_batch1024": 99916.3,
+      "compiled_common13_array_pressure_batch1024": 90624.5,
+      "compiled_full_array_pressure_batch1024": 107506.3,
+      "compiled_T_batch1024": 39140.6,
+      "compiled_vmap_HP_full_batch1024": 107057.8,
+      "compiled_vmap_HP_T_batch1024": 38172.0,
+      "compiled_all_properties_scalar": 65529.6,
+      "eager_existing_state_all_properties_export_batch1024": 20.2,
+      "compiled_dTdh_batch1024": 82458.3,
+      "compiled_common13_scalar": 50667.8,
+      "compiled_common13_status_batch1024": 87828.8,
+      "public_HP_broadcast32x32": 165343.3,
+      "compressor_eager": 203759.5,
+      "compressor_compiled": 55201.1,
+      "compressor_gradient": 153802.8,
+      "compressor_batch64": 110748.5,
+      "heat_exchanger_compiled128": 168209.9,
+      "heat_exchanger_gradient128": 265098.2,
+      "diagnostic_raw_PT_batch1024": 38221.6,
+      "diagnostic_policy_HP_batch1024": 32324.7,
+      "diagnostic_native_state_assembly_batch1024": 39021.6
+    },
+    "slow4": {
+      "public_PT_raise_scalar": 93013.7,
+      "public_PT_raise_batch1024": 101898.6,
+      "public_HP_raise_scalar": 79660.2,
+      "public_HP_raise_batch1024": 94082.5,
+      "public_PS_raise_scalar": 85950.8,
+      "public_PS_raise_batch1024": 99709.3,
+      "public_HS_raise_scalar": 93379.8,
+      "public_HS_raise_batch1024": 107546.7,
+      "public_rhoP_raise_scalar": 74927.7,
+      "public_rhoP_raise_batch1024": 91106.9,
+      "public_rhoH_raise_scalar": 77940.0,
+      "public_rhoH_raise_batch1024": 87458.4,
+      "public_PT_mask_scalar": 71593.9,
+      "public_PT_mask_batch1024": 89815.1,
+      "public_PT_clip_scalar": 85306.8,
+      "public_PT_clip_batch1024": 94977.2,
+      "public_PT_raise_array_scalar": 396.8,
+      "public_HP_mask_scalar": 71559.6,
+      "public_HP_mask_batch1024": 84424.3,
+      "public_HP_clip_scalar": 83124.7,
+      "public_HP_clip_batch1024": 94418.8,
+      "public_HP_raise_array_scalar": 372.0,
+      "compiled_T_scalar": 31491.7,
+      "compiled_dTdh_scalar": 75190.5,
+      "compiled_common13_batch1024": 100317.9,
+      "compiled_full_batch1024": 70477.6,
+      "compiled_all_properties_batch1024": 106231.8,
+      "compiled_common13_array_pressure_batch1024": 99779.9,
+      "compiled_full_array_pressure_batch1024": 73393.0,
+      "compiled_T_batch1024": 41153.8,
+      "compiled_vmap_HP_full_batch1024": 97553.3,
+      "compiled_vmap_HP_T_batch1024": 41045.0,
+      "compiled_all_properties_scalar": 75600.8,
+      "eager_existing_state_all_properties_export_batch1024": 45.5,
+      "compiled_dTdh_batch1024": 94545.9,
+      "compiled_common13_scalar": 63087.8,
+      "compiled_common13_status_batch1024": 63120.9,
+      "public_HP_broadcast32x32": 103222.0,
+      "compressor_eager": 162608.8,
+      "compressor_compiled": 87415.4,
+      "compressor_gradient": 190611.3,
+      "compressor_batch64": 179126.0,
+      "heat_exchanger_compiled128": 131822.7,
+      "heat_exchanger_gradient128": 183378.2,
+      "diagnostic_raw_PT_batch1024": 36829.1
+    },
+    "pypi4": {
+      "public_PT_raise_scalar": 26094.1,
+      "public_PT_raise_batch1024": 38542.2,
+      "public_HP_raise_scalar": 27204.5,
+      "public_HP_raise_batch1024": 35839.8,
+      "public_PS_raise_scalar": 26716.4,
+      "public_PS_raise_batch1024": 32633.6,
+      "public_HS_raise_scalar": 25959.8,
+      "public_HS_raise_batch1024": 32761.9,
+      "public_rhoP_raise_scalar": 24790.0,
+      "public_rhoP_raise_batch1024": 30897.9,
+      "public_rhoH_raise_scalar": 23622.2,
+      "public_rhoH_raise_batch1024": 31693.5,
+      "public_PT_mask_scalar": 312.3,
+      "public_PT_mask_batch1024": 488.8,
+      "public_PT_clip_scalar": 228.6,
+      "public_PT_clip_batch1024": 314.9,
+      "public_PT_raise_array_scalar": 24283.4,
+      "public_HP_mask_scalar": 131.6,
+      "public_HP_mask_batch1024": 299.7,
+      "public_HP_clip_scalar": 147.2,
+      "public_HP_clip_batch1024": 235.4,
+      "public_HP_raise_array_scalar": 22494.1,
+      "compiled_T_scalar": 15293.9,
+      "compiled_dTdh_scalar": 24854.4,
+      "compiled_common13_batch1024": 30604.0,
+      "compiled_full_batch1024": 27135.7,
+      "compiled_all_properties_batch1024": 27728.2,
+      "compiled_common13_array_pressure_batch1024": 26480.3,
+      "compiled_full_array_pressure_batch1024": 26839.2,
+      "compiled_T_batch1024": 12692.3,
+      "compiled_vmap_HP_full_batch1024": 38613.9,
+      "compiled_vmap_HP_T_batch1024": 13220.2,
+      "compiled_all_properties_scalar": 20950.2,
+      "eager_existing_state_all_properties_export_batch1024": 797.6,
+      "compiled_dTdh_batch1024": 32366.3,
+      "compiled_common13_scalar": 18359.8,
+      "compiled_common13_status_batch1024": 26572.6,
+      "public_HP_broadcast32x32": 37685.6,
+      "compressor_eager": 72940.4,
+      "compressor_compiled": 20646.3,
+      "compressor_gradient": 51112.2,
+      "compressor_batch64": 54460.2,
+      "heat_exchanger_compiled128": 51505.3,
+      "heat_exchanger_gradient128": 50394.8
+    }
+  },
+  "changing_python_values_including_compilation_us": {
+    "pypi1": [
+      22604.0,
+      22678.9,
+      21860.1,
+      23225.2,
+      22853.9,
+      22374.0,
+      21985.0,
+      21801.6
+    ],
+    "slow1": [
+      137.2,
+      60.6,
+      51.1,
+      48.3,
+      59.3,
+      49.3,
+      50.2,
+      46.0
+    ],
+    "current1": [
+      148.9,
+      72.5,
+      57.8,
+      49.6,
+      48.0,
+      47.5,
+      46.6,
+      45.9
+    ],
+    "current2": [
+      130.4,
+      63.0,
+      48.9,
+      47.9,
+      44.7,
+      44.8,
+      44.1,
+      43.2
+    ],
+    "slow2": [
+      146.7,
+      69.9,
+      57.1,
+      57.1,
+      51.5,
+      51.3,
+      49.7,
+      50.1
+    ],
+    "pypi2": [
+      22404.9,
+      21842.5,
+      21892.2,
+      22396.7,
+      22058.6,
+      20878.4,
+      21598.6,
+      22284.7
+    ],
+    "pypi3": [
+      22411.1,
+      21420.4,
+      22246.8,
+      23397.8,
+      23021.2,
+      23718.6,
+      22161.2,
+      21644.3
+    ],
+    "slow3": [
+      134.4,
+      64.5,
+      66.6,
+      55.4,
+      49.5,
+      50.6,
+      50.0,
+      53.1
+    ],
+    "current3": [
+      173.9,
+      75.5,
+      58.8,
+      54.9,
+      52.9,
+      52.4,
+      69.6,
+      52.4
+    ],
+    "current4": [
+      149.5,
+      76.2,
+      59.6,
+      55.0,
+      53.8,
+      52.7,
+      63.5,
+      54.7
+    ],
+    "slow4": [
+      138.4,
+      68.2,
+      78.3,
+      59.8,
+      51.2,
+      49.1,
+      48.4,
+      47.8
+    ],
+    "pypi4": [
+      23145.1,
+      22711.9,
+      22115.2,
+      22998.2,
+      22415.7,
+      25727.9,
+      22020.7,
+      22299.9
+    ]
+  },
+  "rows": [
+    {
+      "case": "compiled_T_batch1024",
+      "category": "compiled_projection",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 4.901199999999999,
+        "slow": 12.1694,
+        "current": 7.5639
+      },
+      "iqr_us": {
+        "pypi": [
+          4.748075,
+          5.151949999999999
+        ],
+        "slow": [
+          11.06045,
+          13.193349999999999
+        ],
+        "current": [
+          7.25815,
+          8.2272
+        ]
+      },
+      "current_over_pypi": 1.5432751162980498,
+      "current_over_slow": 0.6215507748944074,
+      "paired_current_over_pypi": [
+        1.5769824707846412,
+        1.5117466482896882,
+        1.7549474588052503,
+        1.4642623782170683
+      ],
+      "paired_current_over_slow": [
+        0.5867910097178599,
+        0.5821592279855248,
+        0.7593568932725906,
+        0.6553530274460506
+      ]
+    },
+    {
+      "case": "compiled_T_scalar",
+      "category": "compiled_projection",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 4.8838,
+        "slow": 5.28005,
+        "current": 5.228425
+      },
+      "iqr_us": {
+        "pypi": [
+          4.7816125,
+          5.1689625
+        ],
+        "slow": [
+          5.051024999999999,
+          5.679287499999999
+        ],
+        "current": [
+          4.987237500000001,
+          5.384987499999999
+        ]
+      },
+      "current_over_pypi": 1.0705649289487693,
+      "current_over_slow": 0.9902226304675145,
+      "paired_current_over_pypi": [
+        1.0937249917619922,
+        1.0002959484176464,
+        1.0788528825420076,
+        1.0573694909037186
+      ],
+      "paired_current_over_slow": [
+        0.9835885133704934,
+        0.9285038774352186,
+        1.0412040718163167,
+        0.9750952544268058
+      ]
+    },
+    {
+      "case": "compiled_all_properties_batch1024",
+      "category": "compiled_all_exposed_properties",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 68.01266666666666,
+        "slow": 106.635,
+        "current": 70.16933333333333
+      },
+      "iqr_us": {
+        "pypi": [
+          66.27149999999999,
+          70.11483333333334
+        ],
+        "slow": [
+          103.29233333333333,
+          109.62816666666667
+        ],
+        "current": [
+          68.456,
+          78.1485
+        ]
+      },
+      "current_over_pypi": 1.031709779550868,
+      "current_over_slow": 0.6580328535033837,
+      "paired_current_over_pypi": [
+        1.0103636354710277,
+        1.019925366486187,
+        1.1770667445881122,
+        1.0260217825235944
+      ],
+      "paired_current_over_slow": [
+        0.6371344983979073,
+        0.6476531686544414,
+        0.7627296223479626,
+        0.6561153263459233
+      ]
+    },
+    {
+      "case": "compiled_all_properties_scalar",
+      "category": "compiled_all_exposed_properties",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 40.002,
+        "slow": 26.622500000000002,
+        "current": 26.770400000000002
+      },
+      "iqr_us": {
+        "pypi": [
+          39.08275,
+          41.25770000000001
+        ],
+        "slow": [
+          25.77765,
+          27.66105
+        ],
+        "current": [
+          25.44835,
+          28.9172
+        ]
+      },
+      "current_over_pypi": 0.6692265386730664,
+      "current_over_slow": 1.0055554512160767,
+      "paired_current_over_pypi": [
+        0.6336635892816933,
+        0.636067827345915,
+        0.7475576713681598,
+        0.6694134841456439
+      ],
+      "paired_current_over_slow": [
+        0.9279156163901753,
+        1.0178876502664036,
+        1.120720679680204,
+        0.9780375671239387
+      ]
+    },
+    {
+      "case": "compiled_common13_array_pressure_batch1024",
+      "category": "compiled_common_fields_matched_array_pressure",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 45.588750000000005,
+        "slow": 125.78675,
+        "current": 55.35175
+      },
+      "iqr_us": {
+        "pypi": [
+          44.190375,
+          47.690625
+        ],
+        "slow": [
+          122.441875,
+          131.916875
+        ],
+        "current": [
+          53.433375,
+          61.202749999999995
+        ]
+      },
+      "current_over_pypi": 1.2141537111677771,
+      "current_over_slow": 0.44004436079316783,
+      "paired_current_over_pypi": [
+        1.2074891082556665,
+        1.1730198367049187,
+        1.3866781816581586,
+        1.1584234321751319
+      ],
+      "paired_current_over_slow": [
+        0.42848057048812044,
+        0.4196041984909039,
+        0.5093973605349251,
+        0.4244162110374494
+      ]
+    },
+    {
+      "case": "compiled_common13_batch1024",
+      "category": "compiled_common_fields",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 53.075,
+        "slow": 93.8715,
+        "current": 63.3455
+      },
+      "iqr_us": {
+        "pypi": [
+          49.527625,
+          56.398375
+        ],
+        "slow": [
+          87.531125,
+          100.10412500000001
+        ],
+        "current": [
+          57.330875,
+          69.05624999999999
+        ]
+      },
+      "current_over_pypi": 1.1935091851154027,
+      "current_over_slow": 0.674810778564314,
+      "paired_current_over_pypi": [
+        1.0450627947594098,
+        1.1371544741802082,
+        1.4040171525420435,
+        1.1031938710926799
+      ],
+      "paired_current_over_slow": [
+        0.5870097515076345,
+        0.6655409708990478,
+        0.8145991118925255,
+        0.5928417141102146
+      ]
+    },
+    {
+      "case": "compiled_common13_scalar",
+      "category": "compiled_common_fields",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 17.07875,
+        "slow": 17.795099999999998,
+        "current": 17.8524
+      },
+      "iqr_us": {
+        "pypi": [
+          16.55995,
+          17.507550000000002
+        ],
+        "slow": [
+          17.32295,
+          18.353125000000002
+        ],
+        "current": [
+          16.703575,
+          19.5745
+        ]
+      },
+      "current_over_pypi": 1.0452989826538828,
+      "current_over_slow": 1.0032199875246557,
+      "paired_current_over_pypi": [
+        0.9984486595822121,
+        0.99763912990839,
+        1.134669276912452,
+        1.0365740727130548
+      ],
+      "paired_current_over_slow": [
+        0.9322161839953874,
+        0.9960054680192819,
+        1.109813488452585,
+        0.9773702475856796
+      ]
+    },
+    {
+      "case": "compiled_common13_status_batch1024",
+      "category": "compiled_common_fields_plus_status",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 53.90875,
+        "slow": 61.203500000000005,
+        "current": 63.248999999999995
+      },
+      "iqr_us": {
+        "pypi": [
+          52.01325,
+          57.77625
+        ],
+        "slow": [
+          58.201875,
+          67.331375
+        ],
+        "current": [
+          57.907624999999996,
+          68.55275
+        ]
+      },
+      "current_over_pypi": 1.1732603705335405,
+      "current_over_slow": 1.0334212912660221,
+      "paired_current_over_pypi": [
+        1.0893711599988676,
+        1.1294873566394914,
+        1.4462769062729515,
+        1.071013501185915
+      ],
+      "paired_current_over_slow": [
+        0.8675650994201277,
+        0.9805782149712092,
+        1.3043542874126914,
+        0.9186580594679186
+      ]
+    },
+    {
+      "case": "compiled_dTdh_batch1024",
+      "category": "compiled_derivative",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 5.1723,
+        "slow": 11.52375,
+        "current": 8.385200000000001
+      },
+      "iqr_us": {
+        "pypi": [
+          4.89605,
+          5.57165
+        ],
+        "slow": [
+          10.606075,
+          12.44005
+        ],
+        "current": [
+          7.78755,
+          9.070675
+        ]
+      },
+      "current_over_pypi": 1.621174332501982,
+      "current_over_slow": 0.7276450808113679,
+      "paired_current_over_pypi": [
+        1.7018741930277606,
+        1.6033487743678827,
+        1.7189438478470083,
+        1.5590260816260066
+      ],
+      "paired_current_over_slow": [
+        0.7408316501273383,
+        0.6957098888214234,
+        0.8192052168147823,
+        0.7152958444663198
+      ]
+    },
+    {
+      "case": "compiled_dTdh_scalar",
+      "category": "compiled_derivative",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 4.942575,
+        "slow": 5.2375750000000005,
+        "current": 5.0988500000000005
+      },
+      "iqr_us": {
+        "pypi": [
+          4.7798125,
+          5.1083125
+        ],
+        "slow": [
+          4.9668624999999995,
+          5.3955625000000005
+        ],
+        "current": [
+          4.8294875,
+          5.28925
+        ]
+      },
+      "current_over_pypi": 1.0316181342721154,
+      "current_over_slow": 0.9735135057731871,
+      "paired_current_over_pypi": [
+        1.026122897428519,
+        0.9899643994010372,
+        1.072042774774056,
+        0.9951810998193544
+      ],
+      "paired_current_over_slow": [
+        0.9394813232293233,
+        0.9319491964506599,
+        1.0870616319883475,
+        0.9336707158885407
+      ]
+    },
+    {
+      "case": "compiled_full_array_pressure_batch1024",
+      "category": "compiled_full_state_matched_array_pressure",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 56.33733333333333,
+        "slow": 75.777,
+        "current": 77.98033333333333
+      },
+      "iqr_us": {
+        "pypi": [
+          54.40716666666667,
+          59.8665
+        ],
+        "slow": [
+          72.93716666666667,
+          81.05833333333334
+        ],
+        "current": [
+          74.481,
+          85.77466666666668
+        ]
+      },
+      "current_over_pypi": 1.384167988071853,
+      "current_over_slow": 1.0290765447739199,
+      "paired_current_over_pypi": [
+        1.4022891515432785,
+        1.3097341037787686,
+        1.5669662282508425,
+        1.3838041889917194
+      ],
+      "paired_current_over_slow": [
+        1.0039613359799773,
+        0.9875873378634171,
+        1.240177058604745,
+        0.9697812748017989
+      ]
+    },
+    {
+      "case": "compiled_full_batch1024",
+      "category": "compiled_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 58.18566666666666,
+        "slow": 69.09566666666666,
+        "current": 76.41133333333333
+      },
+      "iqr_us": {
+        "pypi": [
+          56.2485,
+          60.681
+        ],
+        "slow": [
+          67.73333333333333,
+          71.65983333333332
+        ],
+        "current": [
+          72.65083333333332,
+          81.34899999999999
+        ]
+      },
+      "current_over_pypi": 1.313232926780364,
+      "current_over_slow": 1.1058773584450545,
+      "paired_current_over_pypi": [
+        1.3059692505318936,
+        1.2820383859405713,
+        1.4605987749728089,
+        1.2687884354284802
+      ],
+      "paired_current_over_slow": [
+        1.0883565997428826,
+        1.0558221688995535,
+        1.2485295700766286,
+        1.0691551496214398
+      ]
+    },
+    {
+      "case": "compiled_vmap_HP_T_batch1024",
+      "category": "compiled_vmap_projection",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 5.1429,
+        "slow": 11.68655,
+        "current": 5.5992
+      },
+      "iqr_us": {
+        "pypi": [
+          4.962899999999999,
+          5.441000000000001
+        ],
+        "slow": [
+          10.879950000000001,
+          13.474300000000001
+        ],
+        "current": [
+          5.084825,
+          6.023225
+        ]
+      },
+      "current_over_pypi": 1.0887242606311613,
+      "current_over_slow": 0.4791148799260688,
+      "paired_current_over_pypi": [
+        1.0483032128514056,
+        1.0986726869331673,
+        1.1673417284140206,
+        0.9424073281553046
+      ],
+      "paired_current_over_slow": [
+        0.4152868319418978,
+        0.46270614078226935,
+        0.5616367506961409,
+        0.4498211546067358
+      ]
+    },
+    {
+      "case": "compiled_vmap_HP_full_batch1024",
+      "category": "compiled_vmap_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 74.20766666666665,
+        "slow": 73.24833333333333,
+        "current": 82.86366666666666
+      },
+      "iqr_us": {
+        "pypi": [
+          69.23233333333333,
+          81.5545
+        ],
+        "slow": [
+          69.996,
+          77.26316666666666
+        ],
+        "current": [
+          77.32166666666667,
+          89.8225
+        ]
+      },
+      "current_over_pypi": 1.116645629607004,
+      "current_over_slow": 1.1312703360713554,
+      "paired_current_over_pypi": [
+        1.1302913536439996,
+        0.9886147449761669,
+        1.2654162313105068,
+        1.1417090126332134
+      ],
+      "paired_current_over_slow": [
+        1.1156675407593204,
+        1.0575154648900946,
+        1.2768566896809104,
+        1.13101272460323
+      ]
+    },
+    {
+      "case": "compressor_batch64",
+      "category": "component_consumer",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 16.7335,
+        "slow": 19.3696,
+        "current": 18.168100000000003
+      },
+      "iqr_us": {
+        "pypi": [
+          15.2395,
+          18.146
+        ],
+        "slow": [
+          17.0169,
+          20.92825
+        ],
+        "current": [
+          16.6691,
+          19.50185
+        ]
+      },
+      "current_over_pypi": 1.0857322138225718,
+      "current_over_slow": 0.9379698083594914,
+      "paired_current_over_pypi": [
+        1.2436151394897412,
+        1.029564466785991,
+        1.0995270047299526,
+        1.0516172171793081
+      ],
+      "paired_current_over_slow": [
+        0.9182675139294505,
+        0.8041642912029348,
+        1.1843364928909952,
+        0.8738131880559147
+      ]
+    },
+    {
+      "case": "compressor_compiled",
+      "category": "component_consumer",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 7.3239,
+        "slow": 7.9498999999999995,
+        "current": 7.6919
+      },
+      "iqr_us": {
+        "pypi": [
+          7.002675,
+          7.510425
+        ],
+        "slow": [
+          7.579899999999999,
+          8.35685
+        ],
+        "current": [
+          7.306850000000001,
+          8.3137
+        ]
+      },
+      "current_over_pypi": 1.0502464533923184,
+      "current_over_slow": 0.9675467615944856,
+      "paired_current_over_pypi": [
+        1.0548199245558703,
+        1.0760911306144962,
+        1.1217299592141892,
+        1.0054509078041212
+      ],
+      "paired_current_over_slow": [
+        0.9366855674283114,
+        0.9466077855712653,
+        1.1032452057222766,
+        0.8925059198762866
+      ]
+    },
+    {
+      "case": "compressor_eager",
+      "category": "component_consumer",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 489.626,
+        "slow": 258.494,
+        "current": 284.77049999999997
+      },
+      "iqr_us": {
+        "pypi": [
+          480.146,
+          507.2675
+        ],
+        "slow": [
+          250.15975,
+          274.89075
+        ],
+        "current": [
+          267.68025,
+          313.42650000000003
+        ]
+      },
+      "current_over_pypi": 0.5816082070805063,
+      "current_over_slow": 1.101652262721765,
+      "paired_current_over_pypi": [
+        0.561942344274881,
+        0.560243555277627,
+        0.6857910153781442,
+        0.5616607995661191
+      ],
+      "paired_current_over_slow": [
+        1.027810274020498,
+        1.064220913576317,
+        1.346467509985627,
+        1.0381394554476582
+      ]
+    },
+    {
+      "case": "compressor_gradient",
+      "category": "component_consumer",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 4.908199999999999,
+        "slow": 5.35065,
+        "current": 5.1187000000000005
+      },
+      "iqr_us": {
+        "pypi": [
+          4.741275,
+          5.190675
+        ],
+        "slow": [
+          5.10875,
+          5.7849
+        ],
+        "current": [
+          4.903125,
+          5.4125250000000005
+        ]
+      },
+      "current_over_pypi": 1.04288741290086,
+      "current_over_slow": 0.9566501266201304,
+      "paired_current_over_pypi": [
+        1.0149134872945775,
+        1.013082937583056,
+        1.1400208671923593,
+        0.9973578628045796
+      ],
+      "paired_current_over_slow": [
+        0.9361513365004864,
+        0.879711959924859,
+        1.1126178610243507,
+        0.9205451737312247
+      ]
+    },
+    {
+      "case": "diagnostic_native_state_assembly_batch1024",
+      "category": "diagnostic",
+      "pypi_comparable": false,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": null,
+        "slow": null,
+        "current": 59.0865
+      },
+      "iqr_us": {
+        "pypi": null,
+        "slow": null,
+        "current": [
+          56.42516666666667,
+          66.24866666666668
+        ]
+      },
+      "current_over_pypi": null,
+      "current_over_slow": null,
+      "paired_current_over_pypi": null,
+      "paired_current_over_slow": null
+    },
+    {
+      "case": "diagnostic_policy_HP_batch1024",
+      "category": "diagnostic",
+      "pypi_comparable": false,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": null,
+        "slow": null,
+        "current": 7.967833333333333
+      },
+      "iqr_us": {
+        "pypi": null,
+        "slow": null,
+        "current": [
+          7.6628333333333325,
+          8.779250000000001
+        ]
+      },
+      "current_over_pypi": null,
+      "current_over_slow": null,
+      "paired_current_over_pypi": null,
+      "paired_current_over_slow": null
+    },
+    {
+      "case": "diagnostic_raw_PT_batch1024",
+      "category": "diagnostic",
+      "pypi_comparable": false,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": null,
+        "slow": 143.44799999999998,
+        "current": 102.86383333333333
+      },
+      "iqr_us": {
+        "pypi": null,
+        "slow": [
+          134.11791666666667,
+          154.95000000000002
+        ],
+        "current": [
+          95.62025,
+          120.09491666666666
+        ]
+      },
+      "current_over_pypi": null,
+      "current_over_slow": 0.7170809863736919,
+      "paired_current_over_pypi": null,
+      "paired_current_over_slow": [
+        0.6559028815078352,
+        0.7033755983377726,
+        0.9733004498246844,
+        0.6417064323776672
+      ]
+    },
+    {
+      "case": "eager_existing_state_all_properties_export_batch1024",
+      "category": "existing_state_export",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 707.6845000000001,
+        "slow": 5.4719999999999995,
+        "current": 5.4885
+      },
+      "iqr_us": {
+        "pypi": [
+          691.6062499999999,
+          725.1145
+        ],
+        "slow": [
+          5.1765,
+          5.75725
+        ],
+        "current": [
+          5.2735,
+          5.74475
+        ]
+      },
+      "current_over_pypi": 0.007755574694655598,
+      "current_over_slow": 1.003015350877193,
+      "paired_current_over_pypi": [
+        0.007691724135439659,
+        0.0073426714624490515,
+        0.008001777089472834,
+        0.0078433741790578
+      ],
+      "paired_current_over_slow": [
+        0.9543702375616316,
+        0.9691233229185809,
+        1.0934437149110285,
+        0.9929811931971565
+      ]
+    },
+    {
+      "case": "heat_exchanger_compiled128",
+      "category": "component_consumer",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 11.4678,
+        "slow": 16.349400000000003,
+        "current": 16.6849
+      },
+      "iqr_us": {
+        "pypi": [
+          10.61305,
+          12.084599999999998
+        ],
+        "slow": [
+          15.2447,
+          17.36975
+        ],
+        "current": [
+          15.93115,
+          18.118850000000002
+        ]
+      },
+      "current_over_pypi": 1.4549346866879436,
+      "current_over_slow": 1.0205206307265096,
+      "paired_current_over_pypi": [
+        1.4669036062559122,
+        1.5664217340469015,
+        1.6021719046872005,
+        1.3264966557938782
+      ],
+      "paired_current_over_slow": [
+        1.0213352702918976,
+        0.9481139674575958,
+        1.2300846465254776,
+        0.9782056733280688
+      ]
+    },
+    {
+      "case": "heat_exchanger_gradient128",
+      "category": "component_consumer",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 5.5854,
+        "slow": 7.3355999999999995,
+        "current": 8.6701
+      },
+      "iqr_us": {
+        "pypi": [
+          5.139900000000001,
+          6.312850000000001
+        ],
+        "slow": [
+          6.6582,
+          8.06645
+        ],
+        "current": [
+          8.3279,
+          9.4107
+        ]
+      },
+      "current_over_pypi": 1.5522791563719698,
+      "current_over_slow": 1.181921042586837,
+      "paired_current_over_pypi": [
+        1.6127978369852982,
+        1.4518405943937858,
+        1.6971747471224277,
+        1.5299178794734312
+      ],
+      "paired_current_over_slow": [
+        1.055881991395206,
+        1.1712347428073233,
+        1.4672597059932153,
+        1.1772809518587566
+      ]
+    },
+    {
+      "case": "public_HP_broadcast32x32",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 139.00549999999998,
+        "slow": 107.422,
+        "current": 113.67750000000001
+      },
+      "iqr_us": {
+        "pypi": [
+          131.62975,
+          149.37725
+        ],
+        "slow": [
+          97.8215,
+          122.19525
+        ],
+        "current": [
+          106.34075,
+          119.4615
+        ]
+      },
+      "current_over_pypi": 0.8177913823553746,
+      "current_over_slow": 1.0582329504198396,
+      "paired_current_over_pypi": [
+        0.802215173124354,
+        0.7893329178676223,
+        0.9019626506950368,
+        0.7710667877129036
+      ],
+      "paired_current_over_slow": [
+        1.0215952441934137,
+        1.0304606384627304,
+        1.2064816583172957,
+        0.9537421122759384
+      ]
+    },
+    {
+      "case": "public_HP_clip_batch1024",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 174.791,
+        "slow": 98.531,
+        "current": 99.52950000000001
+      },
+      "iqr_us": {
+        "pypi": [
+          164.01625,
+          200.09300000000002
+        ],
+        "slow": [
+          89.30425,
+          109.7015
+        ],
+        "current": [
+          94.13175000000001,
+          111.10775
+        ]
+      },
+      "current_over_pypi": 0.5694200502314193,
+      "current_over_slow": 1.0101338664988684,
+      "paired_current_over_pypi": [
+        0.5737792934179784,
+        0.548404217288242,
+        0.6323017621145375,
+        0.5357075094249346
+      ],
+      "paired_current_over_slow": [
+        0.9394189668912555,
+        1.02884426880733,
+        1.2279082699289408,
+        0.9839689682864373
+      ]
+    },
+    {
+      "case": "public_HP_clip_scalar",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 122.0355,
+        "slow": 43.94466666666667,
+        "current": 47.01916666666666
+      },
+      "iqr_us": {
+        "pypi": [
+          118.82183333333333,
+          125.85149999999999
+        ],
+        "slow": [
+          42.99158333333334,
+          45.40716666666667
+        ],
+        "current": [
+          44.92158333333334,
+          49.7985
+        ]
+      },
+      "current_over_pypi": 0.38529089213111484,
+      "current_over_slow": 1.0699629837522944,
+      "paired_current_over_pypi": [
+        0.37158007938744636,
+        0.3863644481076997,
+        0.42350387605306894,
+        0.3721457003258206
+      ],
+      "paired_current_over_slow": [
+        0.9861353496489186,
+        1.081296999707814,
+        1.175360175789113,
+        1.0515256276509064
+      ]
+    },
+    {
+      "case": "public_HP_mask_batch1024",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 169.80599999999998,
+        "slow": 101.71000000000001,
+        "current": 106.02199999999999
+      },
+      "iqr_us": {
+        "pypi": [
+          164.809,
+          182.52725
+        ],
+        "slow": [
+          96.46350000000001,
+          108.565
+        ],
+        "current": [
+          100.1075,
+          120.43375
+        ]
+      },
+      "current_over_pypi": 0.6243713414131421,
+      "current_over_slow": 1.0423950447350308,
+      "paired_current_over_pypi": [
+        0.5959977373622501,
+        0.59137812960663,
+        0.6870940531421342,
+        0.6305995782937253
+      ],
+      "paired_current_over_slow": [
+        0.9648658496826036,
+        0.9853023651588697,
+        1.267348145382126,
+        1.044146033997124
+      ]
+    },
+    {
+      "case": "public_HP_mask_scalar",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 122.00450000000001,
+        "slow": 44.986666666666665,
+        "current": 53.090833333333336
+      },
+      "iqr_us": {
+        "pypi": [
+          119.69275,
+          125.33458333333334
+        ],
+        "slow": [
+          43.298500000000004,
+          46.80808333333333
+        ],
+        "current": [
+          50.679916666666664,
+          58.19808333333333
+        ]
+      },
+      "current_over_pypi": 0.43515471423868246,
+      "current_over_slow": 1.1801459691760523,
+      "paired_current_over_pypi": [
+        0.4266848899098146,
+        0.4350322546466659,
+        0.5019753959256867,
+        0.4238076186974904
+      ],
+      "paired_current_over_slow": [
+        1.0948704838581913,
+        1.193442122012752,
+        1.405612970512942,
+        1.162857969337576
+      ]
+    },
+    {
+      "case": "public_HP_raise_array_scalar",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 126.40033333333332,
+        "slow": 46.207,
+        "current": 46.31916666666667
+      },
+      "iqr_us": {
+        "pypi": [
+          123.46916666666667,
+          129.66516666666666
+        ],
+        "slow": [
+          44.420249999999996,
+          48.019416666666665
+        ],
+        "current": [
+          43.93825,
+          49.678583333333336
+        ]
+      },
+      "current_over_pypi": 0.36644813700385814,
+      "current_over_slow": 1.0024274821275276,
+      "paired_current_over_pypi": [
+        0.3571698043824967,
+        0.3538775979054357,
+        0.40180621279444484,
+        0.35950294768109264
+      ],
+      "paired_current_over_slow": [
+        0.9398087756769541,
+        0.9778292593943816,
+        1.1277922900923671,
+        0.9672440087526131
+      ]
+    },
+    {
+      "case": "public_HP_raise_batch1024",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 172.827,
+        "slow": 109.67949999999999,
+        "current": 108.83699999999999
+      },
+      "iqr_us": {
+        "pypi": [
+          164.048,
+          189.79649999999998
+        ],
+        "slow": [
+          103.3425,
+          122.1325
+        ],
+        "current": [
+          99.64975,
+          121.3335
+        ]
+      },
+      "current_over_pypi": 0.6297453522887049,
+      "current_over_slow": 0.9923185280749821,
+      "paired_current_over_pypi": [
+        0.5992253726980414,
+        0.6198312427357394,
+        0.7206832689731263,
+        0.5901233864303423
+      ],
+      "paired_current_over_slow": [
+        0.8702897074057092,
+        0.961194728587814,
+        1.1672782972205382,
+        0.9613495622464233
+      ]
+    },
+    {
+      "case": "public_HP_raise_scalar",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 122.56083333333333,
+        "slow": 46.870999999999995,
+        "current": 45.81933333333333
+      },
+      "iqr_us": {
+        "pypi": [
+          120.38916666666667,
+          125.50341666666668
+        ],
+        "slow": [
+          44.95783333333333,
+          47.94433333333333
+        ],
+        "current": [
+          44.3575,
+          48.83091666666667
+        ]
+      },
+      "current_over_pypi": 0.3738497208869065,
+      "current_over_slow": 0.9775625297803191,
+      "paired_current_over_pypi": [
+        0.368683244782823,
+        0.3741003491493831,
+        0.44679509866114653,
+        0.35455296079181015
+      ],
+      "paired_current_over_slow": [
+        0.932556093573571,
+        0.9917726280387068,
+        1.2140386911350054,
+        0.9446419160998936
+      ]
+    },
+    {
+      "case": "public_HS_raise_batch1024",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 173.389,
+        "slow": 122.4685,
+        "current": 117.066
+      },
+      "iqr_us": {
+        "pypi": [
+          164.14325,
+          195.712
+        ],
+        "slow": [
+          114.87925,
+          132.3005
+        ],
+        "current": [
+          107.6925,
+          129.11624999999998
+        ]
+      },
+      "current_over_pypi": 0.6751639377353811,
+      "current_over_slow": 0.9558866157420071,
+      "paired_current_over_pypi": [
+        0.6053619032981243,
+        0.6375187621866539,
+        0.8454613814588033,
+        0.6320675994488694
+      ],
+      "paired_current_over_slow": [
+        0.9011167168288555,
+        0.9183026874115984,
+        1.1893698322575075,
+        0.9396585832275508
+      ]
+    },
+    {
+      "case": "public_HS_raise_scalar",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 121.0645,
+        "slow": 46.567,
+        "current": 46.97516666666667
+      },
+      "iqr_us": {
+        "pypi": [
+          118.27358333333333,
+          123.50075
+        ],
+        "slow": [
+          45.32058333333334,
+          48.23233333333333
+        ],
+        "current": [
+          44.967666666666666,
+          49.850249999999996
+        ]
+      },
+      "current_over_pypi": 0.3880176820345078,
+      "current_over_slow": 1.0087651484241345,
+      "paired_current_over_pypi": [
+        0.38209737069886124,
+        0.3891144334079425,
+        0.4373302842137531,
+        0.3745277868613578
+      ],
+      "paired_current_over_slow": [
+        0.9331489418652135,
+        1.0255572811155442,
+        1.163332828206294,
+        0.9802748909532368
+      ]
+    },
+    {
+      "case": "public_PS_raise_batch1024",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 169.6495,
+        "slow": 113.947,
+        "current": 109.34
+      },
+      "iqr_us": {
+        "pypi": [
+          165.10875,
+          182.714
+        ],
+        "slow": [
+          104.6465,
+          125.176
+        ],
+        "current": [
+          101.492,
+          120.20224999999999
+        ]
+      },
+      "current_over_pypi": 0.6445052888455316,
+      "current_over_slow": 0.9595689223937445,
+      "paired_current_over_pypi": [
+        0.640388651987466,
+        0.6167485070466207,
+        0.7241165213693387,
+        0.6141322450492828
+      ],
+      "paired_current_over_slow": [
+        0.8697060288988542,
+        0.915853879903838,
+        1.1864820922562365,
+        0.9447702137898462
+      ]
+    },
+    {
+      "case": "public_PS_raise_scalar",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 121.61133333333333,
+        "slow": 46.6065,
+        "current": 46.5325
+      },
+      "iqr_us": {
+        "pypi": [
+          119.91933333333333,
+          126.12491666666668
+        ],
+        "slow": [
+          44.789833333333334,
+          49.185583333333334
+        ],
+        "current": [
+          45.167833333333334,
+          49.7485
+        ]
+      },
+      "current_over_pypi": 0.38263292346656286,
+      "current_over_slow": 0.9984122386362417,
+      "paired_current_over_pypi": [
+        0.37959127504837314,
+        0.3763300569574108,
+        0.45519734551904384,
+        0.3560333673595444
+      ],
+      "paired_current_over_slow": [
+        0.9673192659055566,
+        1.004764100199785,
+        1.176201201469176,
+        0.9685824052979383
+      ]
+    },
+    {
+      "case": "public_PT_clip_batch1024",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 190.2375,
+        "slow": 103.5835,
+        "current": 100.9185
+      },
+      "iqr_us": {
+        "pypi": [
+          180.46,
+          205.83375
+        ],
+        "slow": [
+          95.53299999999999,
+          114.51974999999999
+        ],
+        "current": [
+          95.20875,
+          111.6215
+        ]
+      },
+      "current_over_pypi": 0.5304868913857678,
+      "current_over_slow": 0.9742719641641767,
+      "paired_current_over_pypi": [
+        0.5025178527939917,
+        0.5052502515090542,
+        0.6313881520778072,
+        0.513157894736842
+      ],
+      "paired_current_over_slow": [
+        0.8938126467190819,
+        0.9198408837249232,
+        1.1937728555009928,
+        0.8744302463443552
+      ]
+    },
+    {
+      "case": "public_PT_clip_scalar",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 122.42066666666666,
+        "slow": 44.7435,
+        "current": 45.370999999999995
+      },
+      "iqr_us": {
+        "pypi": [
+          119.8775,
+          125.1985
+        ],
+        "slow": [
+          43.66266666666667,
+          46.12883333333333
+        ],
+        "current": [
+          44.11058333333333,
+          48.24058333333333
+        ]
+      },
+      "current_over_pypi": 0.3706155278792796,
+      "current_over_slow": 1.0140243834299953,
+      "paired_current_over_pypi": [
+        0.36475475647301153,
+        0.36280097052161503,
+        0.4120115936394282,
+        0.35932759768870115
+      ],
+      "paired_current_over_slow": [
+        0.9443482748610318,
+        1.0126369629290755,
+        1.1373259250149994,
+        1.0010944609779682
+      ]
+    },
+    {
+      "case": "public_PT_mask_batch1024",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 184.90699999999998,
+        "slow": 108.584,
+        "current": 106.1695
+      },
+      "iqr_us": {
+        "pypi": [
+          178.08024999999998,
+          197.26975000000002
+        ],
+        "slow": [
+          101.14250000000001,
+          115.969
+        ],
+        "current": [
+          97.757,
+          110.213
+        ]
+      },
+      "current_over_pypi": 0.5741778299361301,
+      "current_over_slow": 0.9777637589331761,
+      "paired_current_over_pypi": [
+        0.5588394129698914,
+        0.5159136930679565,
+        0.6765142753786031,
+        0.5353861758395819
+      ],
+      "paired_current_over_slow": [
+        0.8852167701425144,
+        0.9004958269046759,
+        1.1407868164572463,
+        0.9924447507013829
+      ]
+    },
+    {
+      "case": "public_PT_mask_scalar",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 121.82516666666666,
+        "slow": 44.175666666666665,
+        "current": 44.400333333333336
+      },
+      "iqr_us": {
+        "pypi": [
+          119.19308333333333,
+          125.09241666666668
+        ],
+        "slow": [
+          42.224500000000006,
+          47.5995
+        ],
+        "current": [
+          43.038916666666665,
+          47.92341666666667
+        ]
+      },
+      "current_over_pypi": 0.3644594507702979,
+      "current_over_slow": 1.005085756110076,
+      "paired_current_over_pypi": [
+        0.35891803347543944,
+        0.36494939156146927,
+        0.41192183250015263,
+        0.3510654874233729
+      ],
+      "paired_current_over_slow": [
+        0.8836065460762147,
+        1.0222059325839246,
+        1.1554769107825789,
+        1.0346740039172124
+      ]
+    },
+    {
+      "case": "public_PT_raise_array_scalar",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 123.905,
+        "slow": 44.7315,
+        "current": 44.87133333333334
+      },
+      "iqr_us": {
+        "pypi": [
+          121.15233333333333,
+          127.94383333333333
+        ],
+        "slow": [
+          43.198166666666665,
+          47.17666666666667
+        ],
+        "current": [
+          43.56066666666666,
+          48.15858333333334
+        ]
+      },
+      "current_over_pypi": 0.36214303969438955,
+      "current_over_slow": 1.0031260595627989,
+      "paired_current_over_pypi": [
+        0.36114305283702847,
+        0.35807517259283983,
+        0.40214088951886817,
+        0.3588405271688135
+      ],
+      "paired_current_over_slow": [
+        0.9359287961439662,
+        1.0217401985796302,
+        1.1195456728353008,
+        1.0266003691106265
+      ]
+    },
+    {
+      "case": "public_PT_raise_batch1024",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 190.4455,
+        "slow": 123.19300000000001,
+        "current": 103.54249999999999
+      },
+      "iqr_us": {
+        "pypi": [
+          181.58825000000002,
+          206.85524999999998
+        ],
+        "slow": [
+          115.532,
+          129.87824999999998
+        ],
+        "current": [
+          94.15899999999999,
+          114.97025
+        ]
+      },
+      "current_over_pypi": 0.5436857263626601,
+      "current_over_slow": 0.8404901252506228,
+      "paired_current_over_pypi": [
+        0.48997811448253753,
+        0.5406706912796175,
+        0.6061486297900494,
+        0.5180467305260081
+      ],
+      "paired_current_over_slow": [
+        0.7381720451387928,
+        0.8596169275678998,
+        0.9816393579843891,
+        0.8171326837177509
+      ]
+    },
+    {
+      "case": "public_PT_raise_scalar",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 123.06,
+        "slow": 46.832833333333326,
+        "current": 46.174499999999995
+      },
+      "iqr_us": {
+        "pypi": [
+          120.68216666666666,
+          125.68316666666666
+        ],
+        "slow": [
+          45.287166666666664,
+          49.420249999999996
+        ],
+        "current": [
+          44.76825,
+          53.17333333333334
+        ]
+      },
+      "current_over_pypi": 0.37521940516821056,
+      "current_over_slow": 0.9859429104225312,
+      "paired_current_over_pypi": [
+        0.3745131741528437,
+        0.373586823632842,
+        0.4436294028586483,
+        0.36257658789811786
+      ],
+      "paired_current_over_slow": [
+        0.9439522583339134,
+        0.9732809402131514,
+        1.1972991654846168,
+        0.9693818601964183
+      ]
+    },
+    {
+      "case": "public_rhoH_raise_batch1024",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 169.844,
+        "slow": 114.25,
+        "current": 112.8605
+      },
+      "iqr_us": {
+        "pypi": [
+          163.10275000000001,
+          184.98250000000002
+        ],
+        "slow": [
+          108.10125,
+          120.5525
+        ],
+        "current": [
+          103.2435,
+          127.55975
+        ]
+      },
+      "current_over_pypi": 0.6644950660606204,
+      "current_over_slow": 0.9878380743982494,
+      "paired_current_over_pypi": [
+        0.6082797063095231,
+        0.645000572672088,
+        0.7850966337538635,
+        0.6215469765392665
+      ],
+      "paired_current_over_slow": [
+        0.8937515288004926,
+        0.9100833545972613,
+        1.2684903158109506,
+        0.9801725672747484
+      ]
+    },
+    {
+      "case": "public_rhoH_raise_scalar",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 122.2085,
+        "slow": 46.289833333333334,
+        "current": 46.709
+      },
+      "iqr_us": {
+        "pypi": [
+          119.53608333333332,
+          125.36416666666668
+        ],
+        "slow": [
+          45.0555,
+          48.77916666666667
+        ],
+        "current": [
+          45.52383333333333,
+          51.41766666666667
+        ]
+      },
+      "current_over_pypi": 0.38220745692811875,
+      "current_over_slow": 1.0090552641148705,
+      "paired_current_over_pypi": [
+        0.384652694745866,
+        0.3738637023944174,
+        0.44360785392524327,
+        0.3783187632629038
+      ],
+      "paired_current_over_slow": [
+        0.9630466400259818,
+        1.0232527175018586,
+        1.1593174522723433,
+        0.9930091734667483
+      ]
+    },
+    {
+      "case": "public_rhoP_raise_batch1024",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 168.6495,
+        "slow": 124.755,
+        "current": 130.772
+      },
+      "iqr_us": {
+        "pypi": [
+          162.19375,
+          180.66
+        ],
+        "slow": [
+          117.305,
+          130.35575
+        ],
+        "current": [
+          123.74575,
+          141.44125
+        ]
+      },
+      "current_over_pypi": 0.7754069831217999,
+      "current_over_slow": 1.048230531842411,
+      "paired_current_over_pypi": [
+        0.7157111777163158,
+        0.7472059911521796,
+        0.8908919495494624,
+        0.7415674813277423
+      ],
+      "paired_current_over_slow": [
+        0.9635964211846548,
+        0.9917077471844816,
+        1.2292214749990618,
+        1.05050622227378
+      ]
+    },
+    {
+      "case": "public_rhoP_raise_scalar",
+      "category": "public_full_state",
+      "pypi_comparable": true,
+      "includes_compilation": false,
+      "median_us": {
+        "pypi": 121.47866666666667,
+        "slow": 46.531333333333336,
+        "current": 46.748333333333335
+      },
+      "iqr_us": {
+        "pypi": [
+          119.78958333333334,
+          124.71608333333333
+        ],
+        "slow": [
+          44.76891666666667,
+          49.27616666666667
+        ],
+        "current": [
+          45.477666666666664,
+          49.795500000000004
+        ]
+      },
+      "current_over_pypi": 0.384827514296063,
+      "current_over_slow": 1.0046635242202386,
+      "paired_current_over_pypi": [
+        0.383126407915509,
+        0.37641505995061386,
+        0.44467940084748553,
+        0.3816729300256983
+      ],
+      "paired_current_over_slow": [
+        0.9336959151613046,
+        1.011581330546848,
+        1.1648143235123294,
+        0.9945392636882338
+      ]
+    }
+  ]
+}

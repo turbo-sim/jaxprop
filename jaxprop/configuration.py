@@ -207,8 +207,8 @@ class FluidCapabilities:
             elif any(not isinstance(item, str) or not item for item in normalized):
                 raise TypeError(f"{key} must contain nonempty strings")
             object.__setattr__(self, key, normalized)
-        if self.error_modes - {"raise", "mask"}:
-            raise ValueError("Error modes are 'raise' and 'mask'")
+        if self.error_modes - {"raise", "mask", "clip"}:
+            raise ValueError("Error modes are 'raise', 'mask' and 'clip'")
         if (
             isinstance(self.derivative_order, bool)
             or not isinstance(self.derivative_order, Integral)

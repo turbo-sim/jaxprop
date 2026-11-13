@@ -10,7 +10,7 @@ p0 = 101325.0  # Pa
 T0 = 300.0  # K
 
 fluid_perfect_gas = jxp.Fluid(method="perfect_gas", name="air", model_options={"T_ref": T0, "p_ref": p0})
-fluid_coolprop = jxp.Fluid(method="coolprop_jax", name="air")  # requires broadcast-aware get_props
+fluid_coolprop = jxp.Fluid(method="coolprop_jax", name="air")  # broadcast-aware get_state
 
 # sizes to test (compilation time included; no warmup)
 sizes = [10, 10, 10, 100, 100, 100, 1000, 1000, 1000]

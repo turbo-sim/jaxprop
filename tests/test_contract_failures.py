@@ -71,11 +71,6 @@ def _assert_typed_failure(call, expected_type, *, request):
     assert False, f"expected {expected_type}; invalid request was accepted"
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AssertionError,
-    reason="phase7: perfect gas clips or propagates invalid inputs instead of typed failure",
-)
 @pytest.mark.parametrize(
     "pressure,temperature",
     [
@@ -128,11 +123,6 @@ def test_default_batch_failure_is_typed_and_reports_first_row_major_index(source
     assert tuple(error.index) == (0, 1)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=(TypeError, jxp.UnsupportedExecutionModeError),
-    reason="phase7: perfect gas has no per-element mask/status failure mode",
-)
 def test_mask_mode_preserves_successful_elements_and_masks_only_failed_elements(
     perfect_gas,
 ):
@@ -166,11 +156,6 @@ def test_outer_jit_requires_explicit_mask_policy():
     )
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=(TypeError, jxp.UnsupportedExecutionModeError),
-    reason="phase7: JAX perfect-gas state/status output does not accept mask mode",
-)
 def test_jit_returns_full_state_identity_and_per_element_status(perfect_gas):
     evaluate = jax.jit(
         lambda pressure: perfect_gas.get_state(
@@ -185,11 +170,6 @@ def test_jit_returns_full_state_identity_and_per_element_status(perfect_gas):
     assert np.isnan(state.raw_property("density")[1])
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=(TypeError, jxp.UnsupportedExecutionModeError),
-    reason="phase7: native gradient path does not accept explicit mask policy",
-)
 def test_supported_gradient_with_mask_policy_matches_independent_perfect_gas_identity(
     perfect_gas,
 ):
@@ -305,11 +285,6 @@ def test_unknown_or_invalid_evaluation_options_are_explicit(
     )
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AssertionError,
-    reason="phase7: perfect-gas enthalpy offset and heat capacity are not source calibrated",
-)
 def test_perfect_gas_calibration_matches_source_enthalpy_entropy_and_heat_capacity():
     source = jxp.Fluid("CO2").get_state(jxp.PT_INPUTS, 1e5, 600.0)
     gas = jxp.FluidPerfectGas("CO2", T_ref=600.0, p_ref=1e5)

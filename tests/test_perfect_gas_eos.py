@@ -24,13 +24,14 @@ INPUT_TYPES = [
 
 # reference cases (pressures in Pa, temperatures in K)
 CASES = [
-    {"id": "air-300K-100kPa",       "fluid": "air",      "T": 300.0, "p": 1e5},
-    {"id": "nitrogen-300K-100kPa",  "fluid": "nitrogen", "T": 300.0, "p": 1e5},
-    {"id": "water-300K-1kPa",       "fluid": "water",    "T": 300.0, "p": 1e3},
-    {"id": "CO2-800K-10000kPa",     "fluid": "co2",     "T": 800.0, "p": 100e5},
+    {"id": "air-300K-100kPa", "fluid": "air", "T": 300.0, "p": 1e5},
+    {"id": "nitrogen-300K-100kPa", "fluid": "nitrogen", "T": 300.0, "p": 1e5},
+    {"id": "water-300K-1kPa", "fluid": "water", "T": 300.0, "p": 1e3},
+    {"id": "CO2-800K-10000kPa", "fluid": "co2", "T": 800.0, "p": 100e5},
 ]
 
 CASE_IDS = [c["id"] for c in CASES]
+
 
 @pytest.fixture(scope="module", params=CASES, ids=CASE_IDS)
 def case(request):
@@ -43,15 +44,16 @@ def case(request):
     ref = fluid.get_state(jxp.PT_INPUTS, c["p"], c["T"])
 
     return {
-        "metadata": c,           # id, fluid name, T, p
-        "fluid": fluid,          # fluid object
-        "ref": ref,              # baseline properties at (p,T)
+        "metadata": c,  # id, fluid name, T, p
+        "fluid": fluid,  # fluid object
+        "ref": ref,  # baseline properties at (p,T)
         "h": ref["h"],
         "s": ref["s"],
         "rho": ref["d"],
         "p": ref["p"],
         "T": ref["T"],
     }
+
 
 @pytest.mark.parametrize("input_type", INPUT_TYPES, ids=INPUT_TYPES)
 def test_perfect_gas_consistency(input_type, case):
@@ -89,8 +91,6 @@ def test_perfect_gas_consistency(input_type, case):
             )
 
 
-
-
 @pytest.mark.parametrize("input_type", INPUT_TYPES, ids=INPUT_TYPES)
 def test_perfect_gas_derivatives(input_type, case):
     """Checks that JAX-computed derivatives match finite differences."""
@@ -117,7 +117,7 @@ def test_perfect_gas_derivatives(input_type, case):
     for k in PROP_KEYS:
         # differentiable wrapper to get property k
         def prop_fun(x):
-            out = fluid.get_state(input_type, x[0], x[1])
+            out = fluid.get_state(input_type, x[0], x[1], errors="mask")
             return out[k]
 
         # JAX forward-mode gradient
@@ -125,9 +125,7 @@ def test_perfect_gas_derivatives(input_type, case):
 
         # Central differences avoid forward-step truncation error in the
         # exponential pressure relation while retaining the derivative tolerance.
-        grad_fd = approx_derivative(
-            prop_fun, x0=x0, method="3-point", rel_step=1e-6
-        )
+        grad_fd = approx_derivative(prop_fun, x0=x0, method="3-point", rel_step=1e-6)
 
         if not np.allclose(grad_jax, grad_fd, rtol=1e-5, atol=1e-5):
             diff = grad_jax - grad_fd
@@ -137,7 +135,6 @@ def test_perfect_gas_derivatives(input_type, case):
                 f"  grad_fd  = {grad_fd}\n"
                 f"  diff     = {diff}"
             )
-
 
 
 if __name__ == "__main__":

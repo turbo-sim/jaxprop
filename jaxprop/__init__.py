@@ -40,6 +40,7 @@ from .perfect_gas import FluidPerfectGas
 from .coolprop import FluidCoolProp, FluidJAX, FluidMix
 from .bicubic import FluidBicubic
 from .fluid import Fluid
+from .property_derivatives import PropertyDerivatives
 
 # Virtual registration leaves concrete evaluator inheritance and numerical
 # PyTrees unchanged, while exposing one runtime type for consuming packages.

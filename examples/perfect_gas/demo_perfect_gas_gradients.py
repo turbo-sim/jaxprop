@@ -17,6 +17,8 @@ print(f"  rho : {float(base['d']):+0.6f} kg/m^3")
 print(f"  h   : {float(base['h']):+0.6f} J/kg")
 print(f"  s   : {float(base['s']):+0.6f} J/(kg K)")
 
+# Derivative quantities retain the primal state and SI units separately.
+# Each scalar property's last axis follows the two input coordinates.
 # finite differences jacobian
 grad_fd = jxp.perfect_gas.get_props_gradient(fluid, input_pair, h, p, method="fd")
 

@@ -1,13 +1,19 @@
 import jax
 import jax.numpy as jnp
 import equinox as eqx
+import math
+import numpy as np
 
 from ..coolprop import FluidCoolProp
 from .. import helpers_props as jxp
 from ..configuration import build_configuration, FluidCapabilities, FluidDomain
-from ..errors import InvalidConfigurationError, UnsupportedOperationError
-from ..fluid_api import checked_jit
+from ..errors import InvalidConfigurationError, JaxPropError, UnsupportedOperationError
+from .request_policy import checked_perfect_gas_jit, evaluate_state
 from ..source_references import SourceReferencesMixin
+
+MIN_TEMPERATURE = 1.0
+MIN_PRESSURE = 0.1
+MIN_DENSITY = 1e-12
 
 
 # ----------------------------------------------------------------------------- #
@@ -18,6 +24,7 @@ class PerfectGasConstants(eqx.Module):
     gamma: jnp.ndarray
     T_ref: jnp.ndarray
     P_ref: jnp.ndarray
+    h_ref: jnp.ndarray
     s_ref: jnp.ndarray
     k_ref: jnp.ndarray
     mu_ref: jnp.ndarray
@@ -83,35 +90,79 @@ def get_constants(fluid_name, T_ref, p_ref, dT=100.0, *, backend="HEOS"):
 
 
 def _get_constants_from_source(fluid, T_ref, p_ref, dT=100.0):
-    # Share the selected source and its initialized reference snapshot.
+    """Calibrate one ideal-gas model, retaining the source h/s convention.
+
+    The real-fluid heat capacities need not obey cp-cv=R. Preserve calibrated
+    cp and derive cv/gamma from the ideal-gas identity instead of combining
+    incompatible source values. Optional transport never determines whether a
+    valid thermodynamic model can be constructed.
+    """
     state = fluid.get_state(jxp.PT_INPUTS, p_ref, T_ref)
-    R = jnp.asarray(jxp.GAS_CONSTANT / fluid.abstract_state.molar_mass())
-    cp = jnp.asarray(state["cp"])
-    cv = jnp.asarray(state["cv"])
+    R = float(jxp.GAS_CONSTANT / fluid.abstract_state.molar_mass())
+    cp = float(state.raw_property("cp"))
+    if not math.isfinite(cp) or not math.isfinite(R) or R <= 0 or cp <= R:
+        raise InvalidConfigurationError(
+            fluid_name=fluid.name,
+            provider="native",
+            model="perfect_gas",
+            request="calibration",
+            reason="The source calibration requires finite cp > R > 0 so ideal-gas cv is positive.",
+        )
+    cv = cp - R
     gamma = cp / cv
-    # Use CoolProp absolute entropy at (p_ref, T_ref) so perfect-gas entropy
-    # is compatible with real-fluid entropy basis.
-    s_ref = jnp.asarray(state["s"])
-    mu_ref = jnp.asarray(state["mu"])
-    k_ref = jnp.asarray(state["k"])
+    h_ref = float(state.raw_property("h"))
+    s_ref = float(state.raw_property("s"))
+    mu_ref = float(state.raw_property("mu"))
+    k_ref = float(state.raw_property("k"))
 
-    # Estimate Sutherland constants from values at T_ref ± dT
-    T2 = T_ref + dT
-    state2 = fluid.get_state(jxp.PT_INPUTS, p_ref, T2)
-    S_mu = estimate_sutherland_constant(T_ref, mu_ref, T2, state2["mu"])
-    S_k = estimate_sutherland_constant(T_ref, k_ref, T2, state2["k"])
+    # Use a distinct in-domain temperature. Near a source maximum, fit below
+    # calibration rather than extrapolating T_ref + dT beyond the EOS limits.
+    upper, lower = float(fluid.T_max), float(fluid.T_min)
+    T2 = min(float(T_ref) + abs(float(dT)), upper)
+    if T2 == T_ref:
+        T2 = max(float(T_ref) - abs(float(dT)), lower)
+    second = None
+    if T2 != T_ref:
+        try:
+            second = fluid.get_state(jxp.PT_INPUTS, p_ref, T2)
+        except JaxPropError:
+            # Transport fitting is optional. Core calibration above succeeded.
+            pass
 
-    # Create object to store constants
+    def fit(reference, name):
+        if second is None:
+            return float("nan"), float("nan")
+        other = float(second.raw_property(name))
+        if not all(math.isfinite(value) and value > 0 for value in (reference, other)):
+            return float("nan"), float("nan")
+        try:
+            coefficient = float(
+                estimate_sutherland_constant(T_ref, reference, T2, other)
+            )
+        except (ValueError, ZeroDivisionError, OverflowError):
+            return float("nan"), float("nan")
+        if not math.isfinite(coefficient) or T_ref + coefficient == 0:
+            return float("nan"), float("nan")
+        return reference, coefficient
+
+    mu_ref, S_mu = fit(mu_ref, "mu")
+    k_ref, S_k = fit(k_ref, "k")
     consts = PerfectGasConstants(
-        R=R,
-        gamma=gamma,
-        T_ref=T_ref,
-        P_ref=p_ref,
-        s_ref=s_ref,
-        k_ref=k_ref,
-        mu_ref=mu_ref,
-        S_k=S_k,
-        S_mu=S_mu,
+        **{
+            name: jnp.asarray(value, dtype=jnp.result_type(value))
+            for name, value in dict(
+                R=R,
+                gamma=gamma,
+                T_ref=T_ref,
+                P_ref=p_ref,
+                h_ref=h_ref,
+                s_ref=s_ref,
+                k_ref=k_ref,
+                mu_ref=mu_ref,
+                S_k=S_k,
+                S_mu=S_mu,
+            ).items()
+        }
     )
 
     return consts
@@ -155,7 +206,7 @@ def specific_heat(constants):
 
 def temperature_from_h(h, constants):
     cp, _ = specific_heat(constants)
-    return jnp.maximum(1.0, h / cp)
+    return constants.T_ref + (h - constants.h_ref) / cp
 
 
 def temperature_from_Ps(p, s, constants):
@@ -165,33 +216,43 @@ def temperature_from_Ps(p, s, constants):
     P_ref = constants.P_ref
     s_ref = constants.s_ref
     cp, _ = specific_heat(constants)
-    exponent = ((s - s_ref) + (R * jnp.log(p / P_ref))) / cp
-    return jnp.maximum(1.0, T_ref * jnp.exp(exponent))
+    exponent = jnp.log(T_ref) + ((s - s_ref) + R * (jnp.log(p) - jnp.log(P_ref))) / cp
+    return jnp.exp(exponent)
 
 
 def temperature_from_rhoP(rho, p, constants):
     R = constants.R
-    return jnp.maximum(1.0, p / (rho * R))
+    return p / (rho * R)
 
 
 def viscosity_from_T(T, constants):
     mu_ref = constants.mu_ref
     T_ref = constants.T_ref
     S_mu = constants.S_mu
-    return mu_ref * ((T / T_ref) ** 1.5) * ((T_ref + S_mu) / (T + S_mu))
+    # Cancel one T/T_ref factor before evaluation. The equivalent T**1.5
+    # expression overflows at high finite T even when transport is finite.
+    value = (
+        mu_ref * (jnp.sqrt(T) / jnp.sqrt(T_ref)) * ((1 + S_mu / T_ref) / (1 + S_mu / T))
+    )
+    return jnp.where(jnp.isfinite(value) & (value > 0), value, jnp.nan)
 
 
 def conductivity_from_T(T, constants):
     k_ref = constants.k_ref
     T_ref = constants.T_ref
     S_k = constants.S_k
-    return k_ref * ((T / T_ref) ** 1.5) * ((T_ref + S_k) / (T + S_k))
+    value = (
+        k_ref * (jnp.sqrt(T) / jnp.sqrt(T_ref)) * ((1 + S_k / T_ref) / (1 + S_k / T))
+    )
+    return jnp.where(jnp.isfinite(value) & (value > 0), value, jnp.nan)
 
 
 def speed_of_sound_from_T(T, constants):
     R = constants.R
     gamma = constants.gamma
-    return jnp.sqrt(gamma * R * T)
+    # Avoid overflowing gamma*R*T when its square root is representable.
+    value = jnp.sqrt(gamma) * jnp.sqrt(R * T)
+    return jnp.where(jnp.isfinite(value), value, jnp.nan)
 
 
 def entropy_from_PT(p, T, constants):
@@ -200,7 +261,9 @@ def entropy_from_PT(p, T, constants):
     P_ref = constants.P_ref
     s_ref = constants.s_ref
     cp, _ = specific_heat(constants)
-    return s_ref + (cp * jnp.log(T / T_ref)) - (R * jnp.log(p / P_ref))
+    return (
+        s_ref + cp * (jnp.log(T) - jnp.log(T_ref)) - R * (jnp.log(p) - jnp.log(P_ref))
+    )
 
 
 def entropy_from_rhoP(rho, p, constants):
@@ -215,12 +278,10 @@ def entropy_from_rhoP(rho, p, constants):
 
 
 def calculate_properties_PT(p, T, constants):
-    T = jnp.maximum(T, 0.1)
-    p = jnp.maximum(p, 0.1)
     R = constants.R
     rho = p / (R * T)
     cp, _ = specific_heat(constants)
-    h = cp * T
+    h = constants.h_ref + cp * (T - constants.T_ref)
     s = entropy_from_PT(p, T, constants)
     return assemble_properties(T, p, rho, h, s, constants)
 
@@ -232,7 +293,7 @@ def calculate_properties_hs(h, s, constants):
     T_ref = constants.T_ref
     P_ref = constants.P_ref
     s_ref = constants.s_ref
-    P = P_ref * jnp.exp(((cp * jnp.log(T / T_ref)) - (s - s_ref)) / R)
+    P = jnp.exp(jnp.log(P_ref) + (cp * (jnp.log(T) - jnp.log(T_ref)) - (s - s_ref)) / R)
     rho = P / (R * T)
     return assemble_properties(T, P, rho, h, s, constants)
 
@@ -250,7 +311,7 @@ def calculate_properties_Ps(p, s, constants):
     R = constants.R
     rho = p / (R * T)
     cp, _ = specific_heat(constants)
-    h = cp * T
+    h = constants.h_ref + cp * (T - constants.T_ref)
     return assemble_properties(T, p, rho, h, s, constants)
 
 
@@ -265,7 +326,7 @@ def calculate_properties_rhoh(rho, h, constants):
 def calculate_properties_rhop(rho, p, constants):
     cp, _ = specific_heat(constants)
     T = temperature_from_rhoP(rho, p, constants)
-    h = cp * T
+    h = constants.h_ref + cp * (T - constants.T_ref)
     s = entropy_from_rhoP(rho, p, constants)
     return assemble_properties(T, p, rho, h, s, constants)
 
@@ -284,6 +345,7 @@ def assemble_properties(T, p, rho, h, s, constants):
         "pressure": p,
         "density": rho,
         "enthalpy": h,
+        "internal_energy": h - R * T,
         "entropy": s,
         "viscosity": viscosity_from_T(T, constants),
         "conductivity": conductivity_from_T(T, constants),
@@ -293,6 +355,16 @@ def assemble_properties(T, p, rho, h, s, constants):
         "isochoric_heat_capacity": (R / (gamma - 1)) * ones,
         "compressibility_factor": ones,
         "gruneisen": (gamma - 1) * ones,
+        "is_two_phase": jnp.zeros_like(T),
+        "isobaric_expansion_coefficient": 1 / T,
+        "isothermal_compressibility": 1 / p,
+        "isentropic_compressibility": (1 / p) / gamma,
+        "isothermal_bulk_modulus": p,
+        "isentropic_bulk_modulus": jnp.where(
+            jnp.isfinite(gamma * p), gamma * p, jnp.nan
+        ),
+        "joule_thomson": jnp.zeros_like(T),
+        "isothermal_joule_thomson": jnp.zeros_like(T),
     }
 
 
@@ -308,6 +380,203 @@ PROPERTY_CALCULATORS = {
     jxp.DmassHmass_INPUTS: calculate_properties_rhoh,
     jxp.DmassP_INPUTS: calculate_properties_rhop,
 }
+
+
+def _validated_constant_snapshot(constants, *, name):
+    """Validate an eagerly materialized model; never inspect traced calls."""
+    values = {}
+    arrays = {}
+    for key in PerfectGasConstants.__dataclass_fields__:
+        value = getattr(constants, key)
+        try:
+            array = np.asarray(value)
+            if array.shape != () or array.dtype.kind not in "fiu":
+                raise TypeError("Use a real numeric scalar.")
+            values[key] = float(array)
+            arrays[key] = array
+        except (TypeError, ValueError, OverflowError) as error:
+            raise InvalidConfigurationError(
+                fluid_name=name,
+                provider="native",
+                model="perfect_gas",
+                request=key,
+                reason="Materialize model constants eagerly as real numeric scalars outside JAX transformations.",
+            ) from error
+
+    def reject(key, reason):
+        raise InvalidConfigurationError(
+            fluid_name=name,
+            provider="native",
+            model="perfect_gas",
+            request=key,
+            reason=reason,
+        )
+
+    for key in ("R", "T_ref", "P_ref"):
+        if not math.isfinite(values[key]) or values[key] <= 0:
+            reject(key, "The model constant must be finite and positive.")
+        if (
+            np.issubdtype(arrays[key].dtype, np.floating)
+            and values[key] < np.finfo(arrays[key].dtype).tiny
+        ):
+            reject(
+                key,
+                "The model constant must be a positive normal value in its numerical dtype.",
+            )
+    if not math.isfinite(values["gamma"]) or values["gamma"] <= 1:
+        reject(
+            "gamma",
+            "The ideal-gas heat capacity ratio must be finite and greater than one.",
+        )
+    # Respect actual coefficient dtypes. A float32 R/gamma combination can
+    # overflow even though converting both values to Python float would hide it.
+    cp_value, cv_value, reference_scale_value, intercept_value = (
+        _coefficient_arithmetic(constants)
+    )
+    cp_array, cv_array = np.asarray(cp_value), np.asarray(cv_value)
+    cp, cv = float(cp_array), float(cv_array)
+    if not all(math.isfinite(value) and value > 0 for value in (cp, cv)):
+        reject(
+            "gamma",
+            "The selected R/gamma must produce finite positive heat capacities.",
+        )
+    for key in ("h_ref", "s_ref"):
+        if not math.isfinite(values[key]):
+            reject(key, "Reference offsets must be finite real scalars.")
+    output_dtype = jnp.result_type(
+        constants.R,
+        constants.gamma,
+        constants.T_ref,
+        constants.P_ref,
+        constants.h_ref,
+        constants.s_ref,
+        0.0,
+    )
+    if not np.issubdtype(output_dtype, np.floating):
+        output_dtype = np.dtype(float)
+    info = np.finfo(output_dtype)
+    reference_scale, energy_intercept = np.asarray(reference_scale_value), np.asarray(
+        intercept_value
+    )
+    if not np.isfinite(reference_scale) or not np.isfinite(energy_intercept):
+        reject(
+            "h_ref",
+            "Calibration energy scale and zero-temperature intercept must be representable in the model dtype.",
+        )
+    remaining = 1 - float(energy_intercept) / info.max
+    with np.errstate(all="ignore"):
+        upper_temperature = min(
+            info.max,
+            info.max / cp,
+            info.max / values["R"],
+            info.max * (remaining / cp),
+            info.max * (remaining / cv),
+        ) * (1 - 64 * info.eps)
+    if not math.isfinite(upper_temperature) or upper_temperature < MIN_TEMPERATURE:
+        reject(
+            "h_ref",
+            "The energy reference must leave a representable temperature domain above the declared numerical floor.",
+        )
+    # With stable logarithmic differences, every supported finite T/p has
+    # bounded entropy increments. Establish that once, so the repeated kernel
+    # need not calculate entropy merely to validate a temperature projection.
+    # Both coordinates use this common model precision in the native resolver.
+    temperature_dtype = pressure_dtype = output_dtype
+
+    def entropy_steps(temperature, pressure):
+        temperature_term = cp_value * (jnp.log(temperature) - jnp.log(constants.T_ref))
+        first_sum = constants.s_ref + temperature_term
+        pressure_term = constants.R * (jnp.log(pressure) - jnp.log(constants.P_ref))
+        return temperature_term, first_sum, pressure_term, first_sum - pressure_term
+
+    step_shapes = jax.eval_shape(
+        entropy_steps,
+        jax.ShapeDtypeStruct((), temperature_dtype),
+        jax.ShapeDtypeStruct((), pressure_dtype),
+    )
+    step_limits = [float(np.finfo(shape.dtype).max) for shape in step_shapes]
+    temperature_span = max(
+        abs(math.log(MIN_TEMPERATURE) - math.log(values["T_ref"])),
+        abs(math.log(np.finfo(temperature_dtype).max) - math.log(values["T_ref"])),
+    )
+    pressure_span = max(
+        abs(math.log(MIN_PRESSURE) - math.log(values["P_ref"])),
+        abs(math.log(np.finfo(pressure_dtype).max) - math.log(values["P_ref"])),
+    )
+    temperature_term = cp * temperature_span
+    first_sum = abs(values["s_ref"]) + temperature_term
+    pressure_term = values["R"] * pressure_span
+    bounds = (temperature_term, first_sum, pressure_term, first_sum + pressure_term)
+    if any(
+        not math.isfinite(bound) or bound > limit
+        for bound, limit in zip(bounds, step_limits)
+    ):
+        reject(
+            "s_ref",
+            "The entropy reference and heat capacities must admit finite entropy throughout the numerical model domain.",
+        )
+    for reference, coefficient in (("mu_ref", "S_mu"), ("k_ref", "S_k")):
+        ref, fit = values[reference], values[coefficient]
+        if math.isnan(ref) and math.isnan(fit):
+            continue
+        if not math.isfinite(ref) or ref <= 0 or not math.isfinite(fit):
+            reject(
+                reference,
+                "Transport requires a finite positive reference and finite coefficient, or NaN for both unavailable constants.",
+            )
+        if values["T_ref"] + fit == 0:
+            reject(
+                coefficient,
+                "A Sutherland pole cannot coincide with the calibration temperature.",
+            )
+    # NaN does not compare equal across independently constructed models.
+    # Unavailable transport is an explicit, reflexive metadata value instead.
+    return {
+        key: value if math.isfinite(value) else None for key, value in values.items()
+    }
+
+
+@jax.jit
+def _coefficient_arithmetic(constants):
+    """Evaluate setup guarantees in the actual JAX coefficient dtypes."""
+    cp, cv = specific_heat(constants)
+    reference_scale = cp * constants.T_ref
+    return cp, cv, reference_scale, constants.h_ref - reference_scale
+
+
+def _materialized_constants(constants, *, name):
+    """Make model precision explicit, retaining existing strong array objects."""
+    values = {}
+    changed = False
+    for key in PerfectGasConstants.__dataclass_fields__:
+        original = getattr(constants, key)
+        try:
+            value = jnp.asarray(original, dtype=jnp.result_type(original))
+        except (TypeError, ValueError, OverflowError) as error:
+            raise InvalidConfigurationError(
+                fluid_name=name,
+                provider="native",
+                model="perfect_gas",
+                request=key,
+                reason="Materialize real numeric model constants outside JAX transformations.",
+            ) from error
+        values[key] = value
+        changed = changed or value is not original
+    if not changed:
+        return constants
+    result = object.__new__(PerfectGasConstants)
+    for key, value in values.items():
+        object.__setattr__(result, key, value)
+    return result
+
+
+def _model_reference_id(source_id, constants):
+    return (
+        "perfect_gas",
+        source_id,
+        ("calibration", constants["T_ref"], constants["P_ref"]),
+        ("constants", tuple(constants.items())),
+    )
 
 
 class FluidPerfectGas(SourceReferencesMixin, eqx.Module):
@@ -369,13 +638,28 @@ class FluidPerfectGas(SourceReferencesMixin, eqx.Module):
                     "isochoric_heat_capacity",
                     "compressibility_factor",
                     "gruneisen",
+                    "internal_energy",
+                    "is_two_phase",
+                    "isobaric_expansion_coefficient",
+                    "isothermal_compressibility",
+                    "isentropic_compressibility",
+                    "isothermal_bulk_modulus",
+                    "isentropic_bulk_modulus",
+                    "joule_thomson",
+                    "isothermal_joule_thomson",
                 }
             ),
             jax_modes=frozenset({"eager", "jit", "vmap", "jvp", "grad"}),
             derivative_order=1,
             derivative_method="autodiff",
+            error_modes={"raise", "mask", "clip"},
             domain=FluidDomain(
-                description="Perfect-gas approximation; physical clipping/failure policy awaits Phase 7.",
+                description="Calibrated perfect-gas model with positive numerical temperature, pressure and density floors. Clip mode projects onto a consistent PT state; source-EOS bounds are calibration limits, not this model's runtime domain.",
+                bounds={
+                    "temperature": (MIN_TEMPERATURE, None),
+                    "pressure": (MIN_PRESSURE, None),
+                    "density": (MIN_DENSITY, None),
+                },
                 phases={"gas"},
             ),
         )
@@ -389,20 +673,32 @@ class FluidPerfectGas(SourceReferencesMixin, eqx.Module):
                 request=error.request,
                 reason=error.reason,
             ) from error
-        self.constants = _get_constants_from_source(source, T_ref, p_ref)
+        try:
+            self.constants = _get_constants_from_source(source, T_ref, p_ref)
+        except JaxPropError as error:
+            raise InvalidConfigurationError(
+                fluid_name=name,
+                provider=self.provider,
+                model=self.model,
+                request="calibration",
+                reason=error.reason,
+            ) from error
         self.fluid_name = name
         self.identifier = identifier
         self._references = source.references
-        self.reference_id = (
+        snapshot = _validated_constant_snapshot(self.constants, name=name)
+        self.reference_id = _model_reference_id(source.reference_id, snapshot)
+        self._configuration = build_configuration(
+            name,
+            self.provider,
             self.model,
-            source.reference_id,
-            ("calibration", float(T_ref), float(p_ref)),
-            (
-                "constants",
-                tuple(
-                    (key, float(value)) for key, value in vars(self.constants).items()
-                ),
-            ),
+            backend,
+            identifier,
+            model_options={
+                "T_ref": float(T_ref),
+                "p_ref": float(p_ref),
+                "constants": snapshot,
+            },
         )
 
     @property
@@ -417,6 +713,76 @@ class FluidPerfectGas(SourceReferencesMixin, eqx.Module):
     def capabilities(self):
         return self._capabilities
 
+    def materialize(self):
+        """Validate a dynamic model view and refresh its persistent identity.
+
+        Low-level ``eqx.tree_at`` parameter edits remain efficient ephemeral
+        differentiation views. Call this eager setup operation before storing
+        or combining the resulting physical model's states. No source is
+        initialized and the numerical parameter dtypes are retained.
+        """
+        constants = _materialized_constants(self.constants, name=self.name)
+        snapshot = _validated_constant_snapshot(constants, name=self.name)
+        options = dict(self.configuration.model_options)
+        options.update(
+            T_ref=snapshot["T_ref"], p_ref=snapshot["P_ref"], constants=snapshot
+        )
+        configuration = build_configuration(
+            self.name,
+            self.provider,
+            self.model,
+            self.backend,
+            self.identifier,
+            model_options=options,
+        )
+        result = object.__new__(type(self))
+        for key, value in vars(self).items():
+            object.__setattr__(result, key, value)
+        object.__setattr__(result, "constants", constants)
+        object.__setattr__(result, "_configuration", configuration)
+        object.__setattr__(
+            result,
+            "reference_id",
+            _model_reference_id(self.references.reference_id, snapshot),
+        )
+        return result
+
+    def with_constants(self, **changes):
+        """Return a validated model with updated constants and fresh identity.
+
+        Constants are named as in :class:`PerfectGasConstants`; cp/cv remain
+        derived from R/gamma, so they cannot become mutually inconsistent.
+        Changes are materialized outside JAX transformations. Source reference
+        records describe the calibration source, independently of this model.
+        """
+        unknown = changes.keys() - PerfectGasConstants.__dataclass_fields__.keys()
+        if unknown:
+            raise InvalidConfigurationError(
+                fluid_name=self.name,
+                provider=self.provider,
+                model=self.model,
+                request=sorted(unknown)[0],
+                reason="Unknown perfect-gas model constant.",
+                supported=tuple(PerfectGasConstants.__dataclass_fields__),
+            )
+        constants = self.constants
+        for key, value in changes.items():
+            try:
+                value = jnp.asarray(value, dtype=jnp.result_type(value))
+            except (TypeError, ValueError, OverflowError) as error:
+                raise InvalidConfigurationError(
+                    fluid_name=self.name,
+                    provider=self.provider,
+                    model=self.model,
+                    request=key,
+                    reason="Use a real numeric scalar model constant.",
+                ) from error
+            constants = eqx.tree_at(
+                lambda data, key=key: getattr(data, key), constants, value
+            )
+        model = eqx.tree_at(lambda data: data.constants, self, constants)
+        return model.materialize()
+
     def get_state_saturation(self, *args, **kwargs):
         raise UnsupportedOperationError(
             fluid_name=self.name,
@@ -427,7 +793,7 @@ class FluidPerfectGas(SourceReferencesMixin, eqx.Module):
             supported=tuple(sorted(self.capabilities.phase_operations)),
         )
 
-    @checked_jit
+    @checked_perfect_gas_jit
     def get_state(
         self,
         input_type,
@@ -443,18 +809,7 @@ class FluidPerfectGas(SourceReferencesMixin, eqx.Module):
         The model is already a numerical PyTree with static identity metadata,
         so native JIT avoids filtered-method binding and per-value compilation.
         """
-        x, y = jnp.asarray(prop_1), jnp.asarray(prop_2)
-        props = PROPERTY_CALCULATORS[input_type](x, y, self.constants)
-        return jxp.FluidState(
-            fluid_name=self.fluid_name,
-            identifier=self.identifier,
-            provider=self.provider,
-            model=self.model,
-            reference_id=self.reference_id,
-            available_properties=frozenset(props),
-            error_policy=errors,
-            **props,
-        )
+        return evaluate_state(self, input_type, prop_1, prop_2, errors=errors)
 
 
 # ----------------------------------------------------------------------------- #
@@ -463,47 +818,18 @@ class FluidPerfectGas(SourceReferencesMixin, eqx.Module):
 
 
 def get_props_gradient(
-    fluid, input_pair, x, y, method="auto", eps_rel=1e-6, eps_abs=1e-6
+    fluid, input_pair, x, y, method="auto", eps_rel=1e-6, eps_abs=1e-6, *, errors="mask"
 ):
-    """
-    Return dict of gradients for perfect_gas_props at (x, y).
-    Each entry: grads[prop] = jnp.array([∂prop/∂x, ∂prop/∂y])
-    """
+    """Return typed property partials with units and a separate primal state."""
+    from ..property_derivatives import get_props_gradient as evaluate_derivatives
 
-    def f(vec):
-        # Differentiate numeric properties only: status/validity arrays and
-        # static availability metadata are not thermodynamic derivatives.
-        return fluid.get_state(input_pair, vec[0], vec[1]).to_dict()
-
-    # JAX autodiff path
-    if method in ("auto", "jax"):
-        grads = jax.jacfwd(f)(jnp.array([x, y]))
-    else:
-        # Finite difference path
-        dx = eps_rel * jnp.maximum(jnp.abs(x), 1.0) + eps_abs
-        dy = eps_rel * jnp.maximum(jnp.abs(y), 1.0) + eps_abs
-
-        fx_p = f(jnp.array([x + dx, y]))
-        fx_m = f(jnp.array([x - dx, y]))
-        fy_p = f(jnp.array([x, y + dy]))
-        fy_m = f(jnp.array([x, y - dy]))
-
-        grads = {}
-        for name in fx_p:
-            grads[name] = jnp.array(
-                [
-                    (fx_p[name] - fx_m[name]) / (2.0 * dx),
-                    (fy_p[name] - fy_m[name]) / (2.0 * dy),
-                ]
-            )
-
-    return jxp.FluidState(
-        fluid_name=fluid.fluid_name,
-        identifier=fluid.identifier,
-        provider=fluid.provider,
-        model=fluid.model,
-        reference_id=fluid.reference_id,
-        available_properties=frozenset(grads),
-        error_policy="mask",
-        **grads,
+    return evaluate_derivatives(
+        fluid,
+        input_pair,
+        x,
+        y,
+        method=method,
+        eps_rel=eps_rel,
+        eps_abs=eps_abs,
+        errors=errors,
     )

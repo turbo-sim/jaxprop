@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 import jaxprop as jxp
-from jaxprop.perfect_gas import perfect_gas as pg_module
+from jaxprop.perfect_gas import request_policy as pg_requests
 
 from fluid_contract_cases import CONTRACT_CASES, build_current_fluid
 
@@ -48,7 +48,9 @@ def assert_metadata(state, fluid):
     }
     assert state.available_properties == fluid.capabilities.properties - diagnostics
     assert state.error_policy == (
-        "mask" if fluid.provider == "coolprop_jax" else "raise"
+        "mask"
+        if fluid.provider == "coolprop_jax" or fluid.model == "perfect_gas"
+        else "raise"
     )
 
 
@@ -56,7 +58,7 @@ def assert_metadata(state, fluid):
 def test_empty_broadcast_batches_preserve_full_state_eager_and_jitted(case, fluid):
     enthalpy = jnp.empty((0, 1))
     pressure = jnp.asarray([[7e6, 8e6, 9e6]])
-    policy = "mask" if case.id == "coolprop_jax" else "raise"
+    policy = "mask" if case.id in {"coolprop_jax", "perfect_gas"} else "raise"
     evaluate = lambda h, p: fluid.get_state(jxp.HmassP_INPUTS, h, p, errors=policy)
     eager = evaluate(enthalpy, pressure)
     compiled = jax.jit(evaluate)(enthalpy, pressure)
@@ -83,14 +85,13 @@ def test_empty_broadcast_batches_preserve_full_state_eager_and_jitted(case, flui
 def test_alternating_input_pairs_reuses_each_compilation(case, fluid, monkeypatch):
     traces = []
     if case.id == "perfect_gas":
-        for pair in (jxp.HmassP_INPUTS, jxp.PT_INPUTS):
-            original = pg_module.PROPERTY_CALCULATORS[pair]
+        original = pg_requests.resolve_pair
 
-            def counted(*args, _pair=pair, _original=original):
-                traces.append(_pair)
-                return _original(*args)
+        def counted(pair, *args, **kwargs):
+            traces.append(pair)
+            return original(pair, *args, **kwargs)
 
-            monkeypatch.setitem(pg_module.PROPERTY_CALCULATORS, pair, counted)
+        monkeypatch.setattr(pg_requests, "resolve_pair", counted)
     else:
         original = type(fluid)._get_state_scalar
 
@@ -101,10 +102,11 @@ def test_alternating_input_pairs_reuses_each_compilation(case, fluid, monkeypatc
         monkeypatch.setattr(type(fluid), "_get_state_scalar", counted)
 
     temperatures = []
+    policy = "mask" if case.id == "perfect_gas" else "raise"
     for enthalpy, pressure in ((680e3, 7e6), (720e3, 9e6)):
-        from_hp = fluid.get_state(jxp.HmassP_INPUTS, enthalpy, pressure)
+        from_hp = fluid.get_state(jxp.HmassP_INPUTS, enthalpy, pressure, errors=policy)
         temperature = float(from_hp.T)
-        from_pt = fluid.get_state(jxp.PT_INPUTS, pressure, temperature)
+        from_pt = fluid.get_state(jxp.PT_INPUTS, pressure, temperature, errors=policy)
         jax.block_until_ready((from_hp, from_pt))
         temperatures.append(temperature)
 

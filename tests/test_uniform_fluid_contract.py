@@ -159,9 +159,6 @@ def test_metadata_and_capability_queries(case, fluid_objects):
     "case",
     parameters_with_gaps(
         {
-            "perfect_gas": pending(
-                7, "perfect gas still omits required internal energy"
-            ),
             "binary_mixture": pending(9, "binary PT/PS support awaits consolidation"),
         }
     ),
@@ -215,11 +212,7 @@ def test_disabled_diagnostics_are_noops_for_every_model(case, fluid_objects):
 
 @pytest.mark.parametrize(
     "case",
-    parameters_with_gaps(
-        {
-            "perfect_gas": pending(7, "FluidPerfectGas omits internal energy"),
-        }
-    ),
+    parameters_with_gaps({}),
 )
 def test_successful_scalar_states_have_finite_mass_based_core_fields(
     case, fluid_objects
@@ -279,9 +272,6 @@ def test_numeric_fields_preserve_exact_broadcast_shape(
     "case",
     parameters_with_gaps(
         {
-            "perfect_gas": pending(
-                7, "Perfect gas still omits the required internal energy"
-            ),
             "binary_mixture": pending(
                 9,
                 "FluidMix does not yet evaluate broadcast batches",

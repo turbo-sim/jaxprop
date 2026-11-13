@@ -50,6 +50,7 @@ class FluidState(eqx.Module):
     error_policy: str = eqx.field(static=True)
     _data: dict
     status: jax.Array
+    _clipped: jax.Array | None
 
     def __init__(
         self,
@@ -63,6 +64,7 @@ class FluidState(eqx.Module):
         available_properties=None,
         error_policy="raise",
         status=None,
+        clipped=None,
         property_validity=None,
         **properties,
     ):
@@ -118,11 +120,11 @@ class FluidState(eqx.Module):
         self.provider = derived_provider
         self.providers = provenance
         context["provider"] = derived_provider
-        if error_policy not in ("raise", "mask"):
+        if error_policy not in ("raise", "clip", "mask"):
             raise InvalidConfigurationError(
                 request="error_policy",
-                reason="Choose 'raise' or 'mask'.",
-                supported=("raise", "mask"),
+                reason="Choose 'raise', 'clip' or 'mask'.",
+                supported=("raise", "clip", "mask"),
                 **context,
             )
         try:
@@ -136,7 +138,9 @@ class FluidState(eqx.Module):
         # Keep ordinary CoolProp/table sampling on NumPy. Converting every
         # scalar/property to a JAX device array here adds thousands of tiny
         # dispatches during table generation. Native/traced inputs stay in JAX.
-        leaves = jax.tree_util.tree_leaves((properties, status, property_validity))
+        leaves = jax.tree_util.tree_leaves(
+            (properties, status, property_validity, clipped)
+        )
         xp = (
             jnp
             if any(isinstance(value, (jax.Array, jax.core.Tracer)) for value in leaves)
@@ -197,6 +201,22 @@ class FluidState(eqx.Module):
                     **context,
                 )
             masks[canonical] = mask
+        clipped_array = None
+        if clipped is not None:
+            try:
+                clipped_array = xp.asarray(clipped)
+            except (TypeError, ValueError) as error:
+                raise InvalidStateError(
+                    request="clipped",
+                    reason="Clipping flags must contain a boolean array.",
+                    **context,
+                ) from error
+            if clipped_array.dtype != np.bool_:
+                raise InvalidStateError(
+                    request="clipped",
+                    reason="Clipping flags must contain booleans.",
+                    **context,
+                )
         status_array = xp.array(StatusCode.SUCCESS if status is None else status)
         if (
             not np.issubdtype(status_array.dtype, np.integer)
@@ -218,13 +238,18 @@ class FluidState(eqx.Module):
             shape = np.broadcast_shapes(
                 *(
                     array.shape
-                    for array in (*values.values(), *masks.values(), status_array)
+                    for array in (
+                        *values.values(),
+                        *masks.values(),
+                        status_array,
+                        *((clipped_array,) if clipped_array is not None else ()),
+                    )
                 )
             )
         except ValueError as error:
             raise InvalidStateError(
                 request="shape",
-                reason="State properties, masks, and status must have compatible broadcast shapes.",
+                reason="State properties, masks, clipping flags and status must have compatible broadcast shapes.",
                 **context,
             ) from error
         # Most evaluator outputs already have the final shape. Avoid dispatching
@@ -237,6 +262,15 @@ class FluidState(eqx.Module):
         if xp is np:
             self.status.setflags(write=False)
         successful = self.status == StatusCode.SUCCESS
+        # Ordinary states keep None: no extra numerical PyTree leaf, boolean
+        # array or compiled bookkeeping is added until clipping is supplied.
+        self._clipped = None
+        if clipped_array is not None:
+            if clipped_array.shape != shape:
+                clipped_array = xp.broadcast_to(clipped_array, shape)
+            self._clipped = clipped_array & successful
+            if xp is np:
+                self._clipped.setflags(write=False)
         self._data = {}
         for name in PROPERTIES_CANONICAL:
             if name not in normalized:
@@ -287,6 +321,21 @@ class FluidState(eqx.Module):
     @property
     def valid(self):
         return self.status == StatusCode.SUCCESS
+
+    @property
+    def clipped(self):
+        """Report recovered clipped elements, independently of failure status.
+
+        Unclipped states store no mask. Materialize their all-false flags only
+        when requested, preserving the numerical leaves of ordinary calls.
+        """
+        if self._clipped is not None:
+            return self._clipped
+        xp = jnp if isinstance(self.status, (jax.Array, jax.core.Tracer)) else np
+        flags = xp.zeros_like(self.status, dtype=bool)
+        if xp is np:
+            flags.setflags(write=False)
+        return flags
 
     def supports_property(self, name):
         return ALIAS_TO_CANONICAL.get(name) in self.available_properties
@@ -384,7 +433,7 @@ class FluidState(eqx.Module):
         return result
 
     def keys(self):
-        return self.to_dict().keys()
+        return self._data.keys()
 
     def values(self):
         return self.to_dict().values()
@@ -417,6 +466,7 @@ class FluidState(eqx.Module):
             metadata=self._metadata(),
             properties=self.to_dict(),
             status=self.status,
+            clipped=self._clipped,
             property_validity=masks,
         )
 
@@ -426,6 +476,7 @@ class FluidState(eqx.Module):
             **data["metadata"],
             **data["properties"],
             status=data["status"],
+            clipped=data.get("clipped"),
             property_validity=data["property_validity"],
         )
 
@@ -463,16 +514,74 @@ class FluidState(eqx.Module):
         return jax.tree_util.tree_map(lambda value: value[::-1], self)
 
     @classmethod
-    def _from_validated(cls, metadata, properties, status):
+    def _from_native(
+        cls,
+        metadata,
+        properties,
+        status,
+        clipped=None,
+        *,
+        mask_failed=True,
+        success_mask=None,
+    ):
+        """Assemble already validated native outputs without repeated checks.
+
+        The native caller supplies complete immutable metadata, canonical
+        floating arrays at the exact status shape, and finite core values or
+        optional NaNs on successful rows. Optional overflow is normalized at
+        its definition. Public arbitrary-input construction stays validating.
+
+        Large all-success batches return those arrays directly. Mixed/failed
+        batches apply a single success mask to all fields. A guarded eager
+        raise entry may set ``mask_failed=False`` because it inspects status
+        and raises before exposing any failed intermediate state.
+        """
+        if not mask_failed and metadata["error_policy"] != "raise":
+            raise ValueError("Unmasked native assembly requires guarded raise policy")
+        xp = jnp if isinstance(status, (jax.Array, jax.core.Tracer)) else np
+        if xp is np:
+            status = np.array(status, copy=True)
+        successful = success_mask
+        if successful is None and (mask_failed or clipped is not None):
+            successful = status == StatusCode.SUCCESS
+        if mask_failed:
+
+            def masked_values(_):
+                return {
+                    name: xp.where(successful, value, np.nan)
+                    for name, value in properties.items()
+                }
+
+            if xp is jnp and status.size >= 64:
+                masked = jax.lax.cond(
+                    jnp.all(successful),
+                    lambda _: dict(properties),
+                    masked_values,
+                    operand=None,
+                )
+            else:
+                masked = masked_values(None)
+        elif xp is np:
+            masked = {
+                name: np.array(value, copy=True) for name, value in properties.items()
+            }
+        else:
+            masked = dict(properties)
+        if clipped is not None:
+            clipped = clipped & successful
+        return cls._from_validated(metadata, masked, status, clipped)
+
+    @classmethod
+    def _from_validated(cls, metadata, properties, status, clipped=None):
         """Assemble collection results whose inputs/invariants are validated.
 
-        This private path is only for shape-preserving combinations of existing
-        states. Their values are already NaN-masked and their metadata/statuses
-        have passed public construction checks. Collection
-        compatibility is checked before this method is called. New NumPy arrays
+        Collection inputs have passed public compatibility checks and contain
+        NaN-masked values. Trusted native callers establish equivalent numeric
+        guarantees through ``_from_native``; guarded raising entries may hold
+        raw intermediates privately until status is checked. New NumPy arrays
         are owned by the result and frozen before exposing them.
         """
-        for value in (*properties.values(), status):
+        for value in (*properties.values(), status, clipped):
             if isinstance(value, np.ndarray):
                 value.setflags(write=False)
         result = object.__new__(cls)
@@ -480,6 +589,7 @@ class FluidState(eqx.Module):
             object.__setattr__(result, name, value)
         object.__setattr__(result, "_data", properties)
         object.__setattr__(result, "status", status)
+        object.__setattr__(result, "_clipped", clipped)
         return result
 
     @classmethod
@@ -524,6 +634,7 @@ class FluidState(eqx.Module):
                 for state in states
                 for value in (
                     state.status,
+                    state._clipped,
                     *state._data.values(),
                 )
             )
@@ -550,10 +661,23 @@ class FluidState(eqx.Module):
             # int64 + uint64). Existing states only contain validated codes 0–4,
             # so restoring an integer dtype is exact and keeps status semantic.
             status = status.astype(np.int32)
+        clipped = None
+        if any(state._clipped is not None for state in states):
+            clipped = combine(
+                [
+                    (
+                        state._clipped
+                        if state._clipped is not None
+                        else xp.zeros_like(state.status, dtype=bool)
+                    )
+                    for state in states
+                ]
+            )
         return cls._from_validated(
             metadata,
             properties,
             status=status,
+            clipped=clipped,
         )
 
     def __add__(self, other):

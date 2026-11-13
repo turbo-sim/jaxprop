@@ -224,11 +224,11 @@ def validate_request(
                 supported=tuple(sorted(caps.options)),
                 **_context(fluid),
             )
-    if not isinstance(errors, str) or errors not in ("raise", "mask"):
+    if not isinstance(errors, str) or errors not in ("raise", "mask", "clip"):
         raise UnsupportedOptionError(
             request="errors",
-            reason="Choose 'raise' or 'mask'.",
-            supported=("raise", "mask"),
+            reason="Choose 'raise', 'mask' or 'clip'.",
+            supported=("raise", "mask", "clip"),
             **_context(fluid),
         )
 
@@ -268,7 +268,7 @@ def validate_request(
     if errors not in caps.error_modes:
         raise UnsupportedExecutionModeError(
             request=f"errors={errors}",
-            reason="This evaluator's per-element numerical mask policy is not implemented yet.",
+            reason="This evaluator does not implement the requested numerical error policy.",
             supported=tuple(sorted(caps.error_modes)),
             **_context(fluid),
         )

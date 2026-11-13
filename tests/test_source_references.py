@@ -479,12 +479,15 @@ def test_perfect_gas_calibrates_from_the_selected_source_backend(backend):
     source.update(CP.PT_INPUTS, 1e5, 600.0)
     assert fluid.backend == fluid.configuration.backend == backend
     assert fluid.references["critical_point"].backend == backend
-    # Phase 5 preserves the current model calibration formula; correcting the
-    # thermodynamic cp/cv/R relation and h offsets is explicitly Phase 7.
+    # Retain source cp and calibrate ideal cv so cp-cv=R exactly for this model.
+    gas_constant = jxp.GAS_CONSTANT / source.molar_mass()
     np.testing.assert_allclose(
-        fluid.constants.gamma, source.cpmass() / source.cvmass(), rtol=1e-12
+        fluid.constants.gamma,
+        source.cpmass() / (source.cpmass() - gas_constant),
+        rtol=1e-12,
     )
     np.testing.assert_allclose(fluid.constants.s_ref, source.smass(), rtol=1e-12)
+    np.testing.assert_allclose(fluid.constants.h_ref, source.hmass(), rtol=1e-12)
     for input_pair, first, second in (
         (jxp.PQ_INPUTS, 1e6, 0.0),
         (jxp.QT_INPUTS, 1.0, 270.0),
@@ -510,7 +513,12 @@ def test_native_execution_does_not_repeat_source_initialization(
     @jax.jit
     def temperature(h):
         traces.append(None)
-        return fluid.get_state(jxp.HmassP_INPUTS, h, 8e6).T
+        return fluid.get_state(
+            jxp.HmassP_INPUTS,
+            h,
+            8e6,
+            errors="mask" if provider == "perfect_gas" else "raise",
+        ).T
 
     values = [float(temperature(jnp.asarray(h))) for h in (680e3, 700e3, 720e3)]
     assert len(traces) == 1

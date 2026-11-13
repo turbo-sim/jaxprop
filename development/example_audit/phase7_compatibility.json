@@ -1,0 +1,71 @@
+{
+  "scope": "Phase 7 bounded compatibility execution with unchanged scientific defaults and existing numerical tolerances. Elapsed times include imports/compilation and are not performance results. Headless isolated subprocesses draw all generated figures.",
+  "examples_ast_parsed": 65,
+  "timeout_seconds_per_program": 90,
+  "executed_examples": [
+    {
+      "file": "perfect_gas/demo_perfect_gas_eos.py",
+      "exit_code": 0,
+      "seconds": 4.393,
+      "figures_drawn_and_saved": 0,
+      "source_sha256": "e743f1af380a9c197026afaa4bb4e10e7343b2196c5277f411f6bfee59fca3e1",
+      "log": "development/example_audit/results/phase7/demo_perfect_gas_eos/run.log"
+    },
+    {
+      "file": "perfect_gas/demo_perfect_gas_gradients.py",
+      "exit_code": 0,
+      "seconds": 4.339,
+      "figures_drawn_and_saved": 0,
+      "source_sha256": "7c1801ed15d19ab8727162495f095a664ba6fd6df29cb39347e2c44d4f5e2764",
+      "log": "development/example_audit/results/phase7/demo_perfect_gas_gradients/run.log"
+    },
+    {
+      "file": "perfect_gas/demo_sutherland.py",
+      "exit_code": 0,
+      "seconds": 3.886,
+      "figures_drawn_and_saved": 1,
+      "source_sha256": "e9b2746a69243a0a3652c4a54526eff3c7228459d6eb27a890cf6046c603c847",
+      "log": "development/example_audit/results/phase7/demo_sutherland/run.log"
+    },
+    {
+      "file": "perfect_gas/polytropic_compression.py",
+      "exit_code": 0,
+      "seconds": 4.226,
+      "figures_drawn_and_saved": 0,
+      "source_sha256": "033529995af481d7d10f19c016829c19ddcd8f0728a31dc14d7089fe830aa273",
+      "log": "development/example_audit/results/phase7/polytropic_compression/run.log"
+    },
+    {
+      "file": "optimistix/demo_ideal_gas.py",
+      "exit_code": 1,
+      "seconds": 3.725,
+      "figures_drawn_and_saved": 0,
+      "source_sha256": "7897a05bec9e059fca2431c50d69a15489df6823d9ced50503cab8bac780ed7b",
+      "log": "development/example_audit/results/phase7/demo_ideal_gas/run.log"
+    },
+    {
+      "file": "coolprop_jax/coolprop_broadcast.py",
+      "exit_code": 0,
+      "seconds": 4.58,
+      "figures_drawn_and_saved": 0,
+      "source_sha256": "648c76829e6127ab7ae1a8d5246e86a7a0a0c88c0838b3b2d66d12c0e806fd69",
+      "log": "development/example_audit/results/phase7/coolprop_broadcast/run.log"
+    }
+  ],
+  "deferred_work": "Broader scientific checks, synchronized timing methodology and example catalogue remain Phase 14 work.",
+  "remaining_findings": [
+    {
+      "example": "optimistix/demo_ideal_gas.py",
+      "owner_phase": 14,
+      "reason": "Newton reaches the physical pressure root but the dimensional enthalpy residual stagnates just above the unchanged absolute tolerance. Residual scaling/acceptance needs deliberate review; no tolerance, iteration limit or case bypass was changed.",
+      "probe": {
+        "Mach": 0.0,
+        "pressure_Pa": 99999.99999999996,
+        "residual_J_per_kg": -1.1641532182693481e-10,
+        "absolute_tolerance": 1e-10,
+        "steps": 256
+      },
+      "rejected_quick_fix": "Using equivalent cp*(T0-T) enthalpy differences still fails near Mach zero, so a substitution alone is insufficient."
+    }
+  ]
+}

@@ -18,7 +18,7 @@ def rho_out_polytropic(x, fluid):
     eta_p = eta_p / 100
     exponent = (gamma - 1.0) / (gamma * eta_p)  # compressor form
     T_out = T_in * jnp.power(pr, exponent)
-    d_out = fluid.get_state(jxp.PT_INPUTS, p_out, T_out)["d"]
+    d_out = fluid.get_state(jxp.PT_INPUTS, p_out, T_out, errors="mask")["d"]
     return d_out
 
 # Inputs

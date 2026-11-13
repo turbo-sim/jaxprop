@@ -114,8 +114,13 @@ def test_perfect_gas_gradient_helper_differentiates_numeric_properties_only(
     assert derivative.reference_id == primal.reference_id
     assert derivative.available_properties == primal.available_properties
     assert derivative.error_policy == "mask"
-    assert derivative.shape == (2,)
-    np.testing.assert_array_equal(derivative.status, [0, 0])
+    assert not isinstance(derivative, jxp.FluidState)
+    assert derivative.quantity_kind == "property_derivatives"
+    assert derivative.shape == derivative.primal_shape == ()
+    assert derivative.derivative_shape == (2,)
+    assert derivative.input_names == ("pressure", "temperature")
+    assert derivative.input_units == ("Pa", "K")
+    np.testing.assert_array_equal(derivative.status, 0)
     assert np.issubdtype(np.asarray(derivative.status).dtype, np.integer)
     for value in derivative.to_dict().values():
         assert np.shape(value) == (2,)
