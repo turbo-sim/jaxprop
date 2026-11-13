@@ -1,7 +1,7 @@
 """Fixed public-contract cases, independent of evaluator dispatch/capabilities.
 
-The legacy constructors let conformance tests exercise existing evaluators while
-the common factory is implemented. They do not adapt signatures or state data.
+Implemented models use the common public initializer. The legacy binary
+constructor remains a fixed row until Phase 9 supplies the consolidated model.
 """
 
 from dataclasses import dataclass
@@ -53,7 +53,9 @@ class ContractCase:
 
 
 CONTRACT_CASES = (
-    ContractCase("coolprop", "coolprop", "real_fluid", "Fluid", "CO2", SOURCE_PAIRS),
+    ContractCase(
+        "coolprop", "coolprop", "real_fluid", "FluidCoolProp", "CO2", SOURCE_PAIRS
+    ),
     ContractCase(
         "coolprop_jax", "coolprop_jax", "real_fluid", "FluidJAX", "CO2", SOURCE_PAIRS
     ),
@@ -80,27 +82,30 @@ CONTRACT_CASES = (
 
 
 def build_current_fluid(case, table_dir, identifier=None):
-    """Construct the currently exported class without adapting its interface."""
+    """Construct through the public initializer without adapting state calls."""
     if case.id == "bicubic":
-        return jxp.FluidBicubic(
-            fluid_name=case.name,
+        return jxp.Fluid(
+            name=case.name,
+            method="bicubic",
             backend="HEOS",
             identifier=identifier,
-            h_min=600e3,
-            h_max=850e3,
-            p_min=5e6,
-            p_max=12e6,
-            N_h=12,
-            N_p=12,
-            coarse_step=1,
-            table_dir=str(table_dir),
+            table_options=dict(
+                h_min=600e3,
+                h_max=850e3,
+                p_min=5e6,
+                p_max=12e6,
+                N_h=12,
+                N_p=12,
+                coarse_step=1,
+                table_dir=str(table_dir),
+            ),
         )
     if case.id == "perfect_gas":
-        return jxp.FluidPerfectGas(
+        return jxp.Fluid(
             name=case.name,
+            method="perfect_gas",
             identifier=identifier,
-            T_ref=600.0,
-            p_ref=1e5,
+            model_options=dict(T_ref=600.0, p_ref=1e5),
         )
     if case.id == "binary_mixture":
         return jxp.FluidMix(
@@ -109,12 +114,16 @@ def build_current_fluid(case, table_dir, identifier=None):
             identifier=identifier,
             mixture_ratio=0.1,
         )
-    constructor = getattr(jxp, case.current_class)
-    return constructor(name=case.name, backend="HEOS", identifier=identifier)
+    return jxp.Fluid(
+        name=case.name,
+        method=case.id,
+        backend="HEOS",
+        identifier=identifier,
+    )
 
 
 def factory_arguments(case, table_dir):
-    """Common-factory configuration for the selected physical model."""
+    """Lower-level compatibility factory settings for the physical model."""
     arguments = dict(
         name=case.name,
         provider=case.provider,
@@ -140,4 +149,13 @@ def factory_arguments(case, table_dir):
             components=(jxp.Fluid("Water"), jxp.Fluid("Nitrogen")),
             mass_fractions=(1 / 11, 10 / 11),
         )
+    return arguments
+
+
+def constructor_arguments(case, table_dir):
+    """Public method selection for the same independently specified model."""
+    arguments = factory_arguments(case, table_dir)
+    arguments.pop("provider")
+    arguments.pop("model")
+    arguments["method"] = case.id
     return arguments

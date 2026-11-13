@@ -1,6 +1,8 @@
 # Examples execution audit
 
-Audited on 13 November 2026 against Phase 5 commit `b647ffb` plus the small repairs below. This audit covers all **65 Python files** under `examples/`; all now parse successfully. The common `Fluid(..., method=...)` constructor remains a planned change, so these repairs use the current implemented API.
+Audited on 13 November 2026 against Phase 5 commit `b647ffb` plus the small repairs below, committed as `32e18c9`. This audit covers all **65 Python files** under `examples/`; all parsed successfully at that checkpoint. The common `Fluid(..., method=...)` constructor was still planned then. Later constructor migrations are verified separately; this report and its hashes preserve the original audit rather than claiming its outcomes were rerun for every subsequent edit.
+
+The subsequent constructor revision migrates 40 files, verifies unchanged expressions for all 74 constructor argument sets and reruns 19 representative programs successfully. [Constructor migration record](development/example_audit/constructor_migration.json). Advanced table modes and legacy failure studies remain explicit until their owning phases are implemented.
 
 | Outcome | Files |
 | --- | ---: |
@@ -17,7 +19,7 @@ Actual unchanged-resolution programs in isolated headless subprocesses. One conv
 
 Execution used the repository virtual environment, Matplotlib Agg, closed stdin, and isolated working directories under `development/example_audit/results/`. Updated plotting programs were explicitly drawn; representative generated output was inspected. Text-only and inactive files are distinguished from figure checks. No existing user tables or source-folder exports were modified.
 
-The [portable per-file record](development/example_audit/summary.json) retains current source hashes, final outcomes, and log paths. Group records retain exact commands and earlier attempts: [bicubic](development/example_audit/results/bicubic/final_summary.json), [source/phase](development/example_audit/results/source_phase/final_summary.json), [JAX/models](development/example_audit/results/jax_models/summary.json), and [additional derivative examples](development/example_audit/results/jax_models/additional_summary.json). Generated tables, figures, and logs remain ignored by Git.
+The [portable per-file record](development/example_audit/summary.json) retains audited source hashes, final outcomes, and log paths. Group records retain exact commands and earlier attempts: [bicubic](development/example_audit/results/bicubic/final_summary.json), [source/phase](development/example_audit/results/source_phase/final_summary.json), [JAX/models](development/example_audit/results/jax_models/summary.json), and [additional derivative examples](development/example_audit/results/jax_models/additional_summary.json). Generated tables, figures, and logs remain ignored by Git.
 
 ## Small repairs completed
 

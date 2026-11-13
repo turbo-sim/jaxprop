@@ -36,7 +36,7 @@ logp_nodes_val = jnp.linspace(jnp.log(p_min), jnp.log(p_max), N_test + 1)
 h_val = 0.5 * (h_nodes_val[:-1] + h_nodes_val[1:])
 p_val = jnp.exp(0.5 * (logp_nodes_val[:-1] + logp_nodes_val[1:]))
 H_val, P_val = jnp.meshgrid(h_val, p_val, indexing="ij")
-fluid_ref = jxp.FluidJAX(fluid_name, backend=backend)
+fluid_ref = jxp.Fluid(fluid_name, method="coolprop_jax", backend=backend)
 state_ref = fluid_ref.get_state(jxp.HmassP_INPUTS, H_val, P_val)
 
 # ---------------------------
@@ -48,17 +48,20 @@ for N in resolutions:
 
     # Define bicubic interpolation fluid
     print(f"\n=== Building bicubic model N_h=N_p={N} ===")
-    fluid_bicubic = jxp.FluidBicubic(
-        fluid_name=fluid_name,
+    fluid_bicubic = jxp.Fluid(
+        name=fluid_name,
+        method="bicubic",
         backend=backend,
-        h_min=h_min,
-        h_max=h_max,
-        p_min=p_min,
-        p_max=p_max,
-        N_h=N,
-        N_p=N,
-        table_dir=outdir,
-        gradient_method=grad_method,
+        table_options={
+            "h_min": h_min,
+            "h_max": h_max,
+            "p_min": p_min,
+            "p_max": p_max,
+            "N_h": N,
+            "N_p": N,
+            "table_dir": outdir,
+            "gradient_method": grad_method,
+        },
     )
 
     # Interpolate on validation points

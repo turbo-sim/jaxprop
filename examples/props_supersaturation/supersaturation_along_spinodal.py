@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import jaxprop.coolprop as jxp
+from jaxprop import Fluid
 
 
 # Create the folder to save figures
@@ -12,7 +13,7 @@ outdir = "output"
 os.makedirs(outdir, exist_ok=True)
 
 # Define fluid
-fluid = jxp.Fluid("CO2", backend="HEOS")
+fluid = Fluid("CO2", backend="HEOS")
 
 # Compute spinodal lines and store in fluid to avoid redundant calculation
 spinodal_liq, spinodal_vap = jxp.compute_spinodal_line(fluid, N=100, supersaturation=True)

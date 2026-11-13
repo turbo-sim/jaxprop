@@ -90,7 +90,7 @@ SOLVERS_SINGLE_PHASE = [
 def test_metastable_solver_consistency(fluid_name, backend, state_label):
 
     # Compute reference state
-    fluid = jxp.Fluid(fluid_name, backend)
+    fluid = jxp.Fluid(fluid_name, backend=backend)
     state_ref = get_reference_state(fluid_name, backend, state_label)
     
     # Choose solver types based on current state

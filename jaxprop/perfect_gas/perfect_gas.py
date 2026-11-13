@@ -2,7 +2,7 @@ import jax
 import jax.numpy as jnp
 import equinox as eqx
 
-from ..coolprop import Fluid
+from ..coolprop import FluidCoolProp
 from .. import helpers_props as jxp
 from ..configuration import build_configuration, FluidCapabilities, FluidDomain
 from ..errors import InvalidConfigurationError, UnsupportedOperationError
@@ -78,7 +78,7 @@ def get_constants(fluid_name, T_ref, p_ref, dT=100.0, *, backend="HEOS"):
         If the Sutherland estimation becomes numerically unstable.
     """
     return _get_constants_from_source(
-        Fluid(name=fluid_name, backend=backend), T_ref, p_ref, dT
+        FluidCoolProp(name=fluid_name, backend=backend), T_ref, p_ref, dT
     )
 
 
@@ -380,7 +380,7 @@ class FluidPerfectGas(SourceReferencesMixin, eqx.Module):
             ),
         )
         try:
-            source = Fluid(name=name, backend=backend)
+            source = FluidCoolProp(name=name, backend=backend)
         except InvalidConfigurationError as error:
             raise InvalidConfigurationError(
                 fluid_name=name,

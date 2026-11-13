@@ -4,9 +4,9 @@ This is the target interface for the fluid refactor. Applications select a physi
 
 Phase 2 fixes these requirements and adds executable conformance cases. The current implementation does not yet satisfy the complete contract. Strict expected failures in the tests identify the implementation phases that remain; the [implementation checklist](z_IMPLEMENTATION_PLAN.md) tracks their completion.
 
-## Implemented shared layer after Phase 5
+## Implemented shared layer after the constructor revision
 
-`create_fluid`, immutable `configuration`/`capabilities` records, the common ordinary `get_state` keywords, typed static-request validation, real-input broadcasting, honest property enabling, and named `StatusCode` values are implemented. Factories return actual evaluator classes; setup stays outside repeated calls. Configuration snapshots cannot be changed through the caller's option dictionaries or public identity/composition fields.
+`Fluid(..., method=...)`, immutable `configuration`/`capabilities` records, the common ordinary `get_state` keywords, typed static-request validation, real-input broadcasting, honest property enabling, and named `StatusCode` values are implemented. Construction returns actual native evaluator objects; setup stays outside repeated calls. Configuration snapshots cannot be changed through the caller's option dictionaries or public identity/composition fields. The lower-level `create_fluid(provider=..., model=...)` function remains available for compatibility.
 
 Capabilities report current implementation, rather than the target minimums below. Direct/callback source evaluators support twelve tested mass pairs, pure bicubic tables eight, perfect gas six, and the direct legacy binary model only scalar HP. Ordinary source/callback/pure-table states enable 25 properties, perfect gas 13, and legacy binary 22. Direct source generalized quality is retained where verified; disabled diagnostics and inapplicable properties are explicitly unsupported. The current bicubic domain record truthfully reports legacy extrapolation until Phase 8 enforces the target bounds policy.
 
@@ -20,7 +20,7 @@ Air and pseudo-pure refrigerants retain distinct liquid/vapor lower saturation e
 
 The remaining sections specify the complete target. Their numerical/reference/model requirements are not weakened by this staged boundary.
 
-The revised construction target below uses `Fluid(..., method=...)` as the common object initializer. This syntax is planned before Phase 6: the current package still exports a CoolProp-specific `Fluid` class and the generic `create_fluid` function. The validated routing, metadata, and reference implementation will be reused.
+`Fluid(..., method=...)` is now the common object initializer in the development checkout. The direct source implementation is explicitly named `FluidCoolProp`; `jaxprop.coolprop.Fluid` remains its source-only compatibility alias. This constructor revision reuses the validated routing, metadata and reference implementation without changing evaluator equations or numerical failure policies.
 
 ## Construction and identity
 
@@ -39,7 +39,7 @@ fluid = jxp.Fluid(
 state = fluid.get_state(jxp.HmassP_INPUTS, 500e3, 10e6)
 ```
 
-The target public initializer is `Fluid(name, method="coolprop", backend=None, identifier=None, *, table_options=None, model_options=None)`. `name` is a nonempty source-fluid name, or a user label for a composite model. `method` is one exact lowercase selection below; it maps to separate physical-model and numerical-provider metadata internally. Consumers do not need to specify the implementation value `provider="native"` to request a perfect gas. Unknown selections, incompatible combinations, unrecognized settings, and settings for an inapplicable method raise `InvalidConfigurationError` before evaluation.
+The public initializer is `Fluid(name, method="coolprop", backend=None, identifier=None, *, table_options=None, model_options=None)`. `name` is a nonempty source-fluid name, or a user label for a composite model. `method` is one exact lowercase selection below; it maps to separate physical-model and numerical-provider metadata internally. Consumers do not need to specify the implementation value `provider="native"` to request a perfect gas. Unknown selections, incompatible combinations, unrecognized settings, and settings for an inapplicable method raise `InvalidConfigurationError` before evaluation. The implementation accepts unknown keywords only to issue these typed errors; they are not additional supported options.
 
 | `method` | Physical `model` metadata | Numerical `provider` metadata | Meaning |
 | --- | --- | --- | --- |
@@ -59,7 +59,11 @@ For `bicubic`, `table_options` requires finite `h_min < h_max`, positive `p_min 
 
 Table reuse requires an exact complete generation manifest, including mode/composition, numerical settings, versions, source/reference fingerprints, and property schema. Identifiers, storage locations, and the inverse-guess stride do not alter table identity. Default filenames include a manifest digest so different settings coexist. Validate payload shapes, dtype, and finite core data before reuse, retaining legitimate optional NaNs. Corrupt or incompatible caches are regenerated; a failed generation/write preserves the prior file. Publication is atomic. If source provenance cannot be verified, generation may proceed but persistent cache reuse/publication is disabled with an explicit diagnostic. A matching cache manifest does not replace independent interpolation/derivative accuracy checks.
 
-`Fluid(...)` is the recommended common object initializer. Selection, validation, source-reference initialization, and table creation/loading happen once during construction. Repeated `get_state` calls use the selected numerical implementation, preserving its native JAX PyTree, dynamic numerical inputs, compilation reuse, and supported transformations. Public concrete constructors retain the same applicable identity/configuration vocabulary. Returned-object type/introspection and compatibility-alias behavior are specified and tested during the constructor revision; they must not accidentally preserve the old meaning that every `Fluid` is a direct CoolProp object. Retaining legacy signatures is optional.
+`Fluid(...)` is the recommended common object initializer. Selection, validation, source-reference initialization, and table creation/loading happen once during construction. Repeated `get_state` calls use the selected numerical implementation, preserving its native JAX PyTree, dynamic numerical inputs, compilation reuse, and supported transformations. Public concrete constructors retain the same applicable identity/configuration vocabulary.
+
+`Fluid` is a real class whose native implementations are registered virtual subclasses. Consequently `isinstance(fluid, Fluid)` and `issubclass(FluidBicubic, Fluid)` are true, while `type(fluid)` identifies the actual evaluator (`FluidCoolProp`, `FluidJAX`, `FluidBicubic`, or `FluidPerfectGas`). There is no instance wrapper and the common class is not inserted into the native inheritance/PyTree structure. The selected concrete constructor runs exactly once. Physical subclassing of the dispatcher is rejected explicitly; extend a concrete evaluator instead. `create_fluid` remains the lower-level provider/model compatibility function, and the source-only namespace retains its concrete `Fluid` alias.
+
+Legacy `exceptions` construction flags belong to explicit concrete source classes; the common initializer rejects them with guidance to the per-call `errors` policy. Numerical mask policies remain pending in Phases 6–9, as described above. Perfect-gas and bicubic objects support verified native pickle round trips. Source/callback object pickle remains an explicitly tested Phase 11 gap because of raw CoolProp handles; constructor routing does not claim to repair that lifecycle behavior.
 
 ## Property calls and input units
 

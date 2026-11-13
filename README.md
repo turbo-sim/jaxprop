@@ -20,6 +20,38 @@ JAX-compatible Python package for real-fluid thermodynamic properties, phase equ
 
 ```bash
 pip install jaxprop
+```
+
+## Development constructor
+
+The following API is available in this development checkout. The published
+0.5.8 release uses the earlier construction interface.
+
+```python
+import jaxprop as jxp
+
+fluid = jxp.Fluid("CO2", method="coolprop", backend="HEOS")
+state = fluid.get_state(jxp.PT_INPUTS, 10e6, 400.0)
+print(state.density)
+
+callback = jxp.Fluid("CO2", method="coolprop_jax", backend="HEOS")
+gas = jxp.Fluid("Air", method="perfect_gas")
+table = jxp.Fluid(
+    "CO2",
+    method="bicubic",
+    backend="HEOS",
+    table_options={
+        "h_min": 600e3, "h_max": 850e3,
+        "p_min": 5e6, "p_max": 12e6,
+        "N_h": 16, "N_p": 16,
+    },
+)
+```
+
+`method` selects the evaluator or approximate physical model. `backend` selects
+the CoolProp source used for evaluation, table generation, calibration and
+reference data; it defaults to HEOS. Inspect `fluid.capabilities` before using
+phase operations, diagnostics or JAX transformations.
 
 <!-- research-software-metadata:start -->
 ## Development and citation

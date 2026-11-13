@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import jaxprop.coolprop as jxp
+from jaxprop import Fluid
 
 
 # Create the folder to save figures
@@ -18,7 +19,7 @@ os.makedirs(outdir, exist_ok=True)
 # -------------------------------------------------------------------- #
 
 # Define fluid
-fluid = jxp.Fluid("CO2", backend="HEOS")
+fluid = Fluid("CO2", backend="HEOS")
 
 # Compute spinodal points for a given pressure
 p = 50e5

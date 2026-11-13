@@ -392,7 +392,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 metastable_solver_defaults={
                     name: parameter.default
                     for name, parameter in inspect.signature(
-                        jxp.Fluid.get_state_metastable
+                        jxp.FluidCoolProp.get_state_metastable
                     ).parameters.items()
                     if name.startswith("solver_")
                 },
@@ -582,7 +582,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
 
     def _generate_property_table(self):
         # Initialize fluid (single component)
-        fluid = jxp.Fluid(self.fluid_name, self.backend)
+        fluid = jxp.FluidCoolProp(self.fluid_name, self.backend)
 
         # metadata
         table = self._initialize_table_arrays()
@@ -830,7 +830,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
 
     def _generate_metastable_liquid_property_table(self):
         # Initialize fluid (single component)
-        fluid = jxp.Fluid(self.fluid_name, self.backend)
+        fluid = jxp.FluidCoolProp(self.fluid_name, self.backend)
 
         # metadata
         table = self._initialize_table_arrays()
@@ -1058,7 +1058,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
 
     def _generate_metastable_vapor_property_table(self):
         # Initialize fluid (single component)
-        fluid = jxp.Fluid(self.fluid_name, self.backend)
+        fluid = jxp.FluidCoolProp(self.fluid_name, self.backend)
 
         # metadata
         table = self._initialize_table_arrays()

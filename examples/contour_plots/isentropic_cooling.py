@@ -4,6 +4,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 import jaxprop.coolprop as jxp
+from jaxprop import Fluid
 
 jxp.set_plot_options(grid=False)
 
@@ -12,7 +13,7 @@ jxp.set_plot_options(grid=False)
 # Plot sensitivity of temperature with respect to pressure at constant entropy for water
 # ----------------------------------------------------------------------------------------------- #
 # Define fluid and property ranges
-fluid = jxp.Fluid(name="water")
+fluid = Fluid(name="water")
 x_prop = "s"
 y_prop = "p"
 z_prop = "Z"
@@ -52,7 +53,7 @@ plt.tight_layout(pad=1)
 # Plot sensitivity of temperature with respect to pressure at constant entropy for nitrogen
 # ----------------------------------------------------------------------------------------------- #
 # Define fluid and property ranges
-fluid = jxp.Fluid(name="nitrogen")
+fluid = Fluid(name="nitrogen")
 x_prop = "s"
 y_prop = "p"
 z_prop = "Z"

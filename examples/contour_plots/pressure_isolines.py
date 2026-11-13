@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 import jaxprop.coolprop as jxp
+from jaxprop import Fluid
 
 jxp.set_plot_options(grid=False)
 
@@ -17,7 +18,7 @@ colormap = mcolors.LinearSegmentedColormap.from_list(
 
 # Create fluid object
 fluid_name = "CO2"
-fluid = jxp.Fluid(name=fluid_name, backend="HEOS", exceptions=True)
+fluid = Fluid(name=fluid_name, backend="HEOS")
 
 # Create figure for plotting
 fig, ax = plt.subplots(figsize=(6.0, 5.0))

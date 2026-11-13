@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 
 import jaxprop.coolprop as jxp
+from jaxprop import Fluid
 
 # Create the folder to save figures
 jxp.set_plot_options(grid=False)
@@ -20,11 +21,7 @@ names = ["CO2"]
 for fluid_name in names:
 
     # Create fluid
-    fluid = jxp.Fluid(
-        name=fluid_name,
-        backend="HEOS",
-        exceptions=True,
-    )
+    fluid = Fluid(name=fluid_name, backend="HEOS")
 
     # Compute saturation and spinodal lines
     spinodal_liq, spinodal_vap = jxp.compute_spinodal_line(fluid, N=50)

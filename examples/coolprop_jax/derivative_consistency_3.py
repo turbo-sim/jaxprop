@@ -6,7 +6,7 @@ from scipy.optimize._numdiff import approx_derivative as fd
 # baseline (PT)
 T_ref = 300.0
 p_ref = 101325.0
-fluid = jxp.FluidJAX(name="nitrogen", backend="HEOS")
+fluid = jxp.Fluid(method="coolprop_jax", name="nitrogen", backend="HEOS")
 ref = fluid.get_state(jxp.PT_INPUTS, p_ref, T_ref)
 
 # input pair HmassP

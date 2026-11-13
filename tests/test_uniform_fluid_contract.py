@@ -1,8 +1,8 @@
 """Executable target contract for the staged public fluid-interface refactor.
 
 Strict expected failures identify confirmed implementation work in later phases.
-Each test exercises one concern through an existing evaluator; the absent factory
-does not gate shape, identity, numerical-pair, or unsupported-request assertions.
+Each test exercises one concern through the public constructor and native
+evaluator; future binary construction retains its own narrow expected failure.
 """
 
 import jax.numpy as jnp
@@ -21,7 +21,7 @@ from fluid_contract_cases import (
     SHAPE_PROPERTIES,
     SOURCE_PAIRS,
     build_current_fluid,
-    factory_arguments,
+    constructor_arguments,
 )
 
 
@@ -86,7 +86,7 @@ def assert_typed_error(call, expected_name, request):
 def test_fixed_conformance_matrix_covers_current_and_consolidated_models():
     """Changing runtime dispatch cannot silently reduce expected coverage."""
     assert {case.current_class for case in CONTRACT_CASES} == {
-        "Fluid",
+        "FluidCoolProp",
         "FluidJAX",
         "FluidBicubic",
         "FluidPerfectGas",
@@ -115,8 +115,8 @@ def test_fixed_conformance_matrix_covers_current_and_consolidated_models():
         }
     ),
 )
-def test_common_factory_constructs_each_advertised_model(case, tmp_path):
-    fluid = jxp.create_fluid(**factory_arguments(case, tmp_path))
+def test_common_constructor_constructs_each_advertised_model(case, tmp_path):
+    fluid = jxp.Fluid(**constructor_arguments(case, tmp_path))
     assert fluid.name == case.name
     assert fluid.provider == case.provider and fluid.model == case.model
     assert fluid.backend == (None if case.model == "binary_mixture" else "HEOS")

@@ -3,6 +3,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import jaxprop.coolprop as jxp
+from jaxprop import Fluid
 
 # Choose API level
 PROPERTY_API = 'high_level'  # Toggle between high-level and low-level interface
@@ -14,7 +15,7 @@ fig_dir = "output"
 os.makedirs(fig_dir, exist_ok=True)
 
 # Define fluid
-fluid = jxp.Fluid(name="water", backend="HEOS")
+fluid = Fluid(name="water", backend="HEOS")
 
 # Create figure and labels
 fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14.0, 4.0))

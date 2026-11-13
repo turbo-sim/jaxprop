@@ -38,7 +38,7 @@ def compute_static_state(p0, d0, Ma, fluid):
 if __name__ == "__main__":
 
     # Fluid object
-    fluid = jxp.FluidPerfectGas("air", T_ref=300.0, p_ref=101325.0)
+    fluid = jxp.Fluid("air", method="perfect_gas", model_options={"T_ref": 300.0, "p_ref": 101325.0})
     # fluid = jxp.FluidJAX("air")
 
     # Fixed inlet total conditions

@@ -19,7 +19,7 @@ jxp.set_plot_options()
 
 
 # --------------------------- get constants -------------------------- #
-fluid = jxp.FluidPerfectGas("air", 298.15, 101_325.0)
+fluid = jxp.Fluid("air", method="perfect_gas", model_options={"T_ref": 298.15, "p_ref": 101_325.0})
 print(f"\nPerfect-gas constants:")
 print(fluid.constants)
 

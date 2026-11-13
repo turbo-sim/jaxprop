@@ -3,9 +3,10 @@ This script shows how to do basic function calculations used the custom Flash so
 """
 
 import jaxprop.coolprop as jxp
+from jaxprop import Fluid
 
 # State calculation using coolprop
-fluid = jxp.Fluid(name="Air", backend="HEOS")
+fluid = Fluid(name="Air", backend="HEOS")
 state = fluid.get_state(jxp.PT_INPUTS, 101325, 300)
 
 # Define an initial guess

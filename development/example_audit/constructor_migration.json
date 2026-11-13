@@ -1,0 +1,522 @@
+{
+  "scope": "Common-constructor example migration only; original scientific argument expressions and numerical defaults retained. Representative execution is not a performance benchmark. Binary/metastable research routes and explicit legacy failure-mode studies retain concrete constructors until their owning phases.",
+  "argument_checks": {
+    "files_parsed": 65,
+    "constructor_calls_equivalent": 74,
+    "changed_example_files": [
+      "examples/basic_calculations/solver_coolprop.py",
+      "examples/basic_calculations/solver_equilibrium.py",
+      "examples/basic_calculations/solver_metastable.py",
+      "examples/bicubic_interpolation/demo_derivatives_jax.py",
+      "examples/bicubic_interpolation/demo_grid_convergence.py",
+      "examples/bicubic_interpolation/demo_interpolation_midpoints.py",
+      "examples/bicubic_interpolation/demo_interpolation_serial.py",
+      "examples/bicubic_interpolation/demo_interpolation_vectorized.py",
+      "examples/bicubic_interpolation/demo_saturation_midpoints.py",
+      "examples/bicubic_interpolation/demo_solver_consistency.py",
+      "examples/bicubic_interpolation/demo_table_generation.py",
+      "examples/bicubic_interpolation/demo_table_interpolation.py",
+      "examples/bicubic_interpolation/demo_table_interpolation_with_saturation.py",
+      "examples/bicubic_interpolation/demo_two_phase_speed_sound.py",
+      "examples/blending_calculations/blending_condensing.py",
+      "examples/blending_calculations/blending_flashing.py",
+      "examples/contour_plots/compressibility_factor.py",
+      "examples/contour_plots/demo_joule_thomson.py",
+      "examples/contour_plots/isentropic_cooling.py",
+      "examples/contour_plots/pressure_isolines.py",
+      "examples/contour_plots/pressure_isolines_timing.py",
+      "examples/coolprop_jax/coolprop_broadcast.py",
+      "examples/coolprop_jax/derivative_consistency_1.py",
+      "examples/coolprop_jax/derivative_consistency_2.py",
+      "examples/coolprop_jax/derivative_consistency_3.py",
+      "examples/optimistix/demo_ideal_gas.py",
+      "examples/optimistix/diffrax_polytropic_expansion.py",
+      "examples/perfect_gas/demo_perfect_gas_eos.py",
+      "examples/perfect_gas/demo_perfect_gas_gradients.py",
+      "examples/perfect_gas/demo_sutherland.py",
+      "examples/perfect_gas/polytropic_compression.py",
+      "examples/props_supersaturation/supersaturation_along_isentrope.py",
+      "examples/props_supersaturation/supersaturation_along_isobar.py",
+      "examples/props_supersaturation/supersaturation_along_spinodal.py",
+      "examples/props_undersaturation/demo_calculations.py",
+      "examples/props_undersaturation/quality_along_isolines.py",
+      "examples/props_undersaturation/subcooling_along_isobar.py",
+      "examples/props_undersaturation/superheating_along_isobar.py",
+      "examples/spinodal_lines/spinodal_lines.py",
+      "examples/spinodal_lines/spinodal_lines_PT.py"
+    ],
+    "scope": "AST argument equivalence; names/values/backend/model/table settings preserved. Explicit exceptions=True maps to the common default; legacyFalse paths remain concrete. This does not certify existing scientific programs or dormant helpers."
+  },
+  "counts": {
+    "passed": 19
+  },
+  "initial_harness_issue": "Two successful numerical checks initially failed when Windows cp1252 logs could not print the final <= symbol; UTF-8-only reruns completed without any example/numerical change.",
+  "records": [
+    {
+      "path": "examples/basic_calculations/solver_coolprop.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 4.337585300003411,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/basic_calculations/solver_coolprop/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/basic_calculations/solver_coolprop/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidCoolProp",
+          "provider": "coolprop",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 0
+    },
+    {
+      "path": "examples/basic_calculations/solver_equilibrium.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 4.432400599995162,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/basic_calculations/solver_equilibrium/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/basic_calculations/solver_equilibrium/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidCoolProp",
+          "provider": "coolprop",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 0
+    },
+    {
+      "path": "examples/basic_calculations/solver_metastable.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 5.137696100005996,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/basic_calculations/solver_metastable/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/basic_calculations/solver_metastable/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidCoolProp",
+          "provider": "coolprop",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 1
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_derivatives_jax.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 13.242576100004953,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/bicubic_interpolation/demo_derivatives_jax/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/bicubic_interpolation/demo_derivatives_jax/stderr.log",
+      "models": {
+        "fluid_coolprop": {
+          "type": "FluidJAX",
+          "provider": "coolprop_jax",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        },
+        "fluid_bicubic": {
+          "type": "FluidBicubic",
+          "provider": "bicubic",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 1
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_interpolation_serial.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 14.814571900002193,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/bicubic_interpolation/demo_interpolation_serial/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/bicubic_interpolation/demo_interpolation_serial/stderr.log",
+      "models": {
+        "fluid_bicubic": {
+          "type": "FluidBicubic",
+          "provider": "bicubic",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        },
+        "fluid_coolprop": {
+          "type": "FluidJAX",
+          "provider": "coolprop_jax",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        },
+        "fluid_perfect": {
+          "type": "FluidPerfectGas",
+          "provider": "native",
+          "model": "perfect_gas",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 0
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_interpolation_vectorized.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 13.048557000001892,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/bicubic_interpolation/demo_interpolation_vectorized/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/bicubic_interpolation/demo_interpolation_vectorized/stderr.log",
+      "models": {
+        "fluid_bicubic": {
+          "type": "FluidBicubic",
+          "provider": "bicubic",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        },
+        "fluid_coolprop": {
+          "type": "FluidJAX",
+          "provider": "coolprop_jax",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        },
+        "fluid_perfect": {
+          "type": "FluidPerfectGas",
+          "provider": "native",
+          "model": "perfect_gas",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 0
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_solver_consistency.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 15.702920299998368,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/bicubic_interpolation/demo_solver_consistency/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/bicubic_interpolation/demo_solver_consistency/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidCoolProp",
+          "provider": "coolprop",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 1
+    },
+    {
+      "path": "examples/bicubic_interpolation/demo_table_interpolation.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 11.09806020000542,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/bicubic_interpolation/demo_table_interpolation/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/bicubic_interpolation/demo_table_interpolation/stderr.log",
+      "models": {
+        "fluid_bicubic": {
+          "type": "FluidBicubic",
+          "provider": "bicubic",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 0
+    },
+    {
+      "path": "examples/contour_plots/compressibility_factor.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 6.873021300008986,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/contour_plots/compressibility_factor/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/contour_plots/compressibility_factor/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidCoolProp",
+          "provider": "coolprop",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 1
+    },
+    {
+      "path": "examples/contour_plots/pressure_isolines.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 7.01572429999942,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/contour_plots/pressure_isolines/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/contour_plots/pressure_isolines/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidCoolProp",
+          "provider": "coolprop",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 1
+    },
+    {
+      "path": "examples/coolprop_jax/coolprop_broadcast.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 7.433964600000763,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/coolprop_jax/coolprop_broadcast/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/coolprop_jax/coolprop_broadcast/stderr.log",
+      "models": {
+        "fluid_perfect_gas": {
+          "type": "FluidPerfectGas",
+          "provider": "native",
+          "model": "perfect_gas",
+          "backend": "HEOS"
+        },
+        "fluid_coolprop": {
+          "type": "FluidJAX",
+          "provider": "coolprop_jax",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 0
+    },
+    {
+      "path": "examples/coolprop_jax/derivative_consistency_1.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 4.704572000002372,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160633/coolprop_jax/derivative_consistency_1/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160633/coolprop_jax/derivative_consistency_1/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidJAX",
+          "provider": "coolprop_jax",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 0
+    },
+    {
+      "path": "examples/coolprop_jax/derivative_consistency_2.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 4.428514500003075,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/coolprop_jax/derivative_consistency_2/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/coolprop_jax/derivative_consistency_2/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidJAX",
+          "provider": "coolprop_jax",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 0
+    },
+    {
+      "path": "examples/coolprop_jax/derivative_consistency_3.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 4.137598300003447,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160633/coolprop_jax/derivative_consistency_3/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160633/coolprop_jax/derivative_consistency_3/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidJAX",
+          "provider": "coolprop_jax",
+          "model": "real_fluid",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 0
+    },
+    {
+      "path": "examples/optimistix/demo_ideal_gas.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 4.162750800009235,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/optimistix/demo_ideal_gas/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/optimistix/demo_ideal_gas/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidPerfectGas",
+          "provider": "native",
+          "model": "perfect_gas",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 1
+    },
+    {
+      "path": "examples/perfect_gas/demo_perfect_gas_eos.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 4.398018500010949,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/perfect_gas/demo_perfect_gas_eos/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/perfect_gas/demo_perfect_gas_eos/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidPerfectGas",
+          "provider": "native",
+          "model": "perfect_gas",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 0
+    },
+    {
+      "path": "examples/perfect_gas/demo_perfect_gas_gradients.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 5.024593200010713,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/perfect_gas/demo_perfect_gas_gradients/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/perfect_gas/demo_perfect_gas_gradients/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidPerfectGas",
+          "provider": "native",
+          "model": "perfect_gas",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 0
+    },
+    {
+      "path": "examples/perfect_gas/demo_sutherland.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 4.063190800006851,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/perfect_gas/demo_sutherland/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/perfect_gas/demo_sutherland/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidPerfectGas",
+          "provider": "native",
+          "model": "perfect_gas",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 1
+    },
+    {
+      "path": "examples/perfect_gas/polytropic_compression.py",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 4.151464599999599,
+      "default_resolution": true,
+      "headless_render": true,
+      "stdout": "development/constructor_audit/results/examples/20261113_160342/perfect_gas/polytropic_compression/stdout.log",
+      "stderr": "development/constructor_audit/results/examples/20261113_160342/perfect_gas/polytropic_compression/stderr.log",
+      "models": {
+        "fluid": {
+          "type": "FluidPerfectGas",
+          "provider": "native",
+          "model": "perfect_gas",
+          "backend": "HEOS"
+        }
+      },
+      "figures_drawn": 0
+    }
+  ],
+  "measured_date": "2026-11-13",
+  "baseline_commit": "32e18c9c4c4d78985555aabaa6df2c62cf20b600",
+  "audited_example_sha256": {
+    "examples/basic_calculations/solver_coolprop.py": "1aef891ecb081e5f122ac59aa16f75a2a2b83123f49c1cca96a5f6cd187f97c2",
+    "examples/basic_calculations/solver_equilibrium.py": "986c085658b7fcfa2f771e1cf8cc8b043cbdb038d185f95b49d8819c56f9b111",
+    "examples/basic_calculations/solver_metastable.py": "675782d8fd02db473714c1285585f8525d1be40a1be1c12a5cd400a9ac57d5aa",
+    "examples/bicubic_interpolation/convert_pkl_to_csv.py": "2339a791e4b05ea8021e52ddd6b18a5d2bc7c957852c2b3cea27568cd25db6cf",
+    "examples/bicubic_interpolation/demo_derivatives_jax.py": "677d08f26ee483b74ca16f7a81a3bca2157347740134e0fdb34a4c249387ae23",
+    "examples/bicubic_interpolation/demo_grid_convergence.py": "3dfa2dee09f8f29e36ceed9fee7489637aa61b71e0fabf03bd5a9f18a1779144",
+    "examples/bicubic_interpolation/demo_interpolation_midpoints.py": "fdd79594627b2f824cf0653a8d46d4f60c968b6c216fbe2f00a0555dcb486b9f",
+    "examples/bicubic_interpolation/demo_interpolation_midpoints_metastable.py": "4d8fc2ebc90d6ed0c744bdb850b7bba2954c056c66ad9bf51408e13d42cf02dc",
+    "examples/bicubic_interpolation/demo_interpolation_serial.py": "1f563223b9d698de6db01bcc3ee19cb24a1594f85d33febe8f02288d207f3b1f",
+    "examples/bicubic_interpolation/demo_interpolation_vectorized.py": "bd0a0cbe37e19b2771a349b6ee96f8887427075681da06eaef136a0458e94d52",
+    "examples/bicubic_interpolation/demo_metastable_calculations.py": "1acf562fada672c2a8a7c40aa455dcaa6dbb25a34130411f92e6b43dd4b13950",
+    "examples/bicubic_interpolation/demo_metastable_single_point_comparison.py": "f05f9533dc5a53b1fd16cfaef39e5d3ffa58f81d038191eb4aba0df73cf3907c",
+    "examples/bicubic_interpolation/demo_midpoints_metastable_comparison.py": "776e1ddb6c142153e37f09d8125933c13cc430ef43680cf0e3a6b81528007554",
+    "examples/bicubic_interpolation/demo_saturation_midpoints.py": "d22b22e0a5e5273f0f8486a5316547f846fa4da9cfd63b43f2ddef2b6f921b54",
+    "examples/bicubic_interpolation/demo_solver_consistency.py": "802d6ef4def99ced073cfd7b117b8bf9bdb199598580506cb498cdc6a41d5784",
+    "examples/bicubic_interpolation/demo_table_generation.py": "9dc60a1210d40819cf0c5494d74ba30bfeb91a85a4349d6b3316332f0cc887df",
+    "examples/bicubic_interpolation/demo_table_interpolation.py": "c5245d438fcff44853bcb432619e00d9d279963360d216d18d668440f5afebc6",
+    "examples/bicubic_interpolation/demo_table_interpolation_with_saturation.py": "d2c69411cf59320761bc408ad8cf10591c88a0c8f10cdbde4bdf6cd2d306b553",
+    "examples/bicubic_interpolation/demo_two_phase_speed_sound.py": "f537624b2cf2c5f5f34e6c6e00c1f3efa115fc59c968ead74958700c78ab3345",
+    "examples/bicubic_interpolation/export_pkl_to_c_binary.py": "b0763ceb1b55e7f36ac782362bf37bc126d45873cdfef8f64c91ee6b8e3497c6",
+    "examples/bicubic_interpolation/plot_metastable_point.py": "f9abe1a55d67fb5ec8711d5de3ec0207227153084764deb3f527dabbd43b4b7d",
+    "examples/blending_calculations/blending_condensing.py": "0127451267948e6e9cac99b92254999552127c25e2af3ea6e95b9d2e2ade12ec",
+    "examples/blending_calculations/blending_flashing.py": "401a735806aaddc2ca6a8db86b43d42162cd10ad45354734a269e3cb7df443c5",
+    "examples/contour_plots/compressibility_factor.py": "8c6a6b54db5813a000e03b30ddf56550291578aacc7922730fa266c2d3f53c5d",
+    "examples/contour_plots/demo_joule_thomson.py": "2acfe2409ab9b6ca782df41626dfaa313bce5eddb7c7c8c7a3f97db23ae08e6c",
+    "examples/contour_plots/isentropic_cooling.py": "949b1d56edc81e585890019c4e65939f109fcd1955c5d5d1bd2bc6c8fbc1acd0",
+    "examples/contour_plots/pressure_isolines.py": "f1ed9778b42753fea8c3d2527ef280b8396123a0ccdaa3d35ed8a0c5f6468a18",
+    "examples/contour_plots/pressure_isolines_timing.py": "5016fb34da6bca0e8995e437bcf81af901ab88f1eba82cac8e53171bc7c56e84",
+    "examples/coolprop_jax/coolprop_broadcast.py": "d346759bd8a49e66c7196725eced583531fcc344fac37123352824d9b028a2f6",
+    "examples/coolprop_jax/derivative_consistency_1.py": "b882ddaef2593c25cb5de4514f406476dc0d650a02d0cd329531736fe5338900",
+    "examples/coolprop_jax/derivative_consistency_2.py": "fa56df9e194f7e870639ef872fbecec905bce07579f176423b0538fc5dcda2d6",
+    "examples/coolprop_jax/derivative_consistency_3.py": "309649c1ead252f06cc574ff798d04c6b5a282e72fdfa1e97aaea62e20118e07",
+    "examples/mixture_properties/test_cal_prop.py": "ca4839d508d7d245fa54792cdde05b33b3753d82c771cbbba068089ad0320b19",
+    "examples/optimistix/demo_ideal_gas.py": "c41c1b933e1843aa3a2588b923b504bca359f42eb645d7087c3be2686b5e93e3",
+    "examples/optimistix/demo_minimize.py": "bab5bfef5aa8e3014f3e7bfab7b977913b807f50c771371a92a8209de9c72d0f",
+    "examples/optimistix/demo_minimize_io.py": "a31f1e8f92e6578c65ff1507c1f83255c09943a3b3d097852a604613e09c4d5e",
+    "examples/optimistix/demo_root_find.py": "8216c0886e2de1a0c6c098f1513a2b89e6df3232b63996cb04249c9227f9015f",
+    "examples/optimistix/diffrax_polytropic_expansion.py": "163f7d1b6f84c98b0e3ee296d9f468ce59e0846ae76ad3a7c0eed0ade416d084",
+    "examples/optimistix/diffrax_rosenbrock.py": "11439558fe5b1869c2fb69de44ef2486f98fd2f5069b3a3b343ee796b281e8ef",
+    "examples/perfect_gas/demo_perfect_gas_eos.py": "e743f1af380a9c197026afaa4bb4e10e7343b2196c5277f411f6bfee59fca3e1",
+    "examples/perfect_gas/demo_perfect_gas_gradients.py": "e9c15581f3f6de6a0ea7313a87d47ffa2795d3d674813e658e122e17af2fcf1a",
+    "examples/perfect_gas/demo_sutherland.py": "e9b2746a69243a0a3652c4a54526eff3c7228459d6eb27a890cf6046c603c847",
+    "examples/perfect_gas/polytropic_compression.py": "138772d793cf97d9c954a882562a677d4c5b920d16474f56cfde488e6f6739b4",
+    "examples/props_supersaturation/supersaturation_along_isentrope.py": "0278ae81a250d9e12bacc9e01892444ec8e644a792b111481566bab7ccad1654",
+    "examples/props_supersaturation/supersaturation_along_isobar.py": "fcc75c1119041d03263d00794c18a7db38b43e9bbca81a8b131b7265fa27dc44",
+    "examples/props_supersaturation/supersaturation_along_spinodal.py": "b91c90cbaed389ae4a018ef34480e5c9bd825ea9abbb8f47b6a513f2553eec9b",
+    "examples/props_undersaturation/demo_calculations.py": "60e3819e73d6d72557014bcb9337970a637734d545277685f6c987d5f76c2496",
+    "examples/props_undersaturation/quality_along_isolines.py": "f5068b78c60cc49efd4353fe74b9a11a9509e1166da9559de4bb2bf0e86a1711",
+    "examples/props_undersaturation/subcooling_along_isobar.py": "550ed2248b1f7496599b4b4fb0b5911118c13fbbe374b3aa26040923b1ed8fce",
+    "examples/props_undersaturation/superheating_along_isobar.py": "0b24dc15016b628ecaa37faa052529dab5d5de78c09626cc7cc00afbe79938d4",
+    "examples/speed_of_sound/relaxation_hierarchy.py": "6092f8f9e8dc14e34bcce5da6e4dd7180e14c3d1738a191122f8cbeb6f6473ac",
+    "examples/spinodal_lines/spinodal_lines.py": "c0ec1f2ab86a070e158a846a16e4a954470a07d0f666ee4507e73a0b3bf32a3c",
+    "examples/spinodal_lines/spinodal_lines_PT.py": "434178273853425fe4b64a77bb6b0ff12174e30ec4f64f2010b10f6db1a7ebb1",
+    "examples/transport_properties/fluid_troubleshooting.py": "1af33384404edd0abe5befd76063b638b16090f29e8f91bb81be41fa399491c7",
+    "examples/transport_properties/plot_surface_tension.py": "12008faa21e0673d5868f943204165c7c61ed894ec0707cbc47a080db478b76a",
+    "examples/transport_properties/trying_refprop.py": "ece4bbc3492a3d6a2ccf5a1a46cb07aad8d6ea07f53f3d0f1eea2c569707524e",
+    "examples/two_component/water_nitrogen_calculations.py": "8455c2b7b0120526de5462437308ef3510a2e901cd4db463a10e65515ea27029",
+    "examples/two_component/water_nitrogen_consistency.py": "d3977d55ff1200dc1a9948ceb4c3d9378f42db61a77a16f841cd559d452ec465",
+    "examples/two_component/water_nitrogen_example.py": "d1f4808d999b9b5d13a927e7630f76bc88291b8984b719c0cd26b62e5016375b",
+    "examples/two_component/water_nitrogen_speed_sound.py": "a36f916b3f3d390b7fc37750944dcc33ec3feb1cf7bef4f685a4a9ec778663ae",
+    "examples/two_phase_derivatives/check_gruneisen.py": "c66ce6d60aeb340b2d6e4bcfacd116506a69f779347d18ab4f25c62ee6dceae8",
+    "examples/two_phase_derivatives/check_speed_sound.py": "22e9729f220c1d476a5006fd3c9b3daac0926243891a431fa511a4fdcad00019",
+    "examples/two_phase_derivatives/enthalpy_derivatives.py": "729cb0ef23ddf8cc4225bd891b79189b06cc1bfeccbdd9b90bb36b51d3dd8459",
+    "examples/two_phase_derivatives/gibbs_saturation.py": "9e4e791f1b1befe727023944d41ba4b519e260a23109fa92e8487bb1978efa88",
+    "examples/two_phase_derivatives/saturation_derivatives.py": "391b3fc79f585fdd8db0052a2f7319a395c1b3052845e2d83699b8c486f60682"
+  }
+}

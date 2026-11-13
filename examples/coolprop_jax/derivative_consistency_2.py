@@ -17,7 +17,7 @@ def rel_err(name, approx, ref):
 # Compute properties
 test_h = 1000e3  # J/kg
 test_P = 12e6  # Pa
-fluid = jxp.FluidJAX(name="CO2", backend="HEOS")
+fluid = jxp.Fluid(method="coolprop_jax", name="CO2", backend="HEOS")
 st = fluid.get_state(jxp.HmassP_INPUTS, test_h, test_P)
 
 # Header

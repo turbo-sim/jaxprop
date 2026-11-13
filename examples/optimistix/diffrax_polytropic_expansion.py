@@ -181,7 +181,7 @@ if __name__ == "__main__":
     p_in = 200e5
     p_out = 50e5
     efficiency = 0.8
-    fluid = jxp.FluidJAX(name="CO2", backend="HEOS")
+    fluid = jxp.Fluid(method="coolprop_jax", name="CO2", backend="HEOS")
 
     # Initialize figure
     fig, ax = plt.subplots(figsize=(6, 5))

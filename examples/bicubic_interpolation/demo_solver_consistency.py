@@ -38,17 +38,20 @@ p_max = 20e6  # Pa
 N_h = 32
 N_p = 32
 
-fluid = jxp.FluidBicubic(
-    fluid_name=fluid_name,
+fluid = jxp.Fluid(
+    name=fluid_name,
+    method="bicubic",
     backend=backend,
-    h_min=h_min,
-    h_max=h_max,
-    p_min=p_min,
-    p_max=p_max,
-    N_h=N_h,
-    N_p=N_p,
-    table_dir=outdir,
-    table_name="solver_consistency"
+    table_options={
+        "h_min": h_min,
+        "h_max": h_max,
+        "p_min": p_min,
+        "p_max": p_max,
+        "N_h": N_h,
+        "N_p": N_p,
+        "table_dir": outdir,
+        "table_name": "solver_consistency",
+    },
 )
 
 # ---------------------------

@@ -29,7 +29,7 @@ T_in = 300.0
 eta_p = 90
 
 # Pull gamma from your perfect-gas constants at the inlet state
-fluid = jxp.FluidPerfectGas("air", T_ref=298.15, p_ref=101325.0)
+fluid = jxp.Fluid("air", method="perfect_gas", model_options={"T_ref": 298.15, "p_ref": 101325.0})
 
 # Base point (match function order!)
 x0 = jnp.array([T_in, p_in, p_out, eta_p])

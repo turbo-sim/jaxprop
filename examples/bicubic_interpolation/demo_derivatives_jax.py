@@ -26,15 +26,21 @@ Nh_chk = Np_chk = 50
 # ------------------------------------------
 # Fluid objects
 # ------------------------------------------
-fluid_coolprop = jxp.FluidJAX(fluid_name, backend="HEOS")
-fluid_bicubic = jxp.FluidBicubic(
-    fluid_name=fluid_name,
+fluid_coolprop = jxp.Fluid(fluid_name, method="coolprop_jax", backend="HEOS")
+fluid_bicubic = jxp.Fluid(
+    name=fluid_name,
+    method="bicubic",
     backend="HEOS",
-    h_min=h_min, h_max=h_max,
-    p_min=p_min, p_max=p_max,
-    N_h=N_h, N_p=N_p,
-    table_dir=outdir,
-    table_name="derivative_check"
+    table_options={
+        "h_min": h_min,
+        "h_max": h_max,
+        "p_min": p_min,
+        "p_max": p_max,
+        "N_h": N_h,
+        "N_p": N_p,
+        "table_dir": outdir,
+        "table_name": "derivative_check",
+    },
 )
 
 # ------------------------------------------

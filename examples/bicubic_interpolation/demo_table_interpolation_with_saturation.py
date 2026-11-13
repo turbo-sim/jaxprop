@@ -52,7 +52,7 @@ props_bicubic = fluid_bicubic.get_state(jxp.HmassP_INPUTS, test_h, test_P)
 # -----------------------------------
 # Step 3: Compare with CoolProp
 # -----------------------------------
-fluid_coolprop = jxp.FluidJAX(fluid_name)
+fluid_coolprop = jxp.Fluid(fluid_name, method="coolprop_jax")
 props_coolprop = fluid_coolprop.get_state(jxp.HmassP_INPUTS, test_h, test_P)
 
 header = f"{'Property':<35} {'Bicubic':>14} {'CoolProp':>14} {'Error [%]':>14}"

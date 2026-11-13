@@ -223,9 +223,11 @@ def create_fluid(
     )
     try:
         if provider == "coolprop":
-            from .coolprop.fluid_properties import Fluid
+            from .coolprop.fluid_properties import FluidCoolProp
 
-            return Fluid(name=name, backend=source_backend, identifier=identifier)
+            return FluidCoolProp(
+                name=name, backend=source_backend, identifier=identifier
+            )
         if provider == "coolprop_jax":
             from .coolprop.jax_wrapper import FluidJAX
 

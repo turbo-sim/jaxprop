@@ -27,7 +27,7 @@ TABLE_OPTIONS = dict(h_min=600e3, h_max=850e3, p_min=5e6, p_max=12e6, N_h=4, N_p
             "coolprop",
             "real_fluid",
             "jaxprop.coolprop.fluid_properties",
-            "Fluid",
+            "FluidCoolProp",
             {},
             {},
         ),
@@ -109,7 +109,7 @@ def test_invalid_configuration_is_rejected_before_source_construction(
     def forbidden(**kwargs):
         raise AssertionError("Invalid configuration must not initialize a source")
 
-    monkeypatch.setattr(module, "Fluid", forbidden)
+    monkeypatch.setattr(module, "FluidCoolProp", forbidden)
     with pytest.raises(InvalidConfigurationError) as captured:
         create_fluid(**({"name": "CO2"} | arguments))
     assert captured.value.request == expected_request
@@ -188,7 +188,7 @@ def test_constructor_source_failure_preserves_the_original_cause(monkeypatch):
     def fail(**kwargs):
         raise cause
 
-    monkeypatch.setattr(module, "Fluid", fail)
+    monkeypatch.setattr(module, "FluidCoolProp", fail)
     with pytest.raises(InvalidConfigurationError) as captured:
         create_fluid("CO2", backend="UNAVAILABLE")
     assert captured.value.__cause__ is cause

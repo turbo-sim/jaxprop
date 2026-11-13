@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 
 import jaxprop.coolprop as jxp
+from jaxprop import Fluid
 
 
 # Create the folder to save figures
@@ -12,7 +13,7 @@ outdir = "output"
 os.makedirs(outdir, exist_ok=True)
 
 # Create fluid
-fluid = jxp.Fluid(name="CO2", exceptions=True)
+fluid = Fluid(name="CO2")
 
 
 # --------------------------------------------------------------------------- #

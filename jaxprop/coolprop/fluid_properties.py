@@ -118,7 +118,7 @@ def _handle_computation_exceptions(func):
     return wrapper
 
 
-class Fluid(SourceReferencesMixin, ReadonlyConfigurationMixin):
+class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
     """
     Represents a fluid with various thermodynamic properties computed via CoolProp.
 
@@ -816,6 +816,11 @@ class Fluid(SourceReferencesMixin, ReadonlyConfigurationMixin):
 # ------------------------------------------------------------------------------------ #
 # ------------------------------------------------------------------------------------ #
 # ------------------------------------------------------------------------------------ #
+
+
+# Source-only compatibility name. The package-level Fluid constructor is the
+# generic method selector; internal source construction uses FluidCoolProp.
+Fluid = FluidCoolProp
 
 
 class FluidMix(SourceReferencesMixin, ReadonlyConfigurationMixin):

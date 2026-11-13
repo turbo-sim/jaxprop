@@ -5,6 +5,7 @@
 
 import jax
 import jaxprop.coolprop as jxp
+from jaxprop import Fluid
 
 
 def rel_err(val, ref):
@@ -14,7 +15,7 @@ def rel_err(val, ref):
 
 # setup state: CO2
 # fluid = fluid.Fluid(name="CO2", backend="HEOS")
-fluid = jxp.FluidJAX(name="CO2", backend="HEOS")
+fluid = Fluid(method="coolprop_jax", name="CO2", backend="HEOS")
 p0 = 100e5  # Pa
 T0 = 400.0  # K
 st = fluid.get_state(jxp.PT_INPUTS, p0, T0)

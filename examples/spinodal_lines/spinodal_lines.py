@@ -5,6 +5,7 @@ from matplotlib import cm
 from time import perf_counter
 
 import jaxprop.coolprop as jxp
+from jaxprop import Fluid
 
 # Create the folder to save figures
 jxp.set_plot_options(grid=False)
@@ -23,11 +24,7 @@ names = ["R134a"]
 for fluid_name in names:
 
     # Create fluid
-    fluid = jxp.Fluid(
-        name=fluid_name,
-        backend="HEOS",
-        exceptions=True,
-    )
+    fluid = Fluid(name=fluid_name, backend="HEOS")
 
     # ---------------------------------------------------------------------------------- #
     # Density-pressure diagram and bulk modulus

@@ -50,16 +50,19 @@ outdir = "fluid_tables"
 # First call: generate table
 # ---------------------------
 start = time.time()
-fluid = jxp.FluidBicubic(
-    fluid_name=fluid_name,
+fluid = jxp.Fluid(
+    name=fluid_name,
+    method="bicubic",
     backend="HEOS",
-    h_min=h_min,
-    h_max=h_max,
-    p_min=p_min,
-    p_max=p_max,
-    N_h=N_h,
-    N_p=N_p,
-    table_dir=outdir,
+    table_options={
+        "h_min": h_min,
+        "h_max": h_max,
+        "p_min": p_min,
+        "p_max": p_max,
+        "N_h": N_h,
+        "N_p": N_p,
+        "table_dir": outdir,
+    },
 )
 end = time.time()
 print(f"FluidBicubic init took {end - start:.3f} s")
@@ -70,16 +73,19 @@ print()
 # Second call: load table
 # ---------------------------
 start = time.time()
-fluid = jxp.FluidBicubic(
-    fluid_name=fluid_name,
+fluid = jxp.Fluid(
+    name=fluid_name,
+    method="bicubic",
     backend="HEOS",
-    h_min=h_min,
-    h_max=h_max,
-    p_min=p_min,
-    p_max=p_max,
-    N_h=N_h,
-    N_p=N_p,
-    table_dir=outdir,
+    table_options={
+        "h_min": h_min,
+        "h_max": h_max,
+        "p_min": p_min,
+        "p_max": p_max,
+        "N_h": N_h,
+        "N_p": N_p,
+        "table_dir": outdir,
+    },
 )
 end = time.time()
 print(f"FluidBicubic init took {end - start:.3f} s")

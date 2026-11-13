@@ -35,7 +35,7 @@ fluid_bicubic = jxp.FluidBicubic(
     gradient_method="forward",
 )
 
-fluid_cp = jxp.Fluid(fluid_name, exceptions=False)
+fluid_cp = jxp.FluidCoolProp(fluid_name, exceptions=False)
 
 # ---------------------------
 # Saturation quality for comparison

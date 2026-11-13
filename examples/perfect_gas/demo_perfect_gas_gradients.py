@@ -8,7 +8,7 @@ h = 3.00e5    # J/kg
 p = 101325.0  # Pa
 
 # base state
-fluid = jxp.FluidPerfectGas("air", T_ref=298.15, p_ref=101325.0)
+fluid = jxp.Fluid("air", method="perfect_gas", model_options={"T_ref": 298.15, "p_ref": 101325.0})
 base = fluid.get_state(input_pair, h, p)
 print("base state:")
 print(f"  T   : {float(base['T']):+0.6f} K")

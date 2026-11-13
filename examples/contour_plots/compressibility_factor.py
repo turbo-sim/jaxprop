@@ -4,11 +4,12 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 import jaxprop.coolprop as jxp
+from jaxprop import Fluid
 
 jxp.set_plot_options(grid=False)
 
 # Define fluid and property ranges
-fluid = jxp.Fluid(name="Cyclopentane")
+fluid = Fluid(name="Cyclopentane")
 x_prop = "s"
 y_prop = "T"
 z_prop = "Z"

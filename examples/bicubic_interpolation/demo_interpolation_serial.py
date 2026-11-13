@@ -24,19 +24,22 @@ N_samples = 50  # reduced for demo, increase if needed
 # ---------------------------
 # Build fluids
 # ---------------------------
-fluid_bicubic = jxp.FluidBicubic(
-    fluid_name=fluid_name,
+fluid_bicubic = jxp.Fluid(
+    name=fluid_name,
+    method="bicubic",
     backend="HEOS",
-    h_min=h_min,
-    h_max=h_max,
-    p_min=p_min,
-    p_max=p_max,
-    N_h=N_h,
-    N_p=N_p,
-    table_dir=outdir,
+    table_options={
+        "h_min": h_min,
+        "h_max": h_max,
+        "p_min": p_min,
+        "p_max": p_max,
+        "N_h": N_h,
+        "N_p": N_p,
+        "table_dir": outdir,
+    },
 )
-fluid_coolprop = jxp.FluidJAX(fluid_name, backend="HEOS")
-fluid_perfect = jxp.FluidPerfectGas(fluid_name, p_ref=p_max, T_ref=600)
+fluid_coolprop = jxp.Fluid(fluid_name, method="coolprop_jax", backend="HEOS")
+fluid_perfect = jxp.Fluid(fluid_name, method="perfect_gas", model_options={"p_ref": p_max, "T_ref": 600})
 
 # ---------------------------
 # Latin Hypercube Sampling

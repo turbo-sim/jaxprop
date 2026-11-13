@@ -5,7 +5,7 @@ import jaxprop as jxp
 jxp.set_plot_options(grid=False)
 
 # --- fluid and property ranges
-fluid = jxp.FluidJAX(name="CO2")
+fluid = jxp.Fluid(method="coolprop_jax", name="CO2")
 x_prop = "h"
 y_prop = "p"
 

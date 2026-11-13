@@ -17,16 +17,19 @@ p_max = 20e6   # Pa
 N_p = 100       # Grid size for quick test
 N_h = 100
 
-fluid_bicubic = jxp.FluidBicubic(
-    fluid_name=fluid_name,
+fluid_bicubic = jxp.Fluid(
+    name=fluid_name,
+    method="bicubic",
     backend="HEOS",
-    h_min=h_min,
-    h_max=h_max,
-    p_min=p_min,
-    p_max=p_max,
-    N_h=N_h,
-    N_p=N_p,
-    table_dir=outdir,
+    table_options={
+        "h_min": h_min,
+        "h_max": h_max,
+        "p_min": p_min,
+        "p_max": p_max,
+        "N_h": N_h,
+        "N_p": N_p,
+        "table_dir": outdir,
+    },
 )
 
 # ---------------------------
@@ -43,7 +46,7 @@ props_bicubic = fluid_bicubic.get_state(jxp.HmassP_INPUTS, test_h, test_p)
 # -----------------------------------
 # Step 3: Compare with CoolProp
 # -----------------------------------
-fluid_coolprop = jxp.FluidJAX(fluid_name)
+fluid_coolprop = jxp.Fluid(fluid_name, method="coolprop_jax")
 props_coolprop = fluid_coolprop.get_state(jxp.HmassP_INPUTS, test_h, test_p)
 
 

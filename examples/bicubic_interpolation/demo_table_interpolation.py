@@ -14,16 +14,19 @@ p_max = 20e6  # Pa
 N_p = 30  # Grid size for quick test
 N_h = 30
 
-fluid_bicubic = jxp.FluidBicubic(
-    fluid_name=fluid_name,
+fluid_bicubic = jxp.Fluid(
+    name=fluid_name,
+    method="bicubic",
     backend="HEOS",
-    h_min=h_min,
-    h_max=h_max,
-    p_min=p_min,
-    p_max=p_max,
-    N_h=N_h,
-    N_p=N_p,
-    table_dir=outdir,
+    table_options={
+        "h_min": h_min,
+        "h_max": h_max,
+        "p_min": p_min,
+        "p_max": p_max,
+        "N_h": N_h,
+        "N_p": N_p,
+        "table_dir": outdir,
+    },
 )
 
 

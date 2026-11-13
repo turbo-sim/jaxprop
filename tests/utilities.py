@@ -22,7 +22,7 @@ def get_available_backends():
 
 # Define reference states dynamically
 def get_reference_state(fluid, backend, label):
-    fluid = jxp.Fluid(fluid, backend)
+    fluid = jxp.Fluid(fluid, backend=backend)
     p_crit = fluid.critical_point.p
     T_crit = fluid.critical_point.T
     s_crit = fluid.critical_point.s

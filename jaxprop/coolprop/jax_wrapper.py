@@ -143,7 +143,7 @@ class FluidJAX(SourceReferencesMixin, eqx.Module):
     def __init__(
         self, name: str, backend: str = "HEOS", exceptions: bool = True, identifier=None
     ):
-        from .fluid_properties import Fluid
+        from .fluid_properties import FluidCoolProp
 
         backend = "HEOS" if backend is None else backend
         self._configuration = build_configuration(
@@ -165,7 +165,7 @@ class FluidJAX(SourceReferencesMixin, eqx.Module):
                 description="CoolProp source-backend domain via a host callback."
             ),
         )
-        self.fluid = Fluid(
+        self.fluid = FluidCoolProp(
             name=name, backend=backend, exceptions=exceptions, identifier=identifier
         )
         self.reference_id = self.fluid.reference_id
