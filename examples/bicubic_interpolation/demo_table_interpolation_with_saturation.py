@@ -62,9 +62,9 @@ print("-" * len(header))
 print(header)
 print("-" * len(header))
 
-for prop in jxp.PROPERTIES_CANONICAL:
-    bicubic_val = props_bicubic[prop]
-    coolprop_val = props_coolprop[prop]
+for prop in sorted(props_bicubic.available_properties & props_coolprop.available_properties):
+    bicubic_val = props_bicubic.raw_property(prop)
+    coolprop_val = props_coolprop.raw_property(prop)
     if coolprop_val != 0 and not (bicubic_val is None or coolprop_val is None):
         rel_err = (bicubic_val - coolprop_val) / coolprop_val * 100
     else:
@@ -91,7 +91,7 @@ ax.plot(
     label="Interpolation domain",
 )
 
-sat_bicubic = fluid_bicubic.get_state_saturation(test_P)
+sat_bicubic = fluid_bicubic.get_state_saturation(jxp.PQ_INPUTS, test_P, 0.0)
 
 sat_coolprop = fluid_coolprop.get_state(jxp.PQ_INPUTS, test_P, 0.0)
 print(60*'-')
@@ -103,9 +103,9 @@ print("-" * len(header))
 print(header)
 print("-" * len(header))
 
-for prop in jxp.PROPERTIES_CANONICAL:
-    bicubic_val = sat_bicubic[prop]
-    coolprop_val = sat_coolprop[prop]
+for prop in sorted(sat_bicubic.available_properties & sat_coolprop.available_properties):
+    bicubic_val = sat_bicubic.raw_property(prop)
+    coolprop_val = sat_coolprop.raw_property(prop)
     if coolprop_val != 0 and not (bicubic_val is None or coolprop_val is None):
         rel_err = (bicubic_val - coolprop_val) / coolprop_val * 100
     else:

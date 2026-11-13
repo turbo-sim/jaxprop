@@ -86,6 +86,16 @@ def table_validation_error(table, metadata):
         np.asarray(table["density"]["value"]) <= 0
     ):
         return "temperature and density must be positive"
+    source_domain = metadata.get("source_domain")
+    if source_domain is not None:
+        temperature = np.asarray(table["temperature"]["value"])
+        boundary_precision = 1e-9
+        if (
+            np.any(temperature < source_domain["T_min"] * (1 - boundary_precision))
+            or np.any(temperature > source_domain["T_max"] * (1 + boundary_precision))
+            or np.any(p > source_domain["p_max"] * (1 + boundary_precision))
+        ):
+            return "table nodes exceed the declared source EOS domain"
     saturation = table["saturation_props"]
     if not isinstance(saturation, dict):
         return "saturation payload is not a dictionary"
@@ -106,6 +116,37 @@ def table_validation_error(table, metadata):
                     name in CORE_PROPERTIES and not np.all(np.isfinite(array))
                 ):
                     return f"saturation {name}.{key}: incomplete or nonfinite data"
+        settings = metadata["generation_settings"]
+        log_min = settings["saturation_log_pressure_min"]
+        log_max = settings["saturation_log_pressure_max"]
+        if (
+            log_min is None
+            or log_max is None
+            or not np.isfinite(log_min)
+            or not np.isfinite(log_max)
+            or not log_min < log_max
+        ):
+            return "saturation pressure grid is not declared correctly"
+        expected_sat_p = np.exp(
+            np.linspace(log_min, log_max, metadata["N_p_sat"], dtype=dtype)
+        )
+        sat_p = np.asarray(saturation["pressure"]["value"])
+        if not np.allclose(sat_p, expected_sat_p, rtol=tolerance, atol=1e-6):
+            return (
+                "saturation pressure nodes do not match the declared log-pressure grid"
+            )
+        if source_domain is not None:
+            sat_temperature = np.asarray(saturation["temperature"]["value"])
+            if (
+                np.any(
+                    sat_temperature < source_domain["T_min"] * (1 - boundary_precision)
+                )
+                or np.any(
+                    sat_temperature > source_domain["T_max"] * (1 + boundary_precision)
+                )
+                or np.any(sat_p > source_domain["p_max"] * (1 + boundary_precision))
+            ):
+                return "saturation nodes exceed the declared source EOS domain"
     return None
 
 

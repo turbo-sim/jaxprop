@@ -109,7 +109,7 @@ def test_configuration_and_capabilities_are_immutable(case, fluids):
     expected_modes = (
         {"raise", "mask"} if case.id in {"coolprop", "coolprop_jax"} else {"raise"}
     )
-    if case.id == "perfect_gas":
+    if case.id in {"perfect_gas", "bicubic"}:
         expected_modes = {"raise", "mask", "clip"}
     assert capability.error_modes == frozenset(expected_modes)
     with pytest.raises((FrozenInstanceError, AttributeError, TypeError)):
@@ -261,7 +261,7 @@ def test_malformed_arrays_fail_even_with_requested_numerical_masking(
 
 @pytest.mark.parametrize(
     "case",
-    [case for case in CONTRACT_CASES if case.id in {"bicubic", "binary_mixture"}],
+    [case for case in CONTRACT_CASES if case.id == "binary_mixture"],
     ids=lambda case: case.id,
 )
 def test_unimplemented_numerical_mask_mode_is_rejected_explicitly(case, fluids):

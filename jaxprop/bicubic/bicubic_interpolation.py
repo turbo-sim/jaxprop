@@ -5,24 +5,44 @@ import copy
 import hashlib
 import inspect
 from pathlib import Path
+from numbers import Real
 import warnings
 import numpy as np
 import jax
 import jax.numpy as jnp
 import equinox as eqx
-import optimistix as optx
+import CoolProp.CoolProp as CP
 import jaxprop.coolprop as jxp
 from tqdm import tqdm
 
 from ..errors import CalculationError, InvalidConfigurationError, UnsupportedOptionError
-from ..configuration import build_configuration, FluidCapabilities, FluidDomain
-from ..fluid_api import checked_jit, SOURCE_PROPERTIES, LEGACY_MIXTURE_PROPERTIES
+from ..configuration import (
+    build_configuration,
+    FluidCapabilities,
+    FluidDomain,
+    FrozenMapping,
+)
+from ..fluid_api import SOURCE_PROPERTIES, LEGACY_MIXTURE_PROPERTIES
 from ..source_references import (
     SourceReferencesMixin,
     initialize_source_references,
     composite_source_references,
 )
 from .cache_metadata import metadata_fingerprint, source_signature
+from .runtime import (
+    InspectionPayload,
+    inspection_view,
+    prepare_runtime,
+    prepare_saturation,
+)
+from .numerics import interpolate_properties
+from .request_policy import (
+    checked_bicubic_jit,
+    checked_saturation_jit,
+    evaluate_scalar,
+    evaluate_state,
+    evaluate_saturation,
+)
 from .table_cache import (
     CACHE_FORMAT_VERSION,
     GENERATOR_REVISION,
@@ -59,6 +79,12 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         Number of grid points in h and p.
     coarse_step : int
         Number of points to skip when determining the initial guess during 2D inverse interpolations
+    inverse_max_steps : int, optional
+        Nonnegative iteration limit for property-pair inverses (default: 64).
+    inverse_tolerance : float, optional
+        Positive tolerance for the nonlinear solver and its independent scaled
+        residual check (default: 1e-10). These inverse controls do not change
+        table generation or the persisted cache identity.
     table_name : str, optional
         File stem. The default includes a digest of the complete generation
         identity so different configurations can coexist in one cache directory.
@@ -80,6 +106,8 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
     N_p: int = eqx.field(static=True)
     N_p_sat: int = eqx.field(static=True)
     coarse_step: int = eqx.field(static=True)
+    inverse_max_steps: int = eqx.field(static=True)
+    inverse_tolerance: float = eqx.field(static=True)
     delta_h: float = eqx.field(static=True)
     delta_logP: float = eqx.field(static=True)
     delta_logP_sat: float = eqx.field(static=True)
@@ -89,6 +117,14 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
     table_name: str = eqx.field(static=True)
     table_dir: str = eqx.field(static=True)
     _table: dict = eqx.field(static=False)
+    _coefficient_validity: dict = eqx.field(static=False)
+    _cell_validity: jax.Array = eqx.field(static=False)
+    _inspection: object = eqx.field(static=True)
+    _input_fallbacks: object = eqx.field(static=True)
+    _saturation_table: dict = eqx.field(static=False)
+    _saturation_validity: dict = eqx.field(static=False)
+    _saturation_capabilities: object = eqx.field(static=True)
+    _saturation_p_max: float = eqx.field(static=True)
     identifier: str = eqx.field(static=True)
     provider: str = eqx.field(static=True)
     model: str = eqx.field(static=True)
@@ -122,6 +158,8 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         table_dir: str = "fluid_tables",
         *,
         name: str = None,
+        inverse_max_steps: int = 64,
+        inverse_tolerance: float = 1e-10,
     ):
         if name is not None:
             if fluid_name is not None and fluid_name != name:
@@ -182,6 +220,24 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             invalid("bounds", "Require finite h_min < h_max and 0 < p_min < p_max.")
         if gradient_method not in ("forward", "central"):
             invalid("gradient_method", "Choose 'forward' or 'central'.")
+        if (
+            isinstance(inverse_max_steps, (bool, np.bool_))
+            or not isinstance(inverse_max_steps, (int, np.integer))
+            or inverse_max_steps < 0
+        ):
+            invalid(
+                "inverse_max_steps",
+                "Use a nonnegative integer inverse iteration budget.",
+            )
+        if (
+            isinstance(inverse_tolerance, (bool, np.bool_))
+            or not isinstance(inverse_tolerance, Real)
+            or not np.isfinite(float(inverse_tolerance))
+            or inverse_tolerance <= 0
+        ):
+            invalid(
+                "inverse_tolerance", "Use a finite positive inverse residual tolerance."
+            )
         if metastable_phase not in (None, "liquid", "vapor"):
             invalid("metastable_phase", "Choose None, 'liquid', or 'vapor'.")
         is_mixture = fluid_name.lower().endswith("_mixture")
@@ -256,6 +312,8 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         self.table_dir = os.fspath(table_dir)
         self.grad_method = gradient_method
         self.coarse_step = coarse_step
+        self.inverse_max_steps = int(inverse_max_steps)
+        self.inverse_tolerance = float(inverse_tolerance)
         self._configuration = build_configuration(
             fluid_name,
             self.provider,
@@ -271,6 +329,8 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 N_p=N_p,
                 N_p_sat=N_p_sat,
                 coarse_step=coarse_step,
+                inverse_max_steps=self.inverse_max_steps,
+                inverse_tolerance=self.inverse_tolerance,
                 gradient_method=gradient_method,
                 table_name=table_name,
                 table_dir=table_dir,
@@ -284,12 +344,14 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             jax_modes={"eager", "jit", "vmap", "jvp", "grad"},
             derivative_order=1,
             derivative_method="autodiff",
+            phase_operations={"saturation"} if metastable_phase is not None else (),
             domain=FluidDomain(
-                description=f"{self.table_mode} interpolation table; strict bounds/failure policy awaits Phase 8.",
+                description=f"{self.table_mode} interpolation in bounded enthalpy/log-pressure coordinates.",
                 bounds={"enthalpy": (h_min, h_max), "pressure": (p_min, p_max)},
                 phases={self.table_mode},
-                extrapolation=True,
+                extrapolation=False,
             ),
+            error_modes={"raise", "mask", "clip"},
         )
 
         # Create h and logP grids
@@ -311,6 +373,25 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         else:
             self._references = initialize_source_references(fluid_name, backend)
         self.reference_id = self._references.reference_id
+        component_names = (
+            fluid_name[: -len("_mixture")].split("_") if is_mixture else (fluid_name,)
+        )
+        try:
+            domains = []
+            for component_name in component_names:
+                source = CP.AbstractState(backend, component_name)
+                domains.append((source.Tmin(), source.Tmax(), source.pmax()))
+            source_domain = dict(
+                T_min=max(float(value[0]) for value in domains),
+                T_max=min(float(value[1]) for value in domains),
+                p_max=min(float(value[2]) for value in domains),
+            )
+        except (ValueError, RuntimeError, NotImplementedError) as error:
+            raise InvalidConfigurationError(
+                **context,
+                request="source_domain",
+                reason="The selected source must provide temperature and pressure validity limits for table generation.",
+            ) from error
         critical = self._references["critical_point"]
         if critical.available and self.p_min < 0.98 * critical.properties["pressure"]:
             self.logP_sat_vals = jnp.linspace(
@@ -385,6 +466,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             source_signature=source_signature(
                 self.fluid_name, self.backend, self.mixture_ratio
             ),
+            source_domain=source_domain,
             generation_settings=dict(
                 finite_difference_relative_step=1e-5,
                 step_scale_floor=1.0,
@@ -397,6 +479,11 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                     ).parameters.items()
                     if name.startswith("solver_")
                 },
+                metastable_generation_solver_tolerance=1e-10,
+                metastable_residual_step_fraction=1e-8,
+                metastable_residual_roundoff_ulps=512,
+                metastable_mixed_derivative_scheme="central",
+                metastable_mixed_step_factor=100.0,
                 saturation_log_pressure_min=(
                     None if self.logP_sat_vals is None else float(self.logP_sat_vals[0])
                 ),
@@ -428,9 +515,55 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         # only numerical entries in the dynamic tree so Equinox does not walk
         # source fingerprints and generation settings on every property call.
         table = self._load_or_generate_table()
-        self._table = {
-            name: entry for name, entry in table.items() if name != "metadata"
-        }
+        self._inspection = InspectionPayload(table)
+        self._table, self._coefficient_validity, self._cell_validity = prepare_runtime(
+            table,
+            self.capabilities.properties,
+            self.table_mode,
+            critical.properties["pressure"] if critical.available else None,
+        )
+        self._input_fallbacks = FrozenMapping(
+            {
+                name: float(np.median(np.asarray(table[name]["value"])))
+                for name in (
+                    "enthalpy",
+                    "pressure",
+                    "temperature",
+                    "density",
+                    "entropy",
+                )
+            }
+        )
+        self._saturation_table, self._saturation_validity = prepare_saturation(
+            table, self.capabilities.properties
+        )
+        self._saturation_p_max = (
+            float(jnp.exp(self.logP_sat_vals[-1]))
+            if self.logP_sat_vals is not None
+            else self.p_max
+        )
+        self._saturation_capabilities = FluidCapabilities(
+            input_pairs={jxp.PQ_INPUTS},
+            properties=self.capabilities.properties,
+            phase_operations={"saturation"} if metastable_phase is not None else (),
+            jax_modes={"eager", "jit", "vmap", "jvp", "grad"},
+            error_modes={"raise", "mask", "clip"},
+            derivative_order=1,
+            derivative_method="autodiff",
+            domain=FluidDomain(
+                description="The tabulated saturated liquid or vapor endpoint.",
+                bounds={
+                    "pressure": (
+                        self.p_min,
+                        (
+                            float(jnp.exp(self.logP_sat_vals[-1]))
+                            if self.logP_sat_vals is not None
+                            else self.p_max
+                        ),
+                    )
+                },
+            ),
+        )
 
     @property
     def name(self):
@@ -451,7 +584,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         The outer dictionary is a snapshot; numerical entries share the stored
         arrays. Generation/reload validate the complete persisted manifest.
         """
-        return {"metadata": self.metadata, **self._table}
+        return inspection_view(self)
 
     # ------------------ Table loading / generation ------------------
     def _load_or_generate_table(self):
@@ -1336,42 +1469,22 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
 
     @staticmethod
     def _gradients_metastable_forward(fluid, h, p, eps_h, eps_p, rho_guess, T_guess):
-
-        # print(f"Calculating gradients at h={h}, p={p} with rho_guess={rho_guess} and T_guess={T_guess}")
+        """Sample the homogeneous branch with residuals below the FD budget."""
         rhoT_guess = np.array([rho_guess, T_guess])
-
-        f0 = fluid.get_state_metastable(
-            prop_1="p",
-            prop_1_value=p,
-            prop_2="h",
-            prop_2_value=h,
-            rhoT_guess=rhoT_guess,
-        ).to_dict()
-        # print(f"f0:{f0}")
-        fh = fluid.get_state_metastable(
-            prop_1="p",
-            prop_1_value=p,
-            prop_2="h",
-            prop_2_value=h + eps_h,
-            rhoT_guess=rhoT_guess,
-        ).to_dict()
-        # print(f"fh:{fh}")
-        fp = fluid.get_state_metastable(
-            prop_1="p",
-            prop_1_value=p + eps_p,
-            prop_2="h",
-            prop_2_value=h,
-            rhoT_guess=rhoT_guess,
-        ).to_dict()
-        # print(f"fp:{fp}")
-        fhp = fluid.get_state_metastable(
-            prop_1="p",
-            prop_1_value=p + eps_p,
-            prop_2="h",
-            prop_2_value=h + eps_h,
-            rhoT_guess=rhoT_guess,
-        ).to_dict()
-        # print(f"fhp:{fhp}")
+        sample = lambda enthalpy, pressure: FluidBicubic._metastable_generation_sample(
+            fluid, enthalpy, pressure, eps_h, eps_p, rhoT_guess
+        )
+        f0 = sample(h, p)
+        fh = sample(h + eps_h, p)
+        fp = sample(h, p + eps_p)
+        # A small forward mixed stencil subtracts nearly equal flash results.
+        # Use a wider, centered mixed stencil while retaining the requested
+        # forward first derivatives. This work is paid only during generation.
+        mixed_h, mixed_p = 100 * eps_h, 100 * eps_p
+        mixed_pp = sample(h + mixed_h, p + mixed_p)
+        mixed_pm = sample(h + mixed_h, p - mixed_p)
+        mixed_mp = sample(h - mixed_h, p + mixed_p)
+        mixed_mm = sample(h - mixed_h, p - mixed_p)
 
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
@@ -1379,17 +1492,92 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             grad_h = (fh.get(k, np.nan) - f0.get(k, np.nan)) / eps_h
             grad_p = (fp.get(k, np.nan) - f0.get(k, np.nan)) / eps_p
             grad_hp = (
-                fhp.get(k, np.nan)
-                - fh.get(k, np.nan)
-                - fp.get(k, np.nan)
-                + f0.get(k, np.nan)
-            ) / (eps_h * eps_p)
+                mixed_pp.get(k, np.nan)
+                - mixed_pm.get(k, np.nan)
+                - mixed_mp.get(k, np.nan)
+                + mixed_mm.get(k, np.nan)
+            ) / (4 * mixed_h * mixed_p)
             grads[k] = (val, grad_h, grad_p, grad_hp)
 
         # print("grads:",grads.items())
         # print("\n")
 
         return grads
+
+    @staticmethod
+    def _metastable_generation_sample(fluid, h, p, eps_h, eps_p, rhoT_guess):
+        """Validate domain and solve accuracy only during table generation."""
+        properties = fluid.get_state_metastable(
+            prop_1="p",
+            prop_1_value=p,
+            prop_2="h",
+            prop_2_value=h,
+            rhoT_guess=rhoT_guess,
+            solver_tolerance=1e-10,
+        ).to_dict()
+        temperature = float(properties["temperature"])
+        pressure = float(properties["pressure"])
+        density = float(properties["density"])
+        boundary_precision = 1e-9
+        if (
+            not np.isfinite(temperature)
+            or not np.isfinite(pressure)
+            or not np.isfinite(density)
+            or density <= 0
+            or pressure <= 0
+            or temperature < fluid.T_min * (1 - boundary_precision)
+            or temperature > fluid.T_max * (1 + boundary_precision)
+            or pressure > fluid.p_max * (1 + boundary_precision)
+        ):
+            raise CalculationError(
+                fluid_name=fluid.name,
+                provider="bicubic",
+                model="real_fluid",
+                request="table_generation",
+                reason=(
+                    "The metastable sample exceeds the source EOS domain: "
+                    f"temperature={temperature} K, pressure={pressure} Pa, "
+                    f"density={density} kg/m^3; published temperature "
+                    f"[{fluid.T_min}, {fluid.T_max}] K and pressure "
+                    f"(0, {fluid.p_max}] Pa."
+                ),
+            )
+        for name, target, step in (("enthalpy", h, eps_h), ("pressure", p, eps_p)):
+            value = float(properties[name])
+            # Keep coordinate errors negligible relative to the stencil while
+            # allowing the unavoidable roundoff of a floating EOS evaluation.
+            # In stiff liquids pressure roundoff scales with the bulk modulus,
+            # not the much smaller net pressure obtained by cancellation.
+            scales = (
+                (
+                    properties.get("isothermal_bulk_modulus", 0.0),
+                    properties.get("isentropic_bulk_modulus", 0.0),
+                )
+                if name == "pressure"
+                else (properties.get("isobaric_heat_capacity", 0.0) * temperature,)
+            )
+            scale = max(
+                abs(target),
+                1.0,
+                *(abs(float(item)) for item in scales if np.isfinite(item)),
+            )
+            budget = max(
+                1e-8 * abs(step),
+                512 * np.finfo(float).eps * scale,
+            )
+            if not np.isfinite(value) or abs(value - target) > budget:
+                raise CalculationError(
+                    fluid_name=fluid.name,
+                    provider="bicubic",
+                    model="real_fluid",
+                    request="table_generation",
+                    reason=(
+                        f"The metastable {name} residual {value - target!r} "
+                        f"exceeds the finite-difference error budget {budget!r} "
+                        f"for step {step!r}; refusing inaccurate table derivatives."
+                    ),
+                )
+        return properties
 
     @staticmethod
     def _gradients_saturation_forward(fluid, p, Q, eps_p):
@@ -1412,30 +1600,28 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
             val = f0.get(k, np.nan)
-            grad_p = (fp_plus.get(k, np.nan) - fp_minus.get(k, np.nan)) / 2 * eps_p
+            grad_p = (fp_plus.get(k, np.nan) - fp_minus.get(k, np.nan)) / (2 * eps_p)
             grads[k] = (val, grad_p)
         return grads
 
     # ------------------ Bicubic property interpolation ------------------
     PROPERTY_CALCULATORS = {
-        jxp.HmassP_INPUTS: lambda self, h, p: self._interp_h_p(h, p),
-        jxp.PT_INPUTS: lambda self, p, T: self._interp_x_p(p, T, "temperature"),
-        jxp.DmassP_INPUTS: lambda self, d, p: self._interp_x_p(p, d, "density"),
-        # jxp.PSmass_INPUTS: lambda self, p, s: self._interp_x_p(p, s, "entropy"),
-        jxp.HmassSmass_INPUTS: lambda self, h, s: self._interp_h_y(h, s, "entropy"),
-        jxp.DmassHmass_INPUTS: lambda self, d, h: self._interp_h_y(h, d, "density"),
-        jxp.DmassT_INPUTS: lambda self, d, T: self._interp_x_y(
-            jxp.DmassT_INPUTS, d, T, coarse_step=self.coarse_step
-        ),
-        jxp.DmassSmass_INPUTS: lambda self, d, s: self._interp_x_y(
-            jxp.DmassSmass_INPUTS, d, s, coarse_step=self.coarse_step
-        ),
-        jxp.PSmass_INPUTS: lambda self, p, s: self._interp_x_y(
-            jxp.PSmass_INPUTS, p, s, coarse_step=self.coarse_step
-        ),
+        pair: (
+            lambda self, first, second, _pair=pair: self.get_state(_pair, first, second)
+        )
+        for pair in (
+            jxp.HmassP_INPUTS,
+            jxp.PT_INPUTS,
+            jxp.DmassP_INPUTS,
+            jxp.HmassSmass_INPUTS,
+            jxp.DmassHmass_INPUTS,
+            jxp.DmassT_INPUTS,
+            jxp.DmassSmass_INPUTS,
+            jxp.PSmass_INPUTS,
+        )
     }
 
-    @checked_jit
+    @checked_bicubic_jit
     def get_state(
         self,
         input_type,
@@ -1446,223 +1632,74 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         supersaturation=False,
         errors="raise",
     ):
-        """Evaluate dynamic numeric inputs; only the input-pair selector is static."""
-        val1, val2 = jnp.asarray(prop_1), jnp.asarray(prop_2)
-        val1, val2 = jnp.broadcast_arrays(val1, val2)
+        """Evaluate a bounded table state with explicit numerical failure policy.
 
-        # Scalar evaluation needs neither a length-one vmap nor tree reshaping.
-        if val1.ndim == 0:
-            return self._get_state_scalar(input_type, val1, val2)
+        The input-pair selector is static for JAX compilation; numerical inputs
+        and table coefficients remain dynamic. Each pair has its own cached
+        specialization, so the same fluid object supports different advertised
+        pairs throughout a simulation without specializing on numerical values.
 
-        batched_fn = jax.vmap(lambda v1, v2: self._get_state_scalar(input_type, v1, v2))
+        Eager calls default to indexed raising. Within JAX transformations,
+        explicitly select ``errors='mask'`` or ``errors='clip'``.
+        """
+        return evaluate_state(self, input_type, prop_1, prop_2, errors=errors)
 
-        props_batched = batched_fn(val1.ravel(), val2.ravel())
+    @checked_saturation_jit
+    def get_state_saturation(
+        self,
+        input_type,
+        prop_1,
+        prop_2,
+        *,
+        generalize_quality=False,
+        supersaturation=False,
+        errors="raise",
+    ):
+        """Evaluate the stored PQ saturation endpoint; other tables reject it."""
+        return evaluate_saturation(self, prop_1, prop_2, errors=errors)
 
-        # reshape leaves to broadcasted shape using correct jax API
-        props = jax.tree.map(lambda x: x.reshape(val1.shape), props_batched)
-
-        return props
-
-    def get_state_saturation(self, pressure):
-
-        # TODO: add a warning for values behond the table limits!!!
-
-        sat_props = self._interp_sat_p(pressure)
-
-        return sat_props
-
-    def _get_state_scalar(self, input_type, val1, val2):
-        fn = self.PROPERTY_CALCULATORS.get(input_type)
-        if fn is None:
-            raise KeyError(
-                f"Unsupported input_type: {input_type}. Available keys: {list(self.PROPERTY_CALCULATORS.keys())}"
-            )
-        return fn(self, val1, val2)
+    def _get_state_scalar(self, input_type, val1, val2, *, errors="raise"):
+        return evaluate_scalar(self, input_type, val1, val2, errors=errors)
 
     def _interp_h_p(self, h, p):
-
-        _DEBUG_BOUNDS = False  # set True during development only
-
-        out_of_range = (
-            (h < self.h_min) | (h > self.h_max) | (p < self.p_min) | (p > self.p_max)
-        )
-        if _DEBUG_BOUNDS:
-            jax.debug.callback(
-                lambda oor, h_, p_: (
-                    print(
-                        f"Extrapolation attempted in table {self.table_name}. Values out of interpolation range: h={h_}, p={p_}"
-                    )
-                    if oor
-                    else None
-                ),
-                out_of_range,
-                h,
-                p,
-                ordered=True,
-            )
-
-        ii = (h - self.h_min) / self.delta_h
-        jj = (jnp.log(p) - jnp.log(self.p_min)) / self.delta_logP
-
-        i = jnp.clip(jnp.floor(ii).astype(int), 0, self.N_h - 2)
-        j = jnp.clip(jnp.floor(jj).astype(int), 0, self.N_p - 2)
-
-        x = ii - i
-        y = jj - j
-
-        xm = jnp.array([1.0, x, x * x, x * x * x])
-        ym = jnp.array([1.0, y, y * y, y * y * y])
-        basis = jnp.kron(ym, xm)
-
-        props = {
-            name: jnp.dot(self._table[name]["coeffs"][i, j], basis)
-            for name in jxp.PROPERTIES_CANONICAL
-        }
-
-        # enforce exact inputs
-        props["enthalpy"] = h
-        props["pressure"] = p
-
-        return jxp.FluidState(
-            fluid_name=self.fluid_name,
-            identifier=self.identifier,
-            provider=self.provider,
-            model=self.model,
-            reference_id=self.reference_id,
-            available_properties=self.capabilities.properties,
-            **props,
-        )
-
-    def _interp_h_y(self, h, y_value, y_name, tol=1e-10, max_steps=64):
-        i0 = jnp.argmin(jnp.abs(self.h_vals - h))
-        j0 = jnp.argmin(jnp.abs(self._table[y_name]["value"][i0, :] - y_value))
-        p0 = self._table["pressure"]["value"][i0, j0]
-
-        def residual(p, _):
-            val = self._interp_h_p(h, p)[y_name] - y_value
-            return val
-
-        solver = optx.Newton(rtol=tol, atol=tol)
-        solution = optx.root_find(
-            residual,
-            solver,
-            y0=p0,
-            options={"lower": self.p_min, "upper": self.p_max, "max_steps": max_steps},
-        )
-
-        return self._interp_h_p(h, solution.value)
-
-    def _interp_x_p(self, p, x_value, x_name, tol=1e-10, max_steps=1000):
-        j0 = jnp.argmin(jnp.abs(self.logP_vals - jnp.log(p)))
-        i0 = jnp.argmin(jnp.abs(self._table[x_name]["value"][:, j0] - x_value))
-        h0 = self._table["enthalpy"]["value"][i0, j0]
-
-        def residual(h, _):
-            val = self._interp_h_p(h, p)[x_name] - x_value
-            return val
-
-        solver = optx.Newton(rtol=tol, atol=tol)
-        solution = optx.root_find(
-            residual,
-            solver,
-            y0=h0,
-            options={"lower": self.h_min, "upper": self.h_max, "max_steps": max_steps},
-        )
-
-        return self._interp_h_p(solution.value, p)
-
-    def _interp_x_y(self, input_pair, x, y, coarse_step=8, tol=1e-12):
-        prop1, prop2 = jxp.INPUT_PAIR_MAP[input_pair]
-        prop1 = jxp.ALIAS_TO_CANONICAL[prop1]
-        prop2 = jxp.ALIAS_TO_CANONICAL[prop2]
-
-        def to_scaled(h, p):
-            h_scaled = (h - self.h_min) / (self.h_max - self.h_min)
-            p_scaled = (p - self.p_min) / (self.p_max - self.p_min)
-            return h_scaled, p_scaled
-
-        def from_scaled(h_scaled, p_scaled):
-            h = h_scaled * (self.h_max - self.h_min) + self.h_min
-            p = p_scaled * (self.p_max - self.p_min) + self.p_min
-            return h, p
-
-        # coarse scan
-        step = max(1, coarse_step)
-        h_table = self._table["enthalpy"]["value"][::step, ::step]
-        p_table = self._table["pressure"]["value"][::step, ::step]
-        val_x = self._table[prop1]["value"][::step, ::step]
-        val_y = self._table[prop2]["value"][::step, ::step]
-        range_x = jnp.ptp(self._table[prop1]["value"])
-        range_y = jnp.ptp(self._table[prop2]["value"])
-        # avoid zero-range issues
-        range_x = jnp.where(range_x == 0.0, 1.0, range_x)
-        range_y = jnp.where(range_y == 0.0, 1.0, range_y)
-
-        errors = ((val_x - x) / range_x) ** 2 + ((val_y - y) / range_y) ** 2
-        idx = jnp.argmin(errors)
-        i, j = jnp.unravel_index(idx, errors.shape)
-        h0_node, p0_node = h_table[i, j], p_table[i, j]
-        x0 = jnp.array(to_scaled(h0_node, p0_node))
-
-        def residual(xy, _):
-            h, p = from_scaled(*xy)
-            props = self._interp_h_p(h, p)
-            res_x = (props[prop1] - x) / range_x
-            res_y = (props[prop2] - y) / range_y
-            return jnp.array([res_x, res_y])
-
-        solver = optx.Newton(rtol=tol, atol=tol)
-        solution = optx.root_find(residual, solver, x0, throw=True)
-
-        h_scaled, p_scaled = solution.value
-        h, p = from_scaled(h_scaled, p_scaled)
-        return self._interp_h_p(h, p)
+        return interpolate_properties(self, h, p)
 
     def _interp_sat_p(self, p):
-        # Clamp the query to the tabulated range [p_min, 0.98 p_crit]: outside it
-        # the saturation props are held at the end values (zero p-derivative).
-        # Without the clamp, p above the last node gave j = j+1 after the index
-        # clip -> dx = 0 -> NaN for every property (e.g. a supercritical inlet).
-        p_sat_max = jnp.exp(self.logP_sat_vals[-1])
-        p_q = jnp.clip(p, self.p_min, p_sat_max)
-
-        jj = (jnp.log(p_q) - jnp.log(self.p_min)) / self.delta_logP_sat
-        j = jnp.clip(jnp.floor(jj).astype(int), 0, self.N_p_sat - 2)
-
-        # Use jnp.take for JAX-traced index compatibility (vmap / JIT)
-        def _take(arr, idx):
-            return jnp.take(arr, idx, mode="clip")
-
-        # Raw calculations
-        p_j = _take(self._table["saturation_props"]["pressure"]["value"], j)
-        p_j1 = _take(self._table["saturation_props"]["pressure"]["value"], j + 1)
-        dx = p_j1 - p_j
-        t = (p_q - p_j) / dx
-
-        props = {}
-
-        for k in jxp.PROPERTIES_CANONICAL:
-            val_j = _take(self._table["saturation_props"][k]["value"], j)
-            val_j1 = _take(self._table["saturation_props"][k]["value"], j + 1)
-            gp_j = _take(self._table["saturation_props"][k]["grad_p"], j)
-            gp_j1 = _take(self._table["saturation_props"][k]["grad_p"], j + 1)
-
-            dy = val_j1 - val_j
-            a = gp_j * dx - dy
-            b = -gp_j1 * dx + dy
-
-            # Equation (1): Symmetrical form of q(x)
-            # q(x) = (1-t)y1 + t*y2 + t(1-t)((1-t)a + t*b)
-            one_minus_t = 1 - t
-            term1 = one_minus_t * val_j
-            term2 = t * val_j1
-            correction = t * one_minus_t * (one_minus_t * a + t * b)
-
-            props[k] = term1 + term2 + correction
-
-        props["pressure"] = p
-
-        return props
+        coordinate = (jnp.log(p) - jnp.log(self.p_min)) / self.delta_logP_sat
+        index = jnp.clip(jnp.floor(coordinate).astype(jnp.int32), 0, self.N_p_sat - 2)
+        pressure = self._saturation_table["pressure"]["value"]
+        left, right = pressure[index], pressure[index + 1]
+        width = right - left
+        position = (p - left) / width
+        one_minus = 1 - position
+        properties = {}
+        for name in self.capabilities.properties:
+            entry = self._saturation_table[name]
+            a, b = entry["value"][index], entry["value"][index + 1]
+            ga, gb = entry["grad_p"][index], entry["grad_p"][index + 1]
+            delta = b - a
+            # Symmetric cubic Hermite interpolation, with t = (p-left)/width:
+            # q(t) = (1-t)*a + t*b + t*(1-t) *
+            #        [(1-t)*(ga*width-delta) + t*(delta-gb*width)].
+            # a,b are endpoint values; ga,gb are their pressure derivatives.
+            correction = (
+                position
+                * one_minus
+                * (one_minus * (ga * width - delta) + position * (delta - gb * width))
+            )
+            value = one_minus * a + position * b + correction
+            mask = self._saturation_validity[name]
+            available = True if mask is None else mask[index]
+            properties[name] = jnp.where(
+                available & jnp.isfinite(value),
+                value,
+                jnp.nan,
+            )
+        properties["pressure"] = p
+        properties["quality_mass"] = jnp.asarray(
+            0.0 if self.metastable_phase == "liquid" else 1.0, dtype=p.dtype
+        )
+        return properties
 
 
 # ------------------------------------------------------------------

@@ -38,5 +38,6 @@ h_test = fluid_bicubic.get_state(jxp.PT_INPUTS, p, T_test)["h"]
 print(h_test)
 
 
-sat = fluid_bicubic.get_state_saturation(p)
+quality = 0.0 if metastable_phase == "liquid" else 1.0
+sat = fluid_bicubic.get_state_saturation(jxp.PQ_INPUTS, p, quality)
 print(sat)

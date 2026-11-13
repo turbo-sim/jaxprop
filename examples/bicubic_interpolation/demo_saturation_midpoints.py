@@ -50,8 +50,8 @@ logP_sat_nodes = np.asarray(fluid_bicubic.logP_sat_vals)
 
 # Extend the nodes past the last tabulated one (0.98 p_crit) into the
 # supercritical region with the same log-spacing, up to max(p_max, 1.5 p_crit).
-# There get_state_saturation holds the end-node values and CoolProp has no
-# saturation reference
+# Explicit clipping holds the endpoint state beyond the saturation table;
+# CoolProp has no saturation reference in the supercritical region.
 p_crit = fluid_bicubic.critical_point["pressure"]
 p_sat_max = np.exp(logP_sat_nodes[-1])
 p_ext_max = max(p_max, 1.5 * p_crit)
@@ -73,7 +73,9 @@ interp_vals = {prop: [] for prop in properties}
 cp_vals = {prop: [] for prop in properties}
 
 for p in p_midpoints:
-    sat_interp = fluid_bicubic.get_state_saturation(float(p))
+    sat_interp = fluid_bicubic.get_state_saturation(
+        jxp.PQ_INPUTS, float(p), Q_sat, errors="clip"
+    )
     # print(sat_interp)
     sat_cp = fluid_cp.get_state(jxp.PQ_INPUTS, float(p), Q_sat, errors="mask")
 

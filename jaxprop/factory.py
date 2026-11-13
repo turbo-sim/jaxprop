@@ -19,6 +19,8 @@ _TABLE_REQUIRED = frozenset({"h_min", "h_max", "p_min", "p_max", "N_h", "N_p"})
 _TABLE_ALLOWED = _TABLE_REQUIRED | {
     "N_p_sat",
     "coarse_step",
+    "inverse_max_steps",
+    "inverse_tolerance",
     "gradient_method",
     "table_dir",
     "table_name",

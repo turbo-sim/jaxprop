@@ -90,7 +90,7 @@ def test_python_lists_broadcast_without_changing_singleton_axes(bicubic):
 def test_outer_jit_full_state_and_gradient_use_dynamic_inputs(bicubic):
     compiled = eqx.filter_jit(
         lambda model, enthalpy, pressure: model.get_state(
-            jxp.HmassP_INPUTS, enthalpy, pressure
+            jxp.HmassP_INPUTS, enthalpy, pressure, errors="mask"
         )
     )
     for enthalpy in (680e3, 720e3):
@@ -103,7 +103,11 @@ def test_outer_jit_full_state_and_gradient_use_dynamic_inputs(bicubic):
             atol=0,
         )
     derivative = jax.jit(
-        jax.grad(lambda enthalpy: bicubic.get_state(jxp.HmassP_INPUTS, enthalpy, 8e6).T)
+        jax.grad(
+            lambda enthalpy: bicubic.get_state(
+                jxp.HmassP_INPUTS, enthalpy, 8e6, errors="mask"
+            ).T
+        )
     )(700e3)
     difference = (
         bicubic.get_state(jxp.HmassP_INPUTS, 700e3 + 1.0, 8e6).T

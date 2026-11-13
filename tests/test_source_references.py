@@ -517,13 +517,24 @@ def test_native_execution_does_not_repeat_source_initialization(
             jxp.HmassP_INPUTS,
             h,
             8e6,
-            errors="mask" if provider == "perfect_gas" else "raise",
+            errors="mask",
         ).T
 
-    values = [float(temperature(jnp.asarray(h))) for h in (680e3, 700e3, 720e3)]
+    # The fixture table is centred on source temperatures near 600 K; the old
+    # literal enthalpies silently extrapolated below it. Probe its actual
+    # interior when checking source isolation, and check rejection separately.
+    enthalpies = (
+        np.linspace(fluid.h_min, fluid.h_max, 5)[1:-1]
+        if provider == "bicubic"
+        else (680e3, 700e3, 720e3)
+    )
+    values = [float(temperature(jnp.asarray(h))) for h in enthalpies]
     assert len(traces) == 1
     assert np.all(np.isfinite(values)) and np.all(np.diff(values) > 0)
-    assert np.isfinite(jax.grad(temperature)(jnp.asarray(700e3)))
+    assert np.isfinite(jax.grad(temperature)(jnp.asarray(enthalpies[1])))
+    if provider == "bicubic":
+        outside = np.float64(fluid.h_min - (fluid.h_max - fluid.h_min))
+        assert np.isnan(temperature(jnp.asarray(outside)))
 
 
 def test_changed_global_reference_is_detected_without_mutating_existing_objects():

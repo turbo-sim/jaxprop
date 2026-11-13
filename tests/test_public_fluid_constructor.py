@@ -213,7 +213,7 @@ def test_constructor_keeps_native_jax_transforms_and_model_tree(
     fluid, direct = configured_models[method]
     h = jnp.asarray([680e3, 700e3, 720e3])
     p = jnp.asarray(8e6)
-    policy = "mask" if method in {"coolprop_jax", "perfect_gas"} else "raise"
+    policy = "mask" if method in {"coolprop_jax", "perfect_gas", "bicubic"} else "raise"
     evaluate = lambda enthalpy: fluid.get_state(
         jxp.HmassP_INPUTS, enthalpy, p, errors=policy
     )
@@ -251,8 +251,7 @@ def test_publicly_constructed_model_parameters_remain_dynamic(
     @jax.jit
     def temperature(model, enthalpy):
         traces.append(None)
-        policy = "mask" if method == "perfect_gas" else "raise"
-        return model.get_state(jxp.HmassP_INPUTS, enthalpy, 8e6, errors=policy).T
+        return model.get_state(jxp.HmassP_INPUTS, enthalpy, 8e6, errors="mask").T
 
     enthalpy = jnp.asarray(700e3)
     initial = temperature(fluid, enthalpy)

@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-13",
+  "scope": "Phase 8 minimal bicubic API compatibility edits and AST syntax verification only. No example numerical execution, figure verification or timing comparison was performed.",
+  "examples_ast_parsed": 65,
+  "executed_examples": [],
+  "figures_verified": 0,
+  "numerical_settings_changed": false,
+  "changes": [
+    {
+      "file": "bicubic_interpolation/demo_derivatives_jax.py",
+      "change": "Select errors='mask' explicitly in the two bicubic get_state calls used by JAX grad/vmap."
+    },
+    {
+      "file": "bicubic_interpolation/demo_metastable_single_point_comparison.py",
+      "change": "Replace the pressure-only saturation call with PQ_INPUTS, pressure and the configured metastable endpoint quality."
+    },
+    {
+      "file": "bicubic_interpolation/demo_saturation_midpoints.py",
+      "change": "Use the uniform PQ saturation call and explicit errors='clip' for the existing pressure extension beyond the tabulated endpoint; retain masked CoolProp reference gaps."
+    },
+    {
+      "file": "bicubic_interpolation/demo_table_interpolation_with_saturation.py",
+      "change": "Use the uniform PQ saturation call at Q=0 and restrict both comparisons to common enabled properties, preserving unavailable optional values through raw_property."
+    }
+  ],
+  "remaining_findings": [
+    {
+      "example": "mixture_properties/test_cal_prop.py",
+      "owner_phases": [9, 14],
+      "reason": "The shared differentiated helpers serve bicubic and legacy FluidMix objects. A blanket mask-policy change would assume numerical failure support that the binary model has not yet implemented; migrate after the common binary contract is available."
+    },
+    {
+      "examples": [
+        "bicubic_interpolation/demo_metastable_single_point_comparison.py",
+        "bicubic_interpolation/demo_saturation_midpoints.py",
+        "bicubic_interpolation/demo_table_interpolation_with_saturation.py"
+      ],
+      "owner_phase": 14,
+      "reason": "Expensive metastable-table generation and numerical execution were not rerun. Existing timeout/domain/continuation findings remain unverified at this checkpoint; no bounds, grid sizes or tolerances were changed to manufacture completion."
+    }
+  ],
+  "limitations": [
+    "Syntax success does not establish scientific correctness, convergence, plotting success or performance.",
+    "Historical per-file execution outcomes are retained as results of their original source versions, not rerun outcomes for the migrated examples.",
+    "All three migrated saturation calls use actual configured metastable endpoint payloads; no equilibrium-table saturation request was redirected to another backend."
+  ]
+}

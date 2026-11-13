@@ -58,6 +58,73 @@ Phase 7 source. The user accepted the remaining compiled tradeoff on
 in Phases 11/13. [Final case summaries](pg_hotpath/results.json) and
 [correctness verification](pg_hotpath/verification.json) are retained;
 intermediate timing records, workers and scripts have been removed.
+
+## Phase 8 bicubic policies and bounded inverses
+
+The [Phase 8 guard](phase8_validation.json) compares the bicubic implementation
+with accepted Phase 7 commit `ec80b96`. Four workers per version ran serially in
+ABBAABBA order, with nine synchronized samples per case and independent 16-by-16
+HEOS CO2 tables. All timings below return complete states; compilation is
+recorded separately. These are comparisons within this run, not against PyPI.
+
+| Complete call | Phase 7 | Phase 8 |
+| --- | ---: | ---: |
+| Eager HP scalar, raise | 119.5 us | 105.6 us |
+| Eager HP batch, 1,024, raise | 737.7 us | 726.5 us |
+| Compiled HP scalar | 56.4 us | 60.1 us |
+| Compiled HP batch, 1,024 | 647.8 us | 614.5 us |
+| Eager PT inverse | 2,204.4 us | 126.0 us |
+| Compiled PT inverse | 205.1 us | 70.0 us |
+| Eager PS inverse | 2,214.0 us | 126.3 us |
+| Compiled PS inverse | 228.6 us | 70.7 us |
+
+Eager inverse calls are about 14–18 times faster; compiled inverse calls about
+2.5–3.2 times faster. Residuals calculate only their selected properties without
+assembling states during iterations, and PS now uses a one-dimensional solve.
+The representative numerical model has 35 array leaves rather than 269.
+Setup-proven globally available properties carry no repeated availability grid;
+partial optional masks and safe finite arithmetic remain. Domain, root,
+finite-core and status checks are retained, without native host callbacks.
+
+The short compiled HP scalar case is 6.5% slower in this guard, with paired
+ratios from 0.995 to 1.130. The unchanged PG temperature control also shifts
+about 6%; both PG optimized-program hashes are identical across versions. The
+[longer focused comparison](phase8_scalar_followup.json) uses 24 samples and
+four times as many calls per sample in each of four workers per version.
+Compiled HP medians are 68.5 versus 66.3 us, but paired ratios range from 0.551
+to 1.127; unchanged PG controls show similarly large worker shifts. The scalar
+result is therefore **inconclusive**, not evidence of either a reliable speedup
+or universal absence of overhead. Retain this case in the Phase 13 gate. The
+ordinary eager batch and compiled batch cases show no repeatable slowdown
+after removing redundant all-available masks.
+
+Cached loading is 23.42 versus 27.33 ms, an additional 3.91 ms at setup.
+Complete source/manifest/payload validation remains enabled. Construction and
+loading are separate from repeated state evaluation; profiling their remaining
+cost is optional Phase 11/13 work. Metastable generation now uses seven source
+flashes rather than four per node to improve mixed derivatives; that additional
+construction work is outside this ordinary-table timing comparison.
+
+The [final HEOS/REFPROP verification](phase8_verification.json) passes **2,182
+tests with 15 existing strict expected failures**, zero unexpected failures and
+zero skips. It retains **54,272 numerical comparisons**, including **50,189
+finite values** and **4,083 paired unavailable values**, with zero failures.
+Phase 8 adds 200 passing cases and removes one obsolete unsupported-mask
+parameter. All 884 sampled benchmark comparisons pass; core values compare
+without adjustment. Only the old compressibility factor is normalized to the
+selected EOS gas constant, matching the independently tested source correction.
+The exact package hash is retained with both correctness and timing evidence.
+A later documentation-only follow-up restores source explanations and option
+documentation. The verification record retains both source-byte hashes and
+confirms identical executable ASTs after excluding docstrings; numerical code
+and the timing claims are unchanged.
+
+This CPU/x64 guard does not establish all devices, phase envelopes, example
+studies or ThermOpt application performance. The full published-release gate
+remains Phase 13, and example execution acceptance remains Phase 14.
+Temporary timing workers, extracted source copies, tables and helper scripts
+were removed after preserving these compact records and the full test run.
+
 ## Method and scope of the original PyPI checkpoint
 
 Six separate workers ran serially in baseline/current/current/baseline/baseline/current order. Each implementation has three workers and five samples per warmed workload, with multiple calls per sample and synchronized JAX outputs. Cold table construction has one sample per worker. Import paths, source hashes, dependencies, device/precision, and thread settings were verified.

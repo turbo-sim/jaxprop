@@ -1,0 +1,47 @@
+{
+  "test_backends": [
+    "HEOS",
+    "REFPROP"
+  ],
+  "counts": {
+    "passed": 2182,
+    "xfailed": 15
+  },
+  "property_comparisons": 54272,
+  "finite_values_compared": 50189,
+  "unavailable_values_checked": 4083,
+  "failed_comparisons": 0,
+  "seconds": 488.35799679999764,
+  "full_run": "development/test_audit/results/phase8/full_20261113_224729",
+  "full_suite_source_sha256": "45469e7c4c7b8124a0c899c2beed684637f8ba1e46ea43c8eac99f0f1722fda5",
+  "source_unchanged_during_run": true,
+  "additional_tests": {
+    "test_phase8_interpolation.py": 24,
+    "test_phase8_inverse_numerics.py": 45,
+    "test_phase8_nearcritical.py": 6,
+    "test_phase8_policies.py": 35,
+    "test_phase8_saturation.py": 12,
+    "test_phase8_table_integrity.py": 22,
+    "test_source_gas_constant.py": 56
+  },
+  "additional_test_count": 200,
+  "removed_obsolete_unsupported_mask_parameter": 1,
+  "source_sha256": "45469e7c4c7b8124a0c899c2beed684637f8ba1e46ea43c8eac99f0f1722fda5",
+  "source_matches_benchmark": true,
+  "benchmark_matched_scalar_comparisons": 884,
+  "source_matches_scalar_followup": true,
+  "scalar_followup_matched_comparisons": 884,
+  "documentation_followup": {
+    "date": "2026-11-13",
+    "measured_source_sha256": "45469e7c4c7b8124a0c899c2beed684637f8ba1e46ea43c8eac99f0f1722fda5",
+    "current_source_sha256": "929344f0bfe777770678680179553574f5d6d1f033efb0a14d7cfb4b7541c6a5",
+    "executable_ast_sha256": "e67d47a5a901087796f389d1d13f34b5ce4acf527e81a81cd8f469325c6e4c61",
+    "executable_ast_unchanged": true,
+    "method": "Compare every jaxprop Python module AST after removing module/class/function docstrings; comments and source positions are excluded.",
+    "changed_files": [
+      "jaxprop/bicubic/bicubic_interpolation.py",
+      "jaxprop/bicubic/numerics.py"
+    ],
+    "scope": "Restore saturation Hermite formula and static-selector explanations; document inverse setup options and normalized-root acceptance. No numerical code changes or new timing claims."
+  }
+}

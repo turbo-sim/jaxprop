@@ -47,19 +47,14 @@ def assert_metadata(state, fluid):
         "supersaturation_degree",
     }
     assert state.available_properties == fluid.capabilities.properties - diagnostics
-    assert state.error_policy == (
-        "mask"
-        if fluid.provider == "coolprop_jax" or fluid.model == "perfect_gas"
-        else "raise"
-    )
+    assert state.error_policy == "mask"
 
 
 @pytest.mark.parametrize("case", JAX_CASES, ids=lambda case: case.id)
 def test_empty_broadcast_batches_preserve_full_state_eager_and_jitted(case, fluid):
     enthalpy = jnp.empty((0, 1))
     pressure = jnp.asarray([[7e6, 8e6, 9e6]])
-    policy = "mask" if case.id in {"coolprop_jax", "perfect_gas"} else "raise"
-    evaluate = lambda h, p: fluid.get_state(jxp.HmassP_INPUTS, h, p, errors=policy)
+    evaluate = lambda h, p: fluid.get_state(jxp.HmassP_INPUTS, h, p, errors="mask")
     eager = evaluate(enthalpy, pressure)
     compiled = jax.jit(evaluate)(enthalpy, pressure)
     jax.block_until_ready((eager, compiled))
@@ -95,14 +90,14 @@ def test_alternating_input_pairs_reuses_each_compilation(case, fluid, monkeypatc
     else:
         original = type(fluid)._get_state_scalar
 
-        def counted(model, pair, first, second):
+        def counted(model, pair, first, second, **kwargs):
             traces.append(pair)
-            return original(model, pair, first, second)
+            return original(model, pair, first, second, **kwargs)
 
         monkeypatch.setattr(type(fluid), "_get_state_scalar", counted)
 
     temperatures = []
-    policy = "mask" if case.id == "perfect_gas" else "raise"
+    policy = "mask"
     for enthalpy, pressure in ((680e3, 7e6), (720e3, 9e6)):
         from_hp = fluid.get_state(jxp.HmassP_INPUTS, enthalpy, pressure, errors=policy)
         temperature = float(from_hp.T)

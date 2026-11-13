@@ -6,7 +6,7 @@ from scipy.optimize import root_scalar, root
 from .. import math
 from .. import utils
 
-from ..helpers_props import PROPERTY_ALIASES, ALIAS_TO_CANONICAL, GAS_CONSTANT
+from ..helpers_props import PROPERTY_ALIASES, ALIAS_TO_CANONICAL
 from .source_context import helper_state
 
 _OPTIONAL_PROPERTY_ERRORS = (
@@ -144,7 +144,7 @@ def compute_properties_1phase(
     cp = _optional_value(AS.cpmass)
     gamma = _optional_divide(cp, cv)
     M = AS.molar_mass()
-    Z = p / (rho * (GAS_CONSTANT / M) * T)
+    Z = p / (rho * (AS.gas_constant() / M) * T)
 
     # --- thermodynamic properties involving derivatives
     a = _optional_value(AS.speed_sound)
@@ -287,7 +287,7 @@ def compute_properties_2phase(
 
     # --- compressibility factor
     M = AS.molar_mass()
-    Z = p / (rho * (GAS_CONSTANT / M) * T)
+    Z = p / (rho * (AS.gas_constant() / M) * T)
 
     # --- speed of sound (HEM)
     B1 = vfrac_L / (rho_L * a_L**2) + vfrac_V / (rho_V * a_V**2)
@@ -490,8 +490,11 @@ def compute_properties_metastable_rhoT(
 
     - :math:`\phi` is the dimensionless Helmholtz energy
     - :math:`R` is the gas constant of the fluid
-    - :math:`\delta = \rho / \rho_c` is the reduced density
-    - :math:`\tau = T_c / T` is the inverse of the reduced temperature
+    - :math:`\delta = \rho / \rho_r` is the reduced density
+    - :math:`\tau = T_r / T` is the inverse of the reduced temperature
+
+    The selected EOS supplies its gas constant and reducing parameters
+    :math:`\rho_r` and :math:`T_r`; these need not equal the critical values.
 
     Thermodynamic properties can be derived from the Helmholtz energy and its partial derivatives.
     The following table summarizes the expressions for various properties:
@@ -544,14 +547,15 @@ def compute_properties_metastable_rhoT(
     AS.update(CP.DmassT_INPUTS, rho, T)
 
     # Fluid constants
-    R = GAS_CONSTANT
+    R = AS.gas_constant()
     M = AS.molar_mass()
     T_crit = AS.T_critical()
     rho_crit = AS.rhomass_critical()
 
-    # Reduced variables
-    tau = T_crit / T
-    delta = rho / rho_crit
+    # Helmholtz derivatives use the EOS reducing coordinates. They need not
+    # coincide with numerically determined critical coordinates (e.g. R134a).
+    tau = AS.tau()
+    delta = AS.delta()
 
     # Helmholtz derivatives
     alpha = AS.alpha0() + AS.alphar()

@@ -59,7 +59,7 @@ s_grid = states_grid["entropy"]
 # 1. Check dT/dh|p vs 1/cp
 # ------------------------------------------
 def T_of_h_scalar(h, p):
-    return fluid_bicubic.get_state(jxp.HmassP_INPUTS, h, p)["temperature"]
+    return fluid_bicubic.get_state(jxp.HmassP_INPUTS, h, p, errors="mask")["temperature"]
 
 def dTdh_scalar(h, p):
     return jax.grad(lambda hh: T_of_h_scalar(hh, p))(h)
@@ -83,7 +83,7 @@ if max_err_cp > tol_cp:
 # 2. Check a**2 = (∂p/∂ρ)_s
 # ------------------------------------------
 def p_of_rho_s_scalar(rho, s):
-    return fluid_bicubic.get_state(jxp.DmassSmass_INPUTS, rho, s)["pressure"]
+    return fluid_bicubic.get_state(jxp.DmassSmass_INPUTS, rho, s, errors="mask")["pressure"]
 
 def a_from_derivative_scalar(rho, s):
     dp_drho = jax.grad(lambda rr: p_of_rho_s_scalar(rr, s))(rho)

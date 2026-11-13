@@ -66,8 +66,8 @@ temperature = jax.jit(
 ```
 
 The callback supports first-order finite-difference derivatives. Perfect gas
-supports `raise`, `mask` and `clip`; its transformed calls require explicit
-mask or clip mode. For example:
+and bicubic tables support `raise`, `mask` and `clip`; their transformed calls
+require explicit mask or clip mode. For example:
 
 ```python
 adjusted = gas.get_state(jxp.PT_INPUTS, -1.0, 300.0, errors="clip")
@@ -78,8 +78,12 @@ Clipping returns a consistent adjusted state with a clipping flag. Nonfinite
 inputs remain failed elements. Perfect gas now preserves calibrated source
 enthalpy/entropy and heat capacity with consistent ideal-gas equations, enabling
 22 properties. Gradient helpers return `PropertyDerivatives` with SI units and
-a separate `.primal` state. Bicubic numerical policies remain Phase 8 work;
-inspect capabilities and the [public contract](z_PUBLIC_FLUID_CONTRACT.md) or
+a separate `.primal` state. Bicubic clipping projects onto the configured
+enthalpy/pressure rectangle. Fixed-coordinate inverses can also project a target
+when the table proves a monotone response; unsuccessful or ambiguous inverses
+remain failed elements. Inverse budgets are configured once with the
+`inverse_max_steps` and `inverse_tolerance` table options. Inspect capabilities
+and the [public contract](z_PUBLIC_FLUID_CONTRACT.md) or
 [implementation checklist](z_IMPLEMENTATION_PLAN.md) for current support.
 
 <!-- research-software-metadata:start -->

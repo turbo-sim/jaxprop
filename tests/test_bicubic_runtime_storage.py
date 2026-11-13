@@ -74,7 +74,7 @@ def test_full_state_jit_and_derivative_preserve_values(runtime_fluid):
     eager = fluid.get_state(jxp.HmassP_INPUTS, h, p)
     compiled = eqx.filter_jit(
         lambda model, enthalpy, pressure: model.get_state(
-            jxp.HmassP_INPUTS, enthalpy, pressure
+            jxp.HmassP_INPUTS, enthalpy, pressure, errors="mask"
         )
     )(fluid, jnp.asarray(h), jnp.asarray(p))
     for name in eager.available_properties:
@@ -85,7 +85,11 @@ def test_full_state_jit_and_derivative_preserve_values(runtime_fluid):
             compiled.property_valid(name), eager.property_valid(name)
         )
     derivative = jax.jit(
-        jax.grad(lambda enthalpy: fluid.get_state(jxp.HmassP_INPUTS, enthalpy, p).T)
+        jax.grad(
+            lambda enthalpy: fluid.get_state(
+                jxp.HmassP_INPUTS, enthalpy, p, errors="mask"
+            ).T
+        )
     )(h)
     step = 1.0
     difference = (
@@ -101,7 +105,7 @@ def test_coefficients_remain_dynamic_inputs_to_compiled_evaluation(runtime_fluid
     @eqx.filter_jit
     def temperature(model, enthalpy, pressure):
         traces.append(True)
-        return model.get_state(jxp.HmassP_INPUTS, enthalpy, pressure).T
+        return model.get_state(jxp.HmassP_INPUTS, enthalpy, pressure, errors="mask").T
 
     h, p = jnp.asarray(700e3), jnp.asarray(8e6)
     original = temperature(runtime_fluid, h, p)
