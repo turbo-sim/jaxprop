@@ -1,158 +1,227 @@
-import pickle
+"""Export an explicit current-schema table to CSV or an optional Excel workbook.
+
+CSV is the default and preserves complete numeric arrays, cell validity,
+saturation data and generation metadata. The tool verifies a CSV round trip.
+Use --format xlsx for inspection in Excel (requires pandas and openpyxl);
+spreadsheet floating-point formatting is checked at a declared 1e-12 tolerance.
+No input file or output directory is inferred from the source-code location.
+"""
+
 from pathlib import Path
+import sys
 
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from examples._common import example_options
+from examples.bicubic_interpolation.export_pkl_to_c_binary import (
+    NODE_FIELDS,
+    _json_value,
+    assert_roundtrip,
+    load_table,
+    validate_table,
+)
+
+import csv
+import json
 import numpy as np
-import pandas as pd
-
-# ============================================================
-# 1) FILE CONFIGURATION
-# ============================================================
-# Set only the pickle file name. The script reads from fluid_tables/
-# and writes one Excel workbook back into fluid_tables/.
-INPUT_PKL_NAME = "CO2_200x200.pkl"
-
-SCRIPT_DIR = Path(__file__).resolve().parent
-TABLE_DIR = SCRIPT_DIR / "fluid_tables"
-
-input_pkl = TABLE_DIR / INPUT_PKL_NAME
-output_excel = TABLE_DIR / f"{input_pkl.stem}.xlsx"
 
 
-# ============================================================
-# 2) HELPERS
-# ============================================================
-def find_node_shape(table_dict):
-    """Find the 2D node-grid shape (N_h, N_p) from property value arrays."""
-    if (
-        "enthalpy" in table_dict
-        and isinstance(table_dict["enthalpy"], dict)
-        and "value" in table_dict["enthalpy"]
+def table_columns(table):
+    metadata = validate_table(table)
+    nh, np_ = metadata["N_h"], metadata["N_p"]
+    properties = sorted(
+        name
+        for name in table
+        if name not in {"metadata", "saturation_props", "phase_cell_validity"}
+    )
+    i, j = np.indices((nh, np_))
+    nodes = {"i": i.ravel(), "j": j.ravel()}
+    for name in properties:
+        for field in NODE_FIELDS:
+            nodes[name + "__" + field] = np.asarray(table[name][field]).ravel()
+    i, j = np.indices((nh - 1, np_ - 1))
+    cells = {
+        "i": i.ravel(),
+        "j": j.ravel(),
+        "phase_valid": np.asarray(table["phase_cell_validity"], dtype=int).ravel(),
+    }
+    for name in properties:
+        for k in range(16):
+            cells[name + f"__c{k:02d}"] = np.asarray(table[name]["coeffs"])[
+                ..., k
+            ].ravel()
+    saturation = {
+        "i": (
+            np.arange(metadata["N_p_sat"])
+            if table["saturation_props"]
+            else np.array([], dtype=int)
+        )
+    }
+    for name, entry in table["saturation_props"].items():
+        for field, array in entry.items():
+            saturation[name + "__" + field] = np.asarray(array)
+    return dict(nodes=nodes, cells=cells, saturation=saturation), properties
+
+
+def _write_csv(path, columns):
+    with Path(path).open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.writer(stream)
+        writer.writerow(columns)
+        writer.writerows(
+            zip(*(np.asarray(value).tolist() for value in columns.values()))
+        )
+
+
+def write_csv_tables(table, folder):
+    folder = Path(folder)
+    folder.mkdir(parents=True, exist_ok=True)
+    columns, properties = table_columns(table)
+    for name, values in columns.items():
+        _write_csv(folder / (name + ".csv"), values)
+    manifest = dict(
+        export_schema=1,
+        metadata=table["metadata"],
+        properties=properties,
+        saturation_properties=list(table["saturation_props"]),
+    )
+    (folder / "metadata.json").write_text(
+        json.dumps(_json_value(manifest), indent=2, allow_nan=False) + "\n",
+        encoding="utf-8",
+    )
+    return columns
+
+
+def _read_csv(path):
+    with Path(path).open(newline="", encoding="utf-8") as stream:
+        reader = csv.DictReader(stream)
+        names = reader.fieldnames
+        rows = list(reader)
+    return {name: np.asarray([float(row[name]) for row in rows]) for name in names}
+
+
+def read_csv_tables(folder):
+    folder = Path(folder)
+    manifest = json.loads((folder / "metadata.json").read_text(encoding="utf-8"))
+    if manifest.get("export_schema") != 1:
+        raise ValueError("Unsupported CSV export schema")
+    metadata = manifest["metadata"]
+    dtype = np.dtype(metadata["numeric_dtype"])
+    nh, np_ = metadata["N_h"], metadata["N_p"]
+    nodes, cells, saturation = (
+        _read_csv(folder / (name + ".csv")) for name in ("nodes", "cells", "saturation")
+    )
+    node_i, node_j = np.indices((nh, np_))
+    cell_i, cell_j = np.indices((nh - 1, np_ - 1))
+    for columns, expected_i, expected_j in (
+        (nodes, node_i, node_j),
+        (cells, cell_i, cell_j),
     ):
-        arr = np.asarray(table_dict["enthalpy"]["value"])
-        if arr.ndim == 2:
-            return arr.shape
+        if not np.array_equal(columns["i"], expected_i.ravel()) or not np.array_equal(
+            columns["j"], expected_j.ravel()
+        ):
+            raise ValueError("CSV row indices do not match the declared C-order grid")
+    flags = cells["phase_valid"]
+    if np.any((flags != 0) & (flags != 1)):
+        raise ValueError("CSV phase-cell flags must be exactly zero or one")
+    table = {
+        "metadata": metadata,
+        "saturation_props": {},
+        "phase_cell_validity": cells["phase_valid"]
+        .astype(bool)
+        .reshape(nh - 1, np_ - 1),
+    }
+    for name in manifest["properties"]:
+        table[name] = {
+            field: nodes[name + "__" + field].astype(dtype).reshape(nh, np_)
+            for field in NODE_FIELDS
+        }
+        table[name]["coeffs"] = (
+            np.stack([cells[name + f"__c{k:02d}"] for k in range(16)], axis=-1)
+            .astype(dtype)
+            .reshape(nh - 1, np_ - 1, 16)
+        )
+    for name in manifest["saturation_properties"]:
+        table["saturation_props"][name] = {
+            field: saturation[name + "__" + field].astype(dtype)
+            for field in ("value", "grad_p")
+        }
+    validate_table(table)
+    return table
 
-    for v in table_dict.values():
-        if isinstance(v, dict) and "value" in v:
-            arr = np.asarray(v["value"])
-            if arr.ndim == 2:
-                return arr.shape
 
-    raise ValueError("Could not infer node-grid shape from pickle data.")
+def write_excel(table, path):
+    try:
+        import pandas as pd
+        import openpyxl  # noqa: F401 -- make the optional dependency explicit
+    except ImportError as error:
+        raise ImportError(
+            "Excel export requires the optional pandas and openpyxl packages; CSV export uses the standard library and NumPy."
+        ) from error
+    columns, _ = table_columns(table)
+    frames = {name: pd.DataFrame(values) for name, values in columns.items()}
+    metadata = json.dumps(_json_value(table["metadata"]), allow_nan=False)
+    with pd.ExcelWriter(path, engine="openpyxl") as writer:
+        for name, frame in frames.items():
+            frame.to_excel(writer, sheet_name=name, index=False)
+        pd.DataFrame({"json": [metadata]}).to_excel(
+            writer, sheet_name="metadata", index=False
+        )
+    for name, frame in frames.items():
+        restored = pd.read_excel(path, sheet_name=name)
+        assert list(restored.columns) == list(frame.columns)
+        np.testing.assert_allclose(
+            restored.to_numpy(dtype=float),
+            frame.to_numpy(dtype=float),
+            rtol=1e-12,
+            atol=1e-12,
+            equal_nan=True,
+        )
+    assert json.loads(
+        pd.read_excel(path, sheet_name="metadata")["json"][0]
+    ) == json.loads(metadata)
+    return {name: list(frame.shape) for name, frame in frames.items()}
 
 
-def collect_properties_with_shape(table_dict, node_shape):
-    """Return top-level property keys whose value arrays match node_shape."""
-    props = []
-    for key, val in table_dict.items():
-        if key == "metadata" or not isinstance(val, dict) or "value" not in val:
-            continue
-        arr = np.asarray(val["value"])
-        if arr.shape == node_shape:
-            props.append(key)
-    return props
-
-
-# ============================================================
-# 3) LOAD PICKLE
-# ============================================================
-if not input_pkl.exists():
-    available = sorted(TABLE_DIR.glob("*.pkl")) if TABLE_DIR.exists() else []
-    available_names = ", ".join(p.name for p in available) if available else "<none>"
-    raise FileNotFoundError(
-        f"Input file not found: {input_pkl}\n"
-        f"Available .pkl files in {TABLE_DIR}: {available_names}"
+def configure_parser(parser):
+    parser.add_argument(
+        "--format",
+        choices=("csv", "xlsx"),
+        default="csv",
+        help="CSV is a lossless numeric round trip; XLSX is an optional inspection workbook.",
     )
 
-with input_pkl.open("rb") as f:
-    data = pickle.load(f)
 
-if not isinstance(data, dict):
-    raise TypeError(f"Expected pickle to contain dict, got {type(data)}")
-
-print("Input pickle:", input_pkl)
-print("Top-level keys:", list(data.keys()))
-
-
-# ============================================================
-# 4) BUILD NODE TABLE (values + gradients at grid nodes)
-# ============================================================
-node_shape = find_node_shape(data)
-N_h, N_p = node_shape
-print(f"Node-grid shape: (N_h, N_p) = ({N_h}, {N_p})")
-
-node_props = collect_properties_with_shape(data, node_shape)
-node_fields = ["value", "grad_h", "grad_p", "grad_logP", "grad_ph", "grad_hlogP"]
-
-ii, jj = np.indices(node_shape)
-node_columns = {
-    "i": ii.ravel(),
-    "j": jj.ravel(),
-}
-
-if "enthalpy" in data and isinstance(data["enthalpy"], dict) and "value" in data["enthalpy"]:
-    h_arr = np.asarray(data["enthalpy"]["value"])
-    if h_arr.shape == node_shape:
-        node_columns["h"] = h_arr.ravel()
-
-if "pressure" in data and isinstance(data["pressure"], dict) and "value" in data["pressure"]:
-    p_arr = np.asarray(data["pressure"]["value"])
-    if p_arr.shape == node_shape:
-        node_columns["p"] = p_arr.ravel()
-        with np.errstate(divide="ignore", invalid="ignore"):
-            node_columns["logP"] = np.log(p_arr).ravel()
-
-for prop in node_props:
-    p_dict = data[prop]
-    for field in node_fields:
-        if field not in p_dict:
-            continue
-        arr = np.asarray(p_dict[field])
-        if arr.shape != node_shape:
-            continue
-        node_columns[f"{prop}_{field}"] = arr.ravel()
-
-nodes_df = pd.DataFrame(node_columns)
-print("Nodes table shape:", nodes_df.shape)
+def main(argv=None):
+    options = example_options(
+        __file__, argv, description=__doc__, configure_parser=configure_parser
+    )
+    if options.input_path is None:
+        raise ValueError(
+            "This converter requires --input PATH to a current-schema property table."
+        )
+    table = load_table(options.input_path)
+    if options.args.format == "csv":
+        columns = write_csv_tables(table, options.output_dir)
+        arrays = assert_roundtrip(table, read_csv_tables(options.output_dir))
+        result = dict(
+            format="csv",
+            roundtrip_arrays_checked=arrays,
+            rows={
+                name: len(next(iter(values.values())))
+                for name, values in columns.items()
+            },
+        )
+    else:
+        path = options.output_dir / (options.input_path.stem + ".xlsx")
+        result = dict(
+            format="xlsx",
+            sheets=write_excel(table, path),
+            roundtrip_relative_tolerance=1e-12,
+        )
+    options.record("export", result)
+    return options.finish()
 
 
-# ============================================================
-# 5) BUILD CELL TABLE (16 bicubic coeffs per cell)
-# ============================================================
-cell_shape = (N_h - 1, N_p - 1)
-ci, cj = np.indices(cell_shape)
-cell_columns = {
-    "cell_i": ci.ravel(),
-    "cell_j": cj.ravel(),
-}
-
-coeff_prop_count = 0
-for prop, p_dict in data.items():
-    if prop == "metadata" or not isinstance(p_dict, dict) or "coeffs" not in p_dict:
-        continue
-
-    coeffs = np.asarray(p_dict["coeffs"])
-    if coeffs.ndim != 3:
-        continue
-    if coeffs.shape[0] != cell_shape[0] or coeffs.shape[1] != cell_shape[1]:
-        continue
-
-    coeff_prop_count += 1
-    n_coeff = coeffs.shape[2]
-    for m in range(n_coeff):
-        cell_columns[f"{prop}_c{m:02d}"] = coeffs[:, :, m].ravel()
-
-cells_df = pd.DataFrame(cell_columns)
-print("Cells table shape:", cells_df.shape)
-print("Properties with coeffs exported:", coeff_prop_count)
-
-
-# ============================================================
-# 6) SAVE ONE EXCEL FILE (nodes + cells sheets)
-# ============================================================
-TABLE_DIR.mkdir(parents=True, exist_ok=True)
-with pd.ExcelWriter(output_excel, engine="openpyxl") as writer:
-    nodes_df.to_excel(writer, sheet_name="nodes", index=False)
-    cells_df.to_excel(writer, sheet_name="cells", index=False)
-
-print(f"Done! Saved Excel workbook with sheets [nodes, cells]: {output_excel}")
+if __name__ == "__main__":
+    main()

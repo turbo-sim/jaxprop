@@ -1,8 +1,8 @@
-import os
+from pathlib import Path
 import sys
 
 # Add package root dir to path
-sys.path.insert(0, os.path.abspath(".."))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 # Define project metadata
 project = "jaxprop"
@@ -24,7 +24,11 @@ extensions = [
     # 'sphinx_tabs.tabs',
     "sphinx_togglebutton",
     "sphinx_design",
+    "myst_parser",
 ]
+
+# Repository Markdown uses dollar-delimited math in prose and displayed formulas.
+myst_enable_extensions = ["dollarmath"]
 
 # Avoid warnings when generating the summary table of class methods
 autosummary_generate = True
@@ -52,5 +56,3 @@ exclude_patterns.extend(["source/api/modules.rst"])
 html_theme = "sphinx_book_theme"
 # html_theme = 'pydata_sphinx_theme'
 # html_theme = 'sphinx_rtd_theme'
-
-

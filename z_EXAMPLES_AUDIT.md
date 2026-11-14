@@ -1,5 +1,63 @@
 # Examples execution audit
 
+## Phase 12 current example verification — 14 November 2026
+
+All **65 original files** are now classified in the [workflow index](examples/README.md)
+and machine-readable [catalogue](examples/catalogue.json). There are **59 standalone
+programs**, **three tools requiring explicit table inputs**, and **three commented
+reference files**. Every executable program passes its separately declared **quick
+and full profile: 62 actual executions per profile, 124 total**, with zero failures,
+timeouts or missing fixtures. Reference files are never counted as execution passes.
+The final matrix verifies the exact example/framework hashes, records sample sizes
+and scientific checks, and preserves earlier failed runs rather than relabeling them.
+[Consolidated execution record](development/example_audit/phase12_examples.json).
+
+All executable files have import-safe `main()` entry points, headless CLI operation,
+explicit output/table/input paths and isolated subprocess execution. Import checks
+cover all 65 files without evaluating fluids, creating figures or writing outputs.
+The quick/full runs render **48/51 figures** respectively; representative figures
+were inspected, including a corrected pressure plot whose converted artists
+previously lay outside its unchanged SI axis limits. Locally unavailable properties
+and failed source-grid requests remain visible as recorded gaps.
+
+Scientific repairs include independent signed saturation derivatives, properly
+scaled ideal-gas energy residuals, common-p/T binary conservation, supported
+fixed-composition inverse calls, a corrected Joule–Thomson term and metre-based
+Reynolds length, continuous sonic roots, and parameter-by-parameter Diffrax
+forward/reverse/finite-difference checks. Duplicate dormant example kernels were
+replaced by current library calls or independent verification formulas. Useful
+equations and physical assumptions remain documented.
+[Derivative/optimizer evidence](development/example_audit/phase12_derivatives.json),
+[binary/acoustic/ODE evidence](development/example_audit/phase12_binary.json).
+
+Physical table domains were deliberately revised rather than loosening solvers:
+the Nitrogen liquid upper enthalpy becomes $-40$ kJ/kg in the affected bounded
+studies, and the Water liquid rectangle becomes $0.3$–$1.4$ MJ/kg. Full grid sizes
+and pressure ranges are retained. Fresh full generation verifies the Water
+120-by-120 and formal Nitrogen 100-by-100/165-by-165 studies. The formal Nitrogen
+research rectangles retain their original limits and explicit limitations:
+33 of 2,401 Gruneisen comparisons are unavailable and the maximum remaining
+relative error is approximately **750%**. Their successful execution does not
+certify whole-domain response accuracy.
+[Domain and bicubic evidence](development/example_audit/phase12_bicubic.json),
+[physical-domain notes](examples/bicubic_interpolation/notes/physical_domains_and_profiles.md).
+
+CSV/XLSX and versioned C-binary tools now validate actual supplied fixtures and
+round-trip their outputs. The C-binary reader checks all six duplicated header
+coordinates against metadata; corruption and actual compiled-C interoperability
+are covered. The table-inspection plot is an input tool, with an optional verified
+source overlay. None of these fixture runs is represented as a missing-input
+default execution.
+
+The [migration guide](docs/migration.md), current generated API pages and example
+index build locally without Sphinx warnings. CI now selects bounded quick smoke
+workflows and scheduled/manual full-resolution standalone runs; remote workflow
+execution is not claimed. Example wall times were collected concurrently and are
+**not performance comparisons**. The matched library timing checkpoint is recorded
+separately from this execution audit.
+
+## Historical audit checkpoints
+
 Audited on 13 November 2026 against Phase 5 commit `b647ffb` plus the small repairs below, committed as `32e18c9`. This audit covers all **65 Python files** under `examples/`; all parsed successfully at that checkpoint. The common `Fluid(..., method=...)` constructor was still planned then. Later constructor migrations are verified separately; this report and its hashes preserve the original audit rather than claiming its outcomes were rerun for every subsequent edit.
 
 The subsequent constructor revision migrates 40 files, verifies unchanged expressions for all 74 constructor argument sets and reruns 19 representative programs successfully. [Constructor migration record](development/example_audit/constructor_migration.json). Advanced table modes and legacy failure studies remain explicit until their owning phases are implemented.

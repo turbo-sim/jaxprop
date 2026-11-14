@@ -1,0 +1,5149 @@
+{
+  "date_utc": "2026-11-14T12:43:48.182351+00:00",
+  "baseline_label": "588c144 / accepted Phase 11 exact source snapshot",
+  "baseline_archive_sha256": "352eaa51fe5bdb2b3ebd10984c1f1b19d410374870ee3804926c1a49a62f1227",
+  "benchmark_script_sha256": "0d1b7ce663f0878c14f4e6fc51f143dca78def94aa82ff3cd2ff2924c60f3457",
+  "source_hashes": {
+    "baseline": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+    "current": "21202218d43f9c44a6639e325ae2a5d2a721c0443f7865f4c0fbe9d7979699c0"
+  },
+  "method": {
+    "order": [
+      "baseline1",
+      "current1",
+      "current2",
+      "baseline2",
+      "baseline3",
+      "current3",
+      "current4",
+      "baseline4"
+    ],
+    "samples_per_worker": 9,
+    "warmup_calls": 8,
+    "calls_scale": 4.0,
+    "synchronization": "jax.block_until_ready after every complete return",
+    "dynamic_values": "Alternate two precreated input sets, except the fixed physical metastable root",
+    "comparison": {
+      "rtol": 1e-08,
+      "atol": 1e-07,
+      "paired_unavailable": true
+    },
+    "regression_budget": 1.1,
+    "validate_only": false,
+    "setup": "One initial construction/generation/cached-loading observation per worker, separate from warmed state timing"
+  },
+  "environment": {
+    "jax": "0.6.2",
+    "jaxlib": "0.6.2",
+    "CoolProp": "7.2.0",
+    "equinox": "0.12.2",
+    "numpy": "2.4.4",
+    "scipy": "1.17.1",
+    "python": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "device": "TFRT_CPU_0",
+    "x64": true,
+    "threads": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1"
+    }
+  },
+  "correctness": [
+    {
+      "worker": "baseline1",
+      "finite": 24494,
+      "paired_unavailable": 178,
+      "mismatches": []
+    },
+    {
+      "worker": "current1",
+      "finite": 24494,
+      "paired_unavailable": 178,
+      "mismatches": []
+    },
+    {
+      "worker": "current2",
+      "finite": 24494,
+      "paired_unavailable": 178,
+      "mismatches": []
+    },
+    {
+      "worker": "baseline2",
+      "finite": 24494,
+      "paired_unavailable": 178,
+      "mismatches": []
+    },
+    {
+      "worker": "baseline3",
+      "finite": 24494,
+      "paired_unavailable": 178,
+      "mismatches": []
+    },
+    {
+      "worker": "current3",
+      "finite": 24494,
+      "paired_unavailable": 178,
+      "mismatches": []
+    },
+    {
+      "worker": "current4",
+      "finite": 24494,
+      "paired_unavailable": 178,
+      "mismatches": []
+    },
+    {
+      "worker": "baseline4",
+      "finite": 24494,
+      "paired_unavailable": 178,
+      "mismatches": []
+    }
+  ],
+  "table_payload_comparison": {
+    "equilibrium_CO2_16x16": {
+      "arrays_compared_per_worker": 280,
+      "bitwise_equal_finite_values_and_paired_NaNs": true,
+      "mismatches": {
+        "baseline1": [],
+        "current1": [],
+        "current2": [],
+        "baseline2": [],
+        "baseline3": [],
+        "current3": [],
+        "current4": [],
+        "baseline4": []
+      },
+      "baseline_array_sha256": {
+        "pressure/value": "7e8a24749b2d646bba7d26b99a3984f729249c04eba94994265bbdf782a21eda",
+        "pressure/grad_h": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "pressure/grad_p": "4e0fecee613f71a37073464486fcc129c0e9a309390e780067d0eb3b9ea491a9",
+        "pressure/grad_logP": "7e8a24749b2d646bba7d26b99a3984f729249c04eba94994265bbdf782a21eda",
+        "pressure/grad_ph": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "pressure/grad_hlogP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "pressure/coeffs": "bd9758b4374cd65b3bd47bf1250d44b42d06f68d6e408455c78c428d4d3fb73c",
+        "temperature/value": "08315b8ffc0765ee82e143f71f335613c860ca63d7dfc0b2a890c8b35d638035",
+        "temperature/grad_h": "d284030acc11ca1f05c18d0189781f26aac65cd3b6448fe2ee2f8c159c7de6f5",
+        "temperature/grad_p": "a755f0aa504b49167b68ca307c6fa3682d7bf566214dcfd8ed451e2d22db24f0",
+        "temperature/grad_logP": "9b71d231866d577c9555f32adc90d237f625c9aed8cf012faa7e9826a53841a9",
+        "temperature/grad_ph": "cecb65e8ebbd2229bcd78649ff133bd0289f2b6003cab971f6d0cf70925aeb21",
+        "temperature/grad_hlogP": "ce4623207f8bbc0b76f72f0e25caf62fdc2d698bc65d066a7cf04316cdaa5725",
+        "temperature/coeffs": "1aafe7925c84b344fcbff547eedcb56aabe6af9d21ffeb8a42291e76c41722af",
+        "density/value": "0753c1ff6a5e8d7240c9cc1e9c5651877e2967c39d3a74541afca1deafcf9830",
+        "density/grad_h": "edaf86bd56fefba8af835a33cccf4e3af7cd0fa108058a6c090fe81601d00fdd",
+        "density/grad_p": "5a1262be70ec88c8cc5bc42c02f1c6db12f5bb6e7fccbdd08d9c2482716f99f7",
+        "density/grad_logP": "216d22bfd21ec6e22f59fd3dfb8dd45fa572c83588c440cd974367df8942505f",
+        "density/grad_ph": "5fe8d619291c2813b8a750c1aef5e1232a9b80aef98221907f4b269febd9b3a2",
+        "density/grad_hlogP": "7cd2400515b2f9db39441b0424a55d9c4d0c86f2e2e7e507c50698471eab1b84",
+        "density/coeffs": "272c10ecde5bce592ad0ccc843c86d9c4041cbe7e07c7a10025909773700c508",
+        "enthalpy/value": "43512d6663f1ce0c41983ef41fe54fcdf8ccc55fa1baa934b9172e91edf51fde",
+        "enthalpy/grad_h": "4e0fecee613f71a37073464486fcc129c0e9a309390e780067d0eb3b9ea491a9",
+        "enthalpy/grad_p": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "enthalpy/grad_logP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "enthalpy/grad_ph": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "enthalpy/grad_hlogP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "enthalpy/coeffs": "7ff3d831e6528c8850be3aae70409b6c23d02fe35b54b05ac1845aa6916385a9",
+        "entropy/value": "719870d561b563bbd8f3a10c2ad83a09c5bce8aced192bc20a0a00bde180f3ab",
+        "entropy/grad_h": "669eeefbf047bb146ec4224459e985c77674529dd4b9b621613fa056bce95ef3",
+        "entropy/grad_p": "8bdbfe53fea19608a87e2c0972c9d2807bcbd9e607dab453db3ca8308571fdb8",
+        "entropy/grad_logP": "048370d6a05bedcb2c9e2bb1f3d0f91a911573281e29b72bd2ab1f0700d3f7f9",
+        "entropy/grad_ph": "f39be60d81f46b6d6be2b23abceb0746d182ca09f7f5501a933cb285b2b4f5e8",
+        "entropy/grad_hlogP": "ededc4f2c9782722783bba4c3f855a71c6f647a3dbcb5906fd72fecca798c36c",
+        "entropy/coeffs": "189f56eaa1acc8beab86adfd0ab19fe6eabeceeb2f91b69f1e0b0f65b859289e",
+        "internal_energy/value": "8ed69cafad7aaecc3b68aa62a445c5ac85bde38c7d416a7e66d3aa3ad7d4e41b",
+        "internal_energy/grad_h": "cd9f4a52a418742c30a1071a4ea5d562a1592e6fed0259167e808300da5068da",
+        "internal_energy/grad_p": "6869695f026c125da7008bb41f826effb1e38ab88133764a3f2b2e6280634446",
+        "internal_energy/grad_logP": "29aa8b3c98aeeb47f4c91243d6239c71c43f8ea0023c90c3f56eaa6e3ffd9815",
+        "internal_energy/grad_ph": "fca50595ef10ed1a6c760fcb4fe6353fd203d406e7d34aedc6587e3087436410",
+        "internal_energy/grad_hlogP": "31916bb3365e08a5ec5f212447865cc7ad13278b347ba9df6f25bb0e9c6cd763",
+        "internal_energy/coeffs": "4f3b99da8791d9ad62ab0cf33d768edd27ec2b884b748635903d9a196ef03a22",
+        "isobaric_heat_capacity/value": "089b3cb0ec8097173548f2e71be0817dc8c59a76bcf147bd5f8fa6aa00c714d6",
+        "isobaric_heat_capacity/grad_h": "f1bdb4f18f505ed841a0873d3fa3e9fdf187da67ffa16e806f7b1fb20811e66f",
+        "isobaric_heat_capacity/grad_p": "6f0430dae7b9b08c7ac65381304c802e48a14c9a9e7e534e7d18194f896cf28a",
+        "isobaric_heat_capacity/grad_logP": "3caff8926d01f6f509be250a814c52478ca4e6f4a9e8733ab60e4005e90d9eb5",
+        "isobaric_heat_capacity/grad_ph": "34594790586ac30a861e1ffa8dd144630f53cc63bc14a40c3d3eaa20fd91de38",
+        "isobaric_heat_capacity/grad_hlogP": "9133367f5379ab6e1f0d7cc087b1da545408c0b48302066d7af342c424b91cd8",
+        "isobaric_heat_capacity/coeffs": "4ffbbac58a38a651a516c22fafc29bfb888efe93947431627abcbc48447660a8",
+        "isochoric_heat_capacity/value": "cdd59f6fce63a8f63e1c123c0ae97747150a1cd7b11574a537d19790a386383f",
+        "isochoric_heat_capacity/grad_h": "6d454af834615c2567bab758403ae3eed6878cde6431f5808146d39b0ce6ab1b",
+        "isochoric_heat_capacity/grad_p": "5d6789bb1a15756f914815b24681e7b7f4a8a45effd6d321ef4c76df332992c8",
+        "isochoric_heat_capacity/grad_logP": "614fc19e589a24ee6929509b79aea8ab32a30b0109ff0aa0ef470ee168fcec13",
+        "isochoric_heat_capacity/grad_ph": "d6cb3280c455a15dd4bc1bab0638a969c8cc9b07cc90c6d690cbc4045757d622",
+        "isochoric_heat_capacity/grad_hlogP": "7fa62d5a2b17aab58fb00545f67d8f298d278dadddfc0a483c8c400f0601004c",
+        "isochoric_heat_capacity/coeffs": "680ebf50ccc91dcb7ee6b841379ab8536cda518cf0e829b2d5715b2e21275047",
+        "heat_capacity_ratio/value": "c12470a866f00c4dfc8fb9676e3221aaac3681b1f1f66e4b3e939ce08dddacef",
+        "heat_capacity_ratio/grad_h": "eec4215b6c4ff862f4520e646da12215d0a3c3ff04b6a44d67230264349961a5",
+        "heat_capacity_ratio/grad_p": "7f4c08f2c5a56c65dd83dfaea70b54d4e95f5e92f65159f9cae5447d1675ca5a",
+        "heat_capacity_ratio/grad_logP": "a922786d65e456204b3cc3631227566780542a468ec03e0b28f2856b9076fab1",
+        "heat_capacity_ratio/grad_ph": "b3040af13a60525dfeea643daad1dc5301b12eb39d98321fbbdebc90470662d7",
+        "heat_capacity_ratio/grad_hlogP": "4b9e34e2ceb037d88e3ccac3f727cdd406bcd1aeda16907a78699e7c7ab1188e",
+        "heat_capacity_ratio/coeffs": "4a9dd7ce36d481bb45d2f954cfc8ece9b638e0e1e06f6a8a08f95bdac1180a94",
+        "compressibility_factor/value": "80e2202ee21349fa2afc1a513aeb46fbc51cb8802ea9fc4691967fbd3bd6c0aa",
+        "compressibility_factor/grad_h": "5bdc58ad69d3d175eae07e00c7242d3bf357b98f20f7cf8ef00b5cfa3ffb3796",
+        "compressibility_factor/grad_p": "90d733d4b3ca096fa3a2cb929d6ad25ea4ba3ee2dfefd14fe690da785b887e8e",
+        "compressibility_factor/grad_logP": "e239d68b7f6b6a88c796b69e57eef7a79365c94c39b2fe18270ed5e5db3c412a",
+        "compressibility_factor/grad_ph": "4be2d2465519e49221d57f9ab0bbaab36b6b121288e879705f0c84aee8e11d9c",
+        "compressibility_factor/grad_hlogP": "ebf10460c74c4061b22b47d7650e8786b1c2509807dad9def6bb49d34cda92ae",
+        "compressibility_factor/coeffs": "a22cc5af27acdf894b334ec0d875f43cf3107089f6f207005f9d7a7dd0b750cd",
+        "isothermal_compressibility/value": "dea31d82bfeeb058fe462e7e0de644186082b4fdb7806a8eb913467a61f5dfd7",
+        "isothermal_compressibility/grad_h": "2f63f9218680a1bf58140154e719179d0ba69efb87825ec29b273e536e73bcb7",
+        "isothermal_compressibility/grad_p": "4254ab1bf49abedc733076884548f3b76e34abaa8c9fcf939c07030a533c19f2",
+        "isothermal_compressibility/grad_logP": "ade065a407904550f1c04113fddc40d44b23415fc6d0589cdc2fd783900f689b",
+        "isothermal_compressibility/grad_ph": "bb2211f98e2145122d9a0646ecf795d8dfec1103da56fe68b1c23af132c16720",
+        "isothermal_compressibility/grad_hlogP": "b8c5f80a0a4d70ac95507ada1bda3ece8d2c6c23919cbb5a706e9cfdd868290b",
+        "isothermal_compressibility/coeffs": "af131260422fce445063a2101c85e9f7cc0cf987fb4c297133c189c245874ce8",
+        "isentropic_compressibility/value": "2db5f5ed1e9cf1ec19c680b1d1b4ed2684b8662169060d639c8a50f912b1437c",
+        "isentropic_compressibility/grad_h": "d87dbe101b971601a0381fe6a6fd4ff897ad5ba8f3cc022fbc9acb60c19f67fc",
+        "isentropic_compressibility/grad_p": "4445925a06aec0c8b1d92cf6139681caeaa98e935dc8d31c80fa4bd970dcd703",
+        "isentropic_compressibility/grad_logP": "c35cb4537905e65b81373b1dc3b2f5921bdb05252e52994f60900431be0059e8",
+        "isentropic_compressibility/grad_ph": "7f4e2113d4d29c1a51236e1f804f5a0eb1718880b2c48a88aa27dcf1b4dadde5",
+        "isentropic_compressibility/grad_hlogP": "ac81f9cac83daef54401dfff918a93720f792786abf6c718a77e007094b7eccd",
+        "isentropic_compressibility/coeffs": "a884a01b57b2d7d2cdfb3b67be611dc6cb451d6b358ff5dd67c5a172e676fba0",
+        "isothermal_bulk_modulus/value": "5d76a1887504d057db52a098707b1add514635189670b459fe263a1fa4d0f34d",
+        "isothermal_bulk_modulus/grad_h": "e4deebd9efde143960935c6b2dab9a2efe6b996874b68542f2ade6cc1a9922a2",
+        "isothermal_bulk_modulus/grad_p": "d8c1a1a004afb344ba8af7b11f61698fc66aecbe2759175688c863945ae89366",
+        "isothermal_bulk_modulus/grad_logP": "2a3b5acfdb6722426495894126a4452e5a72cb6ba3f60f07dc0683a0f25fff37",
+        "isothermal_bulk_modulus/grad_ph": "c83bbb05050176c58d0b18ab749ba6b25ef3f9f7704b466b2840d28a6f7842c4",
+        "isothermal_bulk_modulus/grad_hlogP": "91266da9f4091a3b0eaf3c9633e303e57715f3c89a930193f4916397ef87fbde",
+        "isothermal_bulk_modulus/coeffs": "280daa87890b277cc946fbdfa47c4fc48b078eab47190c0c4cee768907a2f374",
+        "isentropic_bulk_modulus/value": "2fcd23fc059c1e5e46a8f1743b3e924f9cb07b1ee9759b2904f19730190b8b71",
+        "isentropic_bulk_modulus/grad_h": "2e37a29e7e1ef09d6e60f49aa0bd9dbe44d556529ee5ab4d89b272298d3ac1f0",
+        "isentropic_bulk_modulus/grad_p": "cfede88db67b13f8ca274a38894d1a49bb885f4a0abf21c6caeb4c96ca91f1a9",
+        "isentropic_bulk_modulus/grad_logP": "cf6b2cdb70c9cafc1581a54353bb8aa0b30b94579bee46151c87fc69d77c9c74",
+        "isentropic_bulk_modulus/grad_ph": "2170539f22606df09c2762bf7b4ec09a1f2a3f9d7bb09a8dc77f129641b2e938",
+        "isentropic_bulk_modulus/grad_hlogP": "cbeefb311e6b718c5723b96d5b01584f5190fb47396f334af8b363d7622a0551",
+        "isentropic_bulk_modulus/coeffs": "b814d0b0cee737166ef58b8c0ccd2b6393d62f845bf36731e09aec7a21227dbb",
+        "speed_of_sound/value": "d84bf6787647b666ce7b3c9141b646cc36aa1daf9611d34d3b13d437d6b09fbf",
+        "speed_of_sound/grad_h": "11251bccc30ad4e28e3e214c5221dda5e78092259624062e48effa20815bafaf",
+        "speed_of_sound/grad_p": "dbb3c9c18413a62f3faeb082e99641025991fee252b8dda9a2eb23508b136d93",
+        "speed_of_sound/grad_logP": "5df914ea2a6e197746a47c55d017bccef3774eac85b1999e2f77e2f40be4f925",
+        "speed_of_sound/grad_ph": "69782182065a9c33282fa9d8088cfa8d225a3aca3c383a9dd85aa2eca4cce2cb",
+        "speed_of_sound/grad_hlogP": "3d44cbc6f716ec33cd5631f8f13e86855f7095aefd9de33f102b10ac9f339a99",
+        "speed_of_sound/coeffs": "593379adb6580c4ac0868c484ebeeb8c4453020678b454f9dc0ae3e0da4ce508",
+        "speed_of_sound_p/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_p/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_p/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_p/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_p/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_p/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_p/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "speed_of_sound_pT/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_pT/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_pT/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_pT/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_pT/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_pT/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_pT/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "viscosity/value": "a8e9bd122587e0972c9909835947c78b6c5930cfb4212725205566f28dbc48d6",
+        "viscosity/grad_h": "cb98a9ccf41d5964bed0f3526cab715a350264c96fdb5f220962bf13efb24d1b",
+        "viscosity/grad_p": "2d8a809bd9ff6fd64ecb7eaca71514830b0de7786eecd5cadc962a5d95205868",
+        "viscosity/grad_logP": "7dfa0b2a0f6e27fc3b2f4080d8e8ed0e976f315b5c8fe94e94942758f7ed90e4",
+        "viscosity/grad_ph": "29c3dc82c2820f44530882dd5ebfa256e6ec81b26a64856eb0d591fb1fbca467",
+        "viscosity/grad_hlogP": "930ab26c752ecb9885b2ea8dd7a585ff6ba78d9868063793d12c9a94ce2c7f9f",
+        "viscosity/coeffs": "3cab4e8c0ce0b9fe624c0b2f2305a31147fa472f017e4f9f23bb458cc1948a47",
+        "conductivity/value": "4acc35f509459f58cd8b4e2db2ea45ce1f53c5a319396efdc6db4acfbbfe1810",
+        "conductivity/grad_h": "90c936de08d0d8a6419885c94924c44dfcb3a5f29271bc342861451b72afa2a3",
+        "conductivity/grad_p": "1c429db532fc9d661f9a3c5d73104e37592185365de335ab6042c44c6059dab1",
+        "conductivity/grad_logP": "e8fca7098510c3cb56793a4dd7ba7a7ac8b67159886c65216893a75560434847",
+        "conductivity/grad_ph": "f01bfbffa0032d4c24a218b0ef56b6eb561bf9d79f244946c52e0f6cd4654518",
+        "conductivity/grad_hlogP": "9f23c2b47f43dd5d0893fc30f5cb289cdb5ef93ab1fbc9f70c007daa2ac07ca8",
+        "conductivity/coeffs": "21ccfd48e98de823242818f42e060dbb084f8179a9522edecb4a67f9308efa0f",
+        "gruneisen/value": "342071fc378d481dbd6d4090f8f2f3e572d316a6c84668fd830dc05ec0e39d61",
+        "gruneisen/grad_h": "d296e875d8541fe2f09f27f203fe8722a56373ecabff76fd15244216a178109b",
+        "gruneisen/grad_p": "312914c5f16f25e668194855a9eeb2896498f716767823d76a4ad1e380f564ce",
+        "gruneisen/grad_logP": "cdaf37af436bd60f2fe1ef77f4259d152aa4d848560e1da3ba3e7f17757dc8c2",
+        "gruneisen/grad_ph": "be23cc4366d5c6b990080fc4e89c9c3cd94a623be8e0b94eb49402db99b4bce3",
+        "gruneisen/grad_hlogP": "67f735c8bb512668876cbdee1c14427600e47b7d933d73432ae817deb6980306",
+        "gruneisen/coeffs": "7a9d23a69615d0828c07d9511e87d46d3e8ee67d4d838bd8f8e8e29f0d04dc81",
+        "isobaric_expansion_coefficient/value": "330a2fbe39ec006b8c9f77889aa5864bf534268c5bb08be45c03a70d7ba8bbe9",
+        "isobaric_expansion_coefficient/grad_h": "4cba1fa1ba80bf87f08b0c70fa88b20ae8107318140bb330af6544f4c81667eb",
+        "isobaric_expansion_coefficient/grad_p": "a288c363a2736ac14bb9a817416be9b6de75566c9bb7be617d30f741b638fc11",
+        "isobaric_expansion_coefficient/grad_logP": "53f9ebb5f9a12f7f9930acdc3a771c22caf1169f471e129ff2bc937efb3a20ad",
+        "isobaric_expansion_coefficient/grad_ph": "ad736dc4ef2f445a2617fab272793dad71a49f841d15b6abf98eee61a2a90354",
+        "isobaric_expansion_coefficient/grad_hlogP": "10ba6c5c8080592977ebd0e71d24252de7bad289c090c47ffa528bd482b623d0",
+        "isobaric_expansion_coefficient/coeffs": "dcd4f2732cde80005131d90f1bb77bbe4f9cdec39633015766e2885b332afe98",
+        "isothermal_joule_thomson/value": "90ef690e20e5f6ff175be1041d12255568cef9e35eab91846028400d9f8486f9",
+        "isothermal_joule_thomson/grad_h": "390f5fd0bd113c7f2f861c8643eaff80849daec64e137f5169998fc539ce687b",
+        "isothermal_joule_thomson/grad_p": "2d8c00592aabdb77e4d85b00a5005fe70db7f0948e1695a53ab9053d4ca16af2",
+        "isothermal_joule_thomson/grad_logP": "251644818afb71b0b0d94fd88d214ca9d9be092fd44f8fdce077f8906319d746",
+        "isothermal_joule_thomson/grad_ph": "faaf65189700a7bf95d36788906ba247c0d7d6ecb7a151aff4fad7fc1ba342c6",
+        "isothermal_joule_thomson/grad_hlogP": "ce84b232929f250353196c063253b97a4a35b1e56b55d424d0e71bc30580a399",
+        "isothermal_joule_thomson/coeffs": "ee015e9218992322e63d3802dd9d493f1ab327f0ceec0253b1f4b96befcdee62",
+        "joule_thomson/value": "028a4db5813e07b5ce327e5a2ba8d9e2dd64520bc79d4b0bebce814a12058e39",
+        "joule_thomson/grad_h": "c53eaaf1e4738711f0d35b56620ab3a264db77f0bac14329ef324fba832fdf0d",
+        "joule_thomson/grad_p": "aba6e8d48d29fe78495b03f7e982bb88643407120b9bbe3daf1d2b3f327f2030",
+        "joule_thomson/grad_logP": "28e8b9d1d83c16577c6e7207e02aaa9ba2181116c8ebeb311536c8ca7dc36303",
+        "joule_thomson/grad_ph": "104a878aaec9403aacf6b208a9edbbd56aba1681e5359c994873690c5ff236f7",
+        "joule_thomson/grad_hlogP": "46835ac15502e13285ee7726a383fabd1c4d364c2de52b3f10a0af8d3f64f8f7",
+        "joule_thomson/coeffs": "e86acefa61b04f014c57b8402ee8c882f9d1a33f26bde6b80cf1c6316fb4dd0a",
+        "is_two_phase/value": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "is_two_phase/grad_h": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "is_two_phase/grad_p": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "is_two_phase/grad_logP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "is_two_phase/grad_ph": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "is_two_phase/grad_hlogP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "is_two_phase/coeffs": "efe49e015fb6b55f7eed02ce5727aec9ac7ac38c6cc5524bd437ed8d7bad4cb3",
+        "quality_mass/value": "4e0fecee613f71a37073464486fcc129c0e9a309390e780067d0eb3b9ea491a9",
+        "quality_mass/grad_h": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "quality_mass/grad_p": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "quality_mass/grad_logP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "quality_mass/grad_ph": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "quality_mass/grad_hlogP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "quality_mass/coeffs": "9e7fce705eeb21bd8aaea8114c6ba1c4f108d875e930e01cee6f67b1fa39c603",
+        "quality_volume/value": "4e0fecee613f71a37073464486fcc129c0e9a309390e780067d0eb3b9ea491a9",
+        "quality_volume/grad_h": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "quality_volume/grad_p": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "quality_volume/grad_logP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "quality_volume/grad_ph": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "quality_volume/grad_hlogP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "quality_volume/coeffs": "9e7fce705eeb21bd8aaea8114c6ba1c4f108d875e930e01cee6f67b1fa39c603",
+        "surface_tension/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "surface_tension/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "surface_tension/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "surface_tension/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "surface_tension/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "surface_tension/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "surface_tension/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "pressure_saturation/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "pressure_saturation/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "pressure_saturation/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "pressure_saturation/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "pressure_saturation/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "pressure_saturation/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "pressure_saturation/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "temperature_saturation/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "temperature_saturation/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "temperature_saturation/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "temperature_saturation/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "temperature_saturation/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "temperature_saturation/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "temperature_saturation/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "supersaturation_degree/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "supersaturation_degree/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "supersaturation_degree/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "supersaturation_degree/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "supersaturation_degree/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "supersaturation_degree/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "supersaturation_degree/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "supersaturation_ratio/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "supersaturation_ratio/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "supersaturation_ratio/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "supersaturation_ratio/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "supersaturation_ratio/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "supersaturation_ratio/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "supersaturation_ratio/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "subcooling/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "subcooling/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "subcooling/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "subcooling/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "subcooling/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "subcooling/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "subcooling/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "superheating/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "superheating/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "superheating/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "superheating/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "superheating/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "superheating/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "superheating/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "mixture_ratio/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mixture_ratio/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mixture_ratio/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mixture_ratio/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mixture_ratio/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mixture_ratio/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mixture_ratio/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "mass_frac_1/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_1/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_1/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_1/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_1/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_1/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_1/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "mass_frac_2/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_2/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_2/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_2/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_2/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_2/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_2/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "vol_frac_1/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_1/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_1/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_1/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_1/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_1/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_1/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "vol_frac_2/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_2/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_2/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_2/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_2/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_2/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_2/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "drho_dp/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dp/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dp/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dp/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dp/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dp/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dp/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "drho_dh/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dh/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dh/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dh/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dh/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dh/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dh/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede"
+      }
+    },
+    "metastable_Nitrogen_liquid_16x16": {
+      "arrays_compared_per_worker": 360,
+      "bitwise_equal_finite_values_and_paired_NaNs": true,
+      "mismatches": {
+        "baseline1": [],
+        "current1": [],
+        "current2": [],
+        "baseline2": [],
+        "baseline3": [],
+        "current3": [],
+        "current4": [],
+        "baseline4": []
+      },
+      "baseline_array_sha256": {
+        "pressure/value": "cbef1b314ca66f085a6930883f25c4ea62cf06ab2a8c8fdc4dcc9d6174f18a38",
+        "pressure/grad_h": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "pressure/grad_p": "4e0fecee613f71a37073464486fcc129c0e9a309390e780067d0eb3b9ea491a9",
+        "pressure/grad_logP": "cbef1b314ca66f085a6930883f25c4ea62cf06ab2a8c8fdc4dcc9d6174f18a38",
+        "pressure/grad_ph": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "pressure/grad_hlogP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "pressure/coeffs": "4674a081f9a6227fa690a128e0daa8801ada022150c7afdc541c414d9484cd59",
+        "temperature/value": "69ed90973052e35a9158200ff53accf72d86352d71e5d6964c33095af804201e",
+        "temperature/grad_h": "fee937729be32328dfd6f6bccd6115b2274ff9da559bdd3deb94a77b1fc74a60",
+        "temperature/grad_p": "e581def2cc5a7e4119cfeeb5256c8321e4736b8242c6ce8b554a0b3b2e74853d",
+        "temperature/grad_logP": "35d3980eac2d1e9f56d139c08ce1bbd6d7def193b18fc46023078581f00bec5c",
+        "temperature/grad_ph": "50962305fb954185e2932e225895cc61c205ff9e918cbcb430c3361db0643d57",
+        "temperature/grad_hlogP": "513c8b12a7359bc0c491d91306e759800f77d3b2813c4537138c7454f4b69062",
+        "temperature/coeffs": "74f5009c92d764f64065a02053c9511f4687529e094ce832d4f610daf53f2c48",
+        "density/value": "55840d2fa9c7217f987d7ea5093c7639a12f68fe7b0724dfc582835c2e284b23",
+        "density/grad_h": "6e815ab809e34675dd14d3fca2fc8cde104905e9df4fe74f1f79f90b3116825a",
+        "density/grad_p": "433d291cf14e575a38a157e22e29ccce8f91973447a3b75a99a420f53e798542",
+        "density/grad_logP": "cd261b7cfa8d966c48d99e6eda82b905613061ef768a27aa483cd1d21aa60953",
+        "density/grad_ph": "c80bba6190e7956f813d9697dac2b61caaa794ab923d1513b5d38cec938257c6",
+        "density/grad_hlogP": "7f2c8e5ed71b96c9107e4d1e0a8df1e04f2b365723e0af4838be0f8e3939a1f0",
+        "density/coeffs": "6bc6f506c27d235d5d6aaeff70f280defddd209b4d6acff5ca02f0e15e319730",
+        "enthalpy/value": "2cdba5f98fd4e7d02fd6d5bb8b9a0bfab9d67029cd0343f23a42d2520cbfa989",
+        "enthalpy/grad_h": "4e0fecee613f71a37073464486fcc129c0e9a309390e780067d0eb3b9ea491a9",
+        "enthalpy/grad_p": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "enthalpy/grad_logP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "enthalpy/grad_ph": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "enthalpy/grad_hlogP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "enthalpy/coeffs": "8fb6f78d7368ca2d09d7b8557d287f6c719c3a90523ba94f5d50d6d18bc5f75d",
+        "entropy/value": "f45148eb51a23aae8c0387ba39770750db14a8e93b93ad833c44e80a86f18cc5",
+        "entropy/grad_h": "4fb97d6bdd3eb6be78aebe39defcd72e03869d9b9376a52f3e639ed35ac8d63d",
+        "entropy/grad_p": "e907083349140097d1e1e04ad3994efbb0d718dcf38d643f7a73d1479e97c227",
+        "entropy/grad_logP": "274bc157c715dc387594b40c58ddc6b72c0d65f8e5f94276cc22643a0a44ac00",
+        "entropy/grad_ph": "c26e68a5cb8d7ad15d420a5aa6c0903ac97f82e33626529ec95a1659d942da30",
+        "entropy/grad_hlogP": "2cf84a1d65f939ddb0914e07b862745817fd497834e724e259ff65eb85d6b44b",
+        "entropy/coeffs": "21f60aa6e009aa21aff20d016661c6c1252ab8d104ca8947e9f50a87a369d908",
+        "internal_energy/value": "c35aa5d4a22b550aeb6da7bd0b9db32b28dac170479049375136c94768bbd938",
+        "internal_energy/grad_h": "d6e105e67ee6917f57dfb355f521342abb67702be3e192bbfa73958ba71eebd7",
+        "internal_energy/grad_p": "1960d5a2ea892af7136420cbf6c05106605e436da17b2984721c227f1de85c4f",
+        "internal_energy/grad_logP": "6efb65cf7bce00501a4ddcc1b803741fd15c1ed92b73cd6b3d23d5fde1beee23",
+        "internal_energy/grad_ph": "8d2457d393d8c29524ad7a2dfd1a7fcf07d1b5e1add7c25edaf943ec6bc2fe60",
+        "internal_energy/grad_hlogP": "448b743c0211303cca4e1f339ebd988fb0ada2a750a5ac094e0c419e883ee5e2",
+        "internal_energy/coeffs": "0af082acede17cac3dd8cf74bf1b382d5d01e6c21e59dd57787cb75efc0ddd64",
+        "isobaric_heat_capacity/value": "5f1bb26fa9e83ae021260c1eb0844202b6bbd09ebd3849fd5411aec6c1370aab",
+        "isobaric_heat_capacity/grad_h": "e13262271bdcc37def616fc5c48edbb6df36f236767802f4bf3a9e8774695920",
+        "isobaric_heat_capacity/grad_p": "7049a5f4e365c17e9f857b0dd913f6945ee10bef1f57f1350c633c237a1a77a1",
+        "isobaric_heat_capacity/grad_logP": "df6e8e69e5b3d0d4f5e056b82c13c33d1812abe62806703de45175e2ce8e0c96",
+        "isobaric_heat_capacity/grad_ph": "8adb97ae507a08d3622054050745487c49e8288142a14590101985eb5e04ef0a",
+        "isobaric_heat_capacity/grad_hlogP": "1f633a00d530bbd3ef957673f1ad517d79a1b36cdf8a33cde751819457d0f9f4",
+        "isobaric_heat_capacity/coeffs": "26159df162506332529e0199f8af806feb3a1061e7751596dc416e2dd760be21",
+        "isochoric_heat_capacity/value": "0ecd6af6b720bd7c26b63504fe8bc761e092604ce21f3778caef92201e27e592",
+        "isochoric_heat_capacity/grad_h": "e9550d1074d059503355890ccea29001fbb14c5b7251479199ee20e952f9a6f1",
+        "isochoric_heat_capacity/grad_p": "495b573e3ff2ccb5f44b14a3fc2377e32f22550e25f42c6abb494e84b0ec8c99",
+        "isochoric_heat_capacity/grad_logP": "676685008aa4af49153cf4ebac340d7905c7d00ca4c59d325789558b87fbf723",
+        "isochoric_heat_capacity/grad_ph": "0db9766aa315c837925f4818e66e6ff254a472b1988968d4363af6b88b7de386",
+        "isochoric_heat_capacity/grad_hlogP": "720a40f607692cc171f21eb45d44eb61e89956a34c33066e6a373e7d4ffc73c2",
+        "isochoric_heat_capacity/coeffs": "34031728ac804e8f32647644dd8c611f075e53a8f5ff464b35c5e387095e7021",
+        "heat_capacity_ratio/value": "6815b3ff00701ef1df774b3b9a5d4cc5a4ce87bb42cc6931b072885a6e65c02c",
+        "heat_capacity_ratio/grad_h": "16c03009c1a6ce37f3b2a8b8f0452e652ba78aca8cf7c4549e25e1705da53d5c",
+        "heat_capacity_ratio/grad_p": "7612a224363902bcb8f1a86f3a1faaaec4cd4b5cda994a524a0440e56bb973c0",
+        "heat_capacity_ratio/grad_logP": "1bf6c6aa2b75f680e62227ba9055f0118acd32fd94f2f235480000b56a03f565",
+        "heat_capacity_ratio/grad_ph": "788ea289dd526343b6e2e601b1f7f6a3e6ccea43f1acdbfbab1f14b457963268",
+        "heat_capacity_ratio/grad_hlogP": "d8d4fdb9b04de73b014e843fac027037b5af1679266969b55db021021c3771e3",
+        "heat_capacity_ratio/coeffs": "ecb765b192ded64120476a32fd372aa17facde2fba9426fded2c3defa60b84df",
+        "compressibility_factor/value": "81f961482121d7dbd68785f305cd3660e02059024fc29594f82afe5b1b235e55",
+        "compressibility_factor/grad_h": "3283471be0d72b9e117472d0e2fa4056ead73b51ab2a31702e9d631b6177144e",
+        "compressibility_factor/grad_p": "4d7ed1e6269876e091dfe38c386bc5def3adccc6c3f129e566e5ef687c38347d",
+        "compressibility_factor/grad_logP": "7893c41989ecf14a388d2e175f9c6b5d2d7e1680838cce0e1a8ae3c19a76cc5c",
+        "compressibility_factor/grad_ph": "273e5333014a866a6cbd14d5d73a06ce1d7353c074731f9004a4844a1878a5cb",
+        "compressibility_factor/grad_hlogP": "ae82639bf6baf4f9a7557973a4982070e085b4839f63551e1b0c613727fe71f8",
+        "compressibility_factor/coeffs": "fd96fea67b506e5d3175095351d971193b862d52f8b076d7dd712e57728b0750",
+        "isothermal_compressibility/value": "8c84c9cbd1392b9e43312164ee32c455561e0771e9991b3ab366d070fd0cc56a",
+        "isothermal_compressibility/grad_h": "0ed752cdc9e6cae01c1f549f5658aaad8bedf5543e786752c8e3cf938ac09780",
+        "isothermal_compressibility/grad_p": "e75c508b9dbbde5cce35effc12a4af857dcc4f12ce9598cb399a793a0c6ed3e7",
+        "isothermal_compressibility/grad_logP": "4382773e1dc6c7298afd98a3fcd29f15ced34f9695144a0f6bf82245298b2b7f",
+        "isothermal_compressibility/grad_ph": "92e5401734333d1b809765fbc5e0f4bc26a13d86700dae5bf271732cb0ee4b88",
+        "isothermal_compressibility/grad_hlogP": "72e9bb5d45887c5f7b97cf4f09c10c2b89e119dee4cc36f0dd7e7c4565ac212e",
+        "isothermal_compressibility/coeffs": "7c14796bf28bbe9978f4fb8969feb48ed97917e9c12263fa4e6fbb648110db45",
+        "isentropic_compressibility/value": "bb8c3d712f25c9c6650014d807d4c5af21299a8df5745fe353e79a9dfe8f1fc4",
+        "isentropic_compressibility/grad_h": "84ccf59fe634fd1aed4ff41675daf2d85efa2f8f7d02505ae19ffc2ab100ff3a",
+        "isentropic_compressibility/grad_p": "58ae1349b9802cfbf1d959aa08d6f9ee0dbf3bf715d9e5e36c0240e9780e13e4",
+        "isentropic_compressibility/grad_logP": "5f27290a3a2b9d416f8291369c9c9ab7cfa8b8f4df20a2a576d01300f915f31e",
+        "isentropic_compressibility/grad_ph": "341833cee1d8759abed81bfd58faa450345160f1100bb3bde114e4ca291cadd2",
+        "isentropic_compressibility/grad_hlogP": "a734342362249e12e4ad19b38fd570fec44f13c92f557d3324f796ccfb3b8922",
+        "isentropic_compressibility/coeffs": "59454f1fa49d33d988a317230b79efea207d64e33ae890347dae3eb463f8f930",
+        "isothermal_bulk_modulus/value": "a25a40f9083b9c984d67878a0117cea2b39188f51a8ea199839920583f7763b9",
+        "isothermal_bulk_modulus/grad_h": "b3eaa2bc1a44a2df93b5c645250e7630e5db7f46e3ef4951ff1fcaed15e8fd0b",
+        "isothermal_bulk_modulus/grad_p": "31f24a03ed5d08f6ac7c16812ee9803e5cdf0e1069cd74b014b4f0a90ce0bf83",
+        "isothermal_bulk_modulus/grad_logP": "44c814135cf0bb843b3cb9cede0cb1463b9f39741d9d95723c46c370a4057533",
+        "isothermal_bulk_modulus/grad_ph": "13e40e293642c3c7c56f73a5b44106112ab6bc7cb3a8ebc36316ae20ff5b3d1e",
+        "isothermal_bulk_modulus/grad_hlogP": "4dec4867b77ca636e2f7b2ef978638fa07e378378438a4a25e51ae8fd10b8ff7",
+        "isothermal_bulk_modulus/coeffs": "72c93c08daae2282d1675d1facd7d2ea8065560e7ef04b49295d00ec9ce11369",
+        "isentropic_bulk_modulus/value": "787ba0796e7a49a2d5c26ea21c6dcc148d723f1444b281ebe049e1601d43e442",
+        "isentropic_bulk_modulus/grad_h": "d773a2a4d1bcf9d64c03a71150a755a77c23853322f62e6ce6961c096649a786",
+        "isentropic_bulk_modulus/grad_p": "ce8876e9483357fa7ca2fd0a2a84fe5df3cab974d4c39a3b4bacf838279ba865",
+        "isentropic_bulk_modulus/grad_logP": "887f8d7df189b5fbfa49dae70f005c85f22c65d62d86b1a279710ea7bb8c02c9",
+        "isentropic_bulk_modulus/grad_ph": "e94255c90db9f3abd285b47a36096a29813e991f3609da9430e1e1953db8d41e",
+        "isentropic_bulk_modulus/grad_hlogP": "5cbfcb8b63c5dbac30a38d0e375af6563d3d7d9f11379d2e5a3087a9fc0cb4f7",
+        "isentropic_bulk_modulus/coeffs": "5104113b4b2986226ea464eaa9fcbc91a6bcd766acbbd7062f279b168430763e",
+        "speed_of_sound/value": "eea8f83070cdfb871028c08791dd0d21cf6ad0a6d8ab55aec546e01fa7640816",
+        "speed_of_sound/grad_h": "4a276d7f853efad00800d63003fa2680464e565f8db42c48b3c7c91f29e94208",
+        "speed_of_sound/grad_p": "1466bc215081b20a327677d400db8b32840418ff6007fab5c89ddadc86f57c1a",
+        "speed_of_sound/grad_logP": "ac34806f76ffa0cd06e92713f63a43bdb05bae8f842f8204da248576431acb0a",
+        "speed_of_sound/grad_ph": "311c476bab5f35af0f9e34792240fe7cc99ac3c115185b483b1fe9f2d85f5b3f",
+        "speed_of_sound/grad_hlogP": "3e16ae1144b9b6d1ab42cd686f86fccc45b5affae9ecbf6e64bb95f2ce8f991c",
+        "speed_of_sound/coeffs": "9e0b0166ed49f88c3f9c2a8a4257095f876eebc1e87c8bd828397469ab31f822",
+        "speed_of_sound_p/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_p/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_p/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_p/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_p/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_p/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_p/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "speed_of_sound_pT/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_pT/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_pT/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_pT/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_pT/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_pT/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "speed_of_sound_pT/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "viscosity/value": "abc499050851f36dc234103c84a3a104ab633cf19c98a6f0e6b2926df6bb61a5",
+        "viscosity/grad_h": "24e870d972267550f0129954728c3bc8aa537d581a2dea39ee406e74c9b4dfe2",
+        "viscosity/grad_p": "0ec8a225006f587d6364bf8004f8b86b289a6b18a879630085be16fff6dfd808",
+        "viscosity/grad_logP": "bec600c85c06e59f20d5fa756feb6b4c841b6164edf9381b4b1e80d60398f19b",
+        "viscosity/grad_ph": "1ab3c8e9f7dd28d2386fd3285ff5843eac16d8080e65b4c59c43067116690a5e",
+        "viscosity/grad_hlogP": "02408bcd0fa65c705f32ad5815384c915bccdb63acff478e27176eabd1bd1501",
+        "viscosity/coeffs": "50b34cf3f4d3a1a1daa495c8728a397ac713394d7000baf8a35852b4722b7c9a",
+        "conductivity/value": "6cb3d5d88f9fa2e0fab78ac70764e0f4c78bd89f73e6d573438ce21050e24171",
+        "conductivity/grad_h": "74bc9b211d321cb2dbcbd8f8d41fcb44dcd84703fa1b15b168b4658cffb0daba",
+        "conductivity/grad_p": "3bb9b44b65a9be5901df319cfebab93aae0da512d3b5d075299465cc5ca4f8a1",
+        "conductivity/grad_logP": "910e1efa4b25101669d17cb4f51cbd46a19184ba7dfbca5fa6ccc33dd98bc95e",
+        "conductivity/grad_ph": "abeecabb8460bc1e3335b0c236872748eefb2a3f9af534e48c7002001ffd1a5a",
+        "conductivity/grad_hlogP": "78a972e5a129eb0de3eeb4451f33c19c892d8652173f380c1a461b8c2ff586db",
+        "conductivity/coeffs": "acb1ba900f587292b9e0ac923a64125da28310ac82d30dd8aa1b293f34eee879",
+        "gruneisen/value": "7e38d0e46200b8962f21e6f9ca655e60f72855f819895f2274f416a40a4b0a9e",
+        "gruneisen/grad_h": "e4421a74fc24376deb35941e4c8f047ca01a7e876ec9c7c10b16a5d9667541bc",
+        "gruneisen/grad_p": "d96591be3027386864821ff4d15c6cedae7e70e83c54ed5cbf98ef3b863c64c7",
+        "gruneisen/grad_logP": "9760243e2027143accd040e364ab8a78045c5aa657cd7f1bf1bc23afec0a2e65",
+        "gruneisen/grad_ph": "6748bbdfbebb5e72e56cbe09946e4dfec9b5ed96607291b83593909c77253894",
+        "gruneisen/grad_hlogP": "5c5e9c7846dcb3e5a1e3ee00ce708dcac869fc17d34160b9cea8fbd2a4ea2c74",
+        "gruneisen/coeffs": "51e1cfc2d62d589694347bb52164b69acf7c83608728f7c9caa05d5f2de252e2",
+        "isobaric_expansion_coefficient/value": "0d6cf8a2a588a5098c01f5b7cc557e236a1753e3329fdc7b5303d130138a1aa9",
+        "isobaric_expansion_coefficient/grad_h": "0b97ac43be2d2ef25e816630f85eefef0af876184ec06394acfc6f94145aaced",
+        "isobaric_expansion_coefficient/grad_p": "cf388d1ac05128952ac1894f0a0762937aee294ad1e9e0a7d32d3b5f4f81787a",
+        "isobaric_expansion_coefficient/grad_logP": "cbd05644e3ab669690987dee67f1f24d873279d806159a9e0ae7a053b461978f",
+        "isobaric_expansion_coefficient/grad_ph": "e7eebcc1218525844e5eed721b6154ad8e8576337a48c000b9a446ff852c8a35",
+        "isobaric_expansion_coefficient/grad_hlogP": "835349f500a9093c7e60505d01bf4711c90c077c3867a545d61883ece58b2569",
+        "isobaric_expansion_coefficient/coeffs": "7307f4bcbb08b52349bdc199252495b3b30f34651181889af421dc22e5f8ca8d",
+        "isothermal_joule_thomson/value": "9ce09b946a38243bb119cc7cea16183fdaa0e769d477a0b3efcd62a819f62017",
+        "isothermal_joule_thomson/grad_h": "4632a5aa740932773762ca529fea088cba6db9c58471a3d865fc9aa53574798f",
+        "isothermal_joule_thomson/grad_p": "6075abecb754f733d98c31518656432096f2f7ea513064c155c93845b767fb9a",
+        "isothermal_joule_thomson/grad_logP": "66e503a16cc6f7404a6af5d9242a6c48fed821d490ce59e48310fdc4ae6cf593",
+        "isothermal_joule_thomson/grad_ph": "fb1dc0efef232de62f34944d98676e72527ff942ea7f07103dbf6d828ea2afb5",
+        "isothermal_joule_thomson/grad_hlogP": "08360a0306f1c1a6f23a612940744afb4e819addd46746ab7230df5a01742de5",
+        "isothermal_joule_thomson/coeffs": "51be34153c3e7226292c63f9981d6d94785d92b9421489a66ab238c569c33dcd",
+        "joule_thomson/value": "a02abeba7876a32a9496e0aeaa87495a27c22f6bd70eb4f21edc0d7fbbf17096",
+        "joule_thomson/grad_h": "0639554a9ca10e742d55c2b9fdc5dc3608bcc294b3ff1c13c4e8898990c9e4a9",
+        "joule_thomson/grad_p": "ade5d6c9f4441ddfce8533617d5ad23ff1157637cee82ffe2ffbb58f82e4de0e",
+        "joule_thomson/grad_logP": "4e010200769589cacf72e679ae04f31320a432aaec2fd5c3ae4dd2e4311a14bd",
+        "joule_thomson/grad_ph": "d250d9e70ed28af0e4b6fcb6d6f43751777214ead389d18f55d82b9cf3ae3d9a",
+        "joule_thomson/grad_hlogP": "541123f2f1c6b745879ce547be3b3d08c29bf300323e2908dc49025920bb9765",
+        "joule_thomson/coeffs": "455e212a8a4eb740fb4b54a0403a4f99ecfe3ce625714416425203c4426b320f",
+        "is_two_phase/value": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "is_two_phase/grad_h": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "is_two_phase/grad_p": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "is_two_phase/grad_logP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "is_two_phase/grad_ph": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "is_two_phase/grad_hlogP": "a371a7ca0b2327e762b0856d281a60b187a931f0d939634cbc70612db6294dac",
+        "is_two_phase/coeffs": "efe49e015fb6b55f7eed02ce5727aec9ac7ac38c6cc5524bd437ed8d7bad4cb3",
+        "quality_mass/value": "f103c973e729317315fadc294a8ee4027284084d25e5e00cc7a70c5729f5d89e",
+        "quality_mass/grad_h": "cfb24a76ea24791f5da56390f80bc3d19e2732fc4baf588ec2d60389262e0b7a",
+        "quality_mass/grad_p": "59d854a929b684d5f4795e26d87a3d4dd54cb9318ec794a31e38842a96b804c9",
+        "quality_mass/grad_logP": "ef5b79f2187d73b27ca6d00dff3a859d525b3ab7fa7d8655808e53381a676945",
+        "quality_mass/grad_ph": "f99a8219987c8d11401fb14530df3e6e3c77bcc7cda4cefe8c62b8bde39a85d8",
+        "quality_mass/grad_hlogP": "b86885e8004de08d83707b443d3e0ffa3d7211e597f3ff08c259a43d2ad9c6c3",
+        "quality_mass/coeffs": "3a8ac9254716a3726fa70ab9ea92c2592259c8010a67bff83616fb4943fb53fd",
+        "quality_volume/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "quality_volume/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "quality_volume/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "quality_volume/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "quality_volume/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "quality_volume/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "quality_volume/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "surface_tension/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "surface_tension/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "surface_tension/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "surface_tension/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "surface_tension/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "surface_tension/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "surface_tension/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "pressure_saturation/value": "d696aa3f0edda95db23eed6173d7a97066c92b171092c6a8ead240ab88fa3536",
+        "pressure_saturation/grad_h": "ac88029636a7fc892be5109e10ab94a97ce57535da963abfedd87ed51ee89510",
+        "pressure_saturation/grad_p": "1cd52ef7ab7b6773a3932a6d51785848a7a65c0a67f2632c792dcbc033a86bfa",
+        "pressure_saturation/grad_logP": "82be5b6cf6bebf8e83e739fafc6def1c8f682f1ee0217132352b585ce97aa09b",
+        "pressure_saturation/grad_ph": "9726c55dd628c2c78c96c0501e7d0ca0d3aaf627be19ce3c3d0f9dd972bcb2ab",
+        "pressure_saturation/grad_hlogP": "84a64f6d3812480dce5aabff46071585f239d07fa842ea9999c79148c763e59b",
+        "pressure_saturation/coeffs": "4c00f2dc48862f579de7890ced270ddd578acb392538036c084e6d26dff29164",
+        "temperature_saturation/value": "2f3effa807462c783c41e655bc9ca2f0e1bc179a556536d9e2d90e1a10fdb67a",
+        "temperature_saturation/grad_h": "d08c9b2b6532d0947c05137bf03a7b8208249aad8ce6f1a13193a169d1a97d19",
+        "temperature_saturation/grad_p": "36bd4ca66de6bd265cabe45ef1abeda13b1fc8e9b84063dc19f51f6675123445",
+        "temperature_saturation/grad_logP": "211327c2ca0605a1fb41d9f867a4c0c12616ba8f482a8ab027aa547ecbe8660a",
+        "temperature_saturation/grad_ph": "33041a217782e45c8054d2c245a68b0729562635bd45d920254fb5b306e6f909",
+        "temperature_saturation/grad_hlogP": "f517171892e680317431f9eb0a72b3b653daa73033fe599b5d4d75ee403c0161",
+        "temperature_saturation/coeffs": "e2ad81df26567dc16f9973b3219b536030198e92a9e4e38c3a585d83c3691bf6",
+        "supersaturation_degree/value": "64a27c21bd97912a5bea24e8bcb8afe5e4c509a409f077e3341d587c9373985f",
+        "supersaturation_degree/grad_h": "392f70d18afcbe57c250f6199b3394c3cb62555afe275979e7d5a97b5fbe4e2e",
+        "supersaturation_degree/grad_p": "d70a61eea55c89048c021f5cbac67bb9b42d00ed43d1960fde6b12f79175e7da",
+        "supersaturation_degree/grad_logP": "2255facc68f0b150895270920e4c8d7438a85bbc180f12e48ea0b887dfe9d899",
+        "supersaturation_degree/grad_ph": "3a35d2164d78f4cda5fad472240ad2f793c4e22bd3df37b3de87c279f869a6b5",
+        "supersaturation_degree/grad_hlogP": "da61c392ed14abe33e4b13e61c764804b91410f738530c7a2177cfbf6a819c6f",
+        "supersaturation_degree/coeffs": "f72807e33dc0e1c5db28d9eedf9f27a24c146844265625f01e208fa44b78c71b",
+        "supersaturation_ratio/value": "3e6eef658446b526ced03f203b2ca14deef4ddd18fefc709f29402c011fe7b9f",
+        "supersaturation_ratio/grad_h": "3d30df656f9adea305ced2ad420a3ed3cf3987b007d78455392de5e2e8fb5545",
+        "supersaturation_ratio/grad_p": "336abdbccc828c49701e316be53107b295605634a9f6b826225f886098f4fcd4",
+        "supersaturation_ratio/grad_logP": "c18b1c3f44ce851b4f27745e891feb556d7d2881ff5644e2c97b5b91bcea6d42",
+        "supersaturation_ratio/grad_ph": "502fe5b9078205082faa9941852d0023e2ec347d9c9576bf87a33d85b7162668",
+        "supersaturation_ratio/grad_hlogP": "743df4b0d5c177f3fe8ebca66714d4b50ca9d948eaa76393058130a38f55f73b",
+        "supersaturation_ratio/coeffs": "a8440d97a7b4ba331403b11d24cb2e3bfa89575529e86c292dba43f9ba713a58",
+        "subcooling/value": "8ea346fa66b1e5ae8d569cb48386b10046e02010c0f4101c934dd6c7e9124363",
+        "subcooling/grad_h": "7e6c91905d9504365e90535416fda4d184013ce1ddeafb4d2c08f785d69e9d93",
+        "subcooling/grad_p": "60af4f40ca2b513b7b936d0704f7176592d093f5bb0883dbe3c899fb9b73409b",
+        "subcooling/grad_logP": "0a31524e7d4cc023673101c9fbfaa549f48f1263fead869d93bfb321a3c191c3",
+        "subcooling/grad_ph": "2371bcc7babea242d84a0f766ea8becc5c0e06c42a315d65c15eb67964ecd4d6",
+        "subcooling/grad_hlogP": "2a99773daa81585ab8aec1100c3edb10fafd1157ebef0afdc754e673d2d42941",
+        "subcooling/coeffs": "db037c6d0af5ea684f9a2835bc09bc8f19621d5edecf40ee390f9a04345756a6",
+        "superheating/value": "87488c09455e582a4c4edd44a3c7839332a5b8737c165988329449b9a591aa48",
+        "superheating/grad_h": "58c33f4929f2677411608bf354aa97f262e189d388a6ba31ea6400944acb92ad",
+        "superheating/grad_p": "476ecd71df03dcd6e8893bc974b759015242c867789e666c97f9a110d90e2a86",
+        "superheating/grad_logP": "2fd2ce0beaaa36d16629dce4d1935d44ad79fe146239018872e88dbfe83eba84",
+        "superheating/grad_ph": "d351ac208c3f6b72dd56f8bd383a43431cd2cc832fa8aee28216ee6d08efb635",
+        "superheating/grad_hlogP": "3cd6c2755463b9e11a9d165ccfec8c1cb3ed22812ce9b42714e724ab29ababcc",
+        "superheating/coeffs": "e51cf217c5497cbc21433b5dc5ed751161b47d5826423d9761e8f98b8322a509",
+        "mixture_ratio/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mixture_ratio/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mixture_ratio/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mixture_ratio/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mixture_ratio/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mixture_ratio/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mixture_ratio/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "mass_frac_1/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_1/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_1/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_1/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_1/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_1/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_1/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "mass_frac_2/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_2/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_2/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_2/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_2/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_2/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "mass_frac_2/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "vol_frac_1/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_1/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_1/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_1/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_1/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_1/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_1/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "vol_frac_2/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_2/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_2/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_2/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_2/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_2/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "vol_frac_2/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "drho_dp/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dp/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dp/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dp/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dp/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dp/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dp/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "drho_dh/value": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dh/grad_h": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dh/grad_p": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dh/grad_logP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dh/grad_ph": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dh/grad_hlogP": "d1d6f33f0a6bbea49e31cd34a0bb2c6c6817416c36caa41dbf913859dd1d9682",
+        "drho_dh/coeffs": "590fd16db2682ad959a22456784b3bf29137c202c31757873ec20ed390401ede",
+        "saturation/pressure/value": "7695e54c72ae02fff9d89d03e77341a94c52904f16e0036f9e8147b5899dfb76",
+        "saturation/pressure/grad_p": "d797e62c12e7031329d7ada0b57befd6dd64193bda45eb7f7e65cbd37750b56a",
+        "saturation/temperature/value": "6a17d27e83297883f8408e2819a1e38090c108098c96342a4b0812d4fa4bcadb",
+        "saturation/temperature/grad_p": "61214eaf6091ec4745b118eaddebb466306657f48af796e0f097d09483693025",
+        "saturation/density/value": "2d03302dc3ae116be136b823c611ac37fe29cba56d8cabe168962dd8aa4bdd13",
+        "saturation/density/grad_p": "2782f7961dbc01020f91d77cbb069d5de5e129d0515be64bd00630e5315b5e4f",
+        "saturation/enthalpy/value": "6e28405719967177123f65f09946d8e0ec4e1244c7d7157ac2e6b88e765efbff",
+        "saturation/enthalpy/grad_p": "c6ce62f720d2bd23b9007eb6e11544720a1a1731733bcf49628153d31d9778ae",
+        "saturation/entropy/value": "6af235e14734d1a5b2e0dd830c7fb4b6a3a32368253f9ac705cbe912cafcae57",
+        "saturation/entropy/grad_p": "3275781e26af5c14603a3031451f153c4c9d498a931579b272ba338dfa6114a8",
+        "saturation/internal_energy/value": "3e689f584f5cbdd77d0838e30e479728f98b2c2fafd55f70b2af269db351cab8",
+        "saturation/internal_energy/grad_p": "1bc1414d3434759145a6c8ace61752657b2abd0f4756cde01362164e4290b71c",
+        "saturation/isobaric_heat_capacity/value": "9c87d1fc566960c1437487c775e621d0f5aba7871d77aad287a8444db433d2f7",
+        "saturation/isobaric_heat_capacity/grad_p": "f7b560a08fcd8364026513f45135130a434a6c7054780b032da7665bb6e5a8b8",
+        "saturation/isochoric_heat_capacity/value": "94a42ab2517c9fc47ef18cb25c0e80ec123aae7407564eef5169d23c467aeb36",
+        "saturation/isochoric_heat_capacity/grad_p": "ceb2d0e9bae0e6b114e6badb3ce81eda3f51d66fc73648c262682902182456f2",
+        "saturation/heat_capacity_ratio/value": "f4b61aa41fd6f37e23b5c01ddc4df7ebeb88b377b34a42186eec940441b05ebc",
+        "saturation/heat_capacity_ratio/grad_p": "2083bc37c60d59199429125e3fc62d620897c8ff92b18e827cc7eb0293500d46",
+        "saturation/compressibility_factor/value": "32c0f01e712840b38f5a1847662654e571d8fcccdcac2f523bcadf092d60805d",
+        "saturation/compressibility_factor/grad_p": "eeac4249e5106e0421f78630c58917f25aae7366ec902d8f5096aa0bd6b8c2cc",
+        "saturation/isothermal_compressibility/value": "89232843e5ca8ab2705cf272d09f9c37b46f1ddb225f50c1543a8b69736a0d34",
+        "saturation/isothermal_compressibility/grad_p": "a99afe8b3656b0691be7cd74a0e80cd4b7e0e359ff630003822c7723cfa2008d",
+        "saturation/isentropic_compressibility/value": "7d620c1678db203b4be1c9825d5cae9cf43bb94d7e7205281bfefe3c6136d271",
+        "saturation/isentropic_compressibility/grad_p": "876684c855b33f19019d9a984b4addbd7889374b734cdfe600248a892081d4a5",
+        "saturation/isothermal_bulk_modulus/value": "b442c30b6ed82a086116598641b91c3bc2913ee8d9aecceebc4d1320b68aad4a",
+        "saturation/isothermal_bulk_modulus/grad_p": "15f7ff0de63e641d783adb916ea6b6c90400e57fe4305a80f56176ac5afbf601",
+        "saturation/isentropic_bulk_modulus/value": "41dea08908ce7b8d837ca176d4b96d7afe258d5aae4796e96faa3632f4bb8ea8",
+        "saturation/isentropic_bulk_modulus/grad_p": "aa5bc54ee3b6bb2ea501cbb522dc9703f530b6e5b11505ba268461ade6266924",
+        "saturation/speed_of_sound/value": "e6203f4707300b3b145218427fba5ef6d84d33913d2bb1cf37ff05ec62dfc57e",
+        "saturation/speed_of_sound/grad_p": "2a386540184a9ac3401f5a2738ba6ea78ebf1f8523d52b8dedd7274fbee44ce2",
+        "saturation/speed_of_sound_p/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/speed_of_sound_p/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/speed_of_sound_pT/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/speed_of_sound_pT/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/viscosity/value": "37f6c3e242095fb1640cc245588045ac5816d0e2b536c9dfc9e5f3ea9a0ef596",
+        "saturation/viscosity/grad_p": "f4008673ab7b077fb1734df7bbf6fbed6c72aeeaffa7dd156ed3bd5352bad28a",
+        "saturation/conductivity/value": "f593d1df075c6221409607010096b044ad1c33b74a6d0e6d36dfc75d2598a859",
+        "saturation/conductivity/grad_p": "413d2bbad616af45c797d63954b2873a95356266aa154e02c667be7a3e448a06",
+        "saturation/gruneisen/value": "ac8699ab1bffe2f994f8a60e35d83deb1711e203bd5f6c39b4710ab0ccf2f79f",
+        "saturation/gruneisen/grad_p": "a9ee7083c2f66af019f99a9be1d5a1ac52b0cc07f4f848ed9ec49b5d6d1ed659",
+        "saturation/isobaric_expansion_coefficient/value": "1e0b69a2cd488364e6f5d40dabacafd032cdbd0eb5d86ad9008b09dff295815d",
+        "saturation/isobaric_expansion_coefficient/grad_p": "e5e91488871a787d1afd0f4e2092a40e1d8904e98d0016326d53df680d5cbc13",
+        "saturation/isothermal_joule_thomson/value": "04abda9587fec0b4bf7d861313ddd861cf8813231ba24f6e1f5b078312478fff",
+        "saturation/isothermal_joule_thomson/grad_p": "6a27e9fb7e4d7e53504b97fc50f4da3551c6a266b923835281ba1b3fb9cc29a6",
+        "saturation/joule_thomson/value": "63370a5f261eec3f6e42c257c53ef16ffe4dc4ea2e607bcf10b5873ac5f0b9d1",
+        "saturation/joule_thomson/grad_p": "caa5c2eca867e42406b3607aed383c26d3480f511312a872fda684ca6be396dc",
+        "saturation/is_two_phase/value": "4d79ba731152cd3c9b98b2d7a6c2494e36f7064dc8cb468f8f6e271d2ef1beb5",
+        "saturation/is_two_phase/grad_p": "323d782dcfa4f5b1dad8c65fbd13c1cb353c905e7833c336641d0f3cf78da850",
+        "saturation/quality_mass/value": "323d782dcfa4f5b1dad8c65fbd13c1cb353c905e7833c336641d0f3cf78da850",
+        "saturation/quality_mass/grad_p": "323d782dcfa4f5b1dad8c65fbd13c1cb353c905e7833c336641d0f3cf78da850",
+        "saturation/quality_volume/value": "323d782dcfa4f5b1dad8c65fbd13c1cb353c905e7833c336641d0f3cf78da850",
+        "saturation/quality_volume/grad_p": "323d782dcfa4f5b1dad8c65fbd13c1cb353c905e7833c336641d0f3cf78da850",
+        "saturation/surface_tension/value": "5ee746d5fcb6468f1c8d2d17449ed43a6a35a0056cb64c89058d193b54556420",
+        "saturation/surface_tension/grad_p": "056a429c912581bc7fc18220e5ece61b0cdd42c0c7db4d089f0a4cb8fafbce92",
+        "saturation/pressure_saturation/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/pressure_saturation/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/temperature_saturation/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/temperature_saturation/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/supersaturation_degree/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/supersaturation_degree/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/supersaturation_ratio/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/supersaturation_ratio/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/subcooling/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/subcooling/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/superheating/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/superheating/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/mixture_ratio/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/mixture_ratio/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/mass_frac_1/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/mass_frac_1/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/mass_frac_2/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/mass_frac_2/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/vol_frac_1/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/vol_frac_1/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/vol_frac_2/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/vol_frac_2/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/drho_dp/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/drho_dp/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/drho_dh/value": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b",
+        "saturation/drho_dh/grad_p": "b6b1d9b99b50e8c823f2cee690841c7f6d7449a2a71f37e3eafaa3ecc1f20d5b"
+      }
+    }
+  },
+  "cases": {
+    "pg_eager_hp_scalar": {
+      "baseline_worker_medians_us": [
+        59.90546875,
+        50.1375,
+        56.3859375,
+        49.575
+      ],
+      "current_worker_medians_us": [
+        44.11328125,
+        47.5640625,
+        52.85390625,
+        52.48515625
+      ],
+      "baseline_median_us": 53.26171875,
+      "current_median_us": 50.024609375,
+      "ratio": 0.9392225889255592,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.7363815386220478,
+        0.9486724008975317,
+        0.937359714024441,
+        1.058702092788704
+      ],
+      "calls_per_sample": 128,
+      "raw_samples_us": {
+        "baseline1": [
+          59.90546875,
+          58.5109375,
+          55.92890625,
+          54.07890625,
+          61.62421875,
+          60.675,
+          67.73125,
+          57.6125,
+          64.26875
+        ],
+        "current1": [
+          43.70546875,
+          40.4515625,
+          40.0796875,
+          42.15703125,
+          44.22265625,
+          44.11328125,
+          44.71875,
+          47.446875,
+          48.91875
+        ],
+        "current2": [
+          47.5640625,
+          45.88828125,
+          46.40859375,
+          48.18046875,
+          48.03046875,
+          48.1640625,
+          47.74609375,
+          46.87421875,
+          47.490625
+        ],
+        "baseline2": [
+          52.5828125,
+          50.05625,
+          48.75234375,
+          48.384375,
+          51.07421875,
+          50.1375,
+          50.865625,
+          54.61484375,
+          48.1828125
+        ],
+        "baseline3": [
+          58.52109375,
+          57.6875,
+          58.3046875,
+          56.3859375,
+          55.4078125,
+          53.16796875,
+          52.00390625,
+          56.68046875,
+          54.46484375
+        ],
+        "current3": [
+          56.3046875,
+          53.125,
+          51.66484375,
+          75.95,
+          52.525,
+          52.85390625,
+          52.23671875,
+          55.9015625,
+          52.64765625
+        ],
+        "current4": [
+          57.11640625,
+          51.92421875,
+          57.5671875,
+          51.82421875,
+          51.1578125,
+          56.08984375,
+          52.48515625,
+          62.32734375,
+          52.40390625
+        ],
+        "baseline4": [
+          67.16171875,
+          53.9109375,
+          53.92109375,
+          48.725,
+          49.575,
+          49.9125,
+          47.78046875,
+          49.4734375,
+          47.5328125
+        ]
+      }
+    },
+    "pg_eager_hp_batch1024": {
+      "baseline_worker_medians_us": [
+        152.28541666666666,
+        128.1125,
+        153.27916666666667,
+        117.41458333333334
+      ],
+      "current_worker_medians_us": [
+        115.00625,
+        131.72708333333333,
+        137.375,
+        137.59166666666667
+      ],
+      "baseline_median_us": 140.19895833333334,
+      "current_median_us": 134.55104166666666,
+      "ratio": 0.9597149883721794,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.7552019918738115,
+        1.0282141347123295,
+        0.8962405197488243,
+        1.1718447807803545
+      ],
+      "calls_per_sample": 48,
+      "raw_samples_us": {
+        "baseline1": [
+          150.66875,
+          153.26666666666668,
+          146.90208333333334,
+          135.25416666666666,
+          171.23958333333334,
+          148.53958333333333,
+          215.99166666666667,
+          152.28541666666666,
+          183.76458333333332
+        ],
+        "current1": [
+          154.80625,
+          115.92916666666666,
+          121.35833333333333,
+          115.00625,
+          104.98541666666667,
+          108.2375,
+          121.5,
+          110.19166666666666,
+          108.29166666666667
+        ],
+        "current2": [
+          144.73958333333334,
+          118.11041666666667,
+          117.27291666666666,
+          136.30208333333334,
+          118.92916666666666,
+          120.74166666666666,
+          131.72708333333333,
+          133.92083333333332,
+          134.30625
+        ],
+        "baseline2": [
+          151.64583333333334,
+          111.05,
+          119.24583333333334,
+          142.66041666666666,
+          133.36666666666667,
+          127.67708333333333,
+          128.35833333333332,
+          125.53125,
+          128.1125
+        ],
+        "baseline3": [
+          178.08958333333334,
+          138.78333333333333,
+          133.24166666666667,
+          153.27916666666667,
+          146.54375,
+          186.04583333333332,
+          135.5125,
+          160.4125,
+          166.08541666666667
+        ],
+        "current3": [
+          163.77708333333334,
+          136.49166666666667,
+          130.01875,
+          137.375,
+          133.21041666666667,
+          132.625,
+          149.47916666666666,
+          141.64375,
+          149.00416666666666
+        ],
+        "current4": [
+          171.17291666666668,
+          133.575,
+          130.69791666666666,
+          137.59166666666667,
+          130.04791666666668,
+          150.61041666666668,
+          134.6625,
+          152.19166666666666,
+          156.19791666666666
+        ],
+        "baseline4": [
+          129.97708333333333,
+          123.65416666666667,
+          114.33125,
+          111.3125,
+          117.41458333333334,
+          112.45833333333333,
+          153.16875,
+          139.81458333333333,
+          111.03125
+        ]
+      }
+    },
+    "pg_compiled_hp_scalar": {
+      "baseline_worker_medians_us": [
+        55.87734375,
+        48.66640625,
+        56.95859375,
+        43.2578125
+      ],
+      "current_worker_medians_us": [
+        39.3921875,
+        46.2125,
+        51.1625,
+        51.81328125
+      ],
+      "baseline_median_us": 52.271875,
+      "current_median_us": 48.6875,
+      "ratio": 0.9314282298080947,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.7049760216993135,
+        0.9495769990207567,
+        0.8982402238468186,
+        1.1977785804587322
+      ],
+      "calls_per_sample": 128,
+      "raw_samples_us": {
+        "baseline1": [
+          53.453125,
+          52.95703125,
+          51.1734375,
+          56.83359375,
+          62.23984375,
+          55.87734375,
+          61.296875,
+          53.23671875,
+          65.09296875
+        ],
+        "current1": [
+          44.0890625,
+          40.11015625,
+          39.22890625,
+          39.85625,
+          39.20546875,
+          39.18671875,
+          39.60546875,
+          39.0484375,
+          39.3921875
+        ],
+        "current2": [
+          46.55546875,
+          46.57734375,
+          47.5734375,
+          45.8578125,
+          46.025,
+          44.46640625,
+          45.34765625,
+          47.828125,
+          46.2125
+        ],
+        "baseline2": [
+          49.12578125,
+          48.2890625,
+          49.43203125,
+          48.66640625,
+          46.50078125,
+          61.08203125,
+          47.45625,
+          49.0921875,
+          47.37890625
+        ],
+        "baseline3": [
+          56.95859375,
+          52.2375,
+          51.2609375,
+          54.1734375,
+          54.8609375,
+          69.41953125,
+          60.5453125,
+          60.1578125,
+          58.025
+        ],
+        "current3": [
+          55.27578125,
+          51.36953125,
+          49.31171875,
+          48.39609375,
+          54.19453125,
+          53.025,
+          51.1625,
+          48.1296875,
+          47.41484375
+        ],
+        "current4": [
+          53.33203125,
+          53.59765625,
+          50.80234375,
+          52.80703125,
+          51.32421875,
+          50.4125,
+          62.01796875,
+          51.81328125,
+          50.07734375
+        ],
+        "baseline4": [
+          47.2015625,
+          44.6546875,
+          43.7015625,
+          46.7578125,
+          43.2578125,
+          41.97578125,
+          42.48984375,
+          42.99140625,
+          41.81953125
+        ]
+      }
+    },
+    "pg_compiled_hp_batch1024": {
+      "baseline_worker_medians_us": [
+        179.8875,
+        126.70208333333333,
+        137.66666666666666,
+        117.50208333333333
+      ],
+      "current_worker_medians_us": [
+        106.18125,
+        117.88125,
+        127.8625,
+        139.61666666666667
+      ],
+      "baseline_median_us": 132.184375,
+      "current_median_us": 122.87187499999999,
+      "ratio": 0.9295491619187215,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.5902647488013343,
+        0.9303813078580002,
+        0.9287832929782083,
+        1.1882058828744173
+      ],
+      "calls_per_sample": 48,
+      "raw_samples_us": {
+        "baseline1": [
+          202.34375,
+          177.30416666666667,
+          152.56041666666667,
+          179.8875,
+          158.88958333333332,
+          218.21666666666667,
+          217.175,
+          202.08958333333334,
+          174.77708333333334
+        ],
+        "current1": [
+          132.62708333333333,
+          95.52708333333334,
+          98.12083333333334,
+          96.77083333333333,
+          107.74583333333334,
+          102.8375,
+          106.18125,
+          106.87708333333333,
+          113.6
+        ],
+        "current2": [
+          114.96458333333334,
+          126.60208333333334,
+          112.50833333333334,
+          111.43333333333334,
+          123.57708333333333,
+          126.275,
+          116.20208333333333,
+          125.54166666666667,
+          117.88125
+        ],
+        "baseline2": [
+          120.35208333333334,
+          136.73125,
+          138.43958333333333,
+          126.09583333333333,
+          116.73333333333333,
+          119.72916666666667,
+          132.35833333333332,
+          126.70208333333333,
+          128.16041666666666
+        ],
+        "baseline3": [
+          176.85,
+          147.275,
+          125.50833333333334,
+          136.53541666666666,
+          128.26875,
+          138.3875,
+          129.94791666666666,
+          166.66041666666666,
+          137.66666666666666
+        ],
+        "current3": [
+          148.87291666666667,
+          126.81458333333333,
+          127.8625,
+          141.88958333333332,
+          131.68958333333333,
+          133.37916666666666,
+          125.03333333333333,
+          122.69375,
+          127.63125
+        ],
+        "current4": [
+          174.80833333333334,
+          130.18958333333333,
+          141.43125,
+          134.33125,
+          139.61666666666667,
+          118.98333333333333,
+          125.3625,
+          156.88958333333332,
+          148.375
+        ],
+        "baseline4": [
+          127.66458333333334,
+          97.94375,
+          117.50208333333333,
+          116.15208333333334,
+          105.51041666666667,
+          119.33125,
+          111.0875,
+          120.4875,
+          123.82708333333333
+        ]
+      }
+    },
+    "pg_changing_python_hp_scalar": {
+      "baseline_worker_medians_us": [
+        68.23203125,
+        60.98125,
+        65.40546875,
+        57.2625
+      ],
+      "current_worker_medians_us": [
+        53.93984375,
+        53.4171875,
+        61.10078125,
+        67.9828125
+      ],
+      "baseline_median_us": 63.193359375,
+      "current_median_us": 57.5203125,
+      "ratio": 0.910227167362077,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.7905355118678223,
+        0.8759608486215025,
+        0.9341845937003548,
+        1.1872134905042566
+      ],
+      "calls_per_sample": 128,
+      "raw_samples_us": {
+        "baseline1": [
+          110.87265625,
+          76.778125,
+          82.4359375,
+          68.14140625,
+          67.55234375,
+          66.39375,
+          68.40859375,
+          65.109375,
+          68.23203125
+        ],
+        "current1": [
+          57.7234375,
+          51.840625,
+          50.80390625,
+          54.1125,
+          53.93984375,
+          52.65234375,
+          59.3234375,
+          49.934375,
+          54.85390625
+        ],
+        "current2": [
+          56.00078125,
+          56.43515625,
+          54.18984375,
+          54.31875,
+          53.4171875,
+          52.690625,
+          53.390625,
+          51.13984375,
+          52.03125
+        ],
+        "baseline2": [
+          65.78359375,
+          60.98125,
+          61.26328125,
+          58.84921875,
+          64.26953125,
+          58.56953125,
+          62.13125,
+          58.50078125,
+          57.9953125
+        ],
+        "baseline3": [
+          65.890625,
+          65.35234375,
+          62.83515625,
+          65.5640625,
+          65.40546875,
+          65.62890625,
+          62.85390625,
+          104.2328125,
+          62.04609375
+        ],
+        "current3": [
+          66.56015625,
+          60.65234375,
+          58.9546875,
+          61.3609375,
+          61.10078125,
+          62.4015625,
+          60.51328125,
+          58.765625,
+          68.91875
+        ],
+        "current4": [
+          73.68515625,
+          68.7140625,
+          67.9828125,
+          67.9671875,
+          71.1515625,
+          65.8984375,
+          64.29453125,
+          63.115625,
+          72.7765625
+        ],
+        "baseline4": [
+          60.35078125,
+          60.60703125,
+          61.5671875,
+          55.73359375,
+          53.8140625,
+          58.98203125,
+          55.728125,
+          57.2625,
+          54.02890625
+        ]
+      }
+    },
+    "pg_compiled_full_state_and_dTdh": {
+      "baseline_worker_medians_us": [
+        69.453125,
+        63.6109375,
+        66.8734375,
+        65.80859375
+      ],
+      "current_worker_medians_us": [
+        55.71640625,
+        53.6203125,
+        60.96875,
+        71.7453125
+      ],
+      "baseline_median_us": 66.341015625,
+      "current_median_us": 58.342578125,
+      "ratio": 0.8794345033061891,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.8022159730033745,
+        0.842941711085456,
+        0.9117035444753383,
+        1.0902119071644802
+      ],
+      "calls_per_sample": 128,
+      "raw_samples_us": {
+        "baseline1": [
+          85.85390625,
+          67.2140625,
+          85.4015625,
+          66.42109375,
+          73.509375,
+          66.62265625,
+          89.6390625,
+          69.453125,
+          66.628125
+        ],
+        "current1": [
+          61.1203125,
+          55.71640625,
+          56.10078125,
+          52.828125,
+          64.80625,
+          53.80390625,
+          56.74296875,
+          54.39765625,
+          53.92578125
+        ],
+        "current2": [
+          67.43203125,
+          56.47734375,
+          52.14453125,
+          56.1421875,
+          51.49140625,
+          53.59765625,
+          53.6203125,
+          50.08515625,
+          58.97109375
+        ],
+        "baseline2": [
+          78.9375,
+          75.275,
+          67.0359375,
+          74.828125,
+          56.67265625,
+          63.096875,
+          63.6109375,
+          62.490625,
+          57.54921875
+        ],
+        "baseline3": [
+          68.38359375,
+          66.37890625,
+          61.74921875,
+          66.8734375,
+          63.228125,
+          71.5859375,
+          70.28984375,
+          65.19921875,
+          68.38046875
+        ],
+        "current3": [
+          60.96875,
+          62.78203125,
+          57.32578125,
+          68.33671875,
+          62.41875,
+          64.2859375,
+          60.553125,
+          58.65859375,
+          57.9734375
+        ],
+        "current4": [
+          94.67578125,
+          78.45859375,
+          71.7453125,
+          63.70078125,
+          73.253125,
+          61.30234375,
+          79.834375,
+          65.11875,
+          67.56796875
+        ],
+        "baseline4": [
+          60.89140625,
+          56.2890625,
+          62.4109375,
+          69.68515625,
+          65.80859375,
+          68.2765625,
+          67.84765625,
+          58.40078125,
+          75.440625
+        ]
+      }
+    },
+    "pg_compiled_compressor_with_status": {
+      "baseline_worker_medians_us": [
+        23.85625,
+        19.98515625,
+        27.01640625,
+        20.9828125
+      ],
+      "current_worker_medians_us": [
+        19.6125,
+        18.48203125,
+        21.88203125,
+        20.6453125
+      ],
+      "baseline_median_us": 22.41953125,
+      "current_median_us": 20.12890625,
+      "ratio": 0.8978290413632087,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.8221116059732775,
+        0.9247879285407138,
+        0.8099534426419133,
+        0.983915406955097
+      ],
+      "calls_per_sample": 128,
+      "raw_samples_us": {
+        "baseline1": [
+          23.67421875,
+          23.43515625,
+          30.1171875,
+          24.671875,
+          26.12109375,
+          23.025,
+          22.903125,
+          23.85625,
+          23.9171875
+        ],
+        "current1": [
+          19.359375,
+          20.00390625,
+          18.9578125,
+          19.0578125,
+          19.56328125,
+          21.37421875,
+          29.35703125,
+          19.6125,
+          19.7265625
+        ],
+        "current2": [
+          18.82265625,
+          18.38984375,
+          18.4015625,
+          18.30703125,
+          18.48203125,
+          19.21640625,
+          19.0390625,
+          18.53359375,
+          18.33671875
+        ],
+        "baseline2": [
+          19.95703125,
+          20.6953125,
+          20.17265625,
+          21.31015625,
+          19.98515625,
+          19.5515625,
+          19.39453125,
+          19.31328125,
+          21.93984375
+        ],
+        "baseline3": [
+          20.6453125,
+          27.01640625,
+          20.31640625,
+          32.09609375,
+          36.903125,
+          36.06640625,
+          32.45625,
+          22.68984375,
+          19.56328125
+        ],
+        "current3": [
+          22.34296875,
+          23.0328125,
+          30.33671875,
+          21.22578125,
+          21.71640625,
+          21.36328125,
+          21.5453125,
+          21.88203125,
+          25.996875
+        ],
+        "current4": [
+          20.721875,
+          20.99921875,
+          20.7328125,
+          20.521875,
+          21.784375,
+          19.8515625,
+          20.4328125,
+          20.6453125,
+          20.5796875
+        ],
+        "baseline4": [
+          20.76875,
+          22.3546875,
+          20.65546875,
+          20.8515625,
+          22.67578125,
+          21.91875,
+          21.95625,
+          20.9828125,
+          20.4609375
+        ]
+      }
+    },
+    "bicubic_eager_hp_scalar": {
+      "baseline_worker_medians_us": [
+        201.8015625,
+        96.0125,
+        111.48828125,
+        126.2953125
+      ],
+      "current_worker_medians_us": [
+        188.48046875,
+        92.93515625,
+        120.3984375,
+        116.25859375
+      ],
+      "baseline_median_us": 118.891796875,
+      "current_median_us": 118.328515625,
+      "ratio": 0.995262236211366,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.9339891446578864,
+        0.9679485093086838,
+        1.0799201149223923,
+        0.9205297603582873
+      ],
+      "calls_per_sample": 128,
+      "raw_samples_us": {
+        "baseline1": [
+          186.32109375,
+          201.8015625,
+          164.5453125,
+          166.9390625,
+          151.54453125,
+          208.39921875,
+          209.11171875,
+          203.2734375,
+          211.50546875
+        ],
+        "current1": [
+          164.846875,
+          149.33984375,
+          161.84296875,
+          197.03671875,
+          194.5640625,
+          199.9859375,
+          163.79375,
+          188.48046875,
+          194.903125
+        ],
+        "current2": [
+          92.93515625,
+          78.98984375,
+          98.81484375,
+          87.1078125,
+          83.365625,
+          98.9796875,
+          92.3359375,
+          96.2421875,
+          107.1671875
+        ],
+        "baseline2": [
+          90.78125,
+          95.95,
+          96.0125,
+          89.3390625,
+          100.63046875,
+          90.034375,
+          97.54609375,
+          99.06640625,
+          98.8953125
+        ],
+        "baseline3": [
+          107.00625,
+          102.88125,
+          103.70390625,
+          116.63203125,
+          119.2171875,
+          113.1703125,
+          138.4421875,
+          111.48828125,
+          104.95546875
+        ],
+        "current3": [
+          136.05,
+          120.3984375,
+          112.5015625,
+          106.5234375,
+          127.4984375,
+          116.91484375,
+          135.51328125,
+          116.1890625,
+          130.99296875
+        ],
+        "current4": [
+          142.66796875,
+          110.93515625,
+          116.25859375,
+          120.8203125,
+          111.0609375,
+          111.92421875,
+          119.18203125,
+          130.178125,
+          111.92734375
+        ],
+        "baseline4": [
+          119.76640625,
+          148.61171875,
+          154.59296875,
+          120.26171875,
+          142.93984375,
+          108.20234375,
+          107.6703125,
+          133.93984375,
+          126.2953125
+        ]
+      }
+    },
+    "bicubic_eager_hp_batch1024": {
+      "baseline_worker_medians_us": [
+        1081.925,
+        839.2083333333334,
+        1069.9083333333333,
+        925.45625
+      ],
+      "current_worker_medians_us": [
+        923.7270833333333,
+        856.1166666666667,
+        902.2541666666667,
+        919.1916666666667
+      ],
+      "baseline_median_us": 997.6822916666666,
+      "current_median_us": 910.7229166666667,
+      "ratio": 0.9128386103207957,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.8537810692361609,
+        1.0201479569038279,
+        0.8433004385110875,
+        0.9932308163315843
+      ],
+      "calls_per_sample": 48,
+      "raw_samples_us": {
+        "baseline1": [
+          1066.80625,
+          1046.6145833333333,
+          1092.75625,
+          1072.0666666666666,
+          1154.725,
+          1037.3854166666667,
+          1138.0104166666667,
+          1081.925,
+          1332.0729166666667
+        ],
+        "current1": [
+          1035.6041666666667,
+          1144.1583333333333,
+          1068.8145833333333,
+          910.1291666666667,
+          923.7270833333333,
+          951.1520833333333,
+          880.2354166666667,
+          903.9333333333333,
+          906.2166666666667
+        ],
+        "current2": [
+          829.89375,
+          863.06875,
+          856.1166666666667,
+          876.1895833333333,
+          857.9520833333333,
+          847.625,
+          848.6916666666667,
+          823.4854166666667,
+          871.4041666666667
+        ],
+        "baseline2": [
+          812.4708333333333,
+          823.0395833333333,
+          820.3541666666666,
+          825.8208333333333,
+          843.6229166666667,
+          839.2083333333334,
+          878.53125,
+          860.05625,
+          850.55625
+        ],
+        "baseline3": [
+          881.675,
+          926.55,
+          928.5145833333333,
+          883.5854166666667,
+          1069.9083333333333,
+          1120.6395833333333,
+          1100.85,
+          1337.8541666666667,
+          1148.6270833333333
+        ],
+        "current3": [
+          851.38125,
+          848.8145833333333,
+          855.30625,
+          905.9395833333333,
+          949.2833333333333,
+          902.2541666666667,
+          905.6333333333333,
+          902.2666666666667,
+          900.3083333333333
+        ],
+        "current4": [
+          865.0854166666667,
+          930.5541666666667,
+          947.66875,
+          894.9458333333333,
+          919.1916666666667,
+          913.175,
+          945.8416666666667,
+          961.0458333333333,
+          913.15
+        ],
+        "baseline4": [
+          903.4145833333333,
+          922.7520833333333,
+          908.5208333333334,
+          928.0895833333333,
+          917.1416666666667,
+          926.1291666666667,
+          925.45625,
+          982.7145833333333,
+          1010.3395833333333
+        ]
+      }
+    },
+    "bicubic_compiled_hp_scalar": {
+      "baseline_worker_medians_us": [
+        239.03671875,
+        114.98046875,
+        187.77265625,
+        118.8453125
+      ],
+      "current_worker_medians_us": [
+        92.62734375,
+        107.14140625,
+        130.39765625,
+        107.5859375
+      ],
+      "baseline_median_us": 153.30898437500002,
+      "current_median_us": 107.363671875,
+      "ratio": 0.7003090674215419,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.38750257380697917,
+        0.9318226600985222,
+        0.6944443288717657,
+        0.9052602516401309
+      ],
+      "calls_per_sample": 128,
+      "raw_samples_us": {
+        "baseline1": [
+          240.44609375,
+          222.2109375,
+          239.03671875,
+          219.7328125,
+          263.89453125,
+          253.7703125,
+          252.93203125,
+          202.69375,
+          177.5984375
+        ],
+        "current1": [
+          97.28359375,
+          91.4234375,
+          110.61171875,
+          92.62734375,
+          91.22265625,
+          91.5640625,
+          92.9625,
+          91.40234375,
+          93.8328125
+        ],
+        "current2": [
+          136.6921875,
+          113.796875,
+          107.14140625,
+          105.36953125,
+          90.80390625,
+          88.8,
+          107.6546875,
+          109.71171875,
+          88.6796875
+        ],
+        "baseline2": [
+          105.0796875,
+          94.5359375,
+          104.08203125,
+          111.98359375,
+          118.8484375,
+          139.6921875,
+          114.98046875,
+          150.2984375,
+          129.05625
+        ],
+        "baseline3": [
+          187.77265625,
+          186.6359375,
+          176.4875,
+          198.5328125,
+          182.6640625,
+          163.884375,
+          214.42578125,
+          206.509375,
+          201.03828125
+        ],
+        "current3": [
+          134.63359375,
+          121.09765625,
+          134.36640625,
+          111.4921875,
+          123.59765625,
+          135.0671875,
+          144.1140625,
+          130.39765625,
+          120.3796875
+        ],
+        "current4": [
+          135.8109375,
+          104.50625,
+          106.41328125,
+          112.90703125,
+          110.14453125,
+          106.37890625,
+          100.68046875,
+          118.93984375,
+          107.5859375
+        ],
+        "baseline4": [
+          150.55859375,
+          142.61953125,
+          127.84609375,
+          140.92734375,
+          118.8453125,
+          102.10078125,
+          114.51875,
+          110.32578125,
+          104.375
+        ]
+      }
+    },
+    "bicubic_compiled_hp_batch1024": {
+      "baseline_worker_medians_us": [
+        1050.1708333333333,
+        905.9854166666667,
+        1037.3854166666667,
+        879.8520833333333
+      ],
+      "current_worker_medians_us": [
+        805.1270833333333,
+        839.4291666666667,
+        899.2729166666667,
+        881.7583333333333
+      ],
+      "baseline_median_us": 971.6854166666667,
+      "current_median_us": 860.59375,
+      "ratio": 0.885671159861838,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.7666629635654516,
+        0.9265371729217496,
+        0.866864814387131,
+        1.0021665573522065
+      ],
+      "calls_per_sample": 48,
+      "raw_samples_us": {
+        "baseline1": [
+          1108.6395833333333,
+          1116.5458333333333,
+          1127.9645833333334,
+          980.6125,
+          1050.1708333333333,
+          1007.4833333333333,
+          1105.8666666666666,
+          1032.0208333333333,
+          1036.9395833333333
+        ],
+        "current1": [
+          782.05625,
+          803.9875,
+          804.4291666666667,
+          805.1270833333333,
+          808.4145833333333,
+          789.9666666666667,
+          825.1791666666667,
+          809.13125,
+          819.2395833333334
+        ],
+        "current2": [
+          849.2645833333333,
+          870.71875,
+          839.4291666666667,
+          836.7895833333333,
+          814.61875,
+          832.0083333333333,
+          891.9520833333333,
+          878.4916666666667,
+          757.79375
+        ],
+        "baseline2": [
+          941.7520833333333,
+          892.7020833333333,
+          904.56875,
+          890.8770833333333,
+          911.5979166666667,
+          897.1583333333333,
+          908.0270833333333,
+          945.5604166666667,
+          905.9854166666667
+        ],
+        "baseline3": [
+          1202.5979166666666,
+          1037.3854166666667,
+          946.3708333333333,
+          976.45625,
+          914.6666666666666,
+          922.6583333333333,
+          1056.3666666666666,
+          1370.0604166666667,
+          1205.0916666666667
+        ],
+        "current3": [
+          905.30625,
+          891.5666666666667,
+          889.2166666666667,
+          886.0458333333333,
+          899.2729166666667,
+          888.55625,
+          909.7145833333333,
+          1001.2416666666667,
+          1073.6916666666666
+        ],
+        "current4": [
+          896.1625,
+          875.9625,
+          891.125,
+          847.2854166666667,
+          885.4958333333333,
+          847.39375,
+          881.7583333333333,
+          920.0229166666667,
+          854.9416666666667
+        ],
+        "baseline4": [
+          962.4708333333333,
+          857.0229166666667,
+          840.8229166666666,
+          988.4770833333333,
+          908.4458333333333,
+          916.9375,
+          874.8333333333334,
+          879.8520833333333,
+          844.19375
+        ]
+      }
+    },
+    "bicubic_changing_python_hp_scalar": {
+      "baseline_worker_medians_us": [
+        225.94921875,
+        179.02890625,
+        189.5203125,
+        103.40546875
+      ],
+      "current_worker_medians_us": [
+        106.75703125,
+        92.4734375,
+        144.18984375,
+        121.01796875
+      ],
+      "baseline_median_us": 184.274609375,
+      "current_median_us": 113.88749999999999,
+      "ratio": 0.6180314281292991,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.47248240928029317,
+        0.5165279699070943,
+        0.7608147213771611,
+        1.1703246473605875
+      ],
+      "calls_per_sample": 128,
+      "raw_samples_us": {
+        "baseline1": [
+          202.79765625,
+          230.94921875,
+          232.09453125,
+          243.9046875,
+          225.94921875,
+          206.775,
+          229.00078125,
+          199.16171875,
+          214.32734375
+        ],
+        "current1": [
+          106.75703125,
+          105.7125,
+          109.99296875,
+          103.58046875,
+          109.69453125,
+          105.94296875,
+          108.078125,
+          114.6015625,
+          103.4453125
+        ],
+        "current2": [
+          92.4734375,
+          91.39296875,
+          97.14375,
+          94.16484375,
+          88.62265625,
+          93.18359375,
+          92.43828125,
+          89.41875,
+          94.2
+        ],
+        "baseline2": [
+          143.8984375,
+          179.02890625,
+          179.6796875,
+          195.62265625,
+          193.76328125,
+          201.5796875,
+          159.9859375,
+          163.9203125,
+          156.5625
+        ],
+        "baseline3": [
+          222.9484375,
+          207.02109375,
+          207.7546875,
+          189.5203125,
+          213.96640625,
+          176.090625,
+          179.421875,
+          142.97421875,
+          171.0484375
+        ],
+        "current3": [
+          144.18984375,
+          133.45234375,
+          165.8890625,
+          139.80234375,
+          140.14765625,
+          135.6203125,
+          153.03515625,
+          150.28125,
+          155.93671875
+        ],
+        "current4": [
+          120.81796875,
+          112.13125,
+          121.2453125,
+          116.028125,
+          101.828125,
+          127.20703125,
+          129.6234375,
+          121.01796875,
+          135.2296875
+        ],
+        "baseline4": [
+          109.2234375,
+          98.9359375,
+          105.825,
+          109.43359375,
+          107.053125,
+          103.1671875,
+          102.57734375,
+          94.43359375,
+          103.40546875
+        ]
+      }
+    },
+    "bicubic_compiled_full_state_and_dTdh": {
+      "baseline_worker_medians_us": [
+        188.6609375,
+        119.8203125,
+        126.81953125,
+        87.24921875
+      ],
+      "current_worker_medians_us": [
+        104.26953125,
+        82.7484375,
+        128.35859375,
+        113.06640625
+      ],
+      "baseline_median_us": 123.319921875,
+      "current_median_us": 108.66796875,
+      "ratio": 0.8811874602073494,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.5526821430641943,
+        0.6906044206820108,
+        1.0121358475688265,
+        1.2959016466837991
+      ],
+      "calls_per_sample": 128,
+      "raw_samples_us": {
+        "baseline1": [
+          166.790625,
+          161.16015625,
+          132.28125,
+          149.0453125,
+          192.86875,
+          199.2796875,
+          188.6609375,
+          209.540625,
+          210.19453125
+        ],
+        "current1": [
+          99.33203125,
+          99.565625,
+          99.7421875,
+          97.54921875,
+          105.665625,
+          104.26953125,
+          108.6640625,
+          114.09296875,
+          152.7140625
+        ],
+        "current2": [
+          81.45703125,
+          79.2484375,
+          83.06953125,
+          77.65546875,
+          84.021875,
+          86.98046875,
+          80.02109375,
+          82.7484375,
+          84.0140625
+        ],
+        "baseline2": [
+          130.4109375,
+          131.9140625,
+          129.52265625,
+          111.91484375,
+          115.80234375,
+          119.8203125,
+          112.89765625,
+          120.7703125,
+          119.0734375
+        ],
+        "baseline3": [
+          126.81953125,
+          121.2125,
+          134.67265625,
+          133.303125,
+          125.909375,
+          149.70859375,
+          127.64140625,
+          124.2265625,
+          114.5296875
+        ],
+        "current3": [
+          129.02734375,
+          126.11015625,
+          115.284375,
+          143.3578125,
+          133.59453125,
+          132.78984375,
+          128.35859375,
+          118.446875,
+          118.92890625
+        ],
+        "current4": [
+          101.921875,
+          116.8828125,
+          142.2125,
+          139.98359375,
+          113.06640625,
+          118.20234375,
+          112.6640625,
+          105.934375,
+          102.5875
+        ],
+        "baseline4": [
+          87.24921875,
+          85.95078125,
+          83.94921875,
+          91.93046875,
+          87.9796875,
+          86.1265625,
+          90.3203125,
+          84.60546875,
+          89.63359375
+        ]
+      }
+    },
+    "bicubic_compiled_compressor_with_status": {
+      "baseline_worker_medians_us": [
+        139.446875,
+        103.59375,
+        88.77578125,
+        73.99375
+      ],
+      "current_worker_medians_us": [
+        104.89765625,
+        69.53828125,
+        89.078125,
+        84.0078125
+      ],
+      "baseline_median_us": 96.184765625,
+      "current_median_us": 86.54296875,
+      "ratio": 0.8997575467138849,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.7522409967953745,
+        0.6712594268476622,
+        1.003405700808744,
+        1.1353365993749471
+      ],
+      "calls_per_sample": 128,
+      "raw_samples_us": {
+        "baseline1": [
+          163.9796875,
+          151.75546875,
+          115.53125,
+          110.0734375,
+          147.23515625,
+          139.446875,
+          144.86796875,
+          120.4359375,
+          116.709375
+        ],
+        "current1": [
+          125.63125,
+          111.75078125,
+          110.24921875,
+          87.296875,
+          96.03203125,
+          99.52578125,
+          104.89765625,
+          124.02890625,
+          102.384375
+        ],
+        "current2": [
+          64.6296875,
+          66.1859375,
+          70.76328125,
+          75.26171875,
+          69.53828125,
+          71.74296875,
+          63.39609375,
+          73.11953125,
+          65.21875
+        ],
+        "baseline2": [
+          90.4265625,
+          102.7109375,
+          156.0984375,
+          184.2140625,
+          158.103125,
+          111.27421875,
+          95.22421875,
+          91.78984375,
+          103.59375
+        ],
+        "baseline3": [
+          96.63125,
+          84.9015625,
+          101.26484375,
+          88.0140625,
+          90.76328125,
+          85.2578125,
+          82.21328125,
+          98.7765625,
+          88.77578125
+        ],
+        "current3": [
+          98.34296875,
+          109.35390625,
+          82.72578125,
+          103.3890625,
+          95.65703125,
+          77.06796875,
+          89.078125,
+          85.32578125,
+          74.50625
+        ],
+        "current4": [
+          89.3875,
+          84.0078125,
+          85.478125,
+          87.03203125,
+          105.3609375,
+          76.2015625,
+          71.07421875,
+          80.38984375,
+          74.44140625
+        ],
+        "baseline4": [
+          73.99375,
+          68.50703125,
+          79.0125,
+          71.84453125,
+          68.3484375,
+          74.571875,
+          85.99609375,
+          77.73046875,
+          71.96796875
+        ]
+      }
+    },
+    "source_pt_scalar": {
+      "baseline_worker_medians_us": [
+        622.2875,
+        474.034375,
+        415.0734375,
+        392.703125
+      ],
+      "current_worker_medians_us": [
+        536.5953125,
+        470.4953125,
+        462.6171875,
+        397.1296875
+      ],
+      "baseline_median_us": 444.55390625,
+      "current_median_us": 466.55625,
+      "ratio": 1.0494930838322827,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.8622948596910591,
+        0.9925341648482771,
+        1.114542983734053,
+        1.0112720327855806
+      ],
+      "calls_per_sample": 64,
+      "raw_samples_us": {
+        "baseline1": [
+          580.453125,
+          589.8234375,
+          636.5296875,
+          622.2875,
+          570.0703125,
+          648.390625,
+          528.5375,
+          687.4265625,
+          760.6015625
+        ],
+        "current1": [
+          536.5953125,
+          608.971875,
+          500.8484375,
+          481.021875,
+          485.9671875,
+          708.15625,
+          612.2375,
+          473.925,
+          596.8859375
+        ],
+        "current2": [
+          415.984375,
+          375.7546875,
+          378.840625,
+          432.8078125,
+          470.4953125,
+          911.540625,
+          575.5671875,
+          666.646875,
+          544.859375
+        ],
+        "baseline2": [
+          518.2609375,
+          512.1046875,
+          573.325,
+          463.59375,
+          464.2546875,
+          435.8921875,
+          474.034375,
+          545.578125,
+          470.625
+        ],
+        "baseline3": [
+          460.9203125,
+          486.45625,
+          431.665625,
+          428.215625,
+          404.2234375,
+          415.0734375,
+          398.6546875,
+          386.084375,
+          414.3640625
+        ],
+        "current3": [
+          728.20625,
+          475.1671875,
+          462.6171875,
+          447.7296875,
+          449.86875,
+          447.440625,
+          439.3890625,
+          470.246875,
+          464.39375
+        ],
+        "current4": [
+          444.184375,
+          414.7078125,
+          397.1296875,
+          428.3875,
+          388.8609375,
+          393.3171875,
+          387.046875,
+          397.7328125,
+          390.434375
+        ],
+        "baseline4": [
+          421.7125,
+          472.221875,
+          397.4296875,
+          389.35625,
+          375.203125,
+          418.9609375,
+          392.703125,
+          391.209375,
+          391.0953125
+        ]
+      }
+    },
+    "source_pt_batch16": {
+      "baseline_worker_medians_us": [
+        1424.965625,
+        1173.23125,
+        945.609375,
+        933.040625
+      ],
+      "current_worker_medians_us": [
+        1179.79375,
+        1066.025,
+        1177.1875,
+        939.946875
+      ],
+      "baseline_median_us": 1059.4203125,
+      "current_median_us": 1121.60625,
+      "ratio": 1.0586980792856944,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.827945410963861,
+        0.9086230868807833,
+        1.2448982964027826,
+        1.0074018749183618
+      ],
+      "calls_per_sample": 32,
+      "raw_samples_us": {
+        "baseline1": [
+          1610.778125,
+          1424.965625,
+          1465.25,
+          1339.371875,
+          1382.86875,
+          1290.953125,
+          1333.29375,
+          1429.171875,
+          1614.29375
+        ],
+        "current1": [
+          1686.99375,
+          1554.890625,
+          1360.59375,
+          1327.884375,
+          1179.79375,
+          1154.95,
+          1172.8,
+          1118.203125,
+          1097.61875
+        ],
+        "current2": [
+          1206.26875,
+          1153.49375,
+          1216.440625,
+          1066.025,
+          1235.603125,
+          1051.459375,
+          1018.5375,
+          1008.15625,
+          971.721875
+        ],
+        "baseline2": [
+          1187.809375,
+          1254.425,
+          1209.88125,
+          1220.640625,
+          1119.5,
+          1105.553125,
+          1173.23125,
+          1070.675,
+          1050.415625
+        ],
+        "baseline3": [
+          924.678125,
+          1246.575,
+          955.884375,
+          942.346875,
+          948.296875,
+          909.190625,
+          945.609375,
+          1143.190625,
+          886.659375
+        ],
+        "current3": [
+          1092.421875,
+          1186.353125,
+          1271.646875,
+          1503.596875,
+          1185.6,
+          1177.1875,
+          1175.2125,
+          1094.078125,
+          1075.728125
+        ],
+        "current4": [
+          961.265625,
+          966.371875,
+          934.8375,
+          992.6375,
+          952.0875,
+          939.946875,
+          891.9,
+          904.21875,
+          931.45625
+        ],
+        "baseline4": [
+          1023.7875,
+          1011.64375,
+          1215.85,
+          933.040625,
+          906.090625,
+          898.471875,
+          911.38125,
+          936.834375,
+          885.959375
+        ]
+      }
+    },
+    "callback_compiled_pt_scalar": {
+      "baseline_worker_medians_us": [
+        706.765625,
+        541.5390625,
+        505.4390625,
+        427.4203125
+      ],
+      "current_worker_medians_us": [
+        512.6796875,
+        474.4109375,
+        550.65,
+        461.0578125
+      ],
+      "baseline_median_us": 523.4890625,
+      "current_median_us": 493.5453125,
+      "ratio": 0.9427996645106601,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.7253885437622974,
+        0.8760419521906603,
+        1.0894488393445056,
+        1.0786988802737352
+      ],
+      "calls_per_sample": 64,
+      "raw_samples_us": {
+        "baseline1": [
+          632.003125,
+          659.6453125,
+          706.765625,
+          757.159375,
+          790.9921875,
+          705.3671875,
+          690.0984375,
+          804.7671875,
+          811.8453125
+        ],
+        "current1": [
+          554.025,
+          547.35625,
+          530.9625,
+          512.3890625,
+          501.903125,
+          487.4046875,
+          575.5484375,
+          512.6796875,
+          472.353125
+        ],
+        "current2": [
+          494.5484375,
+          482.6125,
+          588.6078125,
+          464.5296875,
+          474.4109375,
+          445.4296875,
+          511.6296875,
+          466.996875,
+          441.41875
+        ],
+        "baseline2": [
+          541.5390625,
+          601.3046875,
+          529.2265625,
+          596.9671875,
+          524.290625,
+          550.1390625,
+          594.9265625,
+          502.5546875,
+          493.7375
+        ],
+        "baseline3": [
+          458.240625,
+          498.5546875,
+          504.00625,
+          518.540625,
+          565.965625,
+          513.6921875,
+          491.1296875,
+          512.96875,
+          505.4390625
+        ],
+        "current3": [
+          534.690625,
+          540.2234375,
+          532.5078125,
+          550.65,
+          563.4640625,
+          555.5921875,
+          552.7625,
+          569.51875,
+          525.134375
+        ],
+        "current4": [
+          464.96875,
+          453.68125,
+          442.471875,
+          432.8328125,
+          462.003125,
+          461.0578125,
+          465.6296875,
+          461.421875,
+          458.8296875
+        ],
+        "baseline4": [
+          442.53125,
+          436.528125,
+          425.11875,
+          437.54375,
+          417.7328125,
+          415.403125,
+          427.4203125,
+          418.5421875,
+          436.0640625
+        ]
+      }
+    },
+    "callback_compiled_pt_batch16": {
+      "baseline_worker_medians_us": [
+        1431.809375,
+        1150.86875,
+        1111.5875,
+        987.55625
+      ],
+      "current_worker_medians_us": [
+        1031.3375,
+        949.8375,
+        1159.73125,
+        959.975
+      ],
+      "baseline_median_us": 1131.228125,
+      "current_median_us": 995.65625,
+      "ratio": 0.8801551411215133,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.7203036367882422,
+        0.8253221750959872,
+        1.0433108054921452,
+        0.9720712111335431
+      ],
+      "calls_per_sample": 32,
+      "raw_samples_us": {
+        "baseline1": [
+          1767.70625,
+          1547.38125,
+          1431.809375,
+          1407.95625,
+          1575.2375,
+          1367.6125,
+          1805.1125,
+          1346.45625,
+          1346.16875
+        ],
+        "current1": [
+          1039.15,
+          1018.69375,
+          1007.534375,
+          1012.3125,
+          1193.40625,
+          1031.3375,
+          1038.13125,
+          1026.39375,
+          1044.825
+        ],
+        "current2": [
+          934.015625,
+          953.346875,
+          950.003125,
+          944.5125,
+          949.8375,
+          1185.809375,
+          984.25625,
+          898.409375,
+          895.871875
+        ],
+        "baseline2": [
+          1087.5875,
+          1067.05625,
+          1116.778125,
+          1137.525,
+          1153.178125,
+          1171.28125,
+          1181.940625,
+          1160.825,
+          1150.86875
+        ],
+        "baseline3": [
+          1123.025,
+          1108.1,
+          1083.30625,
+          1240.965625,
+          1111.5875,
+          1069.765625,
+          1054.765625,
+          1171.75,
+          1177.734375
+        ],
+        "current3": [
+          1135.615625,
+          1198.859375,
+          1197.8,
+          1216.4125,
+          1284.8125,
+          1135.084375,
+          1128.7625,
+          1088.6875,
+          1159.73125
+        ],
+        "current4": [
+          999.209375,
+          959.975,
+          955.790625,
+          944.546875,
+          935.41875,
+          902.975,
+          1058.903125,
+          1197.10625,
+          1013.975
+        ],
+        "baseline4": [
+          960.81875,
+          948.496875,
+          973.4375,
+          946.0,
+          989.9375,
+          1251.684375,
+          987.55625,
+          1004.325,
+          1104.1125
+        ]
+      }
+    },
+    "callback_compiled_full_state_and_dhdT_scalar": {
+      "baseline_worker_medians_us": [
+        1347.821875,
+        1063.446875,
+        1113.0125,
+        909.203125
+      ],
+      "current_worker_medians_us": [
+        961.221875,
+        938.3125,
+        1021.6125,
+        952.93125
+      ],
+      "baseline_median_us": 1088.2296875000002,
+      "current_median_us": 957.0765624999999,
+      "ratio": 0.8794802912413651,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.7131668455818763,
+        0.88233133413458,
+        0.9178805269482597,
+        1.048095000773342
+      ],
+      "calls_per_sample": 32,
+      "raw_samples_us": {
+        "baseline1": [
+          1367.121875,
+          1403.890625,
+          1432.58125,
+          1347.821875,
+          1335.846875,
+          1302.51875,
+          1304.0125,
+          1363.6625,
+          1266.371875
+        ],
+        "current1": [
+          1118.7,
+          961.221875,
+          970.084375,
+          936.05625,
+          940.271875,
+          941.8,
+          977.346875,
+          977.478125,
+          949.103125
+        ],
+        "current2": [
+          994.265625,
+          1089.315625,
+          849.44375,
+          884.778125,
+          853.21875,
+          872.25,
+          947.784375,
+          938.3125,
+          1018.1
+        ],
+        "baseline2": [
+          1044.803125,
+          1103.759375,
+          1086.0,
+          1036.203125,
+          1040.6375,
+          1073.940625,
+          1063.446875,
+          1037.5125,
+          1089.43125
+        ],
+        "baseline3": [
+          1073.5625,
+          1183.765625,
+          1142.83125,
+          1069.409375,
+          1071.390625,
+          1113.0125,
+          1282.146875,
+          1140.15,
+          1004.375
+        ],
+        "current3": [
+          1049.05625,
+          1005.634375,
+          1006.54375,
+          1036.525,
+          995.753125,
+          1021.6125,
+          971.13125,
+          1250.41875,
+          1058.7125
+        ],
+        "current4": [
+          1067.075,
+          961.709375,
+          1185.84375,
+          952.93125,
+          945.534375,
+          1016.96875,
+          929.046875,
+          879.25625,
+          911.928125
+        ],
+        "baseline4": [
+          881.896875,
+          925.78125,
+          930.5375,
+          935.859375,
+          938.43125,
+          909.203125,
+          884.10625,
+          870.56875,
+          902.29375
+        ]
+      }
+    },
+    "callback_compiled_full_state_and_dhdT_batch16": {
+      "baseline_worker_medians_us": [
+        3362.8625,
+        2898.425,
+        3189.93125,
+        2398.5
+      ],
+      "current_worker_medians_us": [
+        2771.51875,
+        2399.58125,
+        2642.06875,
+        2778.8125
+      ],
+      "baseline_median_us": 3044.1781250000004,
+      "current_median_us": 2706.79375,
+      "ratio": 0.8891706197382913,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.8241546450382673,
+        0.8278914410412552,
+        0.8282525681392036,
+        1.1585626433187408
+      ],
+      "calls_per_sample": 16,
+      "raw_samples_us": {
+        "baseline1": [
+          3339.55625,
+          3650.86875,
+          3368.18125,
+          3287.1375,
+          3179.93125,
+          3307.4,
+          3362.8625,
+          3446.7625,
+          3592.09375
+        ],
+        "current1": [
+          2719.64375,
+          2771.51875,
+          2844.6125,
+          3114.06875,
+          3231.8375,
+          2694.45625,
+          2731.8,
+          2745.70625,
+          2931.7375
+        ],
+        "current2": [
+          2389.9625,
+          2566.1625,
+          2357.04375,
+          2430.73125,
+          2409.4375,
+          2399.58125,
+          2428.475,
+          2343.4625,
+          2385.63125
+        ],
+        "baseline2": [
+          3001.18125,
+          3002.63125,
+          2990.44375,
+          2889.06875,
+          3181.2875,
+          2898.425,
+          2857.36875,
+          2779.38125,
+          2735.6375
+        ],
+        "baseline3": [
+          2822.24375,
+          2934.9625,
+          3189.93125,
+          3312.8375,
+          3141.25625,
+          3234.34375,
+          3854.59375,
+          3216.85,
+          3076.98125
+        ],
+        "current3": [
+          2602.51875,
+          2694.94375,
+          2642.06875,
+          2574.16875,
+          2580.48125,
+          2653.40625,
+          2683.65625,
+          2603.36875,
+          2726.65
+        ],
+        "current4": [
+          2838.46875,
+          3071.60625,
+          3043.8875,
+          2861.43125,
+          2748.95625,
+          2735.19375,
+          2752.44375,
+          2738.9875,
+          2778.8125
+        ],
+        "baseline4": [
+          2530.81875,
+          2436.65625,
+          2509.3875,
+          2396.53125,
+          2398.5,
+          2359.0125,
+          2459.83125,
+          2386.75625,
+          2387.175
+        ]
+      }
+    },
+    "binary_callback_compiled_pt_scalar": {
+      "baseline_worker_medians_us": [
+        757.340625,
+        592.096875,
+        634.728125,
+        497.43125
+      ],
+      "current_worker_medians_us": [
+        546.290625,
+        494.496875,
+        642.403125,
+        557.9125
+      ],
+      "baseline_median_us": 613.4124999999999,
+      "current_median_us": 552.1015625,
+      "ratio": 0.9000494161759014,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.7213275070249928,
+        0.8351621092409921,
+        1.0120917912688996,
+        1.1215871540036941
+      ],
+      "calls_per_sample": 32,
+      "raw_samples_us": {
+        "baseline1": [
+          767.04375,
+          717.9875,
+          775.959375,
+          724.16875,
+          804.8,
+          757.340625,
+          715.49375,
+          792.34375,
+          710.69375
+        ],
+        "current1": [
+          569.29375,
+          563.784375,
+          562.63125,
+          575.334375,
+          546.290625,
+          543.03125,
+          541.23125,
+          540.590625,
+          544.071875
+        ],
+        "current2": [
+          494.44375,
+          494.496875,
+          494.984375,
+          491.328125,
+          485.728125,
+          502.7625,
+          505.434375,
+          513.871875,
+          475.86875
+        ],
+        "baseline2": [
+          579.0375,
+          559.303125,
+          548.475,
+          552.6375,
+          592.096875,
+          605.4125,
+          593.390625,
+          607.60625,
+          597.925
+        ],
+        "baseline3": [
+          957.371875,
+          625.45,
+          627.809375,
+          634.728125,
+          612.284375,
+          712.078125,
+          737.496875,
+          672.2375,
+          626.046875
+        ],
+        "current3": [
+          593.5875,
+          593.215625,
+          599.46875,
+          638.2,
+          647.88125,
+          666.234375,
+          707.76875,
+          688.0125,
+          642.403125
+        ],
+        "current4": [
+          590.0375,
+          736.021875,
+          580.6625,
+          557.9125,
+          560.45,
+          539.65625,
+          530.021875,
+          528.925,
+          529.31875
+        ],
+        "baseline4": [
+          501.490625,
+          510.828125,
+          502.746875,
+          497.43125,
+          497.31875,
+          491.584375,
+          495.65625,
+          493.978125,
+          514.45
+        ]
+      }
+    },
+    "binary_callback_compiled_full_state_and_dhdT_scalar": {
+      "baseline_worker_medians_us": [
+        1672.9,
+        1285.35625,
+        1322.6375,
+        1171.64375
+      ],
+      "current_worker_medians_us": [
+        1221.84375,
+        1074.4,
+        1470.5875,
+        1217.43125
+      ],
+      "baseline_median_us": 1303.996875,
+      "current_median_us": 1219.6375,
+      "ratio": 0.935307072725922,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.7303746488134377,
+        0.8358772130294617,
+        1.1118598255379877,
+        1.0390797117297814
+      ],
+      "calls_per_sample": 16,
+      "raw_samples_us": {
+        "baseline1": [
+          1639.5375,
+          1899.20625,
+          1663.73125,
+          1672.9,
+          1754.425,
+          1775.3875,
+          1536.79375,
+          1538.6,
+          1692.90625
+        ],
+        "current1": [
+          1205.525,
+          1221.84375,
+          1383.95625,
+          1824.53125,
+          1201.65,
+          1206.625,
+          1508.59375,
+          1266.625,
+          1186.25
+        ],
+        "current2": [
+          1060.99375,
+          1058.075,
+          1113.95,
+          1074.4,
+          1118.125,
+          1105.36875,
+          1057.36875,
+          1052.725,
+          1074.4625
+        ],
+        "baseline2": [
+          1275.975,
+          1281.64375,
+          1264.48125,
+          1226.4875,
+          1320.175,
+          1285.35625,
+          1463.03125,
+          1289.8375,
+          1337.30625
+        ],
+        "baseline3": [
+          1322.6375,
+          1358.23125,
+          1784.40625,
+          1280.15625,
+          1271.625,
+          1275.4,
+          1290.6625,
+          1391.60625,
+          1392.3375
+        ],
+        "current3": [
+          1470.5875,
+          1470.7875,
+          1401.7125,
+          1521.18125,
+          1464.725,
+          1434.075,
+          1502.9875,
+          1513.84375,
+          1453.7625
+        ],
+        "current4": [
+          1371.7875,
+          1278.9,
+          1220.49375,
+          1184.025,
+          1247.29375,
+          1200.5375,
+          1172.45,
+          1207.84375,
+          1217.43125
+        ],
+        "baseline4": [
+          1171.64375,
+          1150.11875,
+          1192.525,
+          1170.66875,
+          1172.34375,
+          1275.675,
+          1168.31875,
+          1227.94375,
+          1127.10625
+        ]
+      }
+    },
+    "binary_callback_compiled_pt_batch16": {
+      "baseline_worker_medians_us": [
+        3364.60625,
+        2605.33125,
+        2520.05625,
+        2281.03125
+      ],
+      "current_worker_medians_us": [
+        2323.73125,
+        2139.2625,
+        3098.48125,
+        2378.8
+      ],
+      "baseline_median_us": 2562.6937500000004,
+      "current_median_us": 2351.265625,
+      "ratio": 0.9174977013933091,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.690639877994639,
+        0.8211095997869752,
+        1.2295286067523292,
+        1.0428616442672587
+      ],
+      "calls_per_sample": 16,
+      "raw_samples_us": {
+        "baseline1": [
+          3134.99375,
+          3398.99375,
+          3320.79375,
+          3562.78125,
+          3467.15,
+          3375.35,
+          3364.60625,
+          3302.75625,
+          3286.23125
+        ],
+        "current1": [
+          2364.81875,
+          2323.73125,
+          2293.2125,
+          2257.9875,
+          2618.63125,
+          2252.78125,
+          2218.1125,
+          2338.0,
+          2329.5875
+        ],
+        "current2": [
+          2104.6875,
+          2137.96875,
+          2195.83125,
+          2062.54375,
+          2586.40625,
+          2187.70625,
+          2139.2625,
+          2210.0,
+          2133.94375
+        ],
+        "baseline2": [
+          2605.33125,
+          2625.2875,
+          2495.60625,
+          2424.58125,
+          2477.35625,
+          2461.10625,
+          3072.9625,
+          3358.95625,
+          3149.15
+        ],
+        "baseline3": [
+          2520.05625,
+          3023.66875,
+          2520.18125,
+          2469.0875,
+          2523.125,
+          2581.10625,
+          2474.03125,
+          2462.9375,
+          2365.5
+        ],
+        "current3": [
+          2839.41875,
+          2924.99375,
+          3003.30625,
+          3241.73125,
+          3250.70625,
+          3085.14375,
+          3680.725,
+          3280.6125,
+          3098.48125
+        ],
+        "current4": [
+          2348.3,
+          2647.1625,
+          2478.78125,
+          2378.8,
+          2401.84375,
+          2419.875,
+          2375.0625,
+          2299.3625,
+          2242.88125
+        ],
+        "baseline4": [
+          2180.35625,
+          2160.375,
+          2282.575,
+          2355.19375,
+          2281.03125,
+          2239.03125,
+          2360.425,
+          2305.5875,
+          2273.01875
+        ]
+      }
+    },
+    "binary_callback_compiled_full_state_and_dhdT_batch16": {
+      "baseline_worker_medians_us": [
+        8260.6125,
+        8145.64375,
+        6636.7,
+        6359.2625
+      ],
+      "current_worker_medians_us": [
+        6444.275,
+        6187.84375,
+        10123.61875,
+        6941.93125
+      ],
+      "baseline_median_us": 7391.171875,
+      "current_median_us": 6693.103125,
+      "ratio": 0.9055537116703838,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.7801207234935666,
+        0.7596506721767693,
+        1.52539948317688,
+        1.0916252081117896
+      ],
+      "calls_per_sample": 16,
+      "raw_samples_us": {
+        "baseline1": [
+          9687.4375,
+          8418.2125,
+          8260.6125,
+          8946.83125,
+          8706.95625,
+          7580.24375,
+          7042.01875,
+          6404.05,
+          7244.48125
+        ],
+        "current1": [
+          6684.0625,
+          6607.78125,
+          7339.225,
+          6374.81875,
+          6444.275,
+          6279.85,
+          6702.43125,
+          6162.84375,
+          6388.70625
+        ],
+        "current2": [
+          6091.89375,
+          6199.4375,
+          6187.84375,
+          6068.69375,
+          5945.46875,
+          6282.2875,
+          5942.0625,
+          6273.80625,
+          7423.05625
+        ],
+        "baseline2": [
+          8915.95625,
+          8614.475,
+          8153.78125,
+          8145.64375,
+          8091.1,
+          7814.60625,
+          8252.9,
+          7298.56875,
+          7963.9
+        ],
+        "baseline3": [
+          6636.7,
+          6428.00625,
+          6781.20625,
+          6750.075,
+          6495.05,
+          6524.45625,
+          6540.525,
+          6922.3625,
+          6799.48125
+        ],
+        "current3": [
+          11000.2125,
+          15727.825,
+          12375.41875,
+          10123.61875,
+          9118.33125,
+          9038.25625,
+          9758.625,
+          9468.2375,
+          10643.2375
+        ],
+        "current4": [
+          6535.14375,
+          6941.93125,
+          7059.675,
+          7208.55,
+          7181.20625,
+          6889.93125,
+          6709.4625,
+          6409.4125,
+          7268.16875
+        ],
+        "baseline4": [
+          7416.2625,
+          6516.53125,
+          6287.6125,
+          6185.7125,
+          6280.55625,
+          6338.33125,
+          6395.5375,
+          7026.1875,
+          6359.2625
+        ]
+      }
+    },
+    "metastable_water_rhoT": {
+      "baseline_worker_medians_us": [
+        415.3828125,
+        442.23125,
+        418.96875,
+        398.6375
+      ],
+      "current_worker_medians_us": [
+        392.81875,
+        418.3515625,
+        565.24375,
+        408.175
+      ],
+      "baseline_median_us": 417.17578125,
+      "current_median_us": 413.26328125,
+      "ratio": 0.9906214594042904,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.9456788730275161,
+        0.946001809008296,
+        1.3491310509435368,
+        1.0239252453670316
+      ],
+      "calls_per_sample": 64,
+      "raw_samples_us": {
+        "baseline1": [
+          437.1109375,
+          542.265625,
+          436.1546875,
+          411.3328125,
+          424.753125,
+          415.3828125,
+          397.5921875,
+          413.3078125,
+          399.1640625
+        ],
+        "current1": [
+          535.5125,
+          392.81875,
+          388.4875,
+          389.809375,
+          394.034375,
+          391.434375,
+          405.7109375,
+          379.9484375,
+          397.015625
+        ],
+        "current2": [
+          516.2328125,
+          438.1140625,
+          422.85625,
+          408.2390625,
+          397.03125,
+          392.3390625,
+          418.3515625,
+          387.2546875,
+          424.4109375
+        ],
+        "baseline2": [
+          479.10625,
+          442.23125,
+          438.3703125,
+          454.640625,
+          474.3875,
+          433.1203125,
+          436.2609375,
+          436.9078125,
+          444.65
+        ],
+        "baseline3": [
+          423.1234375,
+          437.35625,
+          417.0359375,
+          418.6703125,
+          392.95,
+          418.96875,
+          412.165625,
+          426.2859375,
+          440.55625
+        ],
+        "current3": [
+          558.69375,
+          601.975,
+          615.1796875,
+          570.6703125,
+          562.95,
+          566.65,
+          535.459375,
+          515.53125,
+          565.24375
+        ],
+        "current4": [
+          481.5265625,
+          376.709375,
+          494.121875,
+          399.790625,
+          392.4234375,
+          412.04375,
+          399.9671875,
+          411.9953125,
+          408.175
+        ],
+        "baseline4": [
+          378.1109375,
+          362.29375,
+          411.4328125,
+          380.0421875,
+          461.0734375,
+          450.4640625,
+          398.6375,
+          403.95625,
+          377.8515625
+        ]
+      }
+    },
+    "metastable_water_PH_inverse": {
+      "baseline_worker_medians_us": [
+        2322.1458333333335,
+        2499.3625,
+        2130.366666666667,
+        1949.9208333333333
+      ],
+      "current_worker_medians_us": [
+        1861.8583333333333,
+        2117.5958333333333,
+        2710.9625,
+        1938.2125
+      ],
+      "baseline_median_us": 2226.2562500000004,
+      "current_median_us": 2027.9041666666667,
+      "ratio": 0.9109033008516726,
+      "above_10_percent_budget": false,
+      "paired_worker_ratios": [
+        0.8017835514924234,
+        0.8472543832010495,
+        1.2725332884792915,
+        0.9939954827225892
+      ],
+      "calls_per_sample": 24,
+      "raw_samples_us": {
+        "baseline1": [
+          2035.4375,
+          2283.6833333333334,
+          2072.9125,
+          2518.4041666666667,
+          2503.6208333333334,
+          2537.233333333333,
+          2451.9083333333333,
+          2295.4625,
+          2322.1458333333335
+        ],
+        "current1": [
+          1976.3875,
+          1891.9875,
+          1861.8583333333333,
+          1881.7166666666667,
+          1853.8166666666666,
+          1858.6833333333334,
+          1925.9916666666666,
+          1790.95,
+          1776.2958333333333
+        ],
+        "current2": [
+          2039.0916666666667,
+          2133.1666666666665,
+          2117.2916666666665,
+          2117.5958333333333,
+          2065.8791666666666,
+          2098.295833333333,
+          2166.9083333333333,
+          2602.8,
+          2154.7458333333334
+        ],
+        "baseline2": [
+          2273.6583333333333,
+          2416.4416666666666,
+          2635.625,
+          3079.9583333333335,
+          2640.608333333333,
+          2499.3625,
+          2573.325,
+          2471.425,
+          2404.4875
+        ],
+        "baseline3": [
+          2134.4416666666666,
+          2063.7791666666667,
+          2157.9625,
+          2121.5875,
+          2273.6,
+          2262.420833333333,
+          1918.6208333333334,
+          2130.366666666667,
+          1963.0708333333334
+        ],
+        "current3": [
+          3027.2541666666666,
+          2682.9666666666667,
+          2874.445833333333,
+          2931.516666666667,
+          2865.45,
+          2710.9625,
+          2680.3416666666667,
+          2703.8541666666665,
+          2542.3416666666667
+        ],
+        "current4": [
+          2004.4333333333334,
+          1970.6041666666667,
+          1891.8791666666666,
+          1953.8208333333334,
+          1889.55,
+          1938.2125,
+          1844.8666666666666,
+          1814.6958333333334,
+          2070.8083333333334
+        ],
+        "baseline4": [
+          1908.1541666666667,
+          1941.4,
+          1949.9208333333333,
+          2051.125,
+          1981.0333333333333,
+          2043.8625,
+          2262.454166666667,
+          1933.6708333333333,
+          1945.4208333333333
+        ]
+      }
+    }
+  },
+  "setup_microseconds": {
+    "baseline1": {
+      "perfect_gas_construction": 58745.5,
+      "bicubic_fresh_generation": 1577905.7,
+      "bicubic_initial_cached_loading": 76549.2,
+      "source_construction": 6798.0,
+      "callback_construction": 6992.9,
+      "water_source_construction": 6898.8,
+      "binary_callback_component_construction": 14290.3,
+      "binary_callback_construction": 6834.6,
+      "metastable_liquid_fresh_generation": 5502129.2
+    },
+    "current1": {
+      "perfect_gas_construction": 54916.0,
+      "bicubic_fresh_generation": 1551209.9,
+      "bicubic_initial_cached_loading": 97556.0,
+      "source_construction": 7378.0,
+      "callback_construction": 7516.8,
+      "water_source_construction": 6929.9,
+      "binary_callback_component_construction": 14039.4,
+      "binary_callback_construction": 4175.3,
+      "metastable_liquid_fresh_generation": 4065949.5
+    },
+    "current2": {
+      "perfect_gas_construction": 56205.4,
+      "bicubic_fresh_generation": 1456869.5,
+      "bicubic_initial_cached_loading": 86737.8,
+      "source_construction": 6048.5,
+      "callback_construction": 5824.6,
+      "water_source_construction": 5736.9,
+      "binary_callback_component_construction": 11734.9,
+      "binary_callback_construction": 3208.5,
+      "metastable_liquid_fresh_generation": 3802669.3
+    },
+    "baseline2": {
+      "perfect_gas_construction": 54077.9,
+      "bicubic_fresh_generation": 1572127.1,
+      "bicubic_initial_cached_loading": 95008.6,
+      "source_construction": 7092.7,
+      "callback_construction": 7258.1,
+      "water_source_construction": 6891.8,
+      "binary_callback_component_construction": 13294.7,
+      "binary_callback_construction": 3362.2,
+      "metastable_liquid_fresh_generation": 4925997.0
+    },
+    "baseline3": {
+      "perfect_gas_construction": 73177.2,
+      "bicubic_fresh_generation": 2147402.0,
+      "bicubic_initial_cached_loading": 123668.8,
+      "source_construction": 8252.3,
+      "callback_construction": 8497.0,
+      "water_source_construction": 8118.6,
+      "binary_callback_component_construction": 19210.6,
+      "binary_callback_construction": 4478.1,
+      "metastable_liquid_fresh_generation": 5320380.7
+    },
+    "current3": {
+      "perfect_gas_construction": 58451.6,
+      "bicubic_fresh_generation": 1457675.7,
+      "bicubic_initial_cached_loading": 88588.9,
+      "source_construction": 6659.8,
+      "callback_construction": 6380.3,
+      "water_source_construction": 5894.6,
+      "binary_callback_component_construction": 15231.5,
+      "binary_callback_construction": 3419.2,
+      "metastable_liquid_fresh_generation": 4883677.4
+    },
+    "current4": {
+      "perfect_gas_construction": 77380.5,
+      "bicubic_fresh_generation": 1604260.7,
+      "bicubic_initial_cached_loading": 95497.0,
+      "source_construction": 7611.3,
+      "callback_construction": 7720.7,
+      "water_source_construction": 7504.3,
+      "binary_callback_component_construction": 14271.5,
+      "binary_callback_construction": 4161.9,
+      "metastable_liquid_fresh_generation": 4591440.1
+    },
+    "baseline4": {
+      "perfect_gas_construction": 51460.8,
+      "bicubic_fresh_generation": 1472449.5,
+      "bicubic_initial_cached_loading": 89811.7,
+      "source_construction": 6885.0,
+      "callback_construction": 6764.6,
+      "water_source_construction": 6039.4,
+      "binary_callback_component_construction": 12960.6,
+      "binary_callback_construction": 3429.9,
+      "metastable_liquid_fresh_generation": 3915367.2
+    }
+  },
+  "first_call_microseconds": {
+    "baseline1": {
+      "pg_eager_hp_scalar": 110871.5,
+      "pg_eager_hp_batch1024": 162212.3,
+      "pg_compiled_hp_scalar": 100278.3,
+      "pg_compiled_hp_batch1024": 128644.3,
+      "pg_changing_python_hp_scalar": 694.0,
+      "pg_compiled_full_state_and_dTdh": 120628.8,
+      "pg_compiled_compressor_with_status": 123919.5,
+      "bicubic_eager_hp_scalar": 166448.7,
+      "bicubic_eager_hp_batch1024": 234872.2,
+      "bicubic_compiled_hp_scalar": 132225.6,
+      "bicubic_compiled_hp_batch1024": 159464.0,
+      "bicubic_changing_python_hp_scalar": 1072.1,
+      "bicubic_compiled_full_state_and_dTdh": 189832.2,
+      "bicubic_compiled_compressor_with_status": 631622.0,
+      "source_pt_scalar": 626.0,
+      "source_pt_batch16": 939.8,
+      "callback_compiled_pt_scalar": 50319.9,
+      "callback_compiled_pt_batch16": 67076.1,
+      "callback_compiled_full_state_and_dhdT_scalar": 96669.0,
+      "callback_compiled_full_state_and_dhdT_batch16": 107090.6,
+      "binary_callback_compiled_pt_scalar": 36818.4,
+      "binary_callback_compiled_full_state_and_dhdT_scalar": 75740.0,
+      "binary_callback_compiled_pt_batch16": 46079.8,
+      "binary_callback_compiled_full_state_and_dhdT_batch16": 89359.9,
+      "metastable_water_rhoT": 701.3,
+      "metastable_water_PH_inverse": 26351.3
+    },
+    "current1": {
+      "pg_eager_hp_scalar": 108761.0,
+      "pg_eager_hp_batch1024": 164569.7,
+      "pg_compiled_hp_scalar": 100283.8,
+      "pg_compiled_hp_batch1024": 133510.5,
+      "pg_changing_python_hp_scalar": 722.2,
+      "pg_compiled_full_state_and_dTdh": 126727.1,
+      "pg_compiled_compressor_with_status": 121978.7,
+      "bicubic_eager_hp_scalar": 156660.0,
+      "bicubic_eager_hp_batch1024": 228891.6,
+      "bicubic_compiled_hp_scalar": 128502.9,
+      "bicubic_compiled_hp_batch1024": 154974.6,
+      "bicubic_changing_python_hp_scalar": 1030.4,
+      "bicubic_compiled_full_state_and_dTdh": 176282.0,
+      "bicubic_compiled_compressor_with_status": 587884.0,
+      "source_pt_scalar": 618.5,
+      "source_pt_batch16": 1021.5,
+      "callback_compiled_pt_scalar": 52114.8,
+      "callback_compiled_pt_batch16": 62862.7,
+      "callback_compiled_full_state_and_dhdT_scalar": 101450.8,
+      "callback_compiled_full_state_and_dhdT_batch16": 108030.7,
+      "binary_callback_compiled_pt_scalar": 41744.6,
+      "binary_callback_compiled_full_state_and_dhdT_scalar": 72352.2,
+      "binary_callback_compiled_pt_batch16": 52071.3,
+      "binary_callback_compiled_full_state_and_dhdT_batch16": 90379.3,
+      "metastable_water_rhoT": 630.3,
+      "metastable_water_PH_inverse": 22213.4
+    },
+    "current2": {
+      "pg_eager_hp_scalar": 99225.3,
+      "pg_eager_hp_batch1024": 153281.2,
+      "pg_compiled_hp_scalar": 95835.9,
+      "pg_compiled_hp_batch1024": 127368.4,
+      "pg_changing_python_hp_scalar": 632.9,
+      "pg_compiled_full_state_and_dTdh": 113499.2,
+      "pg_compiled_compressor_with_status": 119663.1,
+      "bicubic_eager_hp_scalar": 144241.0,
+      "bicubic_eager_hp_batch1024": 217036.6,
+      "bicubic_compiled_hp_scalar": 144723.7,
+      "bicubic_compiled_hp_batch1024": 163031.7,
+      "bicubic_changing_python_hp_scalar": 1114.1,
+      "bicubic_compiled_full_state_and_dTdh": 191382.1,
+      "bicubic_compiled_compressor_with_status": 656394.4,
+      "source_pt_scalar": 599.7,
+      "source_pt_batch16": 1039.4,
+      "callback_compiled_pt_scalar": 51303.8,
+      "callback_compiled_pt_batch16": 61284.3,
+      "callback_compiled_full_state_and_dhdT_scalar": 89623.7,
+      "callback_compiled_full_state_and_dhdT_batch16": 99617.8,
+      "binary_callback_compiled_pt_scalar": 32942.6,
+      "binary_callback_compiled_full_state_and_dhdT_scalar": 63780.7,
+      "binary_callback_compiled_pt_batch16": 45563.8,
+      "binary_callback_compiled_full_state_and_dhdT_batch16": 87316.8,
+      "metastable_water_rhoT": 615.5,
+      "metastable_water_PH_inverse": 22557.9
+    },
+    "baseline2": {
+      "pg_eager_hp_scalar": 109688.4,
+      "pg_eager_hp_batch1024": 162675.9,
+      "pg_compiled_hp_scalar": 99890.6,
+      "pg_compiled_hp_batch1024": 127971.4,
+      "pg_changing_python_hp_scalar": 606.8,
+      "pg_compiled_full_state_and_dTdh": 117155.3,
+      "pg_compiled_compressor_with_status": 124495.6,
+      "bicubic_eager_hp_scalar": 149087.2,
+      "bicubic_eager_hp_batch1024": 224377.4,
+      "bicubic_compiled_hp_scalar": 130469.0,
+      "bicubic_compiled_hp_batch1024": 155605.9,
+      "bicubic_changing_python_hp_scalar": 1164.8,
+      "bicubic_compiled_full_state_and_dTdh": 182334.1,
+      "bicubic_compiled_compressor_with_status": 623492.8,
+      "source_pt_scalar": 656.8,
+      "source_pt_batch16": 1117.0,
+      "callback_compiled_pt_scalar": 56858.0,
+      "callback_compiled_pt_batch16": 73758.6,
+      "callback_compiled_full_state_and_dhdT_scalar": 97096.9,
+      "callback_compiled_full_state_and_dhdT_batch16": 107255.7,
+      "binary_callback_compiled_pt_scalar": 38702.1,
+      "binary_callback_compiled_full_state_and_dhdT_scalar": 78255.3,
+      "binary_callback_compiled_pt_batch16": 51313.3,
+      "binary_callback_compiled_full_state_and_dhdT_batch16": 96952.8,
+      "metastable_water_rhoT": 594.9,
+      "metastable_water_PH_inverse": 20929.5
+    },
+    "baseline3": {
+      "pg_eager_hp_scalar": 144768.6,
+      "pg_eager_hp_batch1024": 226175.1,
+      "pg_compiled_hp_scalar": 156791.3,
+      "pg_compiled_hp_batch1024": 196142.4,
+      "pg_changing_python_hp_scalar": 920.9,
+      "pg_compiled_full_state_and_dTdh": 178288.9,
+      "pg_compiled_compressor_with_status": 179361.2,
+      "bicubic_eager_hp_scalar": 222129.9,
+      "bicubic_eager_hp_batch1024": 285938.0,
+      "bicubic_compiled_hp_scalar": 175859.7,
+      "bicubic_compiled_hp_batch1024": 201592.5,
+      "bicubic_changing_python_hp_scalar": 1461.1,
+      "bicubic_compiled_full_state_and_dTdh": 244218.8,
+      "bicubic_compiled_compressor_with_status": 1045275.3,
+      "source_pt_scalar": 843.4,
+      "source_pt_batch16": 1290.3,
+      "callback_compiled_pt_scalar": 73812.7,
+      "callback_compiled_pt_batch16": 100887.9,
+      "callback_compiled_full_state_and_dhdT_scalar": 159316.2,
+      "callback_compiled_full_state_and_dhdT_batch16": 165447.7,
+      "binary_callback_compiled_pt_scalar": 63070.8,
+      "binary_callback_compiled_full_state_and_dhdT_scalar": 101160.4,
+      "binary_callback_compiled_pt_batch16": 73012.8,
+      "binary_callback_compiled_full_state_and_dhdT_batch16": 121308.6,
+      "metastable_water_rhoT": 970.7,
+      "metastable_water_PH_inverse": 33580.3
+    },
+    "current3": {
+      "pg_eager_hp_scalar": 101910.2,
+      "pg_eager_hp_batch1024": 154891.0,
+      "pg_compiled_hp_scalar": 90889.4,
+      "pg_compiled_hp_batch1024": 129723.4,
+      "pg_changing_python_hp_scalar": 634.5,
+      "pg_compiled_full_state_and_dTdh": 130630.0,
+      "pg_compiled_compressor_with_status": 127525.3,
+      "bicubic_eager_hp_scalar": 152303.2,
+      "bicubic_eager_hp_batch1024": 234748.5,
+      "bicubic_compiled_hp_scalar": 142516.1,
+      "bicubic_compiled_hp_batch1024": 171842.3,
+      "bicubic_changing_python_hp_scalar": 1173.8,
+      "bicubic_compiled_full_state_and_dTdh": 196367.8,
+      "bicubic_compiled_compressor_with_status": 652535.3,
+      "source_pt_scalar": 1140.1,
+      "source_pt_batch16": 2687.7,
+      "callback_compiled_pt_scalar": 65037.6,
+      "callback_compiled_pt_batch16": 69287.2,
+      "callback_compiled_full_state_and_dhdT_scalar": 107027.6,
+      "callback_compiled_full_state_and_dhdT_batch16": 122217.0,
+      "binary_callback_compiled_pt_scalar": 39667.7,
+      "binary_callback_compiled_full_state_and_dhdT_scalar": 72531.9,
+      "binary_callback_compiled_pt_batch16": 51036.0,
+      "binary_callback_compiled_full_state_and_dhdT_batch16": 90215.4,
+      "metastable_water_rhoT": 617.9,
+      "metastable_water_PH_inverse": 24667.3
+    },
+    "current4": {
+      "pg_eager_hp_scalar": 118988.2,
+      "pg_eager_hp_batch1024": 175836.7,
+      "pg_compiled_hp_scalar": 111294.7,
+      "pg_compiled_hp_batch1024": 158910.3,
+      "pg_changing_python_hp_scalar": 801.9,
+      "pg_compiled_full_state_and_dTdh": 137895.5,
+      "pg_compiled_compressor_with_status": 143302.1,
+      "bicubic_eager_hp_scalar": 203947.2,
+      "bicubic_eager_hp_batch1024": 253823.8,
+      "bicubic_compiled_hp_scalar": 164421.4,
+      "bicubic_compiled_hp_batch1024": 198395.8,
+      "bicubic_changing_python_hp_scalar": 1322.6,
+      "bicubic_compiled_full_state_and_dTdh": 232834.8,
+      "bicubic_compiled_compressor_with_status": 690820.0,
+      "source_pt_scalar": 701.9,
+      "source_pt_batch16": 1160.4,
+      "callback_compiled_pt_scalar": 54353.3,
+      "callback_compiled_pt_batch16": 68846.4,
+      "callback_compiled_full_state_and_dhdT_scalar": 105250.2,
+      "callback_compiled_full_state_and_dhdT_batch16": 112398.1,
+      "binary_callback_compiled_pt_scalar": 38608.8,
+      "binary_callback_compiled_full_state_and_dhdT_scalar": 74196.3,
+      "binary_callback_compiled_pt_batch16": 51793.1,
+      "binary_callback_compiled_full_state_and_dhdT_batch16": 95488.9,
+      "metastable_water_rhoT": 666.3,
+      "metastable_water_PH_inverse": 27263.3
+    },
+    "baseline4": {
+      "pg_eager_hp_scalar": 99696.4,
+      "pg_eager_hp_batch1024": 156856.5,
+      "pg_compiled_hp_scalar": 96498.6,
+      "pg_compiled_hp_batch1024": 130798.1,
+      "pg_changing_python_hp_scalar": 597.1,
+      "pg_compiled_full_state_and_dTdh": 122050.1,
+      "pg_compiled_compressor_with_status": 120538.6,
+      "bicubic_eager_hp_scalar": 159122.1,
+      "bicubic_eager_hp_batch1024": 231964.4,
+      "bicubic_compiled_hp_scalar": 132894.2,
+      "bicubic_compiled_hp_batch1024": 165906.5,
+      "bicubic_changing_python_hp_scalar": 1131.6,
+      "bicubic_compiled_full_state_and_dTdh": 181375.4,
+      "bicubic_compiled_compressor_with_status": 613117.2,
+      "source_pt_scalar": 616.9,
+      "source_pt_batch16": 1105.1,
+      "callback_compiled_pt_scalar": 53823.2,
+      "callback_compiled_pt_batch16": 70268.6,
+      "callback_compiled_full_state_and_dhdT_scalar": 93657.2,
+      "callback_compiled_full_state_and_dhdT_batch16": 103300.3,
+      "binary_callback_compiled_pt_scalar": 36047.6,
+      "binary_callback_compiled_full_state_and_dhdT_scalar": 70636.3,
+      "binary_callback_compiled_pt_batch16": 69332.1,
+      "binary_callback_compiled_full_state_and_dhdT_batch16": 115298.0,
+      "metastable_water_rhoT": 649.8,
+      "metastable_water_PH_inverse": 22054.1
+    }
+  },
+  "graphs": {
+    "baseline1": {
+      "pg_compiled_hp_scalar": {
+        "normalized_sha256": "a551c8825ae4d32ee1cabd207bedca8f12acd06101a713313e4aac9994a2ddd9",
+        "instructions": 1405,
+        "contains_callback": false
+      },
+      "pg_compiled_hp_batch1024": {
+        "normalized_sha256": "49e9cb16c9a932adaed607e836234a062a9c1b71211fdb6b01043202bd686675",
+        "instructions": 832,
+        "contains_callback": false
+      },
+      "pg_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "a3ff25f4b33b1bcfd53b5f02b22a5004070b64f99109756a2919b9535c00cbb5",
+        "instructions": 1487,
+        "contains_callback": false
+      },
+      "pg_compiled_compressor_with_status": {
+        "normalized_sha256": "13adc7b8b68aa886d338fe0cf882cac04e8dcd9434de379218815d48401b048a",
+        "instructions": 1035,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_scalar": {
+        "normalized_sha256": "274f788547bfee20e2e446a38efea65b7926f8a4b2edfa07a1f1800b40ec788e",
+        "instructions": 1329,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_batch1024": {
+        "normalized_sha256": "3324f46328cbfcbc19e307e6d1900274dd5db520c132262aa6f1e7b19e470fa0",
+        "instructions": 669,
+        "contains_callback": false
+      },
+      "bicubic_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "cb19a0979cb3c2a1883c9999c2ebb44e18fff9444ca60b647ff695186ca10cbe",
+        "instructions": 1466,
+        "contains_callback": false
+      },
+      "bicubic_compiled_compressor_with_status": {
+        "normalized_sha256": "d65ebf8cba0b3850953e35f87779fa21e13db23eebf77dc9debf9e77597caa16",
+        "instructions": 4238,
+        "contains_callback": false
+      },
+      "callback_compiled_pt_scalar": {
+        "normalized_sha256": "befad5f9ac29b688741143e4e35e112b6d8e18568e55681ae6b5455ea7b61620",
+        "instructions": 229,
+        "contains_callback": true
+      },
+      "callback_compiled_pt_batch16": {
+        "normalized_sha256": "0452f1b22f27a526097742e00c4a35dc88a1ffb5da1e800970e0bae475db17f7",
+        "instructions": 279,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "39824f96793d057e526b1b474865eddb9188d2fbb2f38993e22b4bb59902b0f4",
+        "instructions": 264,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "ba77fbc57da6f84487e37b54f5872ced56aea80155e8292344b5afb701942c15",
+        "instructions": 321,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_scalar": {
+        "normalized_sha256": "176bbfa5cc0cfd8807109d9260177c56b3ce519bb8204deec3d4ee913d4c82c3",
+        "instructions": 193,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "c7ebaeb1f5d6966bea04d570d1cd5f33bcf35e9550d5b3821695310936f18b42",
+        "instructions": 228,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_batch16": {
+        "normalized_sha256": "c88415bcf778f576a340fa9ccb5678e9ccac7dd61ce483caf23685fda5c31326",
+        "instructions": 247,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "9977e7a25e2087fdde7dd8c9896f471d8a285b2a6a2d36358754720f72258de7",
+        "instructions": 289,
+        "contains_callback": true
+      }
+    },
+    "current1": {
+      "pg_compiled_hp_scalar": {
+        "normalized_sha256": "a551c8825ae4d32ee1cabd207bedca8f12acd06101a713313e4aac9994a2ddd9",
+        "instructions": 1405,
+        "contains_callback": false
+      },
+      "pg_compiled_hp_batch1024": {
+        "normalized_sha256": "49e9cb16c9a932adaed607e836234a062a9c1b71211fdb6b01043202bd686675",
+        "instructions": 832,
+        "contains_callback": false
+      },
+      "pg_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "a3ff25f4b33b1bcfd53b5f02b22a5004070b64f99109756a2919b9535c00cbb5",
+        "instructions": 1487,
+        "contains_callback": false
+      },
+      "pg_compiled_compressor_with_status": {
+        "normalized_sha256": "13adc7b8b68aa886d338fe0cf882cac04e8dcd9434de379218815d48401b048a",
+        "instructions": 1035,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_scalar": {
+        "normalized_sha256": "274f788547bfee20e2e446a38efea65b7926f8a4b2edfa07a1f1800b40ec788e",
+        "instructions": 1329,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_batch1024": {
+        "normalized_sha256": "3324f46328cbfcbc19e307e6d1900274dd5db520c132262aa6f1e7b19e470fa0",
+        "instructions": 669,
+        "contains_callback": false
+      },
+      "bicubic_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "cb19a0979cb3c2a1883c9999c2ebb44e18fff9444ca60b647ff695186ca10cbe",
+        "instructions": 1466,
+        "contains_callback": false
+      },
+      "bicubic_compiled_compressor_with_status": {
+        "normalized_sha256": "d65ebf8cba0b3850953e35f87779fa21e13db23eebf77dc9debf9e77597caa16",
+        "instructions": 4238,
+        "contains_callback": false
+      },
+      "callback_compiled_pt_scalar": {
+        "normalized_sha256": "befad5f9ac29b688741143e4e35e112b6d8e18568e55681ae6b5455ea7b61620",
+        "instructions": 229,
+        "contains_callback": true
+      },
+      "callback_compiled_pt_batch16": {
+        "normalized_sha256": "0452f1b22f27a526097742e00c4a35dc88a1ffb5da1e800970e0bae475db17f7",
+        "instructions": 279,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "39824f96793d057e526b1b474865eddb9188d2fbb2f38993e22b4bb59902b0f4",
+        "instructions": 264,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "ba77fbc57da6f84487e37b54f5872ced56aea80155e8292344b5afb701942c15",
+        "instructions": 321,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_scalar": {
+        "normalized_sha256": "176bbfa5cc0cfd8807109d9260177c56b3ce519bb8204deec3d4ee913d4c82c3",
+        "instructions": 193,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "c7ebaeb1f5d6966bea04d570d1cd5f33bcf35e9550d5b3821695310936f18b42",
+        "instructions": 228,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_batch16": {
+        "normalized_sha256": "c88415bcf778f576a340fa9ccb5678e9ccac7dd61ce483caf23685fda5c31326",
+        "instructions": 247,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "9977e7a25e2087fdde7dd8c9896f471d8a285b2a6a2d36358754720f72258de7",
+        "instructions": 289,
+        "contains_callback": true
+      }
+    },
+    "current2": {
+      "pg_compiled_hp_scalar": {
+        "normalized_sha256": "a551c8825ae4d32ee1cabd207bedca8f12acd06101a713313e4aac9994a2ddd9",
+        "instructions": 1405,
+        "contains_callback": false
+      },
+      "pg_compiled_hp_batch1024": {
+        "normalized_sha256": "49e9cb16c9a932adaed607e836234a062a9c1b71211fdb6b01043202bd686675",
+        "instructions": 832,
+        "contains_callback": false
+      },
+      "pg_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "a3ff25f4b33b1bcfd53b5f02b22a5004070b64f99109756a2919b9535c00cbb5",
+        "instructions": 1487,
+        "contains_callback": false
+      },
+      "pg_compiled_compressor_with_status": {
+        "normalized_sha256": "13adc7b8b68aa886d338fe0cf882cac04e8dcd9434de379218815d48401b048a",
+        "instructions": 1035,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_scalar": {
+        "normalized_sha256": "274f788547bfee20e2e446a38efea65b7926f8a4b2edfa07a1f1800b40ec788e",
+        "instructions": 1329,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_batch1024": {
+        "normalized_sha256": "3324f46328cbfcbc19e307e6d1900274dd5db520c132262aa6f1e7b19e470fa0",
+        "instructions": 669,
+        "contains_callback": false
+      },
+      "bicubic_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "cb19a0979cb3c2a1883c9999c2ebb44e18fff9444ca60b647ff695186ca10cbe",
+        "instructions": 1466,
+        "contains_callback": false
+      },
+      "bicubic_compiled_compressor_with_status": {
+        "normalized_sha256": "d65ebf8cba0b3850953e35f87779fa21e13db23eebf77dc9debf9e77597caa16",
+        "instructions": 4238,
+        "contains_callback": false
+      },
+      "callback_compiled_pt_scalar": {
+        "normalized_sha256": "befad5f9ac29b688741143e4e35e112b6d8e18568e55681ae6b5455ea7b61620",
+        "instructions": 229,
+        "contains_callback": true
+      },
+      "callback_compiled_pt_batch16": {
+        "normalized_sha256": "0452f1b22f27a526097742e00c4a35dc88a1ffb5da1e800970e0bae475db17f7",
+        "instructions": 279,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "39824f96793d057e526b1b474865eddb9188d2fbb2f38993e22b4bb59902b0f4",
+        "instructions": 264,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "ba77fbc57da6f84487e37b54f5872ced56aea80155e8292344b5afb701942c15",
+        "instructions": 321,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_scalar": {
+        "normalized_sha256": "176bbfa5cc0cfd8807109d9260177c56b3ce519bb8204deec3d4ee913d4c82c3",
+        "instructions": 193,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "c7ebaeb1f5d6966bea04d570d1cd5f33bcf35e9550d5b3821695310936f18b42",
+        "instructions": 228,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_batch16": {
+        "normalized_sha256": "c88415bcf778f576a340fa9ccb5678e9ccac7dd61ce483caf23685fda5c31326",
+        "instructions": 247,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "9977e7a25e2087fdde7dd8c9896f471d8a285b2a6a2d36358754720f72258de7",
+        "instructions": 289,
+        "contains_callback": true
+      }
+    },
+    "baseline2": {
+      "pg_compiled_hp_scalar": {
+        "normalized_sha256": "a551c8825ae4d32ee1cabd207bedca8f12acd06101a713313e4aac9994a2ddd9",
+        "instructions": 1405,
+        "contains_callback": false
+      },
+      "pg_compiled_hp_batch1024": {
+        "normalized_sha256": "49e9cb16c9a932adaed607e836234a062a9c1b71211fdb6b01043202bd686675",
+        "instructions": 832,
+        "contains_callback": false
+      },
+      "pg_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "a3ff25f4b33b1bcfd53b5f02b22a5004070b64f99109756a2919b9535c00cbb5",
+        "instructions": 1487,
+        "contains_callback": false
+      },
+      "pg_compiled_compressor_with_status": {
+        "normalized_sha256": "13adc7b8b68aa886d338fe0cf882cac04e8dcd9434de379218815d48401b048a",
+        "instructions": 1035,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_scalar": {
+        "normalized_sha256": "274f788547bfee20e2e446a38efea65b7926f8a4b2edfa07a1f1800b40ec788e",
+        "instructions": 1329,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_batch1024": {
+        "normalized_sha256": "3324f46328cbfcbc19e307e6d1900274dd5db520c132262aa6f1e7b19e470fa0",
+        "instructions": 669,
+        "contains_callback": false
+      },
+      "bicubic_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "cb19a0979cb3c2a1883c9999c2ebb44e18fff9444ca60b647ff695186ca10cbe",
+        "instructions": 1466,
+        "contains_callback": false
+      },
+      "bicubic_compiled_compressor_with_status": {
+        "normalized_sha256": "d65ebf8cba0b3850953e35f87779fa21e13db23eebf77dc9debf9e77597caa16",
+        "instructions": 4238,
+        "contains_callback": false
+      },
+      "callback_compiled_pt_scalar": {
+        "normalized_sha256": "befad5f9ac29b688741143e4e35e112b6d8e18568e55681ae6b5455ea7b61620",
+        "instructions": 229,
+        "contains_callback": true
+      },
+      "callback_compiled_pt_batch16": {
+        "normalized_sha256": "0452f1b22f27a526097742e00c4a35dc88a1ffb5da1e800970e0bae475db17f7",
+        "instructions": 279,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "39824f96793d057e526b1b474865eddb9188d2fbb2f38993e22b4bb59902b0f4",
+        "instructions": 264,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "ba77fbc57da6f84487e37b54f5872ced56aea80155e8292344b5afb701942c15",
+        "instructions": 321,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_scalar": {
+        "normalized_sha256": "176bbfa5cc0cfd8807109d9260177c56b3ce519bb8204deec3d4ee913d4c82c3",
+        "instructions": 193,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "c7ebaeb1f5d6966bea04d570d1cd5f33bcf35e9550d5b3821695310936f18b42",
+        "instructions": 228,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_batch16": {
+        "normalized_sha256": "c88415bcf778f576a340fa9ccb5678e9ccac7dd61ce483caf23685fda5c31326",
+        "instructions": 247,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "9977e7a25e2087fdde7dd8c9896f471d8a285b2a6a2d36358754720f72258de7",
+        "instructions": 289,
+        "contains_callback": true
+      }
+    },
+    "baseline3": {
+      "pg_compiled_hp_scalar": {
+        "normalized_sha256": "a551c8825ae4d32ee1cabd207bedca8f12acd06101a713313e4aac9994a2ddd9",
+        "instructions": 1405,
+        "contains_callback": false
+      },
+      "pg_compiled_hp_batch1024": {
+        "normalized_sha256": "49e9cb16c9a932adaed607e836234a062a9c1b71211fdb6b01043202bd686675",
+        "instructions": 832,
+        "contains_callback": false
+      },
+      "pg_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "a3ff25f4b33b1bcfd53b5f02b22a5004070b64f99109756a2919b9535c00cbb5",
+        "instructions": 1487,
+        "contains_callback": false
+      },
+      "pg_compiled_compressor_with_status": {
+        "normalized_sha256": "13adc7b8b68aa886d338fe0cf882cac04e8dcd9434de379218815d48401b048a",
+        "instructions": 1035,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_scalar": {
+        "normalized_sha256": "274f788547bfee20e2e446a38efea65b7926f8a4b2edfa07a1f1800b40ec788e",
+        "instructions": 1329,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_batch1024": {
+        "normalized_sha256": "3324f46328cbfcbc19e307e6d1900274dd5db520c132262aa6f1e7b19e470fa0",
+        "instructions": 669,
+        "contains_callback": false
+      },
+      "bicubic_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "cb19a0979cb3c2a1883c9999c2ebb44e18fff9444ca60b647ff695186ca10cbe",
+        "instructions": 1466,
+        "contains_callback": false
+      },
+      "bicubic_compiled_compressor_with_status": {
+        "normalized_sha256": "d65ebf8cba0b3850953e35f87779fa21e13db23eebf77dc9debf9e77597caa16",
+        "instructions": 4238,
+        "contains_callback": false
+      },
+      "callback_compiled_pt_scalar": {
+        "normalized_sha256": "befad5f9ac29b688741143e4e35e112b6d8e18568e55681ae6b5455ea7b61620",
+        "instructions": 229,
+        "contains_callback": true
+      },
+      "callback_compiled_pt_batch16": {
+        "normalized_sha256": "0452f1b22f27a526097742e00c4a35dc88a1ffb5da1e800970e0bae475db17f7",
+        "instructions": 279,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "39824f96793d057e526b1b474865eddb9188d2fbb2f38993e22b4bb59902b0f4",
+        "instructions": 264,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "ba77fbc57da6f84487e37b54f5872ced56aea80155e8292344b5afb701942c15",
+        "instructions": 321,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_scalar": {
+        "normalized_sha256": "176bbfa5cc0cfd8807109d9260177c56b3ce519bb8204deec3d4ee913d4c82c3",
+        "instructions": 193,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "c7ebaeb1f5d6966bea04d570d1cd5f33bcf35e9550d5b3821695310936f18b42",
+        "instructions": 228,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_batch16": {
+        "normalized_sha256": "c88415bcf778f576a340fa9ccb5678e9ccac7dd61ce483caf23685fda5c31326",
+        "instructions": 247,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "9977e7a25e2087fdde7dd8c9896f471d8a285b2a6a2d36358754720f72258de7",
+        "instructions": 289,
+        "contains_callback": true
+      }
+    },
+    "current3": {
+      "pg_compiled_hp_scalar": {
+        "normalized_sha256": "a551c8825ae4d32ee1cabd207bedca8f12acd06101a713313e4aac9994a2ddd9",
+        "instructions": 1405,
+        "contains_callback": false
+      },
+      "pg_compiled_hp_batch1024": {
+        "normalized_sha256": "49e9cb16c9a932adaed607e836234a062a9c1b71211fdb6b01043202bd686675",
+        "instructions": 832,
+        "contains_callback": false
+      },
+      "pg_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "a3ff25f4b33b1bcfd53b5f02b22a5004070b64f99109756a2919b9535c00cbb5",
+        "instructions": 1487,
+        "contains_callback": false
+      },
+      "pg_compiled_compressor_with_status": {
+        "normalized_sha256": "13adc7b8b68aa886d338fe0cf882cac04e8dcd9434de379218815d48401b048a",
+        "instructions": 1035,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_scalar": {
+        "normalized_sha256": "274f788547bfee20e2e446a38efea65b7926f8a4b2edfa07a1f1800b40ec788e",
+        "instructions": 1329,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_batch1024": {
+        "normalized_sha256": "3324f46328cbfcbc19e307e6d1900274dd5db520c132262aa6f1e7b19e470fa0",
+        "instructions": 669,
+        "contains_callback": false
+      },
+      "bicubic_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "cb19a0979cb3c2a1883c9999c2ebb44e18fff9444ca60b647ff695186ca10cbe",
+        "instructions": 1466,
+        "contains_callback": false
+      },
+      "bicubic_compiled_compressor_with_status": {
+        "normalized_sha256": "d65ebf8cba0b3850953e35f87779fa21e13db23eebf77dc9debf9e77597caa16",
+        "instructions": 4238,
+        "contains_callback": false
+      },
+      "callback_compiled_pt_scalar": {
+        "normalized_sha256": "befad5f9ac29b688741143e4e35e112b6d8e18568e55681ae6b5455ea7b61620",
+        "instructions": 229,
+        "contains_callback": true
+      },
+      "callback_compiled_pt_batch16": {
+        "normalized_sha256": "0452f1b22f27a526097742e00c4a35dc88a1ffb5da1e800970e0bae475db17f7",
+        "instructions": 279,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "39824f96793d057e526b1b474865eddb9188d2fbb2f38993e22b4bb59902b0f4",
+        "instructions": 264,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "ba77fbc57da6f84487e37b54f5872ced56aea80155e8292344b5afb701942c15",
+        "instructions": 321,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_scalar": {
+        "normalized_sha256": "176bbfa5cc0cfd8807109d9260177c56b3ce519bb8204deec3d4ee913d4c82c3",
+        "instructions": 193,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "c7ebaeb1f5d6966bea04d570d1cd5f33bcf35e9550d5b3821695310936f18b42",
+        "instructions": 228,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_batch16": {
+        "normalized_sha256": "c88415bcf778f576a340fa9ccb5678e9ccac7dd61ce483caf23685fda5c31326",
+        "instructions": 247,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "9977e7a25e2087fdde7dd8c9896f471d8a285b2a6a2d36358754720f72258de7",
+        "instructions": 289,
+        "contains_callback": true
+      }
+    },
+    "current4": {
+      "pg_compiled_hp_scalar": {
+        "normalized_sha256": "a551c8825ae4d32ee1cabd207bedca8f12acd06101a713313e4aac9994a2ddd9",
+        "instructions": 1405,
+        "contains_callback": false
+      },
+      "pg_compiled_hp_batch1024": {
+        "normalized_sha256": "49e9cb16c9a932adaed607e836234a062a9c1b71211fdb6b01043202bd686675",
+        "instructions": 832,
+        "contains_callback": false
+      },
+      "pg_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "a3ff25f4b33b1bcfd53b5f02b22a5004070b64f99109756a2919b9535c00cbb5",
+        "instructions": 1487,
+        "contains_callback": false
+      },
+      "pg_compiled_compressor_with_status": {
+        "normalized_sha256": "13adc7b8b68aa886d338fe0cf882cac04e8dcd9434de379218815d48401b048a",
+        "instructions": 1035,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_scalar": {
+        "normalized_sha256": "274f788547bfee20e2e446a38efea65b7926f8a4b2edfa07a1f1800b40ec788e",
+        "instructions": 1329,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_batch1024": {
+        "normalized_sha256": "3324f46328cbfcbc19e307e6d1900274dd5db520c132262aa6f1e7b19e470fa0",
+        "instructions": 669,
+        "contains_callback": false
+      },
+      "bicubic_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "cb19a0979cb3c2a1883c9999c2ebb44e18fff9444ca60b647ff695186ca10cbe",
+        "instructions": 1466,
+        "contains_callback": false
+      },
+      "bicubic_compiled_compressor_with_status": {
+        "normalized_sha256": "d65ebf8cba0b3850953e35f87779fa21e13db23eebf77dc9debf9e77597caa16",
+        "instructions": 4238,
+        "contains_callback": false
+      },
+      "callback_compiled_pt_scalar": {
+        "normalized_sha256": "befad5f9ac29b688741143e4e35e112b6d8e18568e55681ae6b5455ea7b61620",
+        "instructions": 229,
+        "contains_callback": true
+      },
+      "callback_compiled_pt_batch16": {
+        "normalized_sha256": "0452f1b22f27a526097742e00c4a35dc88a1ffb5da1e800970e0bae475db17f7",
+        "instructions": 279,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "39824f96793d057e526b1b474865eddb9188d2fbb2f38993e22b4bb59902b0f4",
+        "instructions": 264,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "ba77fbc57da6f84487e37b54f5872ced56aea80155e8292344b5afb701942c15",
+        "instructions": 321,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_scalar": {
+        "normalized_sha256": "176bbfa5cc0cfd8807109d9260177c56b3ce519bb8204deec3d4ee913d4c82c3",
+        "instructions": 193,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "c7ebaeb1f5d6966bea04d570d1cd5f33bcf35e9550d5b3821695310936f18b42",
+        "instructions": 228,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_batch16": {
+        "normalized_sha256": "c88415bcf778f576a340fa9ccb5678e9ccac7dd61ce483caf23685fda5c31326",
+        "instructions": 247,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "9977e7a25e2087fdde7dd8c9896f471d8a285b2a6a2d36358754720f72258de7",
+        "instructions": 289,
+        "contains_callback": true
+      }
+    },
+    "baseline4": {
+      "pg_compiled_hp_scalar": {
+        "normalized_sha256": "a551c8825ae4d32ee1cabd207bedca8f12acd06101a713313e4aac9994a2ddd9",
+        "instructions": 1405,
+        "contains_callback": false
+      },
+      "pg_compiled_hp_batch1024": {
+        "normalized_sha256": "49e9cb16c9a932adaed607e836234a062a9c1b71211fdb6b01043202bd686675",
+        "instructions": 832,
+        "contains_callback": false
+      },
+      "pg_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "a3ff25f4b33b1bcfd53b5f02b22a5004070b64f99109756a2919b9535c00cbb5",
+        "instructions": 1487,
+        "contains_callback": false
+      },
+      "pg_compiled_compressor_with_status": {
+        "normalized_sha256": "13adc7b8b68aa886d338fe0cf882cac04e8dcd9434de379218815d48401b048a",
+        "instructions": 1035,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_scalar": {
+        "normalized_sha256": "274f788547bfee20e2e446a38efea65b7926f8a4b2edfa07a1f1800b40ec788e",
+        "instructions": 1329,
+        "contains_callback": false
+      },
+      "bicubic_compiled_hp_batch1024": {
+        "normalized_sha256": "3324f46328cbfcbc19e307e6d1900274dd5db520c132262aa6f1e7b19e470fa0",
+        "instructions": 669,
+        "contains_callback": false
+      },
+      "bicubic_compiled_full_state_and_dTdh": {
+        "normalized_sha256": "cb19a0979cb3c2a1883c9999c2ebb44e18fff9444ca60b647ff695186ca10cbe",
+        "instructions": 1466,
+        "contains_callback": false
+      },
+      "bicubic_compiled_compressor_with_status": {
+        "normalized_sha256": "d65ebf8cba0b3850953e35f87779fa21e13db23eebf77dc9debf9e77597caa16",
+        "instructions": 4238,
+        "contains_callback": false
+      },
+      "callback_compiled_pt_scalar": {
+        "normalized_sha256": "befad5f9ac29b688741143e4e35e112b6d8e18568e55681ae6b5455ea7b61620",
+        "instructions": 229,
+        "contains_callback": true
+      },
+      "callback_compiled_pt_batch16": {
+        "normalized_sha256": "0452f1b22f27a526097742e00c4a35dc88a1ffb5da1e800970e0bae475db17f7",
+        "instructions": 279,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "39824f96793d057e526b1b474865eddb9188d2fbb2f38993e22b4bb59902b0f4",
+        "instructions": 264,
+        "contains_callback": true
+      },
+      "callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "ba77fbc57da6f84487e37b54f5872ced56aea80155e8292344b5afb701942c15",
+        "instructions": 321,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_scalar": {
+        "normalized_sha256": "176bbfa5cc0cfd8807109d9260177c56b3ce519bb8204deec3d4ee913d4c82c3",
+        "instructions": 193,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_scalar": {
+        "normalized_sha256": "c7ebaeb1f5d6966bea04d570d1cd5f33bcf35e9550d5b3821695310936f18b42",
+        "instructions": 228,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_pt_batch16": {
+        "normalized_sha256": "c88415bcf778f576a340fa9ccb5678e9ccac7dd61ce483caf23685fda5c31326",
+        "instructions": 247,
+        "contains_callback": true
+      },
+      "binary_callback_compiled_full_state_and_dhdT_batch16": {
+        "normalized_sha256": "9977e7a25e2087fdde7dd8c9896f471d8a285b2a6a2d36358754720f72258de7",
+        "instructions": 289,
+        "contains_callback": true
+      }
+    }
+  },
+  "record_locations": {
+    "baseline1": "development\\performance\\results\\phase12\\guard_final\\workers\\baseline1\\record.json",
+    "current1": "development\\performance\\results\\phase12\\guard_final\\workers\\current1\\record.json",
+    "current2": "development\\performance\\results\\phase12\\guard_final\\workers\\current2\\record.json",
+    "baseline2": "development\\performance\\results\\phase12\\guard_final\\workers\\baseline2\\record.json",
+    "baseline3": "development\\performance\\results\\phase12\\guard_final\\workers\\baseline3\\record.json",
+    "current3": "development\\performance\\results\\phase12\\guard_final\\workers\\current3\\record.json",
+    "current4": "development\\performance\\results\\phase12\\guard_final\\workers\\current4\\record.json",
+    "baseline4": "development\\performance\\results\\phase12\\guard_final\\workers\\baseline4\\record.json"
+  },
+  "host_observation": {
+    "before": {
+      "time_utc": "2026-11-14T12:41:03.0526956Z",
+      "context": "Parent confirmed all repository heavy jobs ended and these unrelated servers were idle; servers are observed read-only and left untouched.",
+      "observed_processes": [
+        {
+          "Id": 70524,
+          "ProcessName": "python",
+          "CPU": 56.96875
+        },
+        {
+          "Id": 116568,
+          "ProcessName": "python",
+          "CPU": 39.015625
+        }
+      ]
+    },
+    "after": {
+      "time_utc": "2026-11-14T12:44:36.6720782Z",
+      "context": "Read-only observation after all eight serial performance workers exited; listed unrelated servers remain untouched.",
+      "observed_processes": [
+        {
+          "Id": 70524,
+          "ProcessName": "python",
+          "CPU": 57
+        },
+        {
+          "Id": 116568,
+          "ProcessName": "python",
+          "CPU": 39.046875
+        }
+      ]
+    },
+    "known_unrelated_server_cpu_seconds_during_guard": {
+      "70524": 0.03125,
+      "116568": 0.03125
+    },
+    "scope": "Repository correctness/example jobs had exited before the guard. Known unrelated servers were observed read-only, left untouched, and show only the cumulative CPU activity recorded here. This is not a complete system CPU-load profile."
+  },
+  "compiled_graph_comparison": {
+    "pg_compiled_hp_scalar": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        1405
+      ]
+    },
+    "pg_compiled_hp_batch1024": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        832
+      ]
+    },
+    "pg_compiled_full_state_and_dTdh": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        1487
+      ]
+    },
+    "pg_compiled_compressor_with_status": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        1035
+      ]
+    },
+    "bicubic_compiled_hp_scalar": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        1329
+      ]
+    },
+    "bicubic_compiled_hp_batch1024": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        669
+      ]
+    },
+    "bicubic_compiled_full_state_and_dTdh": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        1466
+      ]
+    },
+    "bicubic_compiled_compressor_with_status": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        4238
+      ]
+    },
+    "callback_compiled_pt_scalar": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        229
+      ]
+    },
+    "callback_compiled_pt_batch16": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        279
+      ]
+    },
+    "callback_compiled_full_state_and_dhdT_scalar": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        264
+      ]
+    },
+    "callback_compiled_full_state_and_dhdT_batch16": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        321
+      ]
+    },
+    "binary_callback_compiled_pt_scalar": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        193
+      ]
+    },
+    "binary_callback_compiled_full_state_and_dhdT_scalar": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        228
+      ]
+    },
+    "binary_callback_compiled_pt_batch16": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        247
+      ]
+    },
+    "binary_callback_compiled_full_state_and_dhdT_batch16": {
+      "all_eight_workers_identical": true,
+      "instruction_counts": [
+        289
+      ]
+    }
+  },
+  "source_sha256": "21202218d43f9c44a6639e325ae2a5d2a721c0443f7865f4c0fbe9d7979699c0",
+  "current_source_sha256": "21202218d43f9c44a6639e325ae2a5d2a721c0443f7865f4c0fbe9d7979699c0",
+  "matched_warmed_cases": 26,
+  "all_within_budget": true,
+  "numerical_digests": {
+    "arrays_per_worker": 640,
+    "worker_count": 8,
+    "all_workers_match": true,
+    "table_arrays": {
+      "equilibrium_CO2_16x16": 280,
+      "metastable_Nitrogen_liquid_16x16": 360
+    },
+    "comparison": "Exact finite-value bit patterns, shapes and dtypes; NaN masks compared separately with paired NaNs."
+  },
+  "worker_sources": {
+    "baseline1": {
+      "source_sha256": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+      "import_path": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\performance\\results\\phase12\\guard_final\\baseline_package\\jaxprop\\__init__.py",
+      "source_unchanged_during_run": true
+    },
+    "current1": {
+      "source_sha256": "21202218d43f9c44a6639e325ae2a5d2a721c0443f7865f4c0fbe9d7979699c0",
+      "import_path": "C:\\Users\\roagr\\git_projects\\jaxprop\\jaxprop\\__init__.py",
+      "source_unchanged_during_run": true
+    },
+    "current2": {
+      "source_sha256": "21202218d43f9c44a6639e325ae2a5d2a721c0443f7865f4c0fbe9d7979699c0",
+      "import_path": "C:\\Users\\roagr\\git_projects\\jaxprop\\jaxprop\\__init__.py",
+      "source_unchanged_during_run": true
+    },
+    "baseline2": {
+      "source_sha256": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+      "import_path": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\performance\\results\\phase12\\guard_final\\baseline_package\\jaxprop\\__init__.py",
+      "source_unchanged_during_run": true
+    },
+    "baseline3": {
+      "source_sha256": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+      "import_path": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\performance\\results\\phase12\\guard_final\\baseline_package\\jaxprop\\__init__.py",
+      "source_unchanged_during_run": true
+    },
+    "current3": {
+      "source_sha256": "21202218d43f9c44a6639e325ae2a5d2a721c0443f7865f4c0fbe9d7979699c0",
+      "import_path": "C:\\Users\\roagr\\git_projects\\jaxprop\\jaxprop\\__init__.py",
+      "source_unchanged_during_run": true
+    },
+    "current4": {
+      "source_sha256": "21202218d43f9c44a6639e325ae2a5d2a721c0443f7865f4c0fbe9d7979699c0",
+      "import_path": "C:\\Users\\roagr\\git_projects\\jaxprop\\jaxprop\\__init__.py",
+      "source_unchanged_during_run": true
+    },
+    "baseline4": {
+      "source_sha256": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+      "import_path": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\performance\\results\\phase12\\guard_final\\baseline_package\\jaxprop\\__init__.py",
+      "source_unchanged_during_run": true
+    }
+  },
+  "native_hlo": {
+    "case_count": 8,
+    "all_eight_workers_identical": true,
+    "callbacks_present": false,
+    "cases": {
+      "pg_compiled_hp_scalar": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          1405
+        ]
+      },
+      "pg_compiled_hp_batch1024": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          832
+        ]
+      },
+      "pg_compiled_full_state_and_dTdh": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          1487
+        ]
+      },
+      "pg_compiled_compressor_with_status": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          1035
+        ]
+      },
+      "bicubic_compiled_hp_scalar": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          1329
+        ]
+      },
+      "bicubic_compiled_hp_batch1024": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          669
+        ]
+      },
+      "bicubic_compiled_full_state_and_dTdh": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          1466
+        ]
+      },
+      "bicubic_compiled_compressor_with_status": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          4238
+        ]
+      }
+    }
+  },
+  "comparison_counts": {
+    "cross_version_finite_values": 97976,
+    "cross_version_paired_unavailable_values": 712,
+    "mismatches": 0
+  },
+  "setup_summary": {
+    "perfect_gas_construction": {
+      "baseline": {
+        "median_ms": 56.411699999999996,
+        "min_ms": 51.460800000000006,
+        "max_ms": 73.1772,
+        "samples": 4
+      },
+      "current": {
+        "median_ms": 57.328500000000005,
+        "min_ms": 54.916,
+        "max_ms": 77.3805,
+        "samples": 4
+      },
+      "ratio": 1.0162519477342469
+    },
+    "bicubic_fresh_generation": {
+      "baseline": {
+        "median_ms": 1575.0164,
+        "min_ms": 1472.4495,
+        "max_ms": 2147.402,
+        "samples": 4
+      },
+      "current": {
+        "median_ms": 1504.4427999999998,
+        "min_ms": 1456.8695,
+        "max_ms": 1604.2607,
+        "samples": 4
+      },
+      "ratio": 0.9551918316533083
+    },
+    "bicubic_initial_cached_loading": {
+      "baseline": {
+        "median_ms": 92.41015,
+        "min_ms": 76.5492,
+        "max_ms": 123.6688,
+        "samples": 4
+      },
+      "current": {
+        "median_ms": 92.04294999999999,
+        "min_ms": 86.73780000000001,
+        "max_ms": 97.556,
+        "samples": 4
+      },
+      "ratio": 0.9960264105187578
+    },
+    "source_construction": {
+      "baseline": {
+        "median_ms": 6.988849999999999,
+        "min_ms": 6.798,
+        "max_ms": 8.2523,
+        "samples": 4
+      },
+      "current": {
+        "median_ms": 7.0189,
+        "min_ms": 6.0485,
+        "max_ms": 7.6113,
+        "samples": 4
+      },
+      "ratio": 1.0042997059602081
+    },
+    "callback_construction": {
+      "baseline": {
+        "median_ms": 7.125500000000001,
+        "min_ms": 6.764600000000001,
+        "max_ms": 8.497,
+        "samples": 4
+      },
+      "current": {
+        "median_ms": 6.94855,
+        "min_ms": 5.8246,
+        "max_ms": 7.7207,
+        "samples": 4
+      },
+      "ratio": 0.9751666549715808
+    },
+    "water_source_construction": {
+      "baseline": {
+        "median_ms": 6.895300000000001,
+        "min_ms": 6.0394,
+        "max_ms": 8.1186,
+        "samples": 4
+      },
+      "current": {
+        "median_ms": 6.41225,
+        "min_ms": 5.7368999999999994,
+        "max_ms": 7.5043,
+        "samples": 4
+      },
+      "ratio": 0.9299450350238567
+    },
+    "binary_callback_component_construction": {
+      "baseline": {
+        "median_ms": 13.7925,
+        "min_ms": 12.960600000000001,
+        "max_ms": 19.2106,
+        "samples": 4
+      },
+      "current": {
+        "median_ms": 14.155449999999998,
+        "min_ms": 11.7349,
+        "max_ms": 15.2315,
+        "samples": 4
+      },
+      "ratio": 1.0263150262823997
+    },
+    "binary_callback_construction": {
+      "baseline": {
+        "median_ms": 3.954,
+        "min_ms": 3.3621999999999996,
+        "max_ms": 6.8346,
+        "samples": 4
+      },
+      "current": {
+        "median_ms": 3.7905499999999996,
+        "min_ms": 3.2085,
+        "max_ms": 4.1753,
+        "samples": 4
+      },
+      "ratio": 0.958662114314618
+    },
+    "metastable_liquid_fresh_generation": {
+      "baseline": {
+        "median_ms": 5123.1888500000005,
+        "min_ms": 3915.3672,
+        "max_ms": 5502.1292,
+        "samples": 4
+      },
+      "current": {
+        "median_ms": 4328.6948,
+        "min_ms": 3802.6693,
+        "max_ms": 4883.6774000000005,
+        "samples": 4
+      },
+      "ratio": 0.844921966911292
+    }
+  },
+  "interpretation": {
+    "runtime": "All 26 median ratios satisfy the declared 1.10 checkpoint budget. Individual worker ratios vary substantially, including unchanged native controls; apparent native gains are not attributed to arithmetic changes.",
+    "metastable_inverse": "One duplicate final source flash was removed. This workload measures a pressure-enthalpy inverse median ratio of 0.9109033008516726; worker variability limits generalization.",
+    "setup": "Four initial observations per version, reported separately; not a dedicated repeated warmed setup benchmark.",
+    "scope": "Phase11 source checkpoint, not the formal comparison against a downloaded PyPI release or a whole ThermOpt application benchmark."
+  }
+}

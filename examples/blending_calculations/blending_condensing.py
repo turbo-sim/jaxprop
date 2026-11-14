@@ -1,92 +1,93 @@
+from pathlib import Path
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from examples._common import example_options
+import jaxprop as jp
+
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 import jaxprop.coolprop as jxp
 from jaxprop import Fluid
 
-# Choose API level
-PROPERTY_API = "high_level"  # Toggle between high-level and low-level interface
 
-# Plot options and colors
-jxp.set_plot_options(grid=False)
-colors = jxp.COLORS_MATLAB
-fig_dir = "output"
-os.makedirs(fig_dir, exist_ok=True)
+def main(argv=None):
+    """Run the declared scientific case; quick profiles reduce sampling only."""
+    options = example_options(__file__, argv, description=__doc__)
 
-# Define fluid
-fluid = Fluid(name="water", backend="HEOS")
+    # Plot options and colors
+    jxp.set_plot_options(grid=False)
+    colors = jxp.COLORS_MATLAB
+    fig_dir = options.output_dir
+    os.makedirs(fig_dir, exist_ok=True)
 
-# Create figure and labels
-fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14.0, 4.0))
-ax1.set_xlabel("Entropy (J/kg/K)")
-ax1.set_ylabel("Temperature (K)")
-ax2.set_xlabel("Pressure (Pa)")
-ax2.set_ylabel("Density (kg/m$^3$)")
-ax3.set_xlabel("Pressure (Pa)")
-ax3.set_ylabel("Generalized quality (-)")
-prop_x1, prop_y1 = "entropy", "temperature"
-prop_x2, prop_y2 = "pressure", "density"
-prop_x3, prop_y3 = "pressure", "quality_mass"
-axes = [ax1, ax2, ax3]
-prop_pairs = [
-    (prop_x1, prop_y1),
-    (prop_x2, prop_y2),
-    (prop_x3, prop_y3),
-]
+    # Define fluid
+    fluid = Fluid(name="water", backend="HEOS")
 
-# Plot phase diagram
-fluid.plot_phase_diagram(
-    prop_x1,
-    prop_y1,
-    axes=ax1,
-    plot_critical_point=True,
-    plot_quality_isolines=True,
-    plot_pseudocritical_line=False,
-    plot_spinodal_line=False,
-)
+    # Create figure and labels
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14.0, 4.0))
+    ax1.set_xlabel("Entropy (J/kg/K)")
+    ax1.set_ylabel("Temperature (K)")
+    ax2.set_xlabel("Pressure (Pa)")
+    ax2.set_ylabel("Density (kg/m$^3$)")
+    ax3.set_xlabel("Pressure (Pa)")
+    ax3.set_ylabel("Generalized quality (-)")
+    prop_x1, prop_y1 = "entropy", "temperature"
+    prop_x2, prop_y2 = "pressure", "density"
+    prop_x3, prop_y3 = "pressure", "quality_mass"
+    axes = [ax1, ax2, ax3]
+    prop_pairs = [
+        (prop_x1, prop_y1),
+        (prop_x2, prop_y2),
+        (prop_x3, prop_y3),
+    ]
 
-# Define inlet state
-p_in = 0.6 * fluid.critical_point.p
-dT_superheating = 5
-if PROPERTY_API == "high_level":
+    # Plot phase diagram
+    jp.plot_phase_diagram(
+        fluid,
+        prop_x1,
+        prop_y1,
+        axes=ax1,
+        plot_critical_point=True,
+        plot_quality_isolines=True,
+        plot_pseudocritical_line=False,
+        plot_spinodal_line=False,
+        N=options.points(100),
+    )
+
+    # Define inlet state
+    p_in = 0.6 * fluid.critical_point.p
+    dT_superheating = 5
     props_in = fluid.get_state(jxp.PQ_INPUTS, p_in, 1)
     props_in = fluid.get_state(
         jxp.PT_INPUTS, p_in, props_in["temperature"] + dT_superheating
     )
-elif PROPERTY_API == "low_level":
-    props_in = jxp.compute_properties_coolprop(fluid._AS, jxp.PQ_INPUTS, p_in, 0)
-    props_in = jxp.compute_properties_coolprop(
-        fluid.abstract_state,
-        jxp.PT_INPUTS,
-        p_in,
-        props_in["temperature"] + dT_superheating,
-    )
-else:
-    raise ValueError(f"Unknown value for PROPERTY_API={PROPERTY_API}.")
 
-# Determine phase change direction
-if props_in["entropy"] > fluid.critical_point.s:
-    phase_change = "condensation"
-    Q_onset = 0.99
-    Q_width = 0.03
-else:
-    phase_change = "evaporation"
-    Q_onset = 0.01
-    Q_width = 0.03
+    # Determine phase change direction
+    if props_in["entropy"] > fluid.critical_point.s:
+        phase_change = "condensation"
+        Q_onset = 0.99
+        Q_width = 0.03
+    else:
+        phase_change = "evaporation"
+        Q_onset = 0.01
+        Q_width = 0.03
 
-# Initial guesses
-rhoT_guess_metastable = [props_in["density"], props_in["temperature"]]
-rhoT_guess_equilibrium = [props_in["density"], props_in["temperature"]]
+    # Initial guesses
+    rhoT_guess_metastable = [props_in["density"], props_in["temperature"]]
+    rhoT_guess_equilibrium = [props_in["density"], props_in["temperature"]]
 
-# Keep each physical model in its own collection. A constitutively blended
-# state has a different model/reference identity from either source-EOS branch.
-blended_states, equilibrium_states, metastable_states = [], [], []
+    # Keep each physical model in its own collection. A constitutively blended
+    # state has a different model/reference identity from either source-EOS branch.
+    blended_states, equilibrium_states, metastable_states = [], [], []
 
-# Loop over pressures
-p_values = np.linspace(p_in, p_in / 1.5, 100)
-for i, p_out in enumerate(p_values):
-    # Get properties
-    if PROPERTY_API == "high_level":
+    # Loop over pressures
+    p_values = np.linspace(p_in, p_in / 1.5, options.points(100))
+    for i, p_out in enumerate(p_values):
+        # Get properties
         props_blend, props_eq, props_meta = fluid.get_state_blending(
             prop_1="p",
             prop_1_value=p_out,
@@ -103,53 +104,37 @@ for i, p_out in enumerate(p_values):
             print_convergence=False,
             solver_algorithm="lm",
         )
-    elif PROPERTY_API == "low_level":
-        props_blend, props_eq, props_meta = jxp.compute_properties(
-            fluid._AS,
-            prop_1="p",
-            prop_1_value=p_out,
-            prop_2="s",
-            prop_2_value=props_in["entropy"],
-            rhoT_guess_equilibrium=rhoT_guess_equilibrium,
-            rhoT_guess_metastable=rhoT_guess_metastable,
-            calculation_type="blending",
-            phase_change=phase_change,
-            blending_variable="Q",
-            blending_onset=Q_onset,
-            blending_width=Q_width,
-            generalize_quality=True,
-            supersaturation=True,
-            print_convergence=False,
-            solver_algorithm="lm",
-        )
-    else:
-        raise ValueError(f"Unknown value for PROPERTY_API={PROPERTY_API}.")
 
-    # Update guesses
-    rhoT_guess_metastable = [props_meta["density"], props_meta["temperature"]]
-    rhoT_guess_equilibrium = [props_eq["density"], props_eq["temperature"]]
-    blended_states.append(props_blend)
-    equilibrium_states.append(props_eq)
-    metastable_states.append(props_meta)
+        # Update guesses
+        rhoT_guess_metastable = [props_meta["density"], props_meta["temperature"]]
+        rhoT_guess_equilibrium = [props_eq["density"], props_eq["temperature"]]
+        blended_states.append(props_blend)
+        equilibrium_states.append(props_eq)
+        metastable_states.append(props_meta)
 
-    # Plot with labels only in first iteration
-    for ax, (x, y) in zip(axes, prop_pairs):
-        label_eq = "Equilibrium" if i == 0 else None
-        label_meta = "Metastable" if i == 0 else None
-        label_blend = "Blended" if i == 0 else None
-        ax.plot(props_eq[x], props_eq[y], marker="o", color=colors[0], label=label_eq)
-        ax.plot(
-            props_meta[x], props_meta[y], marker="o", color=colors[1], label=label_meta
-        )
-        ax.plot(
-            props_blend[x],
-            props_blend[y],
-            marker="o",
-            color=colors[3],
-            label=label_blend,
-        )
+        # Plot with labels only in first iteration
+        for ax, (x, y) in zip(axes, prop_pairs):
+            label_eq = "Equilibrium" if i == 0 else None
+            label_meta = "Metastable" if i == 0 else None
+            label_blend = "Blended" if i == 0 else None
+            ax.plot(
+                props_eq[x], props_eq[y], marker="o", color=colors[0], label=label_eq
+            )
+            ax.plot(
+                props_meta[x],
+                props_meta[y],
+                marker="o",
+                color=colors[1],
+                label=label_meta,
+            )
+            ax.plot(
+                props_blend[x],
+                props_blend[y],
+                marker="o",
+                color=colors[3],
+                label=label_blend,
+            )
 
-if PROPERTY_API == "high_level":
     blended, equilibrium, metastable = (
         jxp.FluidState.stack(states)
         for states in (blended_states, equilibrium_states, metastable_states)
@@ -179,10 +164,17 @@ if PROPERTY_API == "high_level":
         assert np.all(value >= np.minimum(first, second) - margin)
         assert np.all(value <= np.maximum(first, second) + margin)
 
-# Add legend to one axis only
-ax3.legend(loc="upper right")
-plt.tight_layout(pad=1)
+    # Add legend to one axis only
+    ax3.legend(loc="upper right")
+    plt.tight_layout(pad=1)
 
-# Show figures
-if not os.environ.get("DISABLE_PLOTS"):
-    plt.show()
+    # Show figures
+    options.check_states(locals())
+    options.record(
+        "execution", "Scientific example completed; see numerical-check records."
+    )
+    return options.finish()
+
+
+if __name__ == "__main__":
+    main()

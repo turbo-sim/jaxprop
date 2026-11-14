@@ -1,7 +1,7 @@
-jaxprop.components.nozzle\_model\_core module
+jaxprop.bicubic.bicubic\_interpolation module
 =============================================
 
-.. automodule:: jaxprop.components.nozzle_model_core
+.. automodule:: jaxprop.bicubic.bicubic_interpolation
    :members:
    :undoc-members:
    :show-inheritance:

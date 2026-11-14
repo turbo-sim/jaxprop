@@ -1,3 +1,17 @@
+"""Demo interpolation midpoints.
+
+Use --profile quick for a smaller declared study; --profile full retains the
+full scientific resolution. Outputs and table caches use explicit CLI paths.
+"""
+
+from pathlib import Path
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from examples._common import example_options
+
 import os
 import numpy as np
 import jax.numpy as jnp
@@ -6,156 +20,215 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.colors import LogNorm
 
-jxp.set_plot_options()
 
-# ---------------------------
-# Configuration 
-# ---------------------------
-outdir = "fluid_tables"
-fluid_name = "CO2"
-h_min = 200e3  # J/kg
-h_max = 600e3  # J/kg
-p_min = 2e6    # Pa
-p_max = 20e6   # Pa
-N_h = 100
-N_p = 100
+def main(argv=None):
+    options = example_options(__file__, argv, description=__doc__)
+    jxp.set_plot_options()
 
-# ---------------------------
-# Build models
-# ---------------------------
-fluid_bicubic = jxp.Fluid(
-    name=fluid_name,
-    method="bicubic",
-    backend="HEOS",
-    table_options={
-        "h_min": h_min,
-        "h_max": h_max,
-        "p_min": p_min,
-        "p_max": p_max,
-        "N_h": N_h,
-        "N_p": N_p,
-        "table_dir": outdir,
-    },
-)
+    # ---------------------------
+    # Configuration
+    # ---------------------------
+    outdir = str(options.output_dir)
+    fluid_name = "CO2"
+    h_min = 200e3  # J/kg
+    h_max = 600e3  # J/kg
+    p_min = 2e6  # Pa
+    p_max = 20e6  # Pa
+    N_h = 100 if options.profile == "full" else 12
+    N_p = 100 if options.profile == "full" else 12
 
-fluid_cp = jxp.Fluid(fluid_name, method="coolprop_jax")
-
-# ---------------------------
-# Midpoint grid (evaluation points)
-# ---------------------------
-h_min = 100e3  # J/kg
-h_max = 600e3  # J/kg
-p_min = 1e6    # Pa
-p_max = 30e6   # Pa
-N_h = 50
-N_p = 50
-h_nodes = jnp.linspace(h_min, h_max, N_h)
-p_nodes = jnp.exp(jnp.linspace(jnp.log(p_min), jnp.log(p_max), N_p))
-h_vals = 0.5 * (h_nodes[:-1] + h_nodes[1:])
-p_vals = 0.5 * (p_nodes[:-1] + p_nodes[1:])
-H_mesh, P_mesh = np.meshgrid(h_vals, p_vals, indexing="ij")
-
-# ---------------------------
-# Evaluate states once (vectorized)
-# ---------------------------
-test = fluid_bicubic.get_state(jxp.HmassP_INPUTS, 700e3, 5e6)
-print(test)
-interp_grid = fluid_bicubic.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh)
-true_grid   = fluid_cp.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh, errors="mask")
-
-# ---------------------------
-# Collect error statistics
-# ---------------------------
-error_summary = []
-properties = [ "T", "d", "e", "s", "a", "G"]
-
-for prop in properties:
-    interp_val = np.array(interp_grid[prop])
-    true_val   = np.array(true_grid[prop])
-
-    abs_err = np.abs(interp_val - true_val)
-    rel_err = abs_err / np.maximum(np.abs(true_val), 1e-30) * 100.0  # %
-
-    error_summary.append({
-        "property": prop,
-        "abs_min": np.nanmin(abs_err),
-        "abs_max": np.nanmax(abs_err),
-        "rel_min": np.nanmin(rel_err),
-        "rel_max": np.nanmax(rel_err),
-        "rel_mean": np.nanmean(rel_err),
-        "field": rel_err,
-    })
-
-# ---------------------------
-# Print error summary table
-# ---------------------------
-print("\nProperty interpolation error summary (evaluated at cell midpoints):")
-print(f"{'Prop':<5} {'| Abs min':>12} {'Abs max':>12} {'% min':>12} {'% max':>12} {'% mean':>12}")
-print("-" * 70)
-for e in error_summary:
-    print(f"{e['property']:<5} | {e['abs_min']:>12.3e} {e['abs_max']:>12.3e} "
-          f"{e['rel_min']:>12.3e} {e['rel_max']:>12.3e} {e['rel_mean']:>12.3e}")
-
-
-
-# ---------------------------
-# Plot subplot grid for selected properties
-# ---------------------------
-n_props = len(properties)
-ncols = 3
-nrows = int(np.ceil(n_props / ncols))
-
-# Use GridSpec to reserve a narrow column for the colorbar
-fig = plt.figure(figsize=(4*ncols, 3*nrows))
-gs = gridspec.GridSpec(nrows, ncols+1, width_ratios=[1]*ncols + [0.05], figure=fig)
-
-axes = []
-for i in range(n_props):
-    r, c = divmod(i, ncols)
-    ax = fig.add_subplot(gs[r, c])
-    axes.append(ax)
-
-# Color levels
-levels = np.logspace(-6, 2, 9)
-
-# Plot each property
-for ax, prop in zip(axes, properties):
-    e = next(x for x in error_summary if x["property"] == prop)
-    rel_err_field = np.clip(e["field"], levels[0], levels[-1])
-
-    # Phase diagram background
-    fluid_cp.fluid.plot_phase_diagram(
-        x_prop="enthalpy", y_prop="pressure", axes=ax,
-        x_scale="linear", y_scale="log"
+    # ---------------------------
+    # Build models
+    # ---------------------------
+    fluid_bicubic = jxp.Fluid(
+        name=fluid_name,
+        method="bicubic",
+        backend="HEOS",
+        table_options={
+            "h_min": h_min,
+            "h_max": h_max,
+            "p_min": p_min,
+            "p_max": p_max,
+            "N_h": N_h,
+            "N_p": N_p,
+            "table_dir": str(options.table_dir),
+        },
     )
 
-    # Contour
-    c = ax.contourf(
-        H_mesh, P_mesh, rel_err_field,
-        levels=levels,
-        norm=LogNorm(vmin=levels[0], vmax=levels[-1]),
-        cmap="viridis", extend="both"
+    fluid_cp = jxp.Fluid(fluid_name, method="coolprop_jax")
+
+    # ---------------------------
+    # Midpoint grid (evaluation points)
+    # ---------------------------
+    # Compare within the configured rectangle. The original study silently
+    # changed its bounds here, then requested extrapolation beyond the table.
+    N_validation = 50 if options.profile == "full" else 12
+    h_nodes = jnp.linspace(h_min, h_max, N_validation)
+    p_nodes = jnp.exp(jnp.linspace(jnp.log(p_min), jnp.log(p_max), N_validation))
+    h_vals = 0.5 * (h_nodes[:-1] + h_nodes[1:])
+    p_vals = 0.5 * (p_nodes[:-1] + p_nodes[1:])
+    H_mesh, P_mesh = np.meshgrid(h_vals, p_vals, indexing="ij")
+
+    # ---------------------------
+    # Evaluate states once (vectorized)
+    # ---------------------------
+    outside = fluid_bicubic.get_state(jxp.HmassP_INPUTS, 700e3, 5e6, errors="mask")
+    assert not outside.valid  # the deliberately out-of-bounds request is explicit
+    interp_grid = fluid_bicubic.get_state(
+        jxp.HmassP_INPUTS, H_mesh, P_mesh, errors="mask"
+    )
+    true_grid = fluid_cp.get_state(jxp.HmassP_INPUTS, H_mesh, P_mesh, errors="mask")
+
+    # ---------------------------
+    # Collect error statistics
+    # ---------------------------
+    error_summary = []
+    properties = ["T", "d", "e", "s", "a", "G"]
+
+    for prop in properties:
+        interp_val = np.array(interp_grid.raw_property(prop))
+        true_val = np.array(true_grid.raw_property(prop))
+
+        abs_err = np.abs(interp_val - true_val)
+        rel_err = abs_err / np.maximum(np.abs(true_val), 1e-30) * 100.0  # %
+
+        error_summary.append(
+            {
+                "property": prop,
+                "finite_comparisons": int(np.count_nonzero(np.isfinite(abs_err))),
+                "requested_points": int(abs_err.size),
+                "abs_min": np.nanmin(abs_err),
+                "abs_max": np.nanmax(abs_err),
+                "rel_min": np.nanmin(rel_err),
+                "rel_max": np.nanmax(rel_err),
+                "rel_mean": np.nanmean(rel_err),
+                "field": rel_err,
+            }
+        )
+
+    # ---------------------------
+    # Print error summary table
+    # ---------------------------
+    print("\nProperty interpolation error summary (evaluated at cell midpoints):")
+    print(
+        f"{'Prop':<5} {'| Abs min':>12} {'Abs max':>12} {'% min':>12} {'% max':>12} {'% mean':>12}"
+    )
+    print("-" * 70)
+    for e in error_summary:
+        print(
+            f"{e['property']:<5} | {e['abs_min']:>12.3e} {e['abs_max']:>12.3e} "
+            f"{e['rel_min']:>12.3e} {e['rel_max']:>12.3e} {e['rel_mean']:>12.3e}"
+        )
+
+    # ---------------------------
+    # Plot subplot grid for selected properties
+    # ---------------------------
+    n_props = len(properties)
+    ncols = 3
+    nrows = int(np.ceil(n_props / ncols))
+
+    # Use GridSpec to reserve a narrow column for the colorbar
+    fig = plt.figure(figsize=(4 * ncols, 3 * nrows))
+    gs = gridspec.GridSpec(
+        nrows, ncols + 1, width_ratios=[1] * ncols + [0.05], figure=fig
     )
 
-    ax.set_title(f"{prop} [% error]", fontsize=11)
-    ax.set_xlabel("Enthalpy [J/kg]")
-    ax.set_ylabel("Pressure [Pa]")
+    axes = []
+    for i in range(n_props):
+        r, c = divmod(i, ncols)
+        ax = fig.add_subplot(gs[r, c])
+        axes.append(ax)
 
-# Colorbar axis on the right
-cax = fig.add_subplot(gs[:, -1])
-cb = fig.colorbar(c, cax=cax)
-cb.set_ticks(levels)
-cb.set_label("Relative error [%] (log scale)")
+    # Color levels
+    levels = np.logspace(-6, 2, 9)
 
-# Remove unused axes (if any)
-total_axes = nrows * ncols
-for i in range(len(properties), total_axes):
-    r, c = divmod(i, ncols)
-    fig.delaxes(fig.add_subplot(gs[r, c]))
+    # Plot each property
+    for ax, prop in zip(axes, properties):
+        e = next(x for x in error_summary if x["property"] == prop)
+        rel_err_field = np.clip(e["field"], levels[0], levels[-1])
 
-plt.tight_layout(pad=1)
+        # Phase diagram background
+        jxp.plot_phase_diagram(
+            fluid_cp,
+            x_prop="enthalpy",
+            y_prop="pressure",
+            axes=ax,
+            x_scale="linear",
+            y_scale="log",
+        )
+
+        # Contour
+        c = ax.contourf(
+            H_mesh,
+            P_mesh,
+            rel_err_field,
+            levels=levels,
+            norm=LogNorm(vmin=levels[0], vmax=levels[-1]),
+            cmap="viridis",
+            extend="both",
+        )
+
+        ax.set_title(f"{prop} [% error]", fontsize=11)
+        ax.set_xlabel("Enthalpy [J/kg]")
+        ax.set_ylabel("Pressure [Pa]")
+
+    # Colorbar axis on the right
+    cax = fig.add_subplot(gs[:, -1])
+    cb = fig.colorbar(c, cax=cax)
+    cb.set_ticks(levels)
+    cb.set_label("Relative error [%] (log scale)")
+
+    # Remove unused axes (if any)
+    total_axes = nrows * ncols
+    for i in range(len(properties), total_axes):
+        r, c = divmod(i, ncols)
+        fig.delaxes(fig.add_subplot(gs[r, c]))
+
+    plt.tight_layout(pad=1)
+
+    # Show figures
+
+    options.record(
+        "settings",
+        {
+            "fluid_name": fluid_name,
+            "h_min": h_min,
+            "h_max": h_max,
+            "p_min": p_min,
+            "p_max": p_max,
+            "N_h": N_h,
+            "N_p": N_p,
+        },
+    )
+    eligible = np.asarray(interp_grid.valid) & np.asarray(true_grid.valid)
+    assert np.any(eligible)
+    np.testing.assert_allclose(
+        np.asarray(interp_grid.raw_property("h"))[eligible],
+        H_mesh[eligible],
+        rtol=1e-12,
+    )
+    np.testing.assert_allclose(
+        np.asarray(interp_grid.raw_property("p"))[eligible],
+        P_mesh[eligible],
+        rtol=1e-12,
+    )
+    options.record(
+        "coverage",
+        dict(
+            requested=int(H_mesh.size),
+            eligible=int(np.count_nonzero(eligible)),
+            unavailable_phase_boundary_cells=int(
+                H_mesh.size - np.count_nonzero(interp_grid.valid)
+            ),
+            outside_request_rejected=True,
+        ),
+    )
+    options.record(
+        "error_summary",
+        [{k: v for k, v in row.items() if k != "field"} for row in error_summary],
+    )
+    return options.finish()
 
 
-# Show figures
-if not os.environ.get("DISABLE_PLOTS"):
-    plt.show()
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,44 @@
+{
+  "date_utc": "2026-11-14T12:36:16.622285+00:00",
+  "before_package_sha256": "d4049f47413af829aaa7d836a38d411f8b8c73f44ade3abcf51ef74502d5e853",
+  "after_package_sha256": "21202218d43f9c44a6639e325ae2a5d2a721c0443f7865f4c0fbe9d7979699c0",
+  "changed_package_files": [
+    "jaxprop/math.py"
+  ],
+  "numerical_ast_unchanged": true,
+  "ast_comparison": "Equal parsed ASTs after removing ONLY actual first-statement module/class/function docstrings. Other string literals and all executable expressions are retained; AST location metadata is excluded.",
+  "original_math_file_sha256": "d42b5da53674148ddf5e44099b2a7694380a5f257b9b8f9b9d58ae72eb240b16",
+  "current_math_file_sha256": "3787b55b6a1e9ec2b8e29cb7e3fd445169f884b69cb5b874056ef9687ede5f43",
+  "original_preserved_at": "development/example_audit/results/phase12_docs/math_before_docstrings.py",
+  "corrections": [
+    "Two-input element-wise signatures, broadcasting and actual alpha-magnitude semantics.",
+    "Distinct Boltzmann weighted-mean and shifted log-sum-exp equations, bounds and floating-point details.",
+    "Positive-input p-norm domain and signed exponent, with no claimed new runtime validation.",
+    "Correct x*tanh(x/epsilon) absolute-smoothing formula, logarithmic alias and method-specific epsilon scales.",
+    "Correct hyperbolic sigmoid alpha default of 1 and its signed scale semantics."
+  ],
+  "focused_helper_tests": {
+    "command": "python -m pytest tests/test_phase11_helpers.py -c tests/pytest.ini -q --tb=short",
+    "passed": 19,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "status": "passed",
+    "junit_xml": "development/example_audit/results/phase12_docs/helper-tests.xml"
+  },
+  "sphinx": {
+    "command": "python -m sphinx -E -b html docs development/example_audit/results/phase12_docs/html_final -d development/example_audit/results/phase12_docs/doctrees_final --keep-going -W -w development/example_audit/results/phase12_docs/sphinx-warnings-accepted.log",
+    "source_pages": 28,
+    "warnings": 0,
+    "exit_code": 0,
+    "status": "passed"
+  },
+  "prior_full_suite": {
+    "package_sha256": "d4049f47413af829aaa7d836a38d411f8b8c73f44ade3abcf51ef74502d5e853",
+    "passed": 2951,
+    "failed": 0,
+    "skipped": 0,
+    "comparisons": 54272,
+    "provenance": "Root-reported completed full suite before this documentation-only change; original execution records keep their original source hash."
+  }
+}

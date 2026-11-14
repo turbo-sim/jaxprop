@@ -1,0 +1,55 @@
+{
+  "date_utc": "2026-11-14T12:37:40.050556+00:00",
+  "scope": "Generated example workflow index and development API migration/lifecycle documentation; local Sphinx build only.",
+  "package_source_sha256": "21202218d43f9c44a6639e325ae2a5d2a721c0443f7865f4c0fbe9d7979699c0",
+  "package_source_files": 43,
+  "catalogue_sha256": "8a76c1217ad025fb44c1525ffef319323fb874271267a29da04fa110a13be2ed",
+  "index_sha256": "80ca050a216d6f7b93eced53dedd0fee10b599727758ef3a746f9a17dc8548dc",
+  "migration_sha256": "45197a5e1b83d261d8ada8dd12cad1f9094031d247def1b83b2be368202f1e82",
+  "docstring_equivalence": "development/example_audit/phase12_docstring_equivalence.json",
+  "example_index": {
+    "total_original_programs": 65,
+    "kinds": {
+      "input-tool": 3,
+      "reference": 3,
+      "research-study": 3,
+      "scientific-study": 15,
+      "tutorial": 41
+    },
+    "standalone_programs": 59,
+    "all_catalogue_program_links_present": true,
+    "local_markdown_links_valid": true,
+    "math_delimiters": "dollar",
+    "research_accuracy_limitations_explicit": true
+  },
+  "sphinx": {
+    "clean_build": "python -m sphinx -E -b html docs development/example_audit/results/phase12_docs/html_final -d development/example_audit/results/phase12_docs/doctrees_final --keep-going -W -w development/example_audit/results/phase12_docs/sphinx-warnings-accepted.log",
+    "final_incremental_verification": "python -m sphinx -q -b html docs development/example_audit/results/phase12_docs/html_final -d development/example_audit/results/phase12_docs/doctrees_final --keep-going -W -w development/example_audit/results/phase12_docs/sphinx-warnings-accepted.log",
+    "exit_code": 0,
+    "warnings": 0,
+    "source_pages": 28,
+    "rendered_math_verified": true,
+    "navigation_links_verified": true,
+    "removed_obsolete_generated_api_stubs": 8,
+    "new_current_api_module_stubs": 11,
+    "output_path": "development/example_audit/results/phase12_docs/html_final",
+    "published": false
+  },
+  "hosted_ci": {
+    "configuration": ".github/workflows/verify_examples.yaml",
+    "configurations": [
+      ".github/workflows/verify_examples.yaml",
+      ".github/workflows/publish_to_pypi.yaml",
+      ".github/workflows/deploy_docs.yaml"
+    ],
+    "configuration_checks": [
+      "Library/example verification and both release test platforms use explicit tests scope and CPU/x64/HEOS settings; spreadsheet export dependencies are installed.",
+      "Release and documentation workflows install Poetry>=2.1,<3 for the repository lock-format version 2.1.",
+      "Documentation deployment uses a clean Sphinx build with warnings treated as errors.",
+      "PyPI publication is restricted to tag push events and cannot run for pull requests."
+    ],
+    "configuration_reviewed": true,
+    "remote_workflow_executed_by_this_task": false,
+    "status": "Configured; remote outcomes require actual hosted runs."
+  }
+}

@@ -1,0 +1,614 @@
+{
+  "date_utc": "2026-11-14T12:11:32.221840+00:00",
+  "package_sha256": "d4049f47413af829aaa7d836a38d411f8b8c73f44ade3abcf51ef74502d5e853",
+  "scope": "Bicubic scientific examples and explicit-input table tools; the central Phase12 runner supplies remaining per-profile execution acceptance.",
+  "source_files": [
+    {
+      "example": "examples/bicubic_interpolation/convert_pkl_to_csv.py",
+      "source_sha256": "ff96153482611d544f0333f292363fdc28b0bfff1d0b4e383d60b101d3b41f8c",
+      "kind": "input_tool",
+      "profiles": {
+        "full": "Explicit-input data tool",
+        "quick": "Explicit-input data tool",
+        "criteria": "Validated current schema and roundtrip/inspection; an actual input fixture must be supplied"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_derivatives_jax.py",
+      "source_sha256": "d325f469636b341a87b6e2e7fdae9dbae70567b3213c6326b67c5868e6d6a34a",
+      "kind": "scientific_demo",
+      "profiles": {
+        "full": "32x32 table,50x50 interior validation points",
+        "quick": "32x32 table,8x8 interior validation points",
+        "criteria": "Maximum absolute signed cp and acoustic derivative errors below unchanged0.01%; finite positive acoustic slope"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_grid_convergence.py",
+      "source_sha256": "78d1441764a79feebb8297128fef4e8ef9febc7f82e75880db1808d5811d928d",
+      "kind": "scientific_demo",
+      "profiles": {
+        "full": "N=8,16,32,64,128;30x30 validation",
+        "quick": "N=8,16;8x8 validation",
+        "criteria": "Finite RMS errors and refined-grid improvement; fourth-order line is a reference,not a guaranteed fit"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_interpolation_midpoints.py",
+      "source_sha256": "51b7daeb0b56f6cf56406680c20b08a0272c32ad6937b5f15303554dc61d74d4",
+      "kind": "scientific_demo",
+      "profiles": {
+        "full": "100x100 table,49x49 midpoint grid",
+        "quick": "12x12 table,11x11 midpoint grid",
+        "criteria": "Source/table-domain coverage, exact independent HP coordinates, visible phase gaps and property-error statistics"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_interpolation_midpoints_metastable.py",
+      "source_sha256": "c1246ebc131c17074eff23ee91b3bd2b251db9e33d36996c1b882f32c8cf8882",
+      "kind": "scientific_demo",
+      "profiles": {
+        "full": "40x40 table,39x39 midpoint grid",
+        "quick": "12x12 table,11x11 midpoint grid",
+        "criteria": "Physical Cv/K margins and complete homogeneous source reference calls; per-property errors"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_interpolation_serial.py",
+      "source_sha256": "121038525195476db61e7d1aebbadb9b1003e1b8ef537d6f2d9547d074a6c6a3",
+      "kind": "scientific_demo",
+      "profiles": {
+        "full": "30x30 table,50 scalar samples,5 repetitions",
+        "quick": "12x12 table,12 scalar samples,3 repetitions",
+        "criteria": "Complete-state synchronization,separate first calls,status coverage and finite successful cores; models physically distinct"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_interpolation_vectorized.py",
+      "source_sha256": "28614963fec4eae86d4ddf9908d8f257f6996cff91aef2bac33fb627ed723901",
+      "kind": "scientific_demo",
+      "profiles": {
+        "full": "30x30 table,1000-state batch,5 repetitions",
+        "quick": "12x12 table,64-state batch,3 repetitions",
+        "criteria": "Complete-state synchronization,separate first calls,status coverage and finite successful cores"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_metastable_calculations.py",
+      "source_sha256": "1de41ddc300a34efe9449509a23fc847c7578106d9679cc9b7cfac20d58b6f80",
+      "kind": "scientific_demo",
+      "profiles": {
+        "full": "Physical Water120x120,150 saturation points",
+        "quick": "Physical Water12x12,24 saturation points",
+        "criteria": "All sampled/interpolated stability guards,nine independentEOS checks,originalPT/HP roundtrip"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_metastable_single_point_comparison.py",
+      "source_sha256": "d1853826fa137f3123731c9def84fb56faa5708d96d3e6cfda98e89c11ec16d4",
+      "kind": "research_formal_EOS",
+      "profiles": {
+        "full": "Formal Nitrogen165x165",
+        "quick": "Formal Nitrogen24x24",
+        "criteria": "Selected HP/PT recovery within 1e-10 relative / 1e-7 J/kg absolute; formal whole-domain accuracy not certified"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_midpoints_metastable_comparison.py",
+      "source_sha256": "2782d1ef4e601f14d984c0e1610499874c96e6f6d8e2a64f2ecedf17d0c23394",
+      "kind": "research_formal_EOS",
+      "profiles": {
+        "full": "Formal Nitrogen 100x100,49x49 independent comparison",
+        "quick": "Formal Nitrogen24x24,49x49 independent comparison",
+        "criteria": "Visible response-pole gaps,finite comparison coverage,per-property errors; research-only whole-domain limit"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_saturation_midpoints.py",
+      "source_sha256": "d113db8bd1fa9ab1d0eb431c7e8ec05ee276e813a832418149162f5bf7585761",
+      "kind": "scientific_demo",
+      "profiles": {
+        "full": "Physical Nitrogen21x21,60 saturation nodes",
+        "quick": "Physical Nitrogen12x12,60 saturation nodes",
+        "criteria": "Finite in-range source references,relative errors,and explicit clipped extension"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_solver_consistency.py",
+      "source_sha256": "62ba1aec9596a773e376a24cf05288f56b501ed9c38456ea23c2c6a2f3d5dd97",
+      "kind": "scientific_demo",
+      "profiles": {
+        "full": "32x32 table,32x32 validation,eight pairs,5 synchronized repetitions",
+        "quick": "32x32 table,8x8 validation,eight pairs,3 synchronized repetitions",
+        "criteria": "Unchanged 1e-12 inverse consistency,paired unavailable values and exact availability"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_table_generation.py",
+      "source_sha256": "4c1ef52b80ee45e01d011ebf0f6d311de020d787efd50927a91a1a610e41e36f",
+      "kind": "scientific_demo",
+      "profiles": {
+        "full": "Nitrogen145x145",
+        "quick": "Nitrogen12x12",
+        "criteria": "Exact cache numerical/provenance roundtrip; initial setup observations are not state-call benchmarks"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_table_interpolation.py",
+      "source_sha256": "5efafa2c2278a5e97b0d37d1f8366bbc17b8f056a3c317b8317940fe6eb3e7e2",
+      "kind": "scientific_demo",
+      "profiles": {
+        "full": "CO2 30x30",
+        "quick": "CO2 12x12",
+        "criteria": "Valid selected state,finite core and exact independent HP coordinates"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_table_interpolation_with_saturation.py",
+      "source_sha256": "1fdb848df5a423c415534986187cefaec927546ebe1fd76305597147c0c88661",
+      "kind": "scientific_demo",
+      "profiles": {
+        "full": "Physical Nitrogen60x60",
+        "quick": "Physical Nitrogen12x12",
+        "criteria": "Selected homogeneous HP and stored saturation endpoint,visible optional data/source comparison"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_two_phase_speed_sound.py",
+      "source_sha256": "28563bc0fb3d244fa6a211a79a0158d91d2617099681ea30f6719f8d2c2414db",
+      "kind": "scientific_demo",
+      "profiles": {
+        "full": "CO2 100x100 table,3000 points",
+        "quick": "CO2 24x24 table,160 points",
+        "criteria": "Explicit source/phase-cell coverage with gaps; finite acoustic comparison coverage"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/export_pkl_to_c_binary.py",
+      "source_sha256": "951d0b4507645b7da34dac43efeacbadd32ea4befa26f8d36df2930de8763fb1",
+      "kind": "input_tool",
+      "profiles": {
+        "full": "Explicit-input data tool",
+        "quick": "Explicit-input data tool",
+        "criteria": "Validated current schema and roundtrip/inspection; an actual input fixture must be supplied"
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/plot_metastable_point.py",
+      "source_sha256": "25a2925acb4b545801bedd365692c7a88ab518e02fe0cadb5524a67929b52103",
+      "kind": "input_tool",
+      "profiles": {
+        "full": "Explicit-input data tool",
+        "quick": "Explicit-input data tool",
+        "criteria": "Validated current schema and roundtrip/inspection; an actual input fixture must be supplied"
+      }
+    }
+  ],
+  "full_heavy_runs": [
+    {
+      "example": "examples/bicubic_interpolation/demo_midpoints_metastable_comparison.py",
+      "profile": "full",
+      "source_sha256": "2782d1ef4e601f14d984c0e1610499874c96e6f6d8e2a64f2ecedf17d0c23394",
+      "package_sha256": "d4049f47413af829aaa7d836a38d411f8b8c73f44ade3abcf51ef74502d5e853",
+      "source_unchanged": true,
+      "outcome": "completed",
+      "returncode": 0,
+      "seconds": 258.25585869999486,
+      "timing_is_benchmark": false,
+      "output_dir": "development/example_audit/results/phase12_bicubic/full_demo_midpoints_metastable_comparison",
+      "result_manifest": "development/example_audit/results/phase12_bicubic/full_demo_midpoints_metastable_comparison/example_result.json",
+      "checks": {
+        "settings": {
+          "fluid_name": "nitrogen",
+          "h_min": -145000.0,
+          "h_max": -10000.0,
+          "p_min": 30000.0,
+          "p_max": 1000000.0,
+          "N_h": 100,
+          "N_p": 100,
+          "metastable_phase": "liquid"
+        },
+        "formal_study": {
+          "research_only": true,
+          "whole_domain_accuracy_certified": false,
+          "calorically_unstable_nodes": 1061,
+          "node_count": 10000,
+          "error_summary": [
+            {
+              "property": "temperature",
+              "finite_comparisons": 2401,
+              "requested_points": 2401,
+              "abs_min": 1.6087113863250124e-09,
+              "abs_max": 1.2718495270291896e-06,
+              "rel_min": 2.4163349876038225e-09,
+              "rel_max": 1.111074743681305e-06,
+              "rel_mean": 1.9078968068098956e-07
+            },
+            {
+              "property": "density",
+              "finite_comparisons": 2401,
+              "requested_points": 2401,
+              "abs_min": 2.6692532628658228e-09,
+              "abs_max": 2.8473786755967012e-05,
+              "rel_min": 3.7620663563356766e-10,
+              "rel_max": 5.207324429479753e-06,
+              "rel_mean": 4.3026296817704954e-07
+            },
+            {
+              "property": "entropy",
+              "finite_comparisons": 2401,
+              "requested_points": 2401,
+              "abs_min": 1.02836565929465e-08,
+              "abs_max": 7.103963525878498e-06,
+              "rel_min": 2.611683462826234e-10,
+              "rel_max": 2.5409440330742844e-07,
+              "rel_mean": 9.238049543165382e-08
+            },
+            {
+              "property": "gruneisen",
+              "finite_comparisons": 2368,
+              "requested_points": 2401,
+              "abs_min": 3.3031355428647657e-12,
+              "abs_max": 178.72545351298064,
+              "rel_min": 1.6379299177532837e-10,
+              "rel_max": 750.237446011024,
+              "rel_mean": 0.5422849082755934
+            }
+          ],
+          "warning": "Finite near-pole responses can still be inaccurate; unavailable cells and comparison coverage remain visible."
+        }
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_metastable_calculations.py",
+      "profile": "full",
+      "source_sha256": "1de41ddc300a34efe9449509a23fc847c7578106d9679cc9b7cfac20d58b6f80",
+      "package_sha256": "d4049f47413af829aaa7d836a38d411f8b8c73f44ade3abcf51ef74502d5e853",
+      "source_unchanged": true,
+      "outcome": "completed",
+      "returncode": 0,
+      "seconds": 355.93666340000345,
+      "timing_is_benchmark": false,
+      "output_dir": "development/example_audit/results/phase12_bicubic/full_demo_metastable_calculations",
+      "result_manifest": "development/example_audit/results/phase12_bicubic/full_demo_metastable_calculations/example_result.json",
+      "checks": {
+        "settings": {
+          "h_min": 300000.0,
+          "h_max": 1400000.0,
+          "p_min": 100000.0,
+          "p_max": 13000000.0,
+          "N_h": 120,
+          "N_p": 120,
+          "N_p_sat": 150,
+          "coarse_step": 1,
+          "metastable_phase": "liquid",
+          "metastable_domain": "physical",
+          "gradient_method": "forward",
+          "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+        },
+        "domain_revision": {
+          "original_rejected": {
+            "h_min": 300000.0,
+            "h_max": 1800000.0,
+            "p_min": 100000.0,
+            "p_max": 13000000.0,
+            "first_recorded_failure_h": 1711764.705882353,
+            "connected_liquid_spinodal_h_at_13MPa": 1710150.8088949814
+          },
+          "justification": "Bounded liquid enthalpy interval with positive sampled/interpolated cv/K_T margins; original pressure range and full resolutions retained."
+        },
+        "checks": {
+          "all_nodes_positive_cv_and_bulk": true,
+          "all_interpolation_cells_verified": true,
+          "independent_source_points": 9,
+          "maximum_scaled_source_residual": 1.737569982651621e-10,
+          "minimum_cv": 3033.0687802983794,
+          "minimum_bulk_modulus": 169484993.45478174,
+          "pt_hp_temperature_roundtrip_K": 578.95
+        }
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_metastable_single_point_comparison.py",
+      "profile": "full",
+      "source_sha256": "d1853826fa137f3123731c9def84fb56faa5708d96d3e6cfda98e89c11ec16d4",
+      "package_sha256": "d4049f47413af829aaa7d836a38d411f8b8c73f44ade3abcf51ef74502d5e853",
+      "source_unchanged": true,
+      "outcome": "completed",
+      "returncode": 0,
+      "seconds": 564.1137572999869,
+      "timing_is_benchmark": false,
+      "output_dir": "development/example_audit/results/phase12_bicubic/full_demo_metastable_single_point_comparison",
+      "result_manifest": "development/example_audit/results/phase12_bicubic/full_demo_metastable_single_point_comparison/example_result.json",
+      "checks": {
+        "settings": {
+          "fluid_name": "nitrogen",
+          "h_min": -110000.0,
+          "h_max": -10000.0,
+          "p_min": 30000.0,
+          "p_max": 1000000.0,
+          "N_h": 165,
+          "N_p": 165,
+          "metastable_phase": "liquid"
+        },
+        "formal_study": {
+          "research_only": true,
+          "whole_domain_accuracy_certified": false,
+          "calorically_unstable_nodes": 3803,
+          "selected_HP_PT_enthalpy_absolute_error_J_per_kg": 1.4551915228366852e-11
+        }
+      }
+    }
+  ],
+  "input_tool_runs": [
+    {
+      "example": "examples/bicubic_interpolation/convert_pkl_to_csv.py",
+      "profile": "quick",
+      "fixture": "development/example_audit/results/phase12/tables/CO2_equilibrium_4x4_2a77eb9dfb7ebb5ab41c.pkl",
+      "fixture_supplied_explicitly": true,
+      "returncode": 0,
+      "seconds": 4.534696899994742,
+      "outcome": "completed_fixture",
+      "error_tail": [],
+      "timing_is_benchmark": false,
+      "result_manifest": "development/example_audit/results/phase12_bicubic/quick_convert_pkl_to_csv/example_result.json",
+      "checks": {
+        "export": {
+          "format": "csv",
+          "roundtrip_arrays_checked": 281,
+          "rows": {
+            "nodes": 16,
+            "cells": 9,
+            "saturation": 0
+          }
+        }
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/convert_pkl_to_csv.py",
+      "profile": "full",
+      "fixture": "development/example_audit/results/phase12/tables/CO2_equilibrium_4x4_2a77eb9dfb7ebb5ab41c.pkl",
+      "fixture_supplied_explicitly": true,
+      "returncode": 0,
+      "seconds": 4.72438569998485,
+      "outcome": "completed_fixture",
+      "error_tail": [],
+      "timing_is_benchmark": false,
+      "result_manifest": "development/example_audit/results/phase12_bicubic/full_convert_pkl_to_csv/example_result.json",
+      "checks": {
+        "export": {
+          "format": "csv",
+          "roundtrip_arrays_checked": 281,
+          "rows": {
+            "nodes": 16,
+            "cells": 9,
+            "saturation": 0
+          }
+        }
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/export_pkl_to_c_binary.py",
+      "profile": "quick",
+      "fixture": "development/example_audit/results/phase12/tables/CO2_equilibrium_4x4_2a77eb9dfb7ebb5ab41c.pkl",
+      "fixture_supplied_explicitly": true,
+      "returncode": 0,
+      "seconds": 4.449487600009888,
+      "outcome": "completed_fixture",
+      "error_tail": [],
+      "timing_is_benchmark": false,
+      "result_manifest": "development/example_audit/results/phase12_bicubic/quick_export_pkl_to_c_binary/example_result.json",
+      "checks": {
+        "export": {
+          "format_version": 2,
+          "nodes": [
+            4,
+            4
+          ],
+          "properties": 40,
+          "binary_bytes": 86618,
+          "phase_mask_offset": 81712,
+          "provenance_offset": 81721,
+          "roundtrip_arrays_checked": 281
+        }
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/export_pkl_to_c_binary.py",
+      "profile": "full",
+      "fixture": "development/example_audit/results/phase12/tables/CO2_equilibrium_4x4_2a77eb9dfb7ebb5ab41c.pkl",
+      "fixture_supplied_explicitly": true,
+      "returncode": 0,
+      "seconds": 3.992508099996485,
+      "outcome": "completed_fixture",
+      "error_tail": [],
+      "timing_is_benchmark": false,
+      "result_manifest": "development/example_audit/results/phase12_bicubic/full_export_pkl_to_c_binary/example_result.json",
+      "checks": {
+        "export": {
+          "format_version": 2,
+          "nodes": [
+            4,
+            4
+          ],
+          "properties": 40,
+          "binary_bytes": 86618,
+          "phase_mask_offset": 81712,
+          "provenance_offset": 81721,
+          "roundtrip_arrays_checked": 281
+        }
+      }
+    },
+    {
+      "example": "examples/bicubic_interpolation/plot_metastable_point.py",
+      "profile": "quick",
+      "fixture": "development/example_audit/results/phase12/tables/CO2_equilibrium_4x4_2a77eb9dfb7ebb5ab41c.pkl",
+      "fixture_supplied_explicitly": true,
+      "returncode": 0,
+      "seconds": 6.921271400002297,
+      "outcome": "completed_fixture",
+      "error_tail": [],
+      "timing_is_benchmark": false,
+      "result_manifest": "development/example_audit/results/phase12_bicubic/quick_plot_metastable_point/example_result.json",
+      "checks": {
+        "inspection": {
+          "node_shape": [
+            4,
+            4
+          ],
+          "all_nodes_plotted": 16,
+          "finite_bulk_values": 16,
+          "negative_bulk_values": 0,
+          "optional_missing_values": 0,
+          "excluded_interpolation_cells": 0,
+          "source_curves": false,
+          "table_mode": "equilibrium",
+          "claim": "Table-data inspection only; no whole-domain EOS/interpolation accuracy certification."
+        }
+      },
+      "source_sha256": "25a2925acb4b545801bedd365692c7a88ab518e02fe0cadb5524a67929b52103"
+    },
+    {
+      "example": "examples/bicubic_interpolation/plot_metastable_point.py",
+      "profile": "full",
+      "fixture": "development/example_audit/results/phase12/tables/CO2_equilibrium_4x4_2a77eb9dfb7ebb5ab41c.pkl",
+      "fixture_supplied_explicitly": true,
+      "returncode": 0,
+      "seconds": 3.2171662999899127,
+      "outcome": "completed_fixture",
+      "error_tail": [],
+      "timing_is_benchmark": false,
+      "result_manifest": "development/example_audit/results/phase12_bicubic/full_plot_metastable_point/example_result.json",
+      "checks": {
+        "inspection": {
+          "node_shape": [
+            4,
+            4
+          ],
+          "all_nodes_plotted": 16,
+          "finite_bulk_values": 16,
+          "negative_bulk_values": 0,
+          "optional_missing_values": 0,
+          "excluded_interpolation_cells": 0,
+          "source_curves": false,
+          "table_mode": "equilibrium",
+          "claim": "Table-data inspection only; no whole-domain EOS/interpolation accuracy certification."
+        }
+      },
+      "source_sha256": "25a2925acb4b545801bedd365692c7a88ab518e02fe0cadb5524a67929b52103"
+    }
+  ],
+  "tests": {
+    "passed": 47,
+    "failed": 0,
+    "skipped": 0,
+    "junit": "development/example_audit/results/phase12_bicubic/tests.xml",
+    "native_c_compiler": "C:\\msys64\\mingw64\\bin\\gcc.exe",
+    "compiler_version": "gcc.exe (Rev6, Built by MSYS2 project) 13.1.0",
+    "native_subprocess_only_path": true
+  },
+  "physical_domain_revisions": [
+    {
+      "example": "demo_interpolation_midpoints_metastable.py",
+      "original_h_bounds": [
+        -120000.0,
+        10000.0
+      ],
+      "new_h_bounds": [
+        -120000.0,
+        -40000.0
+      ],
+      "pressure_bounds": [
+        100000.0,
+        3000000.0
+      ],
+      "full_nodes": [
+        40,
+        40
+      ],
+      "reason": "Original rectangle crosses the connected-liquid spinodal at 3 MPa and lower-pressure caloric instability; revised source probes leave cv > 900 J/(kg K) andK_T > 10 MPa."
+    },
+    {
+      "example": "demo_metastable_calculations.py",
+      "original_h_bounds": [
+        300000.0,
+        1800000.0
+      ],
+      "new_h_bounds": [
+        300000.0,
+        1400000.0
+      ],
+      "pressure_bounds": [
+        100000.0,
+        13000000.0
+      ],
+      "full_nodes": [
+        120,
+        120
+      ],
+      "full_saturation_points": 150,
+      "reason": "Original rectangle extends beyond connected liquid spinodal; revised bounded liquid study preserves the original PT point and positive full-table stability margins."
+    },
+    {
+      "example": "demo_table_interpolation_with_saturation.py",
+      "original_h_max": 1.0,
+      "new_h_max": -40000.0,
+      "full_nodes": [
+        60,
+        60
+      ],
+      "reason": "Original bulk rectangle includes negative cv formal EOS states; selected HP point andsaturation comparison retained."
+    },
+    {
+      "example": "demo_saturation_midpoints.py",
+      "original_h_max": -10000.0,
+      "new_h_max": -40000.0,
+      "full_nodes": [
+        21,
+        21
+      ],
+      "reason": "Revised physical bulk domain removes negative-cv states; full 60-node saturationgrid unchanged."
+    }
+  ],
+  "corrections": [
+    "Every script has import-safe main(), full/quick profiles and explicit output/cache/input paths.",
+    "Common Fluid(...method=bicubic) construction; common source-EOS plotting.",
+    "Derivative identity validation moved from hard-projection faces to interior midpoints,maximum absolute signed error enforced and positive acoustic slope checked; original 0.01% limits preserved.",
+    "Ordinarymidpoint validation now within configured table bounds; explicit outside request tests out-of-domain status rather than aborting.",
+    "Phase-boundary/source-domain holes remain visible and coverage counts reported; no extrapolated substitute states.",
+    "Complete-state exploratory timings warm up, synchronize, repeat and separate initialization.",
+    "CSV is actual default CSV; optional Excel dependencies imported only when requested and round-trip checked.",
+    "Cbinv2 preserves phase validity, all arrays, saturation and full provenance; missing data rejected; Python+actual C-reader round trips verified."
+  ],
+  "limitations": [
+    "The original rejected physical rectangles are not rerun as successful cases; redesigned domains are deliberate scientific changes.",
+    "Formal Nitrogen 100x100 retains33/2401 unavailable Gamma comparisons and~750% maximum finite error near the pole; whole-domain response accuracy remains uncertified.",
+    "All scientific execution wall times are concurrent and not benchmark measurements.",
+    "Inputtools require an explicit actual table; fixture executions are not claimed as missing-input default passes.",
+    "Initial pre-freeze quick debug failures are preserved in results/phase12_bicubic/quick_runs.json; the central Phase 12 execution matrix is theauthority for all current quick/full profiles."
+  ],
+  "visual_review": {
+    "inspected": [
+      "full formal Nitrogen error figure",
+      "quick physical Nitrogen error figure",
+      "full explicit-input modulus plot"
+    ],
+    "all_axes_and_units_legible": true,
+    "formal_pole_warning_and_gaps_visible": true,
+    "signed_modulus_colorbar_ticks_spaced": true
+  },
+  "final_header_validation_review": {
+    "packed_coordinate_metadata_checked": true,
+    "all_six_fields_corruption_test": true,
+    "focused_tests": {
+      "passed": 48,
+      "failed": 0,
+      "skipped": 0,
+      "junit": "development/example_audit/results/phase12_cbin_header_review_tests.xml"
+    },
+    "replacement_executions": [
+      "development/example_audit/results/phase12_cbin_header_review_quick/summary.json",
+      "development/example_audit/results/phase12_cbin_header_review_full/summary.json"
+    ]
+  }
+}

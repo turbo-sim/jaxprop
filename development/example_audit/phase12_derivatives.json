@@ -1,0 +1,637 @@
+{
+  "date_utc": "2026-11-14T11:41:41.733442+00:00",
+  "scope": "Five two-phase derivative and five Optimistix programs; original physical cases and full sampling/iteration budgets, plus explicit quick profiles.",
+  "package_source_sha256": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+  "counts": {
+    "programs": 10,
+    "full_completed": 10,
+    "quick_completed": 10,
+    "failed": 0
+  },
+  "environment": {
+    "JAX_ENABLE_X64": "true",
+    "JAX_PLATFORM_NAME": "cpu",
+    "MPLBACKEND": "Agg",
+    "source_backend": "HEOS"
+  },
+  "timings_are_benchmarks": false,
+  "full_profile_figures_drawn_and_inspected": 3,
+  "all_full_profile_figures_drawn_and_inspected": true,
+  "focused_tests": {
+    "command": "python -m pytest tests/test_phase12_derivative_examples.py -c tests/pytest.ini -q --tb=short",
+    "passed": 26,
+    "failed": 0
+  },
+  "intentional_repairs": [
+    "Replaced copied obsolete two-phase property kernels with configured Fluid evaluations and independent saturation-coordinate Jacobian references.",
+    "Corrected cv finite-difference variable/units, entropy constraint of sound speed, and both signed enthalpy partial derivatives.",
+    "Energy finite differences use R_specific*T and p/rho rather than raw two-phase source cv or arbitrary absolute energy zero.",
+    "Normalized ideal-gas root residual by cp*T0 and pressure coordinate by p0; retained Newton 1e-10 nominal tolerances and the original 21-point full sweep. Dimensional energy acceptance is 32*float64_eps*cp*T0 + 4*ULP(h0), explicitly replacing an unattainable fixed 1e-10 J/kg threshold.",
+    "Corrected optimizer minimizer/objective labels and synchronized ordered instrumentation; original root/minimizer tolerances and step budgets retained."
+  ],
+  "limitations": [
+    "Quick sampling does not replace the full Water 11-temperature and perfect-gas 21-Mach scientific sweeps.",
+    "Rosenbrock nonlinear CG uses a step-based stopping condition; report its actual objective/position error rather than claim six decimal places in the minimizer.",
+    "Callback instrumentation and one-shot elapsed observations are not statistical performance benchmarks."
+  ],
+  "outcomes": [
+    {
+      "example": "examples/two_phase_derivatives/check_gruneisen.py",
+      "example_sha256": "4e8e33fbe55e65c0b55a9eab99d42ba5acbdbd53067c0765ea2bc1ca8de10df1",
+      "profile": "full",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "pressure_Pa": 100000.0,
+          "quality": 0.5,
+          "library": 0.08051274490095818,
+          "finite_difference": 0.08051274471752876,
+          "analytical": 0.08051274492756787,
+          "source_state_restored": true
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/check_gruneisen/full/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/check_gruneisen/full/output/example_result.json"
+    },
+    {
+      "example": "examples/two_phase_derivatives/check_speed_sound.py",
+      "example_sha256": "f5d91955de93f963db9ca61fa4485503df7720616394b9e252ee4fe045f4b012",
+      "profile": "full",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "pressure_Pa": 100000.0,
+          "quality": 0.5,
+          "library_sound_m_per_s": 301.64298942166477,
+          "finite_difference_sound_m_per_s": 301.64298949635275,
+          "analytical_sound_m_per_s": 301.64298946617583,
+          "source_state_restored": true
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/check_speed_sound/full/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/check_speed_sound/full/output/example_result.json"
+    },
+    {
+      "example": "examples/two_phase_derivatives/enthalpy_derivatives.py",
+      "example_sha256": "636b4decebc6be784103babeba3656ad8306a673f16a710ad34408e30a2ad07a",
+      "profile": "full",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "quality": 0.7,
+          "temperature_K": 423.15,
+          "numerical": [
+            3.101406455609754,
+            -408581.32584781316
+          ],
+          "analytical": [
+            3.1014064552273046,
+            -408581.3258106869
+          ],
+          "relative_errors": [
+            1.233146917911654e-10,
+            9.086620345044594e-11
+          ]
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/enthalpy_derivatives/full/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/enthalpy_derivatives/full/output/example_result.json"
+    },
+    {
+      "example": "examples/two_phase_derivatives/saturation_derivatives.py",
+      "example_sha256": "80aa980ccc18771deed9870cbc537cb231b9c5aa9371365b080390f185bd56d5",
+      "profile": "full",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "fluid": "Water",
+          "quality": 0.5,
+          "samples": 11,
+          "max_relative_fd_errors": {
+            "isochoric_heat_capacity": 3.3643547947548313e-09,
+            "speed_of_sound": 4.518294627331443e-10,
+            "gruneisen": 6.212368619529229e-09
+          },
+          "cp_unavailable_as_expected": true
+        }
+      },
+      "sample_sizes": {
+        "11": 11
+      },
+      "figures": [
+        {
+          "file": "development/example_audit/results/phase12_derivatives/saturation_derivatives/full/output/figure_01.png",
+          "axes": 1,
+          "drawn": true,
+          "finite_limits": true
+        },
+        {
+          "file": "development/example_audit/results/phase12_derivatives/saturation_derivatives/full/output/figure_02.png",
+          "axes": 1,
+          "drawn": true,
+          "finite_limits": true
+        }
+      ],
+      "log": "development/example_audit/results/phase12_derivatives/saturation_derivatives/full/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/saturation_derivatives/full/output/example_result.json"
+    },
+    {
+      "example": "examples/two_phase_derivatives/gibbs_saturation.py",
+      "example_sha256": "6e16a57778b0129addc1c3f31fab9fe2786c9d6cd2bda917dc6d42f4da05a65b",
+      "profile": "full",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "temperature_K": 310.0,
+          "source_pressure_Pa": 6231.1182825765045,
+          "recovered_pressure_Pa": 6231.118282506058,
+          "relative_pressure_error": 1.1305623104362894e-11,
+          "gibbs_residual_J_per_kg": 2.561137080192566e-09
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/gibbs_saturation/full/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/gibbs_saturation/full/output/example_result.json"
+    },
+    {
+      "example": "examples/optimistix/demo_ideal_gas.py",
+      "example_sha256": "6ac76b738a31cb9dd2a48468c64a4f93ce9d7ea3cbf8ce86d7cff308caaa95e2",
+      "profile": "full",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "samples": 21,
+          "solver_rtol": 1e-10,
+          "solver_atol": 1e-10,
+          "coordinate": "log(p/p0)",
+          "residual_scale": "cp*T0",
+          "max_absolute_energy_residual_J_per_kg": 2.3283064365386963e-10,
+          "max_relative_pressure_error": 3.552713678800501e-15,
+          "energy_budget_J_per_kg": 2.3087702656785374e-09,
+          "Mach_zero_pressure_Pa": 99999.9999999997,
+          "Mach_one_pressure_Pa": 52844.18127216364
+        },
+        "elapsed_values_are_benchmarks": false
+      },
+      "sample_sizes": {
+        "21": 21
+      },
+      "figures": [
+        {
+          "file": "development/example_audit/results/phase12_derivatives/demo_ideal_gas/full/output/figure_01.png",
+          "axes": 1,
+          "drawn": true,
+          "finite_limits": true
+        }
+      ],
+      "log": "development/example_audit/results/phase12_derivatives/demo_ideal_gas/full/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/demo_ideal_gas/full/output/example_result.json"
+    },
+    {
+      "example": "examples/optimistix/demo_root_find.py",
+      "example_sha256": "d58231ff0d20e233b6e39a11ce9260102d25f84e906e2fab04b321a1683023d0",
+      "profile": "full",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "Bisection": {
+            "root": 1.000000238418579,
+            "residual": -3.745070282166628e-07,
+            "steps": 21,
+            "successful": true
+          },
+          "Newton": {
+            "root": 1.0,
+            "residual": 6.123233995736766e-17,
+            "steps": 4,
+            "successful": true
+          },
+          "Chord": {
+            "root": 0.9999997600412366,
+            "residual": 3.769263441978867e-07,
+            "steps": 16,
+            "successful": true
+          }
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/demo_root_find/full/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/demo_root_find/full/output/example_result.json"
+    },
+    {
+      "example": "examples/optimistix/demo_minimize.py",
+      "example_sha256": "d0e624278024da5c4f844aa65d4d5549f6eea5858fbfa0dbbc488780eae80c30",
+      "profile": "full",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "BFGS": {
+            "minimizer": [
+              0.9999999952278752,
+              0.9999999902393444
+            ],
+            "objective": 2.7456331034710924e-17,
+            "steps": 54,
+            "successful": true
+          },
+          "Conjugate Gradient": {
+            "minimizer": [
+              1.0010094699696828,
+              1.0020194193893572
+            ],
+            "objective": 1.0190587343088245e-06,
+            "steps": 392,
+            "successful": true
+          }
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/demo_minimize/full/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/demo_minimize/full/output/example_result.json"
+    },
+    {
+      "example": "examples/optimistix/demo_minimize_io.py",
+      "example_sha256": "ced09c58dc88bef7157f5a96b4b2a61c60b085a7cd49df451042ee62755d63fe",
+      "profile": "full",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "BFGS": {
+            "f_calls": 54,
+            "g_calls": 35,
+            "objective": 2.7456331034710924e-17,
+            "minimizer": [
+              0.9999999952278752,
+              0.9999999902393444
+            ],
+            "steps": 54,
+            "successful": true
+          },
+          "Conjugate Gradient": {
+            "f_calls": 392,
+            "g_calls": 45,
+            "objective": 1.0190587343088245e-06,
+            "minimizer": [
+              1.0010094699696828,
+              1.0020194193893572
+            ],
+            "steps": 392,
+            "successful": true
+          }
+        },
+        "instrumentation_is_benchmark": false
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/demo_minimize_io/full/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/demo_minimize_io/full/output/example_result.json"
+    },
+    {
+      "example": "examples/optimistix/diffrax_rosenbrock.py",
+      "example_sha256": "14d8f55a13cf1c923b3a4628b9f15ac352761d16c12c60107f885fdf2e4a0fc2",
+      "profile": "full",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "minimizer": [
+            0.9999999942741756,
+            0.9999999882530733
+          ],
+          "objective": 4.1503969322554576e-17,
+          "steps": 68,
+          "accepted_steps": 56,
+          "successful": true
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/diffrax_rosenbrock/full/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/diffrax_rosenbrock/full/output/example_result.json"
+    },
+    {
+      "example": "examples/two_phase_derivatives/check_gruneisen.py",
+      "example_sha256": "4e8e33fbe55e65c0b55a9eab99d42ba5acbdbd53067c0765ea2bc1ca8de10df1",
+      "profile": "quick",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "pressure_Pa": 100000.0,
+          "quality": 0.5,
+          "library": 0.08051274490095818,
+          "finite_difference": 0.08051274471752876,
+          "analytical": 0.08051274492756787,
+          "source_state_restored": true
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/check_gruneisen/quick/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/check_gruneisen/quick/output/example_result.json"
+    },
+    {
+      "example": "examples/two_phase_derivatives/check_speed_sound.py",
+      "example_sha256": "f5d91955de93f963db9ca61fa4485503df7720616394b9e252ee4fe045f4b012",
+      "profile": "quick",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "pressure_Pa": 100000.0,
+          "quality": 0.5,
+          "library_sound_m_per_s": 301.64298942166477,
+          "finite_difference_sound_m_per_s": 301.64298949635275,
+          "analytical_sound_m_per_s": 301.64298946617583,
+          "source_state_restored": true
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/check_speed_sound/quick/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/check_speed_sound/quick/output/example_result.json"
+    },
+    {
+      "example": "examples/two_phase_derivatives/enthalpy_derivatives.py",
+      "example_sha256": "636b4decebc6be784103babeba3656ad8306a673f16a710ad34408e30a2ad07a",
+      "profile": "quick",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "quality": 0.7,
+          "temperature_K": 423.15,
+          "numerical": [
+            3.101406455609754,
+            -408581.32584781316
+          ],
+          "analytical": [
+            3.1014064552273046,
+            -408581.3258106869
+          ],
+          "relative_errors": [
+            1.233146917911654e-10,
+            9.086620345044594e-11
+          ]
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/enthalpy_derivatives/quick/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/enthalpy_derivatives/quick/output/example_result.json"
+    },
+    {
+      "example": "examples/two_phase_derivatives/saturation_derivatives.py",
+      "example_sha256": "80aa980ccc18771deed9870cbc537cb231b9c5aa9371365b080390f185bd56d5",
+      "profile": "quick",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "fluid": "Water",
+          "quality": 0.5,
+          "samples": 3,
+          "max_relative_fd_errors": {
+            "isochoric_heat_capacity": 3.3643547947548313e-09,
+            "speed_of_sound": 4.518294627331443e-10,
+            "gruneisen": 6.212368619529229e-09
+          },
+          "cp_unavailable_as_expected": true
+        }
+      },
+      "sample_sizes": {
+        "11": 3
+      },
+      "figures": [
+        {
+          "file": "development/example_audit/results/phase12_derivatives/saturation_derivatives/quick/output/figure_01.png",
+          "axes": 1,
+          "drawn": true,
+          "finite_limits": true
+        },
+        {
+          "file": "development/example_audit/results/phase12_derivatives/saturation_derivatives/quick/output/figure_02.png",
+          "axes": 1,
+          "drawn": true,
+          "finite_limits": true
+        }
+      ],
+      "log": "development/example_audit/results/phase12_derivatives/saturation_derivatives/quick/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/saturation_derivatives/quick/output/example_result.json"
+    },
+    {
+      "example": "examples/two_phase_derivatives/gibbs_saturation.py",
+      "example_sha256": "6e16a57778b0129addc1c3f31fab9fe2786c9d6cd2bda917dc6d42f4da05a65b",
+      "profile": "quick",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "temperature_K": 310.0,
+          "source_pressure_Pa": 6231.1182825765045,
+          "recovered_pressure_Pa": 6231.118282506058,
+          "relative_pressure_error": 1.1305623104362894e-11,
+          "gibbs_residual_J_per_kg": 2.561137080192566e-09
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/gibbs_saturation/quick/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/gibbs_saturation/quick/output/example_result.json"
+    },
+    {
+      "example": "examples/optimistix/demo_ideal_gas.py",
+      "example_sha256": "6ac76b738a31cb9dd2a48468c64a4f93ce9d7ea3cbf8ce86d7cff308caaa95e2",
+      "profile": "quick",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "samples": 5,
+          "solver_rtol": 1e-10,
+          "solver_atol": 1e-10,
+          "coordinate": "log(p/p0)",
+          "residual_scale": "cp*T0",
+          "max_absolute_energy_residual_J_per_kg": 2.3283064365386963e-10,
+          "max_relative_pressure_error": 3.219646771412954e-15,
+          "energy_budget_J_per_kg": 2.3087702656785374e-09,
+          "Mach_zero_pressure_Pa": 99999.9999999997,
+          "Mach_one_pressure_Pa": 52844.18127216364
+        },
+        "elapsed_values_are_benchmarks": false
+      },
+      "sample_sizes": {
+        "21": 5
+      },
+      "figures": [
+        {
+          "file": "development/example_audit/results/phase12_derivatives/demo_ideal_gas/quick/output/figure_01.png",
+          "axes": 1,
+          "drawn": true,
+          "finite_limits": true
+        }
+      ],
+      "log": "development/example_audit/results/phase12_derivatives/demo_ideal_gas/quick/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/demo_ideal_gas/quick/output/example_result.json"
+    },
+    {
+      "example": "examples/optimistix/demo_root_find.py",
+      "example_sha256": "d58231ff0d20e233b6e39a11ce9260102d25f84e906e2fab04b321a1683023d0",
+      "profile": "quick",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "Bisection": {
+            "root": 1.000000238418579,
+            "residual": -3.745070282166628e-07,
+            "steps": 21,
+            "successful": true
+          },
+          "Newton": {
+            "root": 1.0,
+            "residual": 6.123233995736766e-17,
+            "steps": 4,
+            "successful": true
+          },
+          "Chord": {
+            "root": 0.9999997600412366,
+            "residual": 3.769263441978867e-07,
+            "steps": 16,
+            "successful": true
+          }
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/demo_root_find/quick/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/demo_root_find/quick/output/example_result.json"
+    },
+    {
+      "example": "examples/optimistix/demo_minimize.py",
+      "example_sha256": "d0e624278024da5c4f844aa65d4d5549f6eea5858fbfa0dbbc488780eae80c30",
+      "profile": "quick",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "BFGS": {
+            "minimizer": [
+              0.9999999952278752,
+              0.9999999902393444
+            ],
+            "objective": 2.7456331034710924e-17,
+            "steps": 54,
+            "successful": true
+          },
+          "Conjugate Gradient": {
+            "minimizer": [
+              1.0010094699696828,
+              1.0020194193893572
+            ],
+            "objective": 1.0190587343088245e-06,
+            "steps": 392,
+            "successful": true
+          }
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/demo_minimize/quick/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/demo_minimize/quick/output/example_result.json"
+    },
+    {
+      "example": "examples/optimistix/demo_minimize_io.py",
+      "example_sha256": "ced09c58dc88bef7157f5a96b4b2a61c60b085a7cd49df451042ee62755d63fe",
+      "profile": "quick",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "BFGS": {
+            "f_calls": 54,
+            "g_calls": 35,
+            "objective": 2.7456331034710924e-17,
+            "minimizer": [
+              0.9999999952278752,
+              0.9999999902393444
+            ],
+            "steps": 54,
+            "successful": true
+          },
+          "Conjugate Gradient": {
+            "f_calls": 392,
+            "g_calls": 45,
+            "objective": 1.0190587343088245e-06,
+            "minimizer": [
+              1.0010094699696828,
+              1.0020194193893572
+            ],
+            "steps": 392,
+            "successful": true
+          }
+        },
+        "instrumentation_is_benchmark": false
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/demo_minimize_io/quick/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/demo_minimize_io/quick/output/example_result.json"
+    },
+    {
+      "example": "examples/optimistix/diffrax_rosenbrock.py",
+      "example_sha256": "14d8f55a13cf1c923b3a4628b9f15ac352761d16c12c60107f885fdf2e4a0fc2",
+      "profile": "quick",
+      "exit_code": 0,
+      "completed": true,
+      "checks": {
+        "scientific_checks": {
+          "minimizer": [
+            0.9999999942741756,
+            0.9999999882530733
+          ],
+          "objective": 4.1503969322554576e-17,
+          "steps": 68,
+          "accepted_steps": 56,
+          "successful": true
+        }
+      },
+      "sample_sizes": {},
+      "figures": [],
+      "log": "development/example_audit/results/phase12_derivatives/diffrax_rosenbrock/quick/stdout.log",
+      "manifest": "development/example_audit/results/phase12_derivatives/diffrax_rosenbrock/quick/output/example_result.json"
+    }
+  ],
+  "subsequent_library_repair": {
+    "package_source_sha256": "d4049f47413af829aaa7d836a38d411f8b8c73f44ade3abcf51ef74502d5e853",
+    "changed_package_file": "jaxprop/coolprop/core_calculations.py",
+    "scope": "Final advanced-flash root acceptance: pressure-only physical roundoff floor and validation of exact returned properties without a duplicate final source flash.",
+    "these_ten_example_numerical_paths_unchanged": true,
+    "new_pressure_acceptance_cases": 9,
+    "focused_pressure_phase10_metastable_cases_passed": 80,
+    "independent_probe": "development/example_audit/results/phase12_derivatives/pressure_acceptance_probe.json",
+    "physical_pressure_floor_Pa": 6.713606044134103e-05,
+    "stiff_water_original_pressure_error_Pa": -5.064951255917549e-05,
+    "old_relative_pressure_budget_Pa": 5.005000000000001e-05,
+    "no_new_per_iteration_checks_or_source_queries": true,
+    "nonpressure_acceptance_unchanged": true
+  }
+}

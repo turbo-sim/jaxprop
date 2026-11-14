@@ -1,90 +1,114 @@
+from pathlib import Path
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from examples._common import example_options
+import jaxprop as jp
+
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
-
 import jaxprop.coolprop as jxp
 from jaxprop import Fluid
 
 
-# Create the folder to save figures
-jxp.set_plot_options()
-outdir = "output"
-os.makedirs(outdir, exist_ok=True)
+def main(argv=None):
+    """Run the declared scientific case; quick profiles reduce sampling only."""
+    options = example_options(__file__, argv, description=__doc__)
+    # Create the folder to save figures
+    jxp.set_plot_options()
+    outdir = options.output_dir
+    os.makedirs(outdir, exist_ok=True)
 
-# Create fluid
-fluid = Fluid(name="CO2")
+    # Create fluid
+    fluid = Fluid(name="CO2")
 
-# Create figure
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
-ax1.set_xlabel("Entropy (J/kg/K)")
-ax1.set_ylabel("Temperature (K)")
-ax2.set_xlabel("Entropy (J/kg/K)")
-ax2.set_ylabel("Superheating degree (K)")
-# ax1.set_ylim([0.75 * fluid.critical_point.T, 1.25 * fluid.critical_point.T])
-prop_x = "s"
-prop_y = "T"
+    # Create figure
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+    ax1.set_xlabel("Entropy (J/kg/K)")
+    ax1.set_ylabel("Temperature (K)")
+    ax2.set_xlabel("Entropy (J/kg/K)")
+    ax2.set_ylabel("Superheating degree (K)")
+    # ax1.set_ylim([0.75 * fluid.critical_point.T, 1.25 * fluid.critical_point.T])
+    prop_x = "s"
+    prop_y = "T"
 
-# Create entropy range
-s1 = fluid.triple_point_liquid.s
-s2 = fluid.triple_point_vapor.s
-delta_s = s2 - s1
-s_array = np.linspace(s1 + delta_s / 8, s2 + delta_s / 16, 100)
+    # Create entropy range
+    s1 = fluid.triple_point_liquid.s
+    s2 = fluid.triple_point_vapor.s
+    delta_s = s2 - s1
+    s_array = np.linspace(s1 + delta_s / 8, s2 + delta_s / 16, options.points(100))
 
-# Subcritical cases
-p_array = np.asarray([0.6, 0.7, 0.8, 0.9, 0.99]) * fluid.critical_point.p
-states = fluid.get_state(jxp.PSmass_INPUTS, p_array[None, :], s_array[:, None], supersaturation=True)
-colormap = cm.magma(np.linspace(0.1, 0.7, len(p_array)))
-for i in range(states[prop_x].shape[-1]):
-    ax1.plot(
-        states[prop_x][:, i],
-        states[prop_y][:, i],
-        color=colormap[i],
-        linestyle="-",
-        label=f"$p/p_{{crit}}={p_array[i]/fluid.critical_point.p:0.2f}$",
+    # Subcritical cases
+    p_array = np.asarray([0.6, 0.7, 0.8, 0.9, 0.99]) * fluid.critical_point.p
+    states = fluid.get_state(
+        jxp.PSmass_INPUTS, p_array[None, :], s_array[:, None], supersaturation=True
     )
-    ax2.plot(
-        states[prop_x][:, i],
-        states["superheating"][:, i],
-        color=colormap[i],
-        linestyle="-",
-        label=f"$p/p_{{crit}}={p_array[i]/fluid.critical_point.p:0.2f}$",
-    )
+    colormap = cm.magma(np.linspace(0.1, 0.7, len(p_array)))
+    for i in range(states[prop_x].shape[-1]):
+        ax1.plot(
+            states[prop_x][:, i],
+            states[prop_y][:, i],
+            color=colormap[i],
+            linestyle="-",
+            label=f"$p/p_{{crit}}={p_array[i]/fluid.critical_point.p:0.2f}$",
+        )
+        ax2.plot(
+            states[prop_x][:, i],
+            states["superheating"][:, i],
+            color=colormap[i],
+            linestyle="-",
+            label=f"$p/p_{{crit}}={p_array[i]/fluid.critical_point.p:0.2f}$",
+        )
 
-# Supercritical cases
-p_array = np.asarray([1.01, 1.1, 1.2, 1.3, 1.4]) * fluid.critical_point.p
-states = fluid.get_state(jxp.PSmass_INPUTS, p_array[None, :], s_array[:, None], supersaturation=True)
-colormap = cm.magma(np.linspace(0.7, 0.1, len(p_array)))
-for i in range(states[prop_x].shape[-1]):
-    ax1.plot(
-        states[prop_x][:, i],
-        states[prop_y][:, i],
-        color=colormap[i],
-        linestyle="--",
-        label=f"$p/p_{{crit}}={p_array[i]/fluid.critical_point.p:0.2f}$",
+    # Supercritical cases
+    p_array = np.asarray([1.01, 1.1, 1.2, 1.3, 1.4]) * fluid.critical_point.p
+    states = fluid.get_state(
+        jxp.PSmass_INPUTS, p_array[None, :], s_array[:, None], supersaturation=True
     )
-    ax2.plot(
-        states[prop_x][:, i],
-        states["superheating"][:, i],
-        color=colormap[i],
-        linestyle="--",
-        label=f"$p/p_{{crit}}={p_array[i]/fluid.critical_point.p:0.2f}$",
+    colormap = cm.magma(np.linspace(0.7, 0.1, len(p_array)))
+    for i in range(states[prop_x].shape[-1]):
+        ax1.plot(
+            states[prop_x][:, i],
+            states[prop_y][:, i],
+            color=colormap[i],
+            linestyle="--",
+            label=f"$p/p_{{crit}}={p_array[i]/fluid.critical_point.p:0.2f}$",
+        )
+        ax2.plot(
+            states[prop_x][:, i],
+            states["superheating"][:, i],
+            color=colormap[i],
+            linestyle="--",
+            label=f"$p/p_{{crit}}={p_array[i]/fluid.critical_point.p:0.2f}$",
+        )
+
+    # Plot phase diagram
+    jp.plot_phase_diagram(
+        fluid,
+        prop_x,
+        prop_y,
+        axes=ax1,
+        plot_critical_point=True,
+        plot_quality_isolines=True,
+        plot_pseudocritical_line=True,
+        N=options.points(100),
     )
+    ax1.legend(loc="upper left", fontsize=10)
+    ax2.legend(loc="upper left", fontsize=10)
+    fig.tight_layout(pad=2)
+    jxp.savefig_in_formats(fig, os.path.join(outdir, "generalized_superheating"))
 
-# Plot phase diagram
-fluid.plot_phase_diagram(
-    prop_x,
-    prop_y,
-    axes=ax1,
-    plot_critical_point=True,
-    plot_quality_isolines=True,
-    plot_pseudocritical_line=True,
-)
-ax1.legend(loc="upper left", fontsize=10)
-ax2.legend(loc="upper left", fontsize=10)
-fig.tight_layout(pad=2)
-jxp.savefig_in_formats(fig, os.path.join(outdir, "generalized_superheating"))
+    # Show figures
+    options.check_states(locals())
+    options.record(
+        "execution", "Scientific example completed; see numerical-check records."
+    )
+    return options.finish()
 
-# Show figures
-if not os.environ.get("DISABLE_PLOTS"):
-    plt.show()
+
+if __name__ == "__main__":
+    main()

@@ -481,6 +481,74 @@ Reproduce the guard with:
 python development/performance/phase11_benchmark.py --baseline-source development/performance/phase11_baseline.zip --output-directory development/performance/results/phase11/repeated_guard --calls-scale 4
 ```
 
+## Phase 12 examples and source-inverse checkpoint
+
+The matched guard compares accepted Phase 11 commit `588c144` (exact source
+`cb75ac4…`) with Phase 12 source `21202218…`. It uses the retained unchanged
+runner, four workers per version in serial ABBAABBA order, nine synchronized
+samples per workload and `--calls-scale 4`. All repository scientific jobs had
+finished first; the two unrelated local servers were left running and each used
+only 0.03125 CPU seconds during the guard. This observation is not a complete
+system-load profile.
+
+All **26 warmed workloads meet the 10% budget**. All **98,688 cross-version
+sampled checks** pass: 97,976 finite and 712 paired unavailable values. All 640
+numeric-array digests per worker match. The eight native optimized programs and
+all 16 inspected compiled graphs are identical across their matching workers;
+native PG/bicubic graphs contain no callbacks. Individual worker ratios remain
+visible because unchanged controls show substantial variability. Apparent native
+speedups are not attributed to changed arithmetic.
+[Full samples and environment](phase12_validation.json),
+[correctness/provenance](phase12_verification.json).
+
+Complete-state medians below are microseconds per scalar call or 1,024-state
+batch. They are a Phase 11 checkpoint comparison, not the Phase 13 PyPI gate.
+
+| Workload | Phase 11 | Phase 12 | New / old |
+| --- | ---: | ---: | ---: |
+| Perfect gas, eager scalar | 53.26 | 50.02 | 0.939 |
+| Perfect gas, eager batch | 140.20 | 134.55 | 0.960 |
+| Perfect gas, compiled scalar | 52.27 | 48.69 | 0.931 |
+| Perfect gas, compiled batch | 132.18 | 122.87 | 0.930 |
+| Bicubic, eager scalar | 118.89 | 118.33 | 0.995 |
+| Bicubic, eager batch | 997.68 | 910.72 | 0.913 |
+| Bicubic, compiled scalar | 153.31 | 107.36 | 0.700 |
+| Bicubic, compiled batch | 971.69 | 860.59 | 0.886 |
+| Water metastable density/temperature | 417.18 | 413.26 | 0.991 |
+| Water metastable pressure/enthalpy inverse | 2,226.26 | 2,027.90 | 0.911 |
+
+The only numerical package change removes a duplicate final source flash and
+validates the exact returned inverse state. A pressure-only stiffness-scaled
+floating-roundoff floor addresses a valid low-net-pressure Water root; nonlinear
+iteration tolerances and other residual budgets remain unchanged. The inverse
+shows an observed 9% improvement, with worker variability retained. Ordinary
+source PT scalar/batch medians rise 4.95%/5.87%, within the checkpoint budget.
+PG/bicubic numerical code is unchanged. The later smoothing docstring correction
+is proven numerical-AST-equivalent to the exact full-suite/example execution
+source in the [documentation proof](../example_audit/phase12_docstring_equivalence.json).
+
+Four **initial setup observations** per version remain separate from warmed
+evaluation: source construction 6.99→7.02 ms, callback construction 7.13→6.95 ms,
+cached loading 92.41→92.04 ms, and fresh 16-by-16 metastable generation
+5.12→4.33 s. Their ranges overlap; these are not dedicated repeated setup
+benchmarks or evidence of a general construction speedup.
+
+The full HEOS/REFPROP suite passes 2,951 tests and preserves all 54,272 numerical
+comparisons. One final export-header regression passes with the other 47
+table-tool tests, yielding 2,952 distinct verified cases. All 62 executable
+examples pass quick and full profiles, with three reference-only files kept
+separate. Examples' concurrent wall times are not benchmark measurements.
+
+Reproduce the guard with:
+
+```powershell
+python development/performance/phase11_benchmark.py --baseline-source development/performance/phase12_baseline.zip --output-directory development/performance/results/phase12/repeated_guard --calls-scale 4
+```
+
+Phase 13 must still resolve and pin the latest published release and run the
+broader standalone comparison. Final ThermOpt verification and application
+timings remain Phase 14.
+
 ## Method and scope of the original PyPI checkpoint
 
 Six separate workers ran serially in baseline/current/current/baseline/baseline/current order. Each implementation has three workers and five samples per warmed workload, with multiple calls per sample and synchronized JAX outputs. Cold table construction has one sample per worker. Import paths, source hashes, dependencies, device/precision, and thread settings were verified.

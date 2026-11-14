@@ -1,172 +1,231 @@
+"""Demo saturation midpoints.
+
+Quick/full profiles have distinct declared grid sizes. Use explicit output and
+table-cache paths; full retains the scientific resolution.
+"""
+
+from pathlib import Path
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from examples._common import example_options
+
 import os
 import numpy as np
 import jax.numpy as jnp
 import jaxprop as jxp
 import matplotlib.pyplot as plt
 
-jxp.set_plot_options()
 
-# ---------------------------
-# Configuration
-# ---------------------------
+def main(argv=None):
+    options = example_options(__file__, argv, description=__doc__)
+    jxp.set_plot_options()
 
-fluid_name = "nitrogen"
-h_min = -100e3  # J/kg
-h_max = -10e3  # J/kg
-p_min = 2e5  # Pa
-p_max = 1e7  # Pa
-N_p = 21  # Number of pressure points
-N_h = 21  # Number of enthalpy points
-metastable_phase = "liquid"
+    # ---------------------------
+    # Configuration
+    # ---------------------------
 
-outdir = "demo_metastable_table_generation"
+    fluid_name = "nitrogen"
+    h_min = -100e3  # J/kg
+    h_max = -40e3  # J/kg: physical liquid branch with positive cv/K_T margin
+    p_min = 2e5  # Pa
+    p_max = 1e7  # Pa
+    N_p = 21 if options.profile == "full" else 12  # Number of pressure points
+    N_h = 21 if options.profile == "full" else 12  # Number of enthalpy points
+    metastable_phase = "liquid"
 
-# ---------------------------
-# Build models
-# ---------------------------
-fluid_bicubic = jxp.FluidBicubic(
-    fluid_name=fluid_name,
-    backend="HEOS",
-    h_min=h_min,
-    h_max=h_max,
-    p_min=p_min,
-    p_max=p_max,
-    N_h=N_h,
-    N_p=N_p,
-    table_dir=outdir,
-    metastable_phase=metastable_phase,
-    gradient_method="forward",
-)
+    outdir = str(options.output_dir)
 
-fluid_cp = jxp.Fluid(fluid_name, method="coolprop")
-
-# ---------------------------
-# Saturation quality for comparison
-# ---------------------------
-Q_sat = 0.0 if metastable_phase == "liquid" else 1.0
-
-# ---------------------------
-# Saturation pressure midpoints
-# ---------------------------
-# Use the same log-spaced pressure nodes as the table, then take midpoints
-logP_sat_nodes = np.asarray(fluid_bicubic.logP_sat_vals)
-
-# Extend the nodes past the last tabulated one (0.98 p_crit) into the
-# supercritical region with the same log-spacing, up to max(p_max, 1.5 p_crit).
-# Explicit clipping holds the endpoint state beyond the saturation table;
-# CoolProp has no saturation reference in the supercritical region.
-p_crit = fluid_bicubic.critical_point["pressure"]
-p_sat_max = np.exp(logP_sat_nodes[-1])
-p_ext_max = max(p_max, 1.5 * p_crit)
-dlogP = fluid_bicubic.delta_logP_sat
-n_extra = int(np.ceil(np.log(p_ext_max / p_sat_max) / dlogP))
-logP_sat_nodes = np.append(
-    logP_sat_nodes, logP_sat_nodes[-1] + dlogP * np.arange(1, n_extra + 1)
-)
-
-logP_midpoints = 0.5 * (logP_sat_nodes[:-1] + logP_sat_nodes[1:])
-p_midpoints = np.exp(logP_midpoints)
-in_table = p_midpoints <= p_sat_max
-
-# ---------------------------
-# Evaluate saturation at midpoints
-# ---------------------------
-properties = ["temperature", "density", "enthalpy", "gruneisen"]
-
-error_data = {prop: [] for prop in properties}
-interp_vals = {prop: [] for prop in properties}
-cp_vals = {prop: [] for prop in properties}
-
-for p in p_midpoints:
-    sat_interp = fluid_bicubic.get_state_saturation(
-        jxp.PQ_INPUTS, float(p), Q_sat, errors="clip"
+    # ---------------------------
+    # Build models
+    # ---------------------------
+    fluid_bicubic = jxp.Fluid(
+        name=fluid_name,
+        method="bicubic",
+        backend="HEOS",
+        table_options={
+            "h_min": h_min,
+            "h_max": h_max,
+            "p_min": p_min,
+            "p_max": p_max,
+            "N_h": N_h,
+            "N_p": N_p,
+            "table_dir": str(options.table_dir),
+            "metastable_phase": metastable_phase,
+            "gradient_method": "forward",
+        },
     )
-    # print(sat_interp)
-    sat_cp = fluid_cp.get_state(jxp.PQ_INPUTS, float(p), Q_sat, errors="mask")
 
+    fluid_cp = jxp.Fluid(fluid_name, method="coolprop")
+
+    # ---------------------------
+    # Saturation quality for comparison
+    # ---------------------------
+    Q_sat = 0.0 if metastable_phase == "liquid" else 1.0
+
+    # ---------------------------
+    # Saturation pressure midpoints
+    # ---------------------------
+    # Use the same log-spaced pressure nodes as the table, then take midpoints
+    logP_sat_nodes = np.asarray(fluid_bicubic.logP_sat_vals)
+
+    # Extend the nodes past the last tabulated one (0.98 p_crit) into the
+    # supercritical region with the same log-spacing, up to max(p_max, 1.5 p_crit).
+    # Explicit clipping holds the endpoint state beyond the saturation table;
+    # CoolProp has no saturation reference in the supercritical region.
+    p_crit = fluid_bicubic.references["critical_point"].properties["pressure"]
+    p_sat_max = np.exp(logP_sat_nodes[-1])
+    p_ext_max = max(p_max, 1.5 * p_crit)
+    dlogP = fluid_bicubic.delta_logP_sat
+    n_extra = int(np.ceil(np.log(p_ext_max / p_sat_max) / dlogP))
+    logP_sat_nodes = np.append(
+        logP_sat_nodes, logP_sat_nodes[-1] + dlogP * np.arange(1, n_extra + 1)
+    )
+
+    logP_midpoints = 0.5 * (logP_sat_nodes[:-1] + logP_sat_nodes[1:])
+    p_midpoints = np.exp(logP_midpoints)
+    in_table = p_midpoints <= p_sat_max
+
+    # ---------------------------
+    # Evaluate saturation at midpoints
+    # ---------------------------
+    properties = ["temperature", "density", "enthalpy", "gruneisen"]
+
+    error_data = {prop: [] for prop in properties}
+    interp_vals = {prop: [] for prop in properties}
+    cp_vals = {prop: [] for prop in properties}
+
+    for p in p_midpoints:
+        sat_interp = fluid_bicubic.get_state_saturation(
+            jxp.PQ_INPUTS, float(p), Q_sat, errors="clip"
+        )
+        # print(sat_interp)
+        sat_cp = fluid_cp.get_state(jxp.PQ_INPUTS, float(p), Q_sat, errors="mask")
+
+        for prop in properties:
+            val_interp = float(sat_interp.raw_property(prop))
+            val_cp = float(sat_cp.raw_property(prop))
+            interp_vals[prop].append(val_interp)
+            cp_vals[prop].append(val_cp)
+
+            if abs(val_cp) > 1e-30:
+                rel_err = abs(val_interp - val_cp) / abs(val_cp) * 100.0
+            else:
+                rel_err = float("nan")
+            error_data[prop].append(rel_err)
+
+    # Convert to arrays
     for prop in properties:
-        val_interp = float(sat_interp.raw_property(prop))
-        val_cp = float(sat_cp.raw_property(prop))
-        interp_vals[prop].append(val_interp)
-        cp_vals[prop].append(val_cp)
+        error_data[prop] = np.array(error_data[prop])
+        interp_vals[prop] = np.array(interp_vals[prop])
+        cp_vals[prop] = np.array(cp_vals[prop])
 
-        if abs(val_cp) > 1e-30:
-            rel_err = abs(val_interp - val_cp) / abs(val_cp) * 100.0
-        else:
-            rel_err = float("nan")
-        error_data[prop].append(rel_err)
+    # ---------------------------
+    # Print error summary
+    # ---------------------------
+    print("\nSaturation midpoint interpolation error summary (within table range):")
+    header = f"{'Prop':<10} {'% min':>12} {'% max':>12} {'% mean':>12}"
+    print("-" * len(header))
+    print(header)
+    print("-" * len(header))
+    for prop in properties:
+        err = error_data[prop][in_table]
+        print(
+            f"{prop:<10} {np.nanmin(err):>12.3e} {np.nanmax(err):>12.3e} {np.nanmean(err):>12.3e}"
+        )
 
-# Convert to arrays
-for prop in properties:
-    error_data[prop] = np.array(error_data[prop])
-    interp_vals[prop] = np.array(interp_vals[prop])
-    cp_vals[prop] = np.array(cp_vals[prop])
-
-# ---------------------------
-# Print error summary
-# ---------------------------
-print("\nSaturation midpoint interpolation error summary (within table range):")
-header = f"{'Prop':<10} {'% min':>12} {'% max':>12} {'% mean':>12}"
-print("-" * len(header))
-print(header)
-print("-" * len(header))
-for prop in properties:
-    err = error_data[prop][in_table]
-    print(
-        f"{prop:<10} {np.nanmin(err):>12.3e} {np.nanmax(err):>12.3e} {np.nanmean(err):>12.3e}"
+    # ---------------------------
+    # Plot: relative error vs pressure
+    # ---------------------------
+    fig, axes = plt.subplots(
+        len(properties), 1, figsize=(8, 3 * len(properties)), sharex=True
     )
+    if len(properties) == 1:
+        axes = [axes]
 
-# ---------------------------
-# Plot: relative error vs pressure
-# ---------------------------
-fig, axes = plt.subplots(
-    len(properties), 1, figsize=(8, 3 * len(properties)), sharex=True
-)
-if len(properties) == 1:
-    axes = [axes]
+    for ax, prop in zip(axes, properties):
+        ax.semilogy(p_midpoints / 1e6, error_data[prop], "o-", markersize=3)
+        ax.axvline(p_sat_max / 1e6, color="gray", ls=":")
+        ax.axvline(p_crit / 1e6, color="k", ls=":")
+        ax.set_ylabel(f"{prop} error [%]")
+        ax.grid(True, which="both", ls="--", alpha=0.5)
 
-for ax, prop in zip(axes, properties):
-    ax.semilogy(p_midpoints / 1e6, error_data[prop], "o-", markersize=3)
-    ax.axvline(p_sat_max / 1e6, color="gray", ls=":")
-    ax.axvline(p_crit / 1e6, color="k", ls=":")
-    ax.set_ylabel(f"{prop} error [%]")
-    ax.grid(True, which="both", ls="--", alpha=0.5)
-
-axes[-1].set_xlabel("Pressure [MPa]")
-axes[0].set_title(
-    f"Saturation interpolation error at midpoints ({fluid_name}, Q={Q_sat})"
-)
-plt.tight_layout()
-
-# ---------------------------
-# Plot: interpolated vs CoolProp values
-# ---------------------------
-fig2, axes2 = plt.subplots(
-    len(properties), 1, figsize=(8, 3 * len(properties)), sharex=True
-)
-if len(properties) == 1:
-    axes2 = [axes2]
-
-for ax, prop in zip(axes2, properties):
-    ax.plot(p_midpoints / 1e6, cp_vals[prop], "k-", label="CoolProp", linewidth=1.5)
-    ax.plot(
-        p_midpoints / 1e6,
-        interp_vals[prop],
-        "r--o",
-        label="Bicubic",
-        linewidth=1.5,
-        markersize=3,
+    axes[-1].set_xlabel("Pressure [MPa]")
+    axes[0].set_title(
+        f"Saturation interpolation error at midpoints ({fluid_name}, Q={Q_sat})"
     )
-    ax.axvline(p_sat_max / 1e6, color="gray", ls=":")
-    ax.axvline(p_crit / 1e6, color="k", ls=":")
-    ax.set_ylabel(prop)
-    ax.grid(True, which="both", ls="--", alpha=0.5)
-    ax.legend(fontsize=8)
+    plt.tight_layout()
 
-axes2[-1].set_xlabel("Pressure [MPa]")
-axes2[0].set_title(f"Saturation properties comparison ({fluid_name}, Q={Q_sat})")
-plt.tight_layout()
+    # ---------------------------
+    # Plot: interpolated vs CoolProp values
+    # ---------------------------
+    fig2, axes2 = plt.subplots(
+        len(properties), 1, figsize=(8, 3 * len(properties)), sharex=True
+    )
+    if len(properties) == 1:
+        axes2 = [axes2]
 
-# Show figures
-if not os.environ.get("DISABLE_PLOTS"):
-    plt.show()
+    for ax, prop in zip(axes2, properties):
+        ax.plot(p_midpoints / 1e6, cp_vals[prop], "k-", label="CoolProp", linewidth=1.5)
+        ax.plot(
+            p_midpoints / 1e6,
+            interp_vals[prop],
+            "r--o",
+            label="Bicubic",
+            linewidth=1.5,
+            markersize=3,
+        )
+        ax.axvline(p_sat_max / 1e6, color="gray", ls=":")
+        ax.axvline(p_crit / 1e6, color="k", ls=":")
+        ax.set_ylabel(prop)
+        ax.grid(True, which="both", ls="--", alpha=0.5)
+        ax.legend(fontsize=8)
+
+    axes2[-1].set_xlabel("Pressure [MPa]")
+    axes2[0].set_title(f"Saturation properties comparison ({fluid_name}, Q={Q_sat})")
+    plt.tight_layout()
+
+    # Show figures
+
+    options.record(
+        "settings",
+        {
+            "fluid_name": fluid_name,
+            "h_min": h_min,
+            "h_max": h_max,
+            "p_min": p_min,
+            "p_max": p_max,
+            "N_h": N_h,
+            "N_p": N_p,
+            "metastable_phase": metastable_phase,
+        },
+    )
+    for prop in properties:
+        assert np.all(np.isfinite(interp_vals[prop]))
+        assert np.all(np.isfinite(cp_vals[prop][in_table]))
+    options.record(
+        "domain_revision",
+        dict(
+            original_bulk_h_max=-10e3,
+            physical_bulk_h_max=h_max,
+            reason="The bulk rectangle now avoids negative-cv liquid states; the original full saturation pressure grid and its comparison remain unchanged.",
+        ),
+    )
+    options.record(
+        "saturation_comparison",
+        dict(
+            in_table_points=int(np.count_nonzero(in_table)),
+            explicit_clipped_extension_points=int(np.count_nonzero(~in_table)),
+            maximum_relative_error_percent={
+                name: float(np.nanmax(error_data[name][in_table]))
+                for name in properties
+            },
+        ),
+    )
+    return options.finish()
+
+
+if __name__ == "__main__":
+    main()

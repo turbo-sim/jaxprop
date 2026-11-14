@@ -1,0 +1,162 @@
+{
+  "date_utc": "2026-11-14T12:46:13.671858+00:00",
+  "current_source_sha256": "21202218d43f9c44a6639e325ae2a5d2a721c0443f7865f4c0fbe9d7979699c0",
+  "full_suite_executed_source_sha256": "d4049f47413af829aaa7d836a38d411f8b8c73f44ade3abcf51ef74502d5e853",
+  "subsequent_numerically_equivalent_docstring_change": "development/example_audit/phase12_docstring_equivalence.json",
+  "test_backends": [
+    "HEOS",
+    "REFPROP"
+  ],
+  "environment": {
+    "JAX_ENABLE_X64": "true",
+    "JAX_PLATFORM_NAME": "cpu"
+  },
+  "full_suite": {
+    "passed": 2951,
+    "failed": 0,
+    "skipped": 0,
+    "xfailed": 0,
+    "seconds": 944.4284804000054,
+    "evidence": "development/test_audit/results/phase12/full_20261114_131932/summary.json"
+  },
+  "additional_final_example_regression": {
+    "passed": 48,
+    "previous_cases_rechecked": 47,
+    "additional_cases": 1,
+    "new_cases": [
+      [
+        "test_phase12_bicubic_examples",
+        "test_binary_reader_rejects_coordinate_header_that_disagrees_with_metadata[equilibrium]"
+      ]
+    ],
+    "junit": "development/example_audit/results/phase12_cbin_header_review_tests.xml"
+  },
+  "verified_distinct_test_cases": 2952,
+  "new_phase12_distinct_test_cases": 100,
+  "property_comparisons": 54272,
+  "finite_values_compared": 47867,
+  "unavailable_values_checked": 6405,
+  "failed_comparisons": 0,
+  "source_unchanged_during_full_run": true,
+  "numerical_package_changes_since_phase11": [
+    "jaxprop/coolprop/core_calculations.py"
+  ],
+  "docstring_only_package_changes_since_phase11": [
+    "jaxprop/math.py"
+  ],
+  "examples": {
+    "evidence": "development/example_audit/phase12_examples.json",
+    "original_files": 65,
+    "standalone_programs": 59,
+    "explicit_input_tools": 3,
+    "reference_only": 3,
+    "quick_completed": 62,
+    "full_completed": 62,
+    "failed": 0,
+    "timeouts": 0,
+    "missing_inputs": 0,
+    "import_checks": 65,
+    "quick_figures": 48,
+    "full_figures": 51,
+    "elapsed_times_are_benchmarks": false
+  },
+  "documentation": {
+    "evidence": "development/example_audit/phase12_documentation.json",
+    "sphinx_pages": 28,
+    "warnings": 0,
+    "migration_guide": "docs/migration.md",
+    "workflow_index": "examples/README.md",
+    "local_build_passed": true,
+    "remote_ci_execution_claimed": false
+  },
+  "formatting": {
+    "tool": "black --check",
+    "files_checked": 74,
+    "passed": true
+  },
+  "git_diff_check": {
+    "passed": true
+  },
+  "performance_record": "development/performance/phase12_validation.json",
+  "limitations": [
+    "The full suite and 124 profile executions retain their exact d404 package provenance. Only math.py docstrings changed later, proven numerically AST-equivalent, with existing19 helper tests rerun successfully.",
+    "This checkpoint compares against accepted Phase11, not the formal latest pinned PyPI baseline assigned to Phase13.",
+    "Formal Nitrogen response accuracy remains uncertified near caloric poles despite successful research-example execution.",
+    "Hosted CI is configured, with no remote execution or publication performed by this task.",
+    "Optional adaptive mesh, model extensions, setup/cache optimizations and additional devices remain separately tracked."
+  ],
+  "source_matches_benchmark": true,
+  "matched_warmed_timing_cases": 26,
+  "all_warmed_cases_within_10_percent_budget": true,
+  "benchmark_comparison_counts": {
+    "cross_version_finite_values": 97976,
+    "cross_version_paired_unavailable_values": 712,
+    "mismatches": 0
+  },
+  "numerical_payload_digests": {
+    "arrays_per_worker": 640,
+    "worker_count": 8,
+    "all_workers_match": true,
+    "table_arrays": {
+      "equilibrium_CO2_16x16": 280,
+      "metastable_Nitrogen_liquid_16x16": 360
+    },
+    "comparison": "Exact finite-value bit patterns, shapes and dtypes; NaN masks compared separately with paired NaNs."
+  },
+  "identical_native_optimized_programs": {
+    "case_count": 8,
+    "all_eight_workers_identical": true,
+    "callbacks_present": false,
+    "cases": {
+      "pg_compiled_hp_scalar": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          1405
+        ]
+      },
+      "pg_compiled_hp_batch1024": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          832
+        ]
+      },
+      "pg_compiled_full_state_and_dTdh": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          1487
+        ]
+      },
+      "pg_compiled_compressor_with_status": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          1035
+        ]
+      },
+      "bicubic_compiled_hp_scalar": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          1329
+        ]
+      },
+      "bicubic_compiled_hp_batch1024": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          669
+        ]
+      },
+      "bicubic_compiled_full_state_and_dTdh": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          1466
+        ]
+      },
+      "bicubic_compiled_compressor_with_status": {
+        "all_eight_workers_identical": true,
+        "instruction_counts": [
+          4238
+        ]
+      }
+    }
+  },
+  "benchmark_baseline": "588c144 / accepted Phase 11 exact source snapshot"
+}

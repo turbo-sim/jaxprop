@@ -1,0 +1,1316 @@
+{
+  "schema_version": 1,
+  "original_example_count": 65,
+  "examples": [
+    {
+      "path": "basic_calculations/solver_coolprop.py",
+      "kind": "tutorial",
+      "purpose": "Evaluate liquid, gas and equilibrium saturation states.",
+      "model_provider": "CoolProp HEOS",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": true,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/basic_calculations/solver_coolprop.py --profile quick --headless --output-dir output/solver_coolprop"
+    },
+    {
+      "path": "basic_calculations/solver_equilibrium.py",
+      "kind": "tutorial",
+      "purpose": "Recover the same equilibrium state through several input pairs.",
+      "model_provider": "CoolProp HEOS",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/basic_calculations/solver_equilibrium.py --profile quick --headless --output-dir output/solver_equilibrium"
+    },
+    {
+      "path": "basic_calculations/solver_metastable.py",
+      "kind": "tutorial",
+      "purpose": "Recover a homogeneous state through direct and inverse pairs.",
+      "model_provider": "CoolProp HEOS",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/basic_calculations/solver_metastable.py --profile quick --headless --output-dir output/solver_metastable"
+    },
+    {
+      "path": "bicubic_interpolation/convert_pkl_to_csv.py",
+      "kind": "input-tool",
+      "purpose": "Export a validated table to CSV, or an optional Excel workbook, and verify its round trip.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": null,
+      "optional_dependencies": [
+        "pandas",
+        "openpyxl"
+      ],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/convert_pkl_to_csv.py --profile quick --headless --output-dir output/convert_pkl_to_csv --input PATH_TO_VALID_TABLE.pkl",
+      "optional_dependencies_scope": "pandas/openpyxl apply only to --format xlsx; CSV uses standard-library output."
+    },
+    {
+      "path": "bicubic_interpolation/demo_derivatives_jax.py",
+      "kind": "tutorial",
+      "purpose": "Compare signed bicubic AD derivatives with source responses.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_derivatives_jax.py --profile quick --headless --output-dir output/demo_derivatives_jax"
+    },
+    {
+      "path": "bicubic_interpolation/demo_grid_convergence.py",
+      "kind": "research-study",
+      "purpose": "Study finite-difference/interpolation convergence at declared resolutions.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 240,
+        "full": 1800
+      },
+      "resource_profile": "large tables/ODE; seconds to several minutes",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_grid_convergence.py --profile quick --headless --output-dir output/demo_grid_convergence",
+      "accuracy_scope": "Diagnostic/research workflow; completion does not certify the whole physical domain or pole-near response accuracy."
+    },
+    {
+      "path": "bicubic_interpolation/demo_interpolation_midpoints.py",
+      "kind": "tutorial",
+      "purpose": "Compare ordinary bicubic midpoints with the source EOS.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_interpolation_midpoints.py --profile quick --headless --output-dir output/demo_interpolation_midpoints"
+    },
+    {
+      "path": "bicubic_interpolation/demo_interpolation_midpoints_metastable.py",
+      "kind": "tutorial",
+      "purpose": "Check physical Nitrogen liquid midpoint interpolation.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 240,
+        "full": 1800
+      },
+      "resource_profile": "large tables/ODE; seconds to several minutes",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_interpolation_midpoints_metastable.py --profile quick --headless --output-dir output/demo_interpolation_midpoints_metastable"
+    },
+    {
+      "path": "bicubic_interpolation/demo_interpolation_serial.py",
+      "kind": "tutorial",
+      "purpose": "Demonstrate synchronized scalar full-state interpolation.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_interpolation_serial.py --profile quick --headless --output-dir output/demo_interpolation_serial"
+    },
+    {
+      "path": "bicubic_interpolation/demo_interpolation_vectorized.py",
+      "kind": "tutorial",
+      "purpose": "Demonstrate synchronized batch full-state interpolation.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_interpolation_vectorized.py --profile quick --headless --output-dir output/demo_interpolation_vectorized"
+    },
+    {
+      "path": "bicubic_interpolation/demo_metastable_calculations.py",
+      "kind": "tutorial",
+      "purpose": "Build a physically admissible Water liquid table and recover a state.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 240,
+        "full": 1800
+      },
+      "resource_profile": "large tables/ODE; seconds to several minutes",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_metastable_calculations.py --profile quick --headless --output-dir output/demo_metastable_calculations"
+    },
+    {
+      "path": "bicubic_interpolation/demo_metastable_single_point_comparison.py",
+      "kind": "research-study",
+      "purpose": "Check a selected point in an explicitly formal research table.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 240,
+        "full": 1800
+      },
+      "resource_profile": "large tables/ODE; seconds to several minutes",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_metastable_single_point_comparison.py --profile quick --headless --output-dir output/demo_metastable_single_point_comparison",
+      "accuracy_scope": "Diagnostic/research workflow; completion does not certify the whole physical domain or pole-near response accuracy."
+    },
+    {
+      "path": "bicubic_interpolation/demo_midpoints_metastable_comparison.py",
+      "kind": "research-study",
+      "purpose": "Diagnose formal-EOS interpolation near a caloric pole.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 240,
+        "full": 1800
+      },
+      "resource_profile": "large tables/ODE; seconds to several minutes",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_midpoints_metastable_comparison.py --profile quick --headless --output-dir output/demo_midpoints_metastable_comparison",
+      "accuracy_scope": "Diagnostic/research workflow; completion does not certify the whole physical domain or pole-near response accuracy."
+    },
+    {
+      "path": "bicubic_interpolation/demo_saturation_midpoints.py",
+      "kind": "tutorial",
+      "purpose": "Verify the stored saturated endpoint interpolation.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_saturation_midpoints.py --profile quick --headless --output-dir output/demo_saturation_midpoints"
+    },
+    {
+      "path": "bicubic_interpolation/demo_solver_consistency.py",
+      "kind": "tutorial",
+      "purpose": "Verify supported bicubic input-pair inverses.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_solver_consistency.py --profile quick --headless --output-dir output/demo_solver_consistency"
+    },
+    {
+      "path": "bicubic_interpolation/demo_table_generation.py",
+      "kind": "tutorial",
+      "purpose": "Generate and inspect a source-compatible ordinary bicubic table.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_table_generation.py --profile quick --headless --output-dir output/demo_table_generation"
+    },
+    {
+      "path": "bicubic_interpolation/demo_table_interpolation.py",
+      "kind": "tutorial",
+      "purpose": "Evaluate a simple ordinary bicubic table.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": true,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_table_interpolation.py --profile quick --headless --output-dir output/demo_table_interpolation"
+    },
+    {
+      "path": "bicubic_interpolation/demo_table_interpolation_with_saturation.py",
+      "kind": "tutorial",
+      "purpose": "Compare a physical homogeneous table and stored saturation endpoints.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_table_interpolation_with_saturation.py --profile quick --headless --output-dir output/demo_table_interpolation_with_saturation"
+    },
+    {
+      "path": "bicubic_interpolation/demo_two_phase_speed_sound.py",
+      "kind": "tutorial",
+      "purpose": "Map supported two-phase acoustic responses and unavailable cells.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/demo_two_phase_speed_sound.py --profile quick --headless --output-dir output/demo_two_phase_speed_sound"
+    },
+    {
+      "path": "bicubic_interpolation/export_pkl_to_c_binary.py",
+      "kind": "input-tool",
+      "purpose": "Export an explicit validated table and round-trip its binary schema.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": null,
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/export_pkl_to_c_binary.py --profile quick --headless --output-dir output/export_pkl_to_c_binary --input PATH_TO_VALID_TABLE.pkl"
+    },
+    {
+      "path": "bicubic_interpolation/plot_metastable_point.py",
+      "kind": "input-tool",
+      "purpose": "Inspect an explicitly supplied table and state.",
+      "model_provider": "JaxProp bicubic / configured source",
+      "required_backend": null,
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/bicubic_interpolation/plot_metastable_point.py --profile quick --headless --output-dir output/plot_metastable_point --input PATH_TO_VALID_TABLE.pkl"
+    },
+    {
+      "path": "blending_calculations/blending_condensing.py",
+      "kind": "tutorial",
+      "purpose": "Follow a condensing branch with explicit constitutive blending.",
+      "model_provider": "CoolProp homogeneous/equilibrium/blending",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/blending_calculations/blending_condensing.py --profile quick --headless --output-dir output/blending_condensing"
+    },
+    {
+      "path": "blending_calculations/blending_flashing.py",
+      "kind": "tutorial",
+      "purpose": "Follow a flashing branch with explicit constitutive blending.",
+      "model_provider": "CoolProp homogeneous/equilibrium/blending",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/blending_calculations/blending_flashing.py --profile quick --headless --output-dir output/blending_flashing"
+    },
+    {
+      "path": "contour_plots/compressibility_factor.py",
+      "kind": "tutorial",
+      "purpose": "Map compressibility with declared source/domain coverage.",
+      "model_provider": "CoolProp / callback",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/contour_plots/compressibility_factor.py --profile quick --headless --output-dir output/compressibility_factor"
+    },
+    {
+      "path": "contour_plots/demo_joule_thomson.py",
+      "kind": "tutorial",
+      "purpose": "Plot available Joule-Thomson responses and explicit property gaps.",
+      "model_provider": "CoolProp / callback",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/contour_plots/demo_joule_thomson.py --profile quick --headless --output-dir output/demo_joule_thomson"
+    },
+    {
+      "path": "contour_plots/isentropic_cooling.py",
+      "kind": "tutorial",
+      "purpose": "Plot signed constant-entropy temperature sensitivity with explicit EOS gaps.",
+      "model_provider": "CoolProp / callback",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/contour_plots/isentropic_cooling.py --profile quick --headless --output-dir output/isentropic_cooling"
+    },
+    {
+      "path": "contour_plots/pressure_isolines.py",
+      "kind": "tutorial",
+      "purpose": "Plot source pressure isolines with correct SI/display coordinates.",
+      "model_provider": "CoolProp / callback",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/contour_plots/pressure_isolines.py --profile quick --headless --output-dir output/pressure_isolines"
+    },
+    {
+      "path": "contour_plots/pressure_isolines_timing.py",
+      "kind": "tutorial",
+      "purpose": "Separate fresh and cached phase-diagram drawing costs.",
+      "model_provider": "CoolProp / callback",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/contour_plots/pressure_isolines_timing.py --profile quick --headless --output-dir output/pressure_isolines_timing"
+    },
+    {
+      "path": "coolprop_jax/coolprop_broadcast.py",
+      "kind": "tutorial",
+      "purpose": "Compare synchronized complete-state scalar/array broadcasting costs.",
+      "model_provider": "CoolProp callbacks / native controls",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/coolprop_jax/coolprop_broadcast.py --profile quick --headless --output-dir output/coolprop_broadcast"
+    },
+    {
+      "path": "coolprop_jax/derivative_consistency_1.py",
+      "kind": "tutorial",
+      "purpose": "Verify source callback thermodynamic and Maxwell identities.",
+      "model_provider": "CoolProp callbacks / native controls",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": true,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/coolprop_jax/derivative_consistency_1.py --profile quick --headless --output-dir output/derivative_consistency_1"
+    },
+    {
+      "path": "coolprop_jax/derivative_consistency_2.py",
+      "kind": "tutorial",
+      "purpose": "Check signed source callback first derivatives.",
+      "model_provider": "CoolProp callbacks / native controls",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/coolprop_jax/derivative_consistency_2.py --profile quick --headless --output-dir output/derivative_consistency_2"
+    },
+    {
+      "path": "coolprop_jax/derivative_consistency_3.py",
+      "kind": "tutorial",
+      "purpose": "Check callback derivatives across supported input pairs.",
+      "model_provider": "CoolProp callbacks / native controls",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/coolprop_jax/derivative_consistency_3.py --profile quick --headless --output-dir output/derivative_consistency_3"
+    },
+    {
+      "path": "mixture_properties/test_cal_prop.py",
+      "kind": "scientific-study",
+      "purpose": "Verify native binary HP Jacobians and PS acoustic definitions.",
+      "model_provider": "native binary with tabulated components",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 240,
+        "full": 1800
+      },
+      "resource_profile": "large tables/ODE; seconds to several minutes",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/mixture_properties/test_cal_prop.py --profile quick --headless --output-dir output/test_cal_prop"
+    },
+    {
+      "path": "optimistix/demo_ideal_gas.py",
+      "kind": "tutorial",
+      "purpose": "Solve dimensionless nozzle energy residuals and verify the analytic solution.",
+      "model_provider": "native perfect gas",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": true,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/optimistix/demo_ideal_gas.py --profile quick --headless --output-dir output/demo_ideal_gas"
+    },
+    {
+      "path": "optimistix/demo_minimize.py",
+      "kind": "tutorial",
+      "purpose": "Verify a smooth optimization objective and its result.",
+      "model_provider": "analytic optimization objective",
+      "required_backend": null,
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/optimistix/demo_minimize.py --profile quick --headless --output-dir output/demo_minimize"
+    },
+    {
+      "path": "optimistix/demo_minimize_io.py",
+      "kind": "tutorial",
+      "purpose": "Verify ordered objective/gradient instrumentation during optimization.",
+      "model_provider": "analytic optimization objective",
+      "required_backend": null,
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/optimistix/demo_minimize_io.py --profile quick --headless --output-dir output/demo_minimize_io"
+    },
+    {
+      "path": "optimistix/demo_root_find.py",
+      "kind": "tutorial",
+      "purpose": "Check a root solver against an independent known root.",
+      "model_provider": "analytic optimization objective",
+      "required_backend": null,
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/optimistix/demo_root_find.py --profile quick --headless --output-dir output/demo_root_find"
+    },
+    {
+      "path": "optimistix/diffrax_polytropic_expansion.py",
+      "kind": "tutorial",
+      "purpose": "Integrate a differentiable expansion and check the exit objective gradients.",
+      "model_provider": "native perfect gas / configured callback source",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 240,
+        "full": 1800
+      },
+      "resource_profile": "large tables/ODE; seconds to several minutes",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/optimistix/diffrax_polytropic_expansion.py --profile quick --headless --output-dir output/diffrax_polytropic_expansion"
+    },
+    {
+      "path": "optimistix/diffrax_rosenbrock.py",
+      "kind": "tutorial",
+      "purpose": "Demonstrate constrained optimization of the Rosenbrock objective.",
+      "model_provider": "analytic optimization objective",
+      "required_backend": null,
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/optimistix/diffrax_rosenbrock.py --profile quick --headless --output-dir output/diffrax_rosenbrock"
+    },
+    {
+      "path": "perfect_gas/demo_perfect_gas_eos.py",
+      "kind": "tutorial",
+      "purpose": "Verify full-state perfect-gas input-pair round trips.",
+      "model_provider": "native perfect gas",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": true,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/perfect_gas/demo_perfect_gas_eos.py --profile quick --headless --output-dir output/demo_perfect_gas_eos"
+    },
+    {
+      "path": "perfect_gas/demo_perfect_gas_gradients.py",
+      "kind": "tutorial",
+      "purpose": "Compare perfect-gas derivatives with finite differences and identities.",
+      "model_provider": "native perfect gas",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": true,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/perfect_gas/demo_perfect_gas_gradients.py --profile quick --headless --output-dir output/demo_perfect_gas_gradients"
+    },
+    {
+      "path": "perfect_gas/demo_sutherland.py",
+      "kind": "tutorial",
+      "purpose": "Plot and verify the perfect-gas viscosity law.",
+      "model_provider": "native perfect gas",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/perfect_gas/demo_sutherland.py --profile quick --headless --output-dir output/demo_sutherland"
+    },
+    {
+      "path": "perfect_gas/polytropic_compression.py",
+      "kind": "tutorial",
+      "purpose": "Check polytropic density gradients and Hessians.",
+      "model_provider": "native perfect gas",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/perfect_gas/polytropic_compression.py --profile quick --headless --output-dir output/polytropic_compression"
+    },
+    {
+      "path": "props_supersaturation/supersaturation_along_isentrope.py",
+      "kind": "scientific-study",
+      "purpose": "Follow isentropic equilibrium, homogeneous and blended branches.",
+      "model_provider": "CoolProp homogeneous/equilibrium/blending",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/props_supersaturation/supersaturation_along_isentrope.py --profile quick --headless --output-dir output/supersaturation_along_isentrope"
+    },
+    {
+      "path": "props_supersaturation/supersaturation_along_isobar.py",
+      "kind": "scientific-study",
+      "purpose": "Compare equilibrium and homogeneous branches at fixed pressure.",
+      "model_provider": "CoolProp homogeneous/equilibrium/blending",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/props_supersaturation/supersaturation_along_isobar.py --profile quick --headless --output-dir output/supersaturation_along_isobar"
+    },
+    {
+      "path": "props_supersaturation/supersaturation_along_spinodal.py",
+      "kind": "scientific-study",
+      "purpose": "Check supersaturation diagnostics along both spinodal branches.",
+      "model_provider": "CoolProp homogeneous/equilibrium/blending",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/props_supersaturation/supersaturation_along_spinodal.py --profile quick --headless --output-dir output/supersaturation_along_spinodal"
+    },
+    {
+      "path": "props_undersaturation/demo_calculations.py",
+      "kind": "tutorial",
+      "purpose": "Compare configured superheating/subcooling with independent raw source calls.",
+      "model_provider": "CoolProp requested diagnostics",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/props_undersaturation/demo_calculations.py --profile quick --headless --output-dir output/demo_calculations"
+    },
+    {
+      "path": "props_undersaturation/quality_along_isolines.py",
+      "kind": "tutorial",
+      "purpose": "Compare generalized quality along pressure and temperature isolines.",
+      "model_provider": "CoolProp requested diagnostics",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/props_undersaturation/quality_along_isolines.py --profile quick --headless --output-dir output/quality_along_isolines"
+    },
+    {
+      "path": "props_undersaturation/subcooling_along_isobar.py",
+      "kind": "tutorial",
+      "purpose": "Plot generalized subcooling with explicit source diagnostics.",
+      "model_provider": "CoolProp requested diagnostics",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/props_undersaturation/subcooling_along_isobar.py --profile quick --headless --output-dir output/subcooling_along_isobar"
+    },
+    {
+      "path": "props_undersaturation/superheating_along_isobar.py",
+      "kind": "tutorial",
+      "purpose": "Plot generalized superheating with explicit source diagnostics.",
+      "model_provider": "CoolProp requested diagnostics",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/props_undersaturation/superheating_along_isobar.py --profile quick --headless --output-dir output/superheating_along_isobar"
+    },
+    {
+      "path": "speed_of_sound/relaxation_hierarchy.py",
+      "kind": "tutorial",
+      "purpose": "Compare stated acoustic relaxation limits.",
+      "model_provider": "explicit relaxation models",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/speed_of_sound/relaxation_hierarchy.py --profile quick --headless --output-dir output/relaxation_hierarchy"
+    },
+    {
+      "path": "spinodal_lines/spinodal_lines.py",
+      "kind": "scientific-study",
+      "purpose": "Check homogeneous response grids and liquid/vapor spinodal roots.",
+      "model_provider": "CoolProp homogeneous",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/spinodal_lines/spinodal_lines.py --profile quick --headless --output-dir output/spinodal_lines"
+    },
+    {
+      "path": "spinodal_lines/spinodal_lines_PT.py",
+      "kind": "scientific-study",
+      "purpose": "Plot independently ordered saturation and spinodal pressure curves.",
+      "model_provider": "CoolProp homogeneous",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/spinodal_lines/spinodal_lines_PT.py --profile quick --headless --output-dir output/spinodal_lines_PT"
+    },
+    {
+      "path": "transport_properties/fluid_troubleshooting.py",
+      "kind": "reference",
+      "purpose": "Historical commented transport/source notes.",
+      "model_provider": "inactive reference",
+      "required_backend": null,
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/transport_properties/fluid_troubleshooting.py --profile quick --headless --output-dir output/fluid_troubleshooting",
+      "classification_reason": "Commented historical reference only; no executable study or passing outcome is claimed."
+    },
+    {
+      "path": "transport_properties/plot_surface_tension.py",
+      "kind": "reference",
+      "purpose": "Historical commented transport/source notes.",
+      "model_provider": "inactive reference",
+      "required_backend": null,
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/transport_properties/plot_surface_tension.py --profile quick --headless --output-dir output/plot_surface_tension",
+      "classification_reason": "Commented historical reference only; no executable study or passing outcome is claimed."
+    },
+    {
+      "path": "transport_properties/trying_refprop.py",
+      "kind": "reference",
+      "purpose": "Historical commented transport/source notes.",
+      "model_provider": "inactive reference",
+      "required_backend": null,
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/transport_properties/trying_refprop.py --profile quick --headless --output-dir output/trying_refprop",
+      "classification_reason": "Commented historical reference only; no executable study or passing outcome is claimed."
+    },
+    {
+      "path": "two_component/water_nitrogen_calculations.py",
+      "kind": "scientific-study",
+      "purpose": "Integrate a binary expansion and locate a genuine sonic crossing.",
+      "model_provider": "fixed-composition binary",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 240,
+        "full": 1800
+      },
+      "resource_profile": "large tables/ODE; seconds to several minutes",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/two_component/water_nitrogen_calculations.py --profile quick --headless --output-dir output/water_nitrogen_calculations"
+    },
+    {
+      "path": "two_component/water_nitrogen_consistency.py",
+      "kind": "scientific-study",
+      "purpose": "Verify binary PT/HP/PS recovery and response identities.",
+      "model_provider": "fixed-composition binary",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": true,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/two_component/water_nitrogen_consistency.py --profile quick --headless --output-dir output/water_nitrogen_consistency"
+    },
+    {
+      "path": "two_component/water_nitrogen_example.py",
+      "kind": "scientific-study",
+      "purpose": "Evaluate a configured fixed-composition binary model.",
+      "model_provider": "fixed-composition binary",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/two_component/water_nitrogen_example.py --profile quick --headless --output-dir output/water_nitrogen_example"
+    },
+    {
+      "path": "two_component/water_nitrogen_speed_sound.py",
+      "kind": "scientific-study",
+      "purpose": "Compare binary equilibrium and frozen acoustic limits.",
+      "model_provider": "fixed-composition binary",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/two_component/water_nitrogen_speed_sound.py --profile quick --headless --output-dir output/water_nitrogen_speed_sound"
+    },
+    {
+      "path": "two_phase_derivatives/check_gruneisen.py",
+      "kind": "scientific-study",
+      "purpose": "Check equilibrium Gruneisen from its energy-density definition.",
+      "model_provider": "CoolProp equilibrium / independent source Jacobians",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/two_phase_derivatives/check_gruneisen.py --profile quick --headless --output-dir output/check_gruneisen"
+    },
+    {
+      "path": "two_phase_derivatives/check_speed_sound.py",
+      "kind": "scientific-study",
+      "purpose": "Check equilibrium sound speed from the isentropic density response.",
+      "model_provider": "CoolProp equilibrium / independent source Jacobians",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/two_phase_derivatives/check_speed_sound.py --profile quick --headless --output-dir output/check_speed_sound"
+    },
+    {
+      "path": "two_phase_derivatives/enthalpy_derivatives.py",
+      "kind": "scientific-study",
+      "purpose": "Verify both independent partial derivatives of enthalpy.",
+      "model_provider": "CoolProp equilibrium / independent source Jacobians",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": true,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/two_phase_derivatives/enthalpy_derivatives.py --profile quick --headless --output-dir output/enthalpy_derivatives"
+    },
+    {
+      "path": "two_phase_derivatives/gibbs_saturation.py",
+      "kind": "scientific-study",
+      "purpose": "Recover saturation pressure from equal homogeneous Gibbs energies.",
+      "model_provider": "CoolProp equilibrium / independent source Jacobians",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/two_phase_derivatives/gibbs_saturation.py --profile quick --headless --output-dir output/gibbs_saturation"
+    },
+    {
+      "path": "two_phase_derivatives/saturation_derivatives.py",
+      "kind": "scientific-study",
+      "purpose": "Compare signed saturation-coordinate response Jacobians.",
+      "model_provider": "CoolProp equilibrium / independent source Jacobians",
+      "required_backend": "HEOS",
+      "optional_dependencies": [],
+      "smoke": false,
+      "profiles": {
+        "quick": "Declared reduced sampling; same physical case and explicit scientific checks.",
+        "full": "Declared full scientific sampling and checks; actual settings are recorded in example_result.json."
+      },
+      "timeouts_seconds": {
+        "quick": 180,
+        "full": 600
+      },
+      "resource_profile": "small/medium; normally seconds",
+      "validation": "Visible numerical/workflow assertions, finite successful core states, explicit unavailable/failure coverage, and figure rendering where applicable.",
+      "command": "python examples/two_phase_derivatives/saturation_derivatives.py --profile quick --headless --output-dir output/saturation_derivatives"
+    }
+  ]
+}

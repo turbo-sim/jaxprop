@@ -11,6 +11,10 @@ Run:
   test_cbin_reader CO2_400x400.cbin
 */
 
+#if !defined(_WIN32)
+#define _POSIX_C_SOURCE 200809L
+#endif
+
 #include <errno.h>
 #include <math.h>
 #include <stdint.h>
@@ -42,6 +46,9 @@ typedef struct {
     uint32_t n_node_fields;
     uint32_t n_coeff;
     uint32_t reserved;
+    uint64_t phase_mask_offset;
+    uint64_t provenance_offset;
+    uint64_t provenance_size;
 } jx_file_header_t;
 
 typedef struct {
@@ -52,6 +59,9 @@ typedef struct {
     double delta_h;
     double delta_logp;
 } jx_meta_t;
+
+_Static_assert(sizeof(jx_file_header_t) == 64, "The v2 file header requires a 64-byte layout");
+_Static_assert(sizeof(jx_prop_record_t) == 120, "Property directory records require a 120-byte layout");
 
 static long long file_size_bytes(FILE *fp) {
     if (FSEEK(fp, 0, SEEK_END) != 0) {
@@ -117,9 +127,23 @@ int main(int argc, char **argv) {
         fclose(fp);
         return 1;
     }
+    if (hdr.endian_tag != 0x01020304u || hdr.nh < 2 || hdr.np < 2 ||
+        hdr.provenance_offset + hdr.provenance_size != (uint64_t)nbytes ||
+        hdr.phase_mask_offset + (uint64_t)(hdr.nh - 1) * (hdr.np - 1) != hdr.provenance_offset) {
+        fprintf(stderr, "Error: unsupported endian or inconsistent v2 payload offsets\n");
+        fclose(fp);
+        return 1;
+    }
     if (hdr.n_node_fields != JX_NODE_FIELDS || hdr.n_coeff != JX_COEFFS_PER_CELL) {
         fprintf(stderr, "Error: layout mismatch. node_fields=%u coeff=%u (expected %u/%u)\n",
                 hdr.n_node_fields, hdr.n_coeff, JX_NODE_FIELDS, JX_COEFFS_PER_CELL);
+        fclose(fp);
+        return 1;
+    }
+    if (hdr.n_props == 0 ||
+        (uint64_t)sizeof(jx_file_header_t) + sizeof(jx_meta_t) +
+        (uint64_t)hdr.n_props * sizeof(jx_prop_record_t) > hdr.phase_mask_offset) {
+        fprintf(stderr, "Error: invalid property directory extent\n");
         fclose(fp);
         return 1;
     }
@@ -168,6 +192,16 @@ int main(int argc, char **argv) {
     uint32_t cj = (hdr.np > 1) ? (hdr.np - 2) / 2 : 0;
     uint32_t k = 7;
     size_t coeff_idx = JX_COEFF_IDX(ci, cj, k, hdr.np - 1);
+    uint8_t cell_valid = 0;
+    if (FSEEK(fp, (long long)(hdr.phase_mask_offset + JX_CELL_IDX(ci, cj, hdr.np - 1)), SEEK_SET) != 0 ||
+        fread(&cell_valid, sizeof(cell_valid), 1, fp) != 1 || cell_valid > 1) {
+        fprintf(stderr, "Error: invalid phase-cell validity payload\n");
+        free(recs);
+        fclose(fp);
+        return 1;
+    }
+    printf("Cell (%u,%u) eligible: %u (never interpolate if zero)\n", ci, cj, (unsigned)cell_valid);
+    printf("Complete JSON provenance/saturation payload: %llu bytes\n", (unsigned long long)hdr.provenance_size);
 
     double v = NAN, gh = NAN, glp = NAN, c7 = NAN;
 
@@ -183,6 +217,9 @@ int main(int argc, char **argv) {
 
     printf("Sample node (i=%u, j=%u): value=%.9e, grad_h=%.9e, grad_logP=%.9e\n", i, j, v, gh, glp);
     printf("Sample coeff (cell_i=%u, cell_j=%u, k=%u): %.9e\n", ci, cj, k, c7);
+    /* Machine-readable cross-language regression record (17 digits round-trip). */
+    printf("JX_SAMPLE {\"property\":\"%s\",\"node_i\":%u,\"node_j\":%u,\"cell_i\":%u,\"cell_j\":%u,\"k\":%u,\"cell_valid\":%u,\"value\":%.17g,\"grad_h\":%.17g,\"grad_logP\":%.17g,\"coefficient\":%.17g}\n",
+           prop->name, i, j, ci, cj, k, (unsigned)cell_valid, v, gh, glp, c7);
 
     /* Print first few property names */
     printf("First properties in directory:\n");

@@ -2,68 +2,75 @@ import jax.numpy as jnp
 
 
 def smooth_maximum(x1, x2, method="boltzmann", alpha=10):
-    r"""
-    Element-wise smoooth maximum approximation of array elements. Smoothed version of numpy.maximum().
+    r"""Element-wise smooth maximum of two broadcast-compatible inputs.
 
-    The :math:`p`-norm approximation to the maximum is given by :cite:p:`weisstein_vector_2023`:
+    This is a smooth counterpart of ``numpy.maximum(x1, x2)``, not an axis
+    reduction. The two inputs broadcast to a common shape and are compared at
+    each element. Let :math:`a=|\alpha|>0` and :math:`m=\max(x_1,x_2)`.
 
-    .. math::
-
-       f_{\alpha}(x) = \left( \sum_i x_i^\alpha \right)^{\frac{1}{\alpha}}
-
-    The Boltzmann approximation is given by :cite:p:`blanchard_accurately_2021`:
+    The positive-input power-sum approximation is given by
+    :cite:p:`weisstein_vector_2023`:
 
     .. math::
 
-       f_{\alpha}(x) = \frac{1}{\alpha} \log \left( \sum_i e^{\alpha \,(x_i - \hat{x})} \right) + \hat{x}
+       P_a(x_1,x_2) = \left(x_1^a+x_2^a\right)^{1/a}.
 
-
-    This LogSumExp approximation is given by :cite:p:`blanchard_accurately_2021`:
-
-    .. math::
-
-       f_{\alpha}(x) = \frac{1}{\alpha} \log \left( \sum_i e^{\alpha \,(x_i - \hat{x})} \right) + \hat{x}
-
-    where the shift :math:`\hat{x}` is defined as:
+    The Boltzmann approximation is an exponentially weighted mean:
 
     .. math::
 
-       \hat{x} = \text{sign}(\alpha) \cdot \max(\text{sign}(\alpha) \cdot x)
+       B_a(x_1,x_2) =
+       \frac{\sum_{i=1}^{2}x_i\exp\left(a(x_i-m)\right)}
+            {\sum_{i=1}^{2}\exp\left(a(x_i-m)\right)}.
 
-    Shifting `x` prevents numerical overflow due to the finite precision of floating-point operations
+    It favors the larger input and remains between the inputs up to numerical
+    roundoff. The implementation adds machine epsilon to the weight denominator.
+    This weighted mean differs from the log-sum-exp approximation described by
+    :cite:p:`blanchard_accurately_2021`:
+
+    .. math::
+
+       L_a(x_1,x_2) = m + \frac{1}{a}
+       \log\left(\sum_{i=1}^{2}\exp\left(a(x_i-m)\right)\right).
+
+    Log-sum-exp approaches the maximum from above, with an excess no greater
+    than :math:`\log(2)/a`. Shifting the exponential arguments by :math:`m`
+    avoids overflow in those weights. The direct power-sum implementation does
+    not use this exponential stabilization.
 
     Parameters
     ----------
-    x : array_like
-        Input data.
-    method : str, optional
-        Method to be used for the approximation. Supported methods are:
-
-        - ``boltzmann`` (default)
-        - ``logsumexp``
-        - ``p-norm``
-
+    x1, x2 : array_like
+        Scalar or array inputs compatible under JAX broadcasting.
+    method : {"boltzmann", "logsumexp", "p-norm"}, optional
+        Approximation method. The default is the Boltzmann weighted mean.
     alpha : float, optional
-        Sharpness parameter. Large values produce a tight approximation to the
-        maximum function
-    axis : None or int or tuple of ints, optional
-        Axis or axes along which to operate. By default, flattened input is
-        used. If this is a tuple of ints, the maximum is selected over
-        multiple axes, instead of a single axis or all the axes as before.
-    keepdims : bool, optional
-        If this is set to True, the axes which are reduced are left
-        in the result as dimensions with size one. With this option,
-        the result will broadcast correctly against the input array.
+        Finite nonzero sharpness parameter; default 10. Its magnitude is used,
+        so its sign does not select a minimum. Increasing its magnitude tightens
+        the approximation in the method's valid numerical regime.
 
     Returns
     -------
-    max_approx : ndarray or scalar
-        Approximate maximum of `x` using the specified method.
+    max_approx : jax.Array
+        Element-wise approximation with the common broadcast shape. Scalar
+        inputs produce a zero-dimensional array.
 
     Raises
     ------
     ValueError
         If an unsupported method is specified.
+
+    Notes
+    -----
+    Use strictly positive inputs for ``p-norm``. It evaluates powers of the raw
+    inputs, not their absolute values, and is not a signed-vector norm. Its
+    positive-input domain and the nonzero-sharpness requirement are caller
+    preconditions, not runtime validation. Nonfinite inputs, zero sharpness or
+    overflowing powers can therefore produce nonfinite numerical results.
+
+    See Also
+    --------
+    smooth_minimum : Element-wise approximation favoring the smaller input.
     """
     # Ensure x1 and x2 have the same shape by broadcasting
     x1, x2 = jnp.broadcast_arrays(x1, x2)
@@ -88,46 +95,71 @@ def smooth_maximum(x1, x2, method="boltzmann", alpha=10):
 
 
 def smooth_minimum(x1, x2, method="boltzmann", alpha=10):
-    r"""
-    Element-wise smoooth minimum approximation of array elements. Smoothed version of numpy.minimum().
+    r"""Element-wise smooth minimum of two broadcast-compatible inputs.
 
-    The smooth minimum approximation is equivalent to the smooth maximum with a
-    negative value of the sharpness parameter :math:`\alpha`. See documentation
-    of the ```smooth_max()`` function for more information about the smoothing
-    methods available.
+    This is a smooth counterpart of ``numpy.minimum(x1, x2)``, not an axis
+    reduction. It uses the same methods as :func:`smooth_maximum` with the
+    internally signed exponent :math:`-a`, where :math:`a=|\alpha|>0`.
+
+    For log-sum-exp, let :math:`m=\min(x_1,x_2)`:
+
+    .. math::
+
+       L_{-a}(x_1,x_2) = m - \frac{1}{a}
+       \log\left(\sum_{i=1}^{2}\exp\left(-a(x_i-m)\right)\right).
+
+    It approaches the minimum from below, with a deficit no greater than
+    :math:`\log(2)/a`. Boltzmann instead uses the weighted mean
+
+    .. math::
+
+       B_{-a}(x_1,x_2) =
+       \frac{\sum_{i=1}^{2}x_i\exp\left(-a(x_i-m)\right)}
+            {\sum_{i=1}^{2}\exp\left(-a(x_i-m)\right)},
+
+    favoring the smaller input and remaining between the inputs up to numerical
+    roundoff. The implementation adds machine epsilon to the weight denominator.
+    The power-sum method uses
+
+    .. math::
+
+       P_{-a}(x_1,x_2) = \left(x_1^{-a}+x_2^{-a}\right)^{-1/a}.
+
+    Its negative exponent requires strictly positive inputs; zero inputs are
+    singular and negative inputs do not define the intended real-valued method.
 
     Parameters
     ----------
-    x : array_like
-        Input data.
-    method : str, optional
-        Method to be used for the approximation. Supported methods are:
-
-        - ``boltzmann`` (default)
-        - ``logsumexp``
-        - ``p-norm``
-
+    x1, x2 : array_like
+        Scalar or array inputs compatible under JAX broadcasting.
+    method : {"boltzmann", "logsumexp", "p-norm"}, optional
+        Approximation method. The default is the Boltzmann weighted mean.
     alpha : float, optional
-        Sharpness parameter.Large values produce a tight approximation to the
-        minimum function
-    axis : None or int or tuple of ints, optional
-        Axis or axes along which to operate. By default, flattened input is
-        used. If this is a tuple of ints, the minimum is selected over
-        multiple axes, instead of a single axis or all the axes as before.
-    keepdims : bool, optional
-        If this is set to True, the axes which are reduced are left
-        in the result as dimensions with size one. With this option,
-        the result will broadcast correctly against the input array.
+        Finite nonzero sharpness parameter; default 10. Only its magnitude is
+        used. Increasing its magnitude tightens the approximation in the
+        method's valid numerical regime.
 
     Returns
     -------
-    min_approx : ndarray or scalar
-        Approximate minimum of `x` using the specified method.
+    min_approx : jax.Array
+        Element-wise approximation with the common broadcast shape. Scalar
+        inputs produce a zero-dimensional array.
 
     Raises
     ------
     ValueError
         If an unsupported method is specified.
+
+    Notes
+    -----
+    The ``p-norm`` implementation powers the raw inputs without taking absolute
+    values or stabilizing the power sum. Positive inputs and nonzero sharpness
+    are caller preconditions, not runtime validation. Extreme powers or invalid
+    inputs can produce nonfinite numerical results.
+
+    See Also
+    --------
+    smooth_maximum : Element-wise approximation favoring the larger input.
     """
     # Ensure x1 and x2 have the same shape by broadcasting
     x1, x2 = jnp.broadcast_arrays(x1, x2)
@@ -152,7 +184,13 @@ def smooth_minimum(x1, x2, method="boltzmann", alpha=10):
 
 
 def _smooth_max_logsumexp(x, alpha, axis=None, keepdims=False):
-    """Smooth approximation to the maximum of an array using the log-sum-exp method"""
+    r"""Reduce an array using shifted log-sum-exp and a signed exponent.
+
+    Positive ``alpha`` approximates a maximum; negative ``alpha`` approximates
+    a minimum. The shift follows the corresponding extremum and stabilizes
+    the exponential weights. ``axis`` and ``keepdims`` apply to this internal
+    reduction, not to the public two-input element-wise interface.
+    """
 
     # Determine the shift for numerical stability
     shift_value = jnp.sign(alpha) * jnp.max(
@@ -175,7 +213,12 @@ def _smooth_max_logsumexp(x, alpha, axis=None, keepdims=False):
 
 
 def _smooth_max_boltzmann(x, alpha, axis=None, keepdims=False):
-    """Smooth approximation to the maximum of an array using the Boltzmann weighted average"""
+    r"""Reduce an array using an exponentially weighted arithmetic mean.
+
+    Positive ``alpha`` favors larger values; negative ``alpha`` favors smaller
+    values. Shifted weights avoid exponential overflow. Machine epsilon is
+    added to the denominator. This weighted mean is distinct from log-sum-exp.
+    """
 
     # Compute the shift for numerical stability
     shift = jnp.sign(alpha) * jnp.max(jnp.sign(alpha) * x, axis=axis, keepdims=True)
@@ -197,7 +240,13 @@ def _smooth_max_boltzmann(x, alpha, axis=None, keepdims=False):
 
 
 def _smooth_max_pnorm(x, alpha, axis=None, keepdims=False):
-    """Smooth approximation to the maximum of an array using the p-norm method"""
+    r"""Reduce strictly positive inputs with a signed power-sum approximation.
+
+    Positive ``alpha`` approaches the maximum and negative ``alpha`` approaches
+    the minimum. Powers use the raw inputs without absolute values, domain
+    validation or overflow stabilization. In particular, the negative-exponent
+    minimum is singular at zero. ``alpha`` must be finite and nonzero.
+    """
 
     # Compute the p-norm approximation
     smooth_max = jnp.sum(jnp.power(x, alpha), axis=axis, keepdims=True) ** (1 / alpha)
@@ -210,50 +259,62 @@ def _smooth_max_pnorm(x, alpha, axis=None, keepdims=False):
 
 
 def smooth_abs(x, method="quadratic", epsilon=1e-5):
-    r"""
-    Compute a smooth approximation of the absolute value function according to the specified method.
+    r"""Compute an element-wise smooth approximation of the absolute value.
 
-    1. The quadratic approximation is given by :cite:p:`ramirez_x_2013`:
-
-    .. math::
-       f_{\epsilon}(x) = \sqrt{x^2 + \epsilon}
-
-    2. The hyperbolic tangent approximation is given by :cite:p:`bagul_smooth_2017`:
+    The quadratic approximation is given by :cite:p:`ramirez_x_2013`:
 
     .. math::
-       f_{\epsilon}(x) = \epsilon \tanh{x / \epsilon}
 
-    3. The log-cosh approximation is given by :cite:p:`saleh_statistical_2022`:
+       f_{\epsilon}(x) = \sqrt{x^2 + \epsilon}.
+
+    The hyperbolic-tangent approximation is given by
+    :cite:p:`bagul_smooth_2017`:
 
     .. math::
-       f_{\epsilon}(x) = \epsilon \log\left(\cosh\left(\frac{x}{\epsilon}\right)\right)
 
-    The quadratic method is the most computationally efficient, but also requires a smaller value of :math:`\epsilon` to yield a good approximation.
-    The transcendental methods give a better approximation to the absolute value function, at the expense of a higher computational time.
+       f_{\epsilon}(x) = x\tanh\left(\frac{x}{\epsilon}\right).
+
+    The log-cosh approximation is given by :cite:p:`saleh_statistical_2022`:
+
+    .. math::
+
+       f_{\epsilon}(x) = \epsilon
+       \log\left(\cosh\left(\frac{x}{\epsilon}\right)\right).
+
+    All three are even, smooth functions approaching :math:`|x|` as positive
+    :math:`\epsilon` tends to zero. Their smoothing scales differ: the quadratic
+    formula adds epsilon to :math:`x^2`, whereas the other two divide x by
+    epsilon. Equal numerical epsilon values do not imply equal smoothing error
+    or physical units. The log-cosh implementation uses ``logaddexp`` to avoid
+    overflowing an intermediate ``cosh`` at small smoothing widths.
 
     Parameters
     ----------
-    x : float or jnp.ndarray
-        Input value(s) for which the approximation is computed.
-    method : str, optional
-        The method of approximation:
-
-        - ``quadratic`` (default)
-        - ``hyperbolic``
-        - ``logcosh``
-
+    x : float or jax.Array
+        Input value or array of values.
+    method : {"quadratic", "hyperbolic", "logcosh", "logarithmic"}, optional
+        Approximation method. ``quadratic`` is the default. ``logarithmic`` is
+        an alias of ``logcosh``.
     epsilon : float, optional
-        A small positive constant affecting the approximation. Default is 1e-5.
+        Finite positive smoothing parameter; default 1e-5. Its numerical
+        interpretation depends on the selected formula as described above.
 
     Returns
     -------
-    float or jnp.ndarray
-        Smooth approximation value(s) of the absolute function.
+    jax.Array
+        Element-wise smooth approximation with the input shape.
 
     Raises
     ------
     ValueError
         If an unsupported approximation method is provided.
+
+    Notes
+    -----
+    Positivity and finiteness of epsilon are caller preconditions, not runtime
+    validation. The formulas retain their ordinary floating-point limitations;
+    for example, the direct quadratic expression can overflow when squaring an
+    extremely large input.
     """
 
     if method == "quadratic":
@@ -344,29 +405,29 @@ def all_non_negative(array):
 
 
 def sigmoid_hyperbolic(x, x0=0.5, alpha=1):
-    r"""
-    Compute the sigmoid hyperbolic function.
+    r"""Compute a sigmoid using the hyperbolic tangent.
 
-    This function calculates a sigmoid function based on the hyperbolic tangent.
-    The formula is given by:
+    The formula is
 
     .. math::
-        \sigma(x) = \frac{1 + \tanh\left(\frac{x - x_0}{\alpha}\right)}{2}
+
+        \sigma(x) = \frac{1 + \tanh\left(\frac{x - x_0}{\alpha}\right)}{2}.
 
     Parameters
     ----------
     x : array_like
         Input data.
     x0 : float, optional
-        Center of the sigmoid function. Default is 0.5.
+        Center of the sigmoid; default 0.5.
     alpha : float, optional
-        Scale parameter. Default is 0.1.
+        Nonzero scale parameter; default 1. A positive value gives an increasing
+        transition, while a negative value reverses its direction. Its magnitude
+        controls the transition width. The scale is not validated at runtime.
 
     Returns
     -------
-    array_like
-        Output of the sigmoid hyperbolic function.
-
+    jax.Array
+        Sigmoid values with the input shape.
     """
     x = jnp.array(x)  # Ensure x is a NumPy array for vectorized operations
     sigma = (1 + jnp.tanh((x - x0) / alpha)) / 2

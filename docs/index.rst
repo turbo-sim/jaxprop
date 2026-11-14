@@ -10,13 +10,12 @@ Welcome to jaxprop's documentation!
 Key features
 ------------
 
-This content is outdated.
-
-- Compute and plot phase envelopes and spinodal lines for pure fluids.
-- Evaluate thermodynamic properties from the Helmholtz energy equation of state, including metastable states inside the two-phase region.
-- Perform flash calculations for any input pair with a custom solver with user-defined initial guesses.
-- Access structured property dictionaries and immutable ``FluidState`` objects.
-- Evaluate properties over arrays of input conditions for efficient parametric studies and plotting.
+- Construct direct-source, callback, bicubic, perfect-gas and binary-parcel models through ``Fluid(..., method=...)``.
+- Return complete immutable ``FluidState`` values with explicit status and property availability.
+- Reuse native numerical models in supported JIT, vectorized and first-order differentiated consumers.
+- Evaluate homogeneous/metastable and equilibrium source states under their declared physical domains.
+- Inspect source reference records, validated table provenance and explicitly supported worker reconstruction.
+- Draw source-EOS phase diagrams and run documented quick/full scientific example profiles.
 
 
 Contents
@@ -30,5 +29,7 @@ Use the panel to the left or the table of contents below to navigate the documen
    :caption: Contents:
 
    source/installation
+   migration
+   fluid_lifecycle
    source/bibliography
    source/api/jaxprop

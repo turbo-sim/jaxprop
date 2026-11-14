@@ -1,104 +1,120 @@
-import os
+"""Serial full-state calls with explicit status, warmup and synchronization.
+
+This timing demonstration uses changing physical inputs and complete states.
+Table phase-boundary gaps are reported, not extrapolated. Perfect gas is a
+different physical model, so its values are not an EOS-accuracy comparison.
+These exploratory timings do not replace the isolated Phase 13 release gate.
+"""
+
+from pathlib import Path
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from examples._common import example_options
+
 import time
-import shutil
-import jaxprop as jxp
+import jax
 import numpy as np
 from scipy.stats import qmc
+import jaxprop as jp
 
-outdir = "fluid_tables"
-# if os.path.exists(outdir):
-#     shutil.rmtree(outdir, ignore_errors=True)
 
-# ---------------------------
-# Configuration
-# ---------------------------
-fluid_name = "CO2"
-h_min = 200e3  # J/kg
-h_max = 600e3  # J/kg
-p_min = 2e6    # Pa
-p_max = 20e6   # Pa
-N_p = 30       # Grid size for table
-N_h = 30
-N_samples = 50  # reduced for demo, increase if needed
+def main(argv=None):
+    options = example_options(__file__, argv, description=__doc__)
+    full = options.profile == "full"
+    table_options = dict(
+        h_min=200e3,
+        h_max=600e3,
+        p_min=2e6,
+        p_max=20e6,
+        N_h=30 if full else 12,
+        N_p=30 if full else 12,
+        table_dir=str(options.table_dir),
+    )
+    models = {
+        "bicubic": jp.Fluid("CO2", method="bicubic", table_options=table_options),
+        "coolprop_jax": jp.Fluid("CO2", method="coolprop_jax"),
+        "perfect_gas": jp.Fluid(
+            "CO2", method="perfect_gas", model_options=dict(p_ref=20e6, T_ref=600)
+        ),
+    }
+    count = 50 if full else 12
+    unit = qmc.LatinHypercube(d=2, seed=42).random(count)
+    points = qmc.scale(unit, [200e3, 2e6], [600e3, 20e6])
+    enthalpy, pressure = points[:, 0], points[:, 1]
+    first_calls = {}
+    values = {}
+    times = {}
+    for name, model in models.items():
+        started = time.perf_counter()
+        warm = jax.block_until_ready(
+            model.get_state(
+                jp.HmassP_INPUTS, float(enthalpy[0]), float(pressure[0]), errors="mask"
+            )
+        )
+        first_calls[name] = time.perf_counter() - started
+        # The complete return, including numerical status, is synchronized.
+        # Repeated samples below preserve all fields rather than projecting T.
+        samples = []
+        for _ in range(5 if full else 3):
+            started = time.perf_counter()
+            states = [
+                jax.block_until_ready(
+                    model.get_state(jp.HmassP_INPUTS, float(h), float(p), errors="mask")
+                )
+                for h, p in zip(enthalpy, pressure)
+            ]
+            samples.append(time.perf_counter() - started)
+        values[name] = states
+        times[name] = samples
+    coverage = {}
+    for name, states in values.items():
+        rows = states if isinstance(states, list) else [states]
+        successful = 0
+        for row in rows:
+            mask = np.asarray(row.valid)
+            successful += int(np.count_nonzero(mask))
+            for prop in (
+                "temperature",
+                "density",
+                "enthalpy",
+                "pressure",
+                "entropy",
+                "internal_energy",
+            ):
+                assert np.all(np.isfinite(np.asarray(row.raw_property(prop))[mask]))
+        coverage[name] = dict(
+            requested=count, successful=successful, failed=count - successful
+        )
+    assert all(row["successful"] > 0 for row in coverage.values())
+    print("Complete-state synchronized exploratory timings; first calls are separate.")
+    for name, samples in times.items():
+        print(
+            f"{name:14}: first={first_calls[name]*1e3:.3f} ms; median repeated={np.median(samples)*1e3:.3f} ms; valid={coverage[name]['successful']}/{count}"
+        )
+    options.record(
+        "settings",
+        dict(
+            table=table_options,
+            samples=count,
+            repetitions=5 if full else 3,
+            physical_models="source EOS and perfect gas are distinct",
+        ),
+    )
+    options.record("coverage", coverage)
+    options.record(
+        "timing",
+        dict(
+            first_call_s=first_calls,
+            raw_repeated_samples_s=times,
+            scope="Exploratory complete-state calls; not the release performance gate",
+            synchronized=True,
+        ),
+    )
+    return options.finish()
 
-# ---------------------------
-# Build fluids
-# ---------------------------
-fluid_bicubic = jxp.Fluid(
-    name=fluid_name,
-    method="bicubic",
-    backend="HEOS",
-    table_options={
-        "h_min": h_min,
-        "h_max": h_max,
-        "p_min": p_min,
-        "p_max": p_max,
-        "N_h": N_h,
-        "N_p": N_p,
-        "table_dir": outdir,
-    },
-)
-fluid_coolprop = jxp.Fluid(fluid_name, method="coolprop_jax", backend="HEOS")
-fluid_perfect = jxp.Fluid(fluid_name, method="perfect_gas", model_options={"p_ref": p_max, "T_ref": 600})
 
-# ---------------------------
-# Latin Hypercube Sampling
-# ---------------------------
-sampler = qmc.LatinHypercube(d=2, seed=42)
-lhs_points = sampler.random(N_samples)
-l_bounds = [h_min, p_min]
-u_bounds = [h_max, p_max]
-scaled_samples = qmc.scale(lhs_points, l_bounds, u_bounds)
-h_samples = scaled_samples[:, 0]
-p_samples = scaled_samples[:, 1]
-
-# ---------------------------
-# Serial evaluation
-# ---------------------------
-print("\nEvaluating samples serially...\n")
-print(f"{'Sample':>6} | {'h [J/kg]':>12} | {'p [Pa]':>12} | {'PerfectGas [ms]':>15} | {'Bicubic [ms]':>15} | {'CoolProp [ms]':>15}")
-
-# store timings
-timings_pg = []
-timings_bi = []
-timings_cp = []
-
-for i, (h, p) in enumerate(zip(h_samples, p_samples), 1):
-    # Perfect gas
-    t0 = time.perf_counter()
-    _ = fluid_perfect.get_state(jxp.HmassP_INPUTS, h, p)
-    t1 = time.perf_counter()
-    dt_pg = (t1 - t0) * 1e3  # ms
-
-    # Bicubic
-    t0 = time.perf_counter()
-    _ = fluid_bicubic.get_state(jxp.HmassP_INPUTS, h, p)
-    t1 = time.perf_counter()
-    dt_bi = (t1 - t0) * 1e3  # ms
-
-    # CoolProp
-    t0 = time.perf_counter()
-    _ = fluid_coolprop.get_state(jxp.HmassP_INPUTS, h, p)
-    t1 = time.perf_counter()
-    dt_cp = (t1 - t0) * 1e3  # ms
-
-    # collect
-    timings_pg.append(dt_pg)
-    timings_bi.append(dt_bi)
-    timings_cp.append(dt_cp)
-
-    # Print row
-    print(f"{i:6d} | {h:12.2f} | {p:12.2f} | {dt_pg:15.2f} | {dt_bi:15.2f} | {dt_cp:15.2f}")
-
-# ---------------------------
-# Averages (skip first entry)
-# ---------------------------
-if len(timings_pg) > 1:
-    avg_pg = np.mean(timings_pg[1:])
-    avg_bi = np.mean(timings_bi[1:])
-    avg_cp = np.mean(timings_cp[1:])
-
-    print("\nAverage timings (skipping first sample):")
-    print(f"  PerfectGas = {avg_pg:.2f} ms")
-    print(f"  Bicubic    = {avg_bi:.2f} ms")
-    print(f"  CoolProp   = {avg_cp:.2f} ms")
+if __name__ == "__main__":
+    main()

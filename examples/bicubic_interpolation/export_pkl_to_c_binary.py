@@ -1,173 +1,132 @@
-import argparse
+"""Export a validated JaxProp table to a versioned C-friendly binary payload.
+
+An explicit --input is required. Version 2 retains all node/derivative/bicubic
+arrays, the phase-cell guard, complete generation metadata and saturation data.
+The raw arrays use little-endian float64 in C order. JSON provenance follows the
+boolean phase mask; optional saturation NaNs are represented as JSON null.
+
+The format is a data interchange example, not a replacement fluid evaluator.
+A C consumer must honor phase validity, optional NaNs and the declared domain.
+"""
+
+from pathlib import Path
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from examples._common import example_options
+
+import json
 import pickle
 import re
 import struct
-from pathlib import Path
-
 import numpy as np
 
-
-"""
-Export jaxprop bicubic table pickle to a C-friendly binary format.
-
-Output files (in fluid_tables/ by default):
-- <table_name>.cbin       : binary table
-- <table_name>_layout.h   : C header with indexing macros + property enum
-
-Binary layout (little-endian):
-1) Fixed header
-2) Metadata block
-3) Property directory (offset table)
-4) Raw array payload (float64, row-major)
-
-Indexing in C (exact):
-- node fields (Nh x Np):      idx = i * Np + j
-- coeff fields ((Nh-1)x(Np-1)x16): idx = ((i * (Np-1) + j) * 16) + k
-"""
-
-MAGIC = b"JXTBIN1\0"  # 8 bytes
-VERSION = 1
+MAGIC = b"JXTBIN2\0"
+VERSION = 2
 ENDIAN_TAG = 0x01020304
-
-NODE_FIELDS = [
-    "value",
-    "grad_h",
-    "grad_p",
-    "grad_logP",
-    "grad_ph",
-    "grad_hlogP",
-]
+NODE_FIELDS = ("value", "grad_h", "grad_p", "grad_logP", "grad_ph", "grad_hlogP")
 COEFF_FIELD = "coeffs"
 COEFFS_PER_CELL = 16
-
-HEADER_FMT = "<8sIIIIIIII"  # magic, version, endian, Nh, Np, n_props, n_node_fields, n_coeff, reserved
-META_FMT = "<6d"            # h_min, h_max, p_min, p_max, delta_h, delta_logP
-# name[64] + 7 offsets (node fields + coeffs)
+# Eight uint32 fields followed by mask offset, JSON offset and JSON size.
+HEADER_FMT = "<8sIIIIIIIIQQQ"
+META_FMT = "<6d"
 RECORD_FMT = "<64sQQQQQQQ"
 
 
-def _sanitize_c_identifier(name: str) -> str:
-    x = re.sub(r"[^0-9a-zA-Z_]", "_", name)
-    if re.match(r"^[0-9]", x):
-        x = "_" + x
-    return x
+def validate_table(table):
+    """Reject incomplete/legacy payloads instead of manufacturing NaN arrays."""
+    from jaxprop.bicubic.table_cache import CACHE_FORMAT_VERSION, table_validation_error
+
+    if not isinstance(table, dict) or not isinstance(table.get("metadata"), dict):
+        raise ValueError(
+            "Input must be a current JaxProp table dictionary with metadata."
+        )
+    metadata = table["metadata"]
+    if metadata.get("cache_format_version") != CACHE_FORMAT_VERSION:
+        raise ValueError(
+            f"Unsupported table cache schema: {metadata.get('cache_format_version')!r}; expected {CACHE_FORMAT_VERSION}."
+        )
+    try:
+        reason = table_validation_error(table, metadata)
+    except (KeyError, TypeError, ValueError, AttributeError) as error:
+        raise ValueError(f"Incomplete or malformed table schema: {error}") from error
+    if reason is not None:
+        raise ValueError(f"Invalid table payload: {reason}")
+    return metadata
 
 
-def _infer_node_shape(table: dict) -> tuple[int, int]:
-    # Prefer metadata if available
-    md = table.get("metadata", {}) if isinstance(table.get("metadata", {}), dict) else {}
-    nh = md.get("N_h")
-    np_ = md.get("N_p")
-    if isinstance(nh, (int, np.integer)) and isinstance(np_, (int, np.integer)):
-        return int(nh), int(np_)
-
-    # Fallback to enthalpy.value shape
-    enthalpy = table.get("enthalpy")
-    if isinstance(enthalpy, dict) and "value" in enthalpy:
-        arr = np.asarray(enthalpy["value"])
-        if arr.ndim == 2:
-            return int(arr.shape[0]), int(arr.shape[1])
-
-    # Generic fallback
-    for v in table.values():
-        if isinstance(v, dict) and "value" in v:
-            arr = np.asarray(v["value"])
-            if arr.ndim == 2:
-                return int(arr.shape[0]), int(arr.shape[1])
-
-    raise ValueError("Could not infer (N_h, N_p) from pickle table.")
+def load_table(path):
+    path = Path(path)
+    if not path.is_file():
+        raise FileNotFoundError(f"Required --input table does not exist: {path}")
+    with path.open("rb") as stream:
+        table = pickle.load(stream)
+    validate_table(table)
+    return table
 
 
-def _collect_properties(table: dict, node_shape: tuple[int, int]) -> list[str]:
-    props = []
-    for key, val in table.items():
-        if key == "metadata" or not isinstance(val, dict):
-            continue
-        if "value" not in val:
-            continue
-        arr = np.asarray(val["value"])
-        if arr.shape == node_shape:
-            props.append(key)
-    return sorted(props)
+def _json_value(value):
+    if isinstance(value, dict):
+        return {str(key): _json_value(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_value(item) for item in value]
+    if isinstance(value, np.ndarray) or hasattr(value, "tolist"):
+        return _json_value(value.tolist())
+    if isinstance(value, float) and not np.isfinite(value):
+        return None
+    return value
 
 
-def _as_f64_c(arr, shape):
-    arr = np.asarray(arr, dtype=np.float64)
-    if arr.shape != shape:
-        raise ValueError(f"Unexpected shape {arr.shape}, expected {shape}")
-    return np.ascontiguousarray(arr)
+def _sanitize_c_identifier(name):
+    result = re.sub(r"[^0-9a-zA-Z_]", "_", name)
+    return "_" + result if result[:1].isdigit() else result
 
 
-def _build_arrays(table: dict, props: list[str], nh: int, np_: int):
-    cell_shape = (nh - 1, np_ - 1, COEFFS_PER_CELL)
-    node_shape = (nh, np_)
-
-    arrays = {}
-    for prop in props:
-        p = table[prop]
-        arrays[prop] = {}
-
-        for field in NODE_FIELDS:
-            if field in p:
-                arr = np.asarray(p[field], dtype=np.float64)
-                if arr.shape == node_shape:
-                    arrays[prop][field] = np.ascontiguousarray(arr)
-                    continue
-            # Missing/mismatched -> fill NaN
-            arrays[prop][field] = np.full(node_shape, np.nan, dtype=np.float64)
-
-        if COEFF_FIELD in p:
-            carr = np.asarray(p[COEFF_FIELD], dtype=np.float64)
-            if carr.shape == cell_shape:
-                arrays[prop][COEFF_FIELD] = np.ascontiguousarray(carr)
-            else:
-                arrays[prop][COEFF_FIELD] = np.full(cell_shape, np.nan, dtype=np.float64)
-        else:
-            arrays[prop][COEFF_FIELD] = np.full(cell_shape, np.nan, dtype=np.float64)
-
-    return arrays
-
-
-def _encode_name64(name: str) -> bytes:
-    b = name.encode("ascii", errors="ignore")[:63]
-    return b + b"\0" * (64 - len(b))
-
-
-def write_cbin(table: dict, out_bin: Path, out_header: Path):
-    nh, np_ = _infer_node_shape(table)
-    props = _collect_properties(table, (nh, np_))
-    if not props:
-        raise ValueError("No properties with node-grid shape found.")
-
-    arrays = _build_arrays(table, props, nh, np_)
-
-    header_size = struct.calcsize(HEADER_FMT)
-    meta_size = struct.calcsize(META_FMT)
-    rec_size = struct.calcsize(RECORD_FMT)
-    n_props = len(props)
-    data_offset = header_size + meta_size + n_props * rec_size
-
-    # Build directory with byte offsets
+def write_cbin(table, out_bin, out_header):
+    """Write complete v2 data and its matching C indexing declarations."""
+    metadata = validate_table(table)
+    nh, np_ = int(metadata["N_h"]), int(metadata["N_p"])
+    props = sorted(
+        name
+        for name, value in table.items()
+        if name not in {"metadata", "saturation_props", "phase_cell_validity"}
+    )
+    arrays = {
+        name: {
+            field: np.ascontiguousarray(table[name][field], dtype="<f8")
+            for field in (*NODE_FIELDS, COEFF_FIELD)
+        }
+        for name in props
+    }
+    cursor = (
+        struct.calcsize(HEADER_FMT)
+        + struct.calcsize(META_FMT)
+        + len(props) * struct.calcsize(RECORD_FMT)
+    )
     records = []
-    cursor = data_offset
-    for prop in props:
-        rec = {"name": prop}
-        for fld in NODE_FIELDS + [COEFF_FIELD]:
-            rec[fld] = cursor
-            cursor += arrays[prop][fld].nbytes
-        records.append(rec)
-
-    md = table.get("metadata", {}) if isinstance(table.get("metadata", {}), dict) else {}
-    h_min = float(md.get("h_min", np.nan))
-    h_max = float(md.get("h_max", np.nan))
-    p_min = float(md.get("p_min", np.nan))
-    p_max = float(md.get("p_max", np.nan))
-    delta_h = float(md.get("delta_h", np.nan))
-    delta_logp = float(md.get("delta_logP", np.nan))
-
+    for name in props:
+        offsets = []
+        for field in (*NODE_FIELDS, COEFF_FIELD):
+            offsets.append(cursor)
+            cursor += arrays[name][field].nbytes
+        records.append((name, offsets))
+    phase_mask = np.ascontiguousarray(table["phase_cell_validity"], dtype=np.uint8)
+    phase_offset = cursor
+    json_offset = phase_offset + phase_mask.nbytes
+    provenance = json.dumps(
+        _json_value(
+            dict(metadata=metadata, saturation_props=table["saturation_props"])
+        ),
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    out_bin, out_header = Path(out_bin), Path(out_header)
     out_bin.parent.mkdir(parents=True, exist_ok=True)
-    with out_bin.open("wb") as f:
-        f.write(
+    out_header.parent.mkdir(parents=True, exist_ok=True)
+    with out_bin.open("wb") as stream:
+        stream.write(
             struct.pack(
                 HEADER_FMT,
                 MAGIC,
@@ -175,151 +134,204 @@ def write_cbin(table: dict, out_bin: Path, out_header: Path):
                 ENDIAN_TAG,
                 nh,
                 np_,
-                n_props,
+                len(props),
                 len(NODE_FIELDS),
                 COEFFS_PER_CELL,
                 0,
+                phase_offset,
+                json_offset,
+                len(provenance),
             )
         )
-        f.write(struct.pack(META_FMT, h_min, h_max, p_min, p_max, delta_h, delta_logp))
-
-        for rec in records:
-            f.write(
-                struct.pack(
-                    RECORD_FMT,
-                    _encode_name64(rec["name"]),
-                    rec["value"],
-                    rec["grad_h"],
-                    rec["grad_p"],
-                    rec["grad_logP"],
-                    rec["grad_ph"],
-                    rec["grad_hlogP"],
-                    rec["coeffs"],
-                )
+        stream.write(
+            struct.pack(
+                META_FMT,
+                *(
+                    float(metadata[key])
+                    for key in (
+                        "h_min",
+                        "h_max",
+                        "p_min",
+                        "p_max",
+                        "delta_h",
+                        "delta_logP",
+                    )
+                ),
             )
-
-        for rec in records:
-            prop = rec["name"]
-            for fld in NODE_FIELDS + [COEFF_FIELD]:
-                f.write(arrays[prop][fld].tobytes(order="C"))
-
-    # Emit C header companion
-    enum_lines = []
-    for i, p in enumerate(props):
-        enum_lines.append(f"    JX_PROP_{_sanitize_c_identifier(p)} = {i},")
-
-    header_text = f"""#ifndef JAXPROP_TABLE_LAYOUT_H
+        )
+        for name, offsets in records:
+            encoded = name.encode("ascii")
+            if len(encoded) >= 64:
+                raise ValueError(f"Property name exceeds C directory width: {name}")
+            stream.write(struct.pack(RECORD_FMT, encoded.ljust(64, b"\0"), *offsets))
+        for name, _ in records:
+            for field in (*NODE_FIELDS, COEFF_FIELD):
+                stream.write(arrays[name][field].tobytes(order="C"))
+        stream.write(phase_mask.tobytes(order="C"))
+        stream.write(provenance)
+    enums = "\n".join(
+        f"    JX_PROP_{_sanitize_c_identifier(name)} = {index},"
+        for index, name in enumerate(props)
+    )
+    header = f"""#ifndef JAXPROP_TABLE_LAYOUT_H
 #define JAXPROP_TABLE_LAYOUT_H
-
 #include <stdint.h>
 #include <stddef.h>
-
-#define JX_MAGIC_EXPECTED \"JXTBIN1\"
+#define JX_MAGIC_EXPECTED "JXTBIN2"
 #define JX_VERSION_EXPECTED {VERSION}u
 #define JX_NODE_FIELDS {len(NODE_FIELDS)}u
-#define JX_COEFFS_PER_CELL {COEFFS_PER_CELL}u
-
-/* Exact indexing macros (row-major, C-order) */
-#define JX_NODE_IDX(i,j,NP) ((size_t)(i) * (size_t)(NP) + (size_t)(j))
-#define JX_COEFF_IDX(i,j,k,NP_MINUS_1) ((((size_t)(i) * (size_t)(NP_MINUS_1) + (size_t)(j)) * (size_t)JX_COEFFS_PER_CELL) + (size_t)(k))
-
+#define JX_COEFFS_PER_CELL 16u
+/* Arrays are little-endian float64. Never evaluate a cell whose mask is zero. */
+#define JX_NODE_IDX(i,j,NP) ((size_t)(i)*(size_t)(NP)+(size_t)(j))
+#define JX_COEFF_IDX(i,j,k,NP_MINUS_1) ((((size_t)(i)*(size_t)(NP_MINUS_1)+(size_t)(j))*16u)+(size_t)(k))
+#define JX_CELL_IDX(i,j,NP_MINUS_1) ((size_t)(i)*(size_t)(NP_MINUS_1)+(size_t)(j))
 typedef struct {{
     char name[64];
-    uint64_t off_value;
-    uint64_t off_grad_h;
-    uint64_t off_grad_p;
-    uint64_t off_grad_logP;
-    uint64_t off_grad_ph;
-    uint64_t off_grad_hlogP;
-    uint64_t off_coeffs;
+    uint64_t off_value, off_grad_h, off_grad_p, off_grad_logP;
+    uint64_t off_grad_ph, off_grad_hlogP, off_coeffs;
 }} jx_prop_record_t;
-
 enum jx_property_id {{
-{chr(10).join(enum_lines)}
+{enums}
     JX_PROP_COUNT = {len(props)}
 }};
-
-#endif /* JAXPROP_TABLE_LAYOUT_H */
+#endif
 """
-    out_header.write_text(header_text, encoding="ascii")
-
-    print(f"Wrote binary table : {out_bin}")
-    print(f"Wrote C header     : {out_header}")
-    print(f"N_h={nh}, N_p={np_}, properties={len(props)}")
-
-
-def _resolve_input_pickle(table_dir: Path, requested_input: str | None) -> Path:
-    available = sorted(table_dir.glob("*.pkl")) if table_dir.exists() else []
-
-    if requested_input:
-        candidate = table_dir / requested_input
-        if candidate.exists():
-            return candidate
-
-        direct = Path(requested_input)
-        if direct.is_file():
-            return direct
-
-        avail = ", ".join(p.name for p in available) if available else "<none>"
-        raise FileNotFoundError(
-            f"Input pickle not found: {requested_input}\n"
-            f"Available .pkl in {table_dir}: {avail}"
-        )
-
-    if not available:
-        raise FileNotFoundError(f"No .pkl files found in: {table_dir}")
-
-    print("Available pickle tables:")
-    for idx, p in enumerate(available, start=1):
-        print(f"  {idx:2d}. {p.name}")
-
-    while True:
-        raw = input("Select table by number or filename [1]: ").strip()
-        if raw == "":
-            return available[0]
-
-        if raw.isdigit():
-            k = int(raw)
-            if 1 <= k <= len(available):
-                return available[k - 1]
-            print(f"Invalid index: {k}. Choose 1..{len(available)}")
-            continue
-
-        candidate = table_dir / raw
-        if candidate.exists():
-            return candidate
-
-        print("Invalid selection. Enter a valid index or filename.")
-
-
-def main():
-    parser = argparse.ArgumentParser(description="Export jaxprop pickle table to C-friendly binary.")
-    parser.add_argument(
-        "--input",
-        type=str,
-        default="CO2_50x50.pkl",
-        help="Input pickle filename. If omitted, script prompts interactively.",
+    out_header.write_text(header, encoding="ascii")
+    return dict(
+        format_version=VERSION,
+        nodes=[nh, np_],
+        properties=len(props),
+        binary_bytes=out_bin.stat().st_size,
+        phase_mask_offset=phase_offset,
+        provenance_offset=json_offset,
     )
-    parser.add_argument("--table-dir", type=str, default=None, help="Directory containing pickle and outputs")
-    args = parser.parse_args()
 
-    script_dir = Path(__file__).resolve().parent
-    table_dir = Path(args.table_dir) if args.table_dir else (script_dir / "fluid_tables")
 
-    input_pkl = _resolve_input_pickle(table_dir, args.input)
+def read_cbin(path):
+    """Read v2 back into its declared original numerical dtype and schema."""
+    payload = Path(path).read_bytes()
+    header_size, meta_size, rec_size = map(
+        struct.calcsize, (HEADER_FMT, META_FMT, RECORD_FMT)
+    )
+    if len(payload) < header_size + meta_size:
+        raise ValueError("Truncated C binary header")
+    (
+        magic,
+        version,
+        endian,
+        nh,
+        np_,
+        nprops,
+        nfields,
+        ncoeff,
+        _,
+        phase_offset,
+        json_offset,
+        json_size,
+    ) = struct.unpack_from(HEADER_FMT, payload)
+    if magic != MAGIC or version != VERSION or endian != ENDIAN_TAG:
+        raise ValueError("Unsupported C binary magic, version or endian tag")
+    if nh < 2 or np_ < 2 or nfields != len(NODE_FIELDS) or ncoeff != 16:
+        raise ValueError("Invalid C binary grid or field schema")
+    if (
+        json_offset + json_size != len(payload)
+        or phase_offset + (nh - 1) * (np_ - 1) != json_offset
+    ):
+        raise ValueError("Truncated or inconsistent C binary payload offsets")
+    provenance = json.loads(payload[json_offset:].decode("utf-8"))
+    metadata = provenance["metadata"]
+    # C consumers use these packed coordinates directly, so the JSON record
+    # must describe the same grid even when the array payload remains intact.
+    packed_coordinates = struct.unpack_from(META_FMT, payload, header_size)
+    expected_coordinates = tuple(
+        float(metadata[key])
+        for key in ("h_min", "h_max", "p_min", "p_max", "delta_h", "delta_logP")
+    )
+    if packed_coordinates != expected_coordinates:
+        raise ValueError("C binary coordinate header disagrees with JSON metadata")
+    dtype = np.dtype(metadata["numeric_dtype"])
+    table = {
+        "metadata": metadata,
+        "saturation_props": {
+            name: {
+                field: np.asarray(value, dtype=dtype) for field, value in entry.items()
+            }
+            for name, entry in provenance["saturation_props"].items()
+        },
+    }
+    mask = np.frombuffer(
+        payload, dtype=np.uint8, count=(nh - 1) * (np_ - 1), offset=phase_offset
+    )
+    if np.any((mask != 0) & (mask != 1)):
+        raise ValueError("Invalid C binary phase-cell flags")
+    table["phase_cell_validity"] = mask.astype(bool).reshape(nh - 1, np_ - 1)
+    directory = header_size + meta_size
+    data_start = directory + nprops * rec_size
+    if nprops < 1 or nprops > 1000 or data_start > phase_offset:
+        raise ValueError("Invalid or truncated C property directory")
+    for index in range(nprops):
+        record = struct.unpack_from(RECORD_FMT, payload, directory + index * rec_size)
+        name = record[0].split(b"\0", 1)[0].decode("ascii")
+        entry = {}
+        for field, offset in zip((*NODE_FIELDS, COEFF_FIELD), record[1:]):
+            shape = (nh - 1, np_ - 1, 16) if field == COEFF_FIELD else (nh, np_)
+            count = int(np.prod(shape))
+            if offset < data_start or offset + count * 8 > phase_offset:
+                raise ValueError(f"Invalid array offset: {name}.{field}")
+            entry[field] = (
+                np.frombuffer(payload, dtype="<f8", count=count, offset=offset)
+                .astype(dtype)
+                .reshape(shape)
+            )
+        if name in table:
+            raise ValueError(f"Duplicate C property directory entry: {name}")
+        table[name] = entry
+    validate_table(table)
+    return table
 
-    with input_pkl.open("rb") as f:
-        table = pickle.load(f)
 
-    if not isinstance(table, dict):
-        raise TypeError(f"Pickle must contain dict, got {type(table)}")
+def assert_roundtrip(original, reconstructed):
+    from jaxprop.bicubic.cache_metadata import metadata_fingerprint
 
-    out_dir = input_pkl.parent
-    out_bin = out_dir / f"{input_pkl.stem}.cbin"
-    out_header = out_dir / f"{input_pkl.stem}_layout.h"
-    write_cbin(table, out_bin, out_header)
+    assert metadata_fingerprint(original["metadata"]) == metadata_fingerprint(
+        reconstructed["metadata"]
+    )
+    np.testing.assert_array_equal(
+        original["phase_cell_validity"], reconstructed["phase_cell_validity"]
+    )
+    count = 1
+    for name, value in original.items():
+        if name in {"metadata", "phase_cell_validity"}:
+            continue
+        if name == "saturation_props":
+            for prop, entry in value.items():
+                for field, array in entry.items():
+                    np.testing.assert_array_equal(
+                        array, reconstructed[name][prop][field]
+                    )
+                    count += 1
+        else:
+            for field, array in value.items():
+                np.testing.assert_array_equal(array, reconstructed[name][field])
+                count += 1
+    return count
+
+
+def main(argv=None):
+    options = example_options(__file__, argv, description=__doc__)
+    if options.input_path is None:
+        raise ValueError(
+            "This export tool requires --input PATH to an existing current-schema table."
+        )
+    table = load_table(options.input_path)
+    out_bin = options.output_dir / (options.input_path.stem + ".cbin")
+    out_header = options.output_dir / (options.input_path.stem + "_layout.h")
+    result = write_cbin(table, out_bin, out_header)
+    result["roundtrip_arrays_checked"] = assert_roundtrip(table, read_cbin(out_bin))
+    options.record("export", result)
+    print(f"Wrote and round-trip verified {out_bin}")
+    return options.finish()
 
 
 if __name__ == "__main__":
     main()
-

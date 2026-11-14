@@ -1,88 +1,115 @@
-import os
+"""Batched full-state calls with explicit status, warmup and synchronization.
+
+This timing demonstration uses changing physical inputs and complete states.
+Table phase-boundary gaps are reported, not extrapolated. Perfect gas is a
+different physical model, so its values are not an EOS-accuracy comparison.
+These exploratory timings do not replace the isolated Phase 13 release gate.
+"""
+
+from pathlib import Path
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from examples._common import example_options
+
 import time
-import shutil
-import jaxprop as jxp
+import jax
 import numpy as np
 from scipy.stats import qmc
-
-outdir = "fluid_tables"
-# if os.path.exists(outdir):
-#     shutil.rmtree(outdir, ignore_errors=True)
-
-# ---------------------------
-# Configuration
-# ---------------------------
-fluid_name = "CO2"
-h_min = 200e3  # J/kg
-h_max = 600e3  # J/kg
-p_min = 2e6    # Pa
-p_max = 20e6   # Pa
-N_p = 30       # Grid size for table
-N_h = 30
-N_samples = 1000  # number of LHS samples
-
-# ---------------------------
-# Build fluids
-# ---------------------------
-fluid_bicubic = jxp.Fluid(
-    name=fluid_name,
-    method="bicubic",
-    backend="HEOS",
-    table_options={
-        "h_min": h_min,
-        "h_max": h_max,
-        "p_min": p_min,
-        "p_max": p_max,
-        "N_h": N_h,
-        "N_p": N_p,
-        "table_dir": outdir,
-    },
-)
-fluid_coolprop = jxp.Fluid(fluid_name, method="coolprop_jax", backend="HEOS")
-fluid_perfect = jxp.Fluid(fluid_name, method="perfect_gas", model_options={"p_ref": p_max, "T_ref": 600})
-
-# ---------------------------
-# Latin Hypercube Sampling
-# ---------------------------
-sampler = qmc.LatinHypercube(d=2, seed=42)
-lhs_points = sampler.random(N_samples)
-l_bounds = [h_min, p_min]
-u_bounds = [h_max, p_max]
-scaled_samples = qmc.scale(lhs_points, l_bounds, u_bounds)
-h_samples = scaled_samples[:, 0]
-p_samples = scaled_samples[:, 1]
-
-# ---------------------------
-# Warmup (to trigger JIT compilation)
-# ---------------------------
-print("Warming up JIT for all solvers...")
-_ = fluid_perfect.get_state(jxp.HmassP_INPUTS, h_samples, p_samples)
-_ = fluid_bicubic.get_state(jxp.HmassP_INPUTS, h_samples, p_samples)
-_ = fluid_coolprop.get_state(jxp.HmassP_INPUTS, h_samples, p_samples)
+import jaxprop as jp
 
 
-# ---------------------------
-# Batched evaluation
-# ---------------------------
-print("Evaluating samples in batch...")
+def main(argv=None):
+    options = example_options(__file__, argv, description=__doc__)
+    full = options.profile == "full"
+    table_options = dict(
+        h_min=200e3,
+        h_max=600e3,
+        p_min=2e6,
+        p_max=20e6,
+        N_h=30 if full else 12,
+        N_p=30 if full else 12,
+        table_dir=str(options.table_dir),
+    )
+    models = {
+        "bicubic": jp.Fluid("CO2", method="bicubic", table_options=table_options),
+        "coolprop_jax": jp.Fluid("CO2", method="coolprop_jax"),
+        "perfect_gas": jp.Fluid(
+            "CO2", method="perfect_gas", model_options=dict(p_ref=20e6, T_ref=600)
+        ),
+    }
+    count = 1000 if full else 64
+    unit = qmc.LatinHypercube(d=2, seed=42).random(count)
+    points = qmc.scale(unit, [200e3, 2e6], [600e3, 20e6])
+    enthalpy, pressure = points[:, 0], points[:, 1]
+    first_calls = {}
+    values = {}
+    times = {}
+    for name, model in models.items():
+        started = time.perf_counter()
+        warm = jax.block_until_ready(
+            model.get_state(jp.HmassP_INPUTS, enthalpy, pressure, errors="mask")
+        )
+        first_calls[name] = time.perf_counter() - started
+        # The complete return, including numerical status, is synchronized.
+        # Repeated samples below preserve all fields rather than projecting T.
+        samples = []
+        for _ in range(5 if full else 3):
+            started = time.perf_counter()
+            states = jax.block_until_ready(
+                model.get_state(jp.HmassP_INPUTS, enthalpy, pressure, errors="mask")
+            )
+            samples.append(time.perf_counter() - started)
+        values[name] = states
+        times[name] = samples
+    coverage = {}
+    for name, states in values.items():
+        rows = states if isinstance(states, list) else [states]
+        successful = 0
+        for row in rows:
+            mask = np.asarray(row.valid)
+            successful += int(np.count_nonzero(mask))
+            for prop in (
+                "temperature",
+                "density",
+                "enthalpy",
+                "pressure",
+                "entropy",
+                "internal_energy",
+            ):
+                assert np.all(np.isfinite(np.asarray(row.raw_property(prop))[mask]))
+        coverage[name] = dict(
+            requested=count, successful=successful, failed=count - successful
+        )
+    assert all(row["successful"] > 0 for row in coverage.values())
+    print("Complete-state synchronized exploratory timings; first calls are separate.")
+    for name, samples in times.items():
+        print(
+            f"{name:14}: first={first_calls[name]*1e3:.3f} ms; median repeated={np.median(samples)*1e3:.3f} ms; valid={coverage[name]['successful']}/{count}"
+        )
+    options.record(
+        "settings",
+        dict(
+            table=table_options,
+            samples=count,
+            repetitions=5 if full else 3,
+            physical_models="source EOS and perfect gas are distinct",
+        ),
+    )
+    options.record("coverage", coverage)
+    options.record(
+        "timing",
+        dict(
+            first_call_s=first_calls,
+            raw_repeated_samples_s=times,
+            scope="Exploratory complete-state calls; not the release performance gate",
+            synchronized=True,
+        ),
+    )
+    return options.finish()
 
-t0 = time.perf_counter()
-interp_props = fluid_bicubic.get_state(jxp.HmassP_INPUTS, h_samples, p_samples)
-t1 = time.perf_counter()
 
-coolprop_props = fluid_coolprop.get_state(jxp.HmassP_INPUTS, h_samples, p_samples)
-t2 = time.perf_counter()
-
-pg_props = fluid_perfect.get_state(jxp.HmassP_INPUTS, h_samples, p_samples)
-t3 = time.perf_counter()
-
-# ---------------------------
-# Timing summary
-# ---------------------------
-print("Timing summary (JIT warmup excluded):")
-print(f"  PerfectGas = {1000*(t3 - t2):8.3f} ms")
-print(f"  Bicubic    = {1000*(t1 - t0):8.3f} ms")
-print(f"  CoolProp   = {1000*(t2 - t1):8.3f} ms")
-
-
-
+if __name__ == "__main__":
+    main()

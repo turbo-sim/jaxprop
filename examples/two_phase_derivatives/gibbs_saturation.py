@@ -4,6 +4,13 @@ Reuse one configured fluid for the density/temperature evaluations. The
 phase-specific density brackets below belong to the fixed 310 K Water case.
 """
 
+from pathlib import Path
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from examples._common import example_options
+
 import CoolProp as CP
 import numpy as np
 import jaxprop as jxp
@@ -46,38 +53,42 @@ def find_rho_for_p(fluid, T, p_target, bracket):
     return brentq(residual, *bracket, xtol=1e-12)
 
 
-# -------------------------------------------
-# Main
-fluid_name = "Water"
-fluid = jxp.Fluid(fluid_name, method="coolprop")
-T = 310.0  # K
-# Keep an independent source handle for the reference saturation pressure.
-AS = CP.AbstractState("HEOS", fluid_name)
+def main(argv=None):
+    options = example_options(__file__, argv, description=__doc__)
+    fluid_name = "Water"
+    fluid = jxp.Fluid(fluid_name, method="coolprop")
+    temperature = 310.0  # K; keep the original physical case and root tolerances.
+    source = CP.AbstractState("HEOS", fluid_name)
+    source.update(CP.QT_INPUTS, 0, temperature)
+    pressure = source.p()
+    found = brentq(
+        gibbs_difference_rhoT,
+        0.9 * pressure,
+        1.1 * pressure,
+        args=(temperature, fluid),
+        xtol=1e-9,
+    )
+    np.testing.assert_allclose(found, pressure, rtol=1e-8, atol=1e-7)
+    gibbs_residual = abs(gibbs_difference_rhoT(found, temperature, fluid))
+    assert gibbs_residual < 1e-5
+    print(f"Saturation pressure via rho-T method  : {found:.6f} Pa")
+    print(f"Saturation pressure from CoolProp     : {pressure:.6f} Pa")
+    print(
+        f"Relative difference                   : {abs(found-pressure)/pressure*100:.6e} %"
+    )
+    options.record(
+        "scientific_checks",
+        {
+            "temperature_K": temperature,
+            "source_pressure_Pa": pressure,
+            "recovered_pressure_Pa": found,
+            "relative_pressure_error": abs(found / pressure - 1),
+            "gibbs_residual_J_per_kg": gibbs_residual,
+        },
+    )
+    options.finish()
+    return found, pressure
 
-AS.update(CP.QT_INPUTS, 1, T)
-rho_vap = AS.rhomass()
 
-# Initial guess
-AS.update(CP.QT_INPUTS, 0, T)
-rho_liq = AS.rhomass()
-p_sat = AS.p()
-p_min = 0.9 * p_sat
-p_max = 1.1 * p_sat
-
-# Root finding on pressure
-p_sat_found = brentq(gibbs_difference_rhoT, p_min, p_max, args=(T, fluid), xtol=1e-9)
-
-# Compare with CoolProp
-AS.update(CP.QT_INPUTS, 0, T)
-p_sat_CP = AS.p()
-
-# Enforce the agreement that the example previously only printed. Keep the
-# density/pressure root tolerances and the physical case above unchanged.
-np.testing.assert_allclose(p_sat_found, p_sat_CP, rtol=1e-8, atol=1e-7)
-assert abs(gibbs_difference_rhoT(p_sat_found, T, fluid)) < 1e-5
-
-print(f"Saturation pressure via rho-T method  : {p_sat_found:.6f} Pa")
-print(f"Saturation pressure from CoolProp     : {p_sat_CP:.6f} Pa")
-print(
-    f"Relative difference                   : {abs(p_sat_found - p_sat_CP)/ p_sat_CP *100:.6e} %"
-)
+if __name__ == "__main__":
+    main()

@@ -1,107 +1,87 @@
-import os
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
+"""Separate fresh source/curve drawing from cached phase-diagram updates.
 
-import jaxprop.coolprop as jxp
-from jaxprop import Fluid
+Wall time includes synchronous figure drawing. This is a plotting application
+study, not a property-kernel or old/new package performance comparison.
+"""
 
-jxp.set_plot_options(grid=False)
+from pathlib import Path
+import sys
 
-outdir = "output"
-os.makedirs(outdir, exist_ok=True)
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-# Define nice colormap
-colormap = mcolors.LinearSegmentedColormap.from_list(
-    "truncated_blues", plt.cm.Blues(np.linspace(0.3, 1.0, 256))
-)
-
-# Create fluid object
-fluid_name = "CO2"
-fluid = Fluid(name=fluid_name, backend="HEOS")
-
-# Create figure for plotting
-fig, ax = plt.subplots(figsize=(6.0, 5.0))
-ax.set_xlabel(r"Entropy (kJ/kg/K)")
-ax.set_ylabel(r"Temperature ($^\circ$C)")
-s_min, s_max = 1.0, 2
-T_min, T_max = 00, 80
-ax.set_xlim([s_min, s_max])
-ax.set_ylim([T_min, T_max])
-
-
+from examples._common import example_options
 import time
+import numpy as np
+import jaxprop as jp
 
-# Plot phase diagram
-start = time.perf_counter()
 
-fig, ax = fluid.plot_phase_diagram("entropy", "temperature", axes=ax, plot_quality_isolines=True, plot_pseudocritical_line=True)
-
-end = time.perf_counter()
-print(f"Run {0}: {end - start:.6f} s")
-
-for i in range(5):
+def main(argv=None):
+    options = example_options(__file__, argv, description=__doc__)
+    N = options.points(100)
+    repeats = 2 if options.profile == "quick" else 5
+    source = jp.Fluid("CO2", method="coolprop")
     start = time.perf_counter()
-
-    fluid_name = "CO2"
-    fluid = Fluid(name=fluid_name, backend="HEOS")
-
-
-    # Plot phase diagram
-    fluid.plot_phase_diagram(
-        "entropy", "temperature",
-        axes=None,  # set to ax if you want to reuse an existing axis
+    figure, axes = jp.plot_phase_diagram(
+        source,
+        "entropy",
+        "temperature",
+        N=N,
         plot_quality_isolines=True,
-        plot_pseudocritical_line=True
+        plot_pseudocritical_line=True,
     )
+    figure.canvas.draw()
+    cold = time.perf_counter() - start
+    artist_count = len(axes.lines) + len(axes.collections)
+    cached, fresh = [], []
+    for _ in range(repeats):
+        start = time.perf_counter()
+        jp.plot_phase_diagram(
+            source,
+            "entropy",
+            "temperature",
+            axes=axes,
+            N=N,
+            plot_quality_isolines=True,
+            plot_pseudocritical_line=True,
+        )
+        figure.canvas.draw()
+        cached.append(time.perf_counter() - start)
+        assert len(axes.lines) + len(axes.collections) == artist_count
+        start = time.perf_counter()
+        other = jp.Fluid("CO2", method="coolprop")
+        other_figure, _ = jp.plot_phase_diagram(
+            other,
+            "entropy",
+            "temperature",
+            N=N,
+            plot_quality_isolines=True,
+            plot_pseudocritical_line=True,
+        )
+        other_figure.canvas.draw()
+        fresh.append(time.perf_counter() - start)
+    assert np.all(np.isfinite([cold, *cached, *fresh]))
+    assert source.sat_liq.valid.all() and source.sat_vap.valid.all()
+    options.record(
+        "settings",
+        dict(
+            N=N,
+            repetitions=repeats,
+            units="SI axes",
+            timed_scope="source/setup/curve/figure drawing",
+        ),
+    )
+    options.record(
+        "timing_illustration",
+        dict(
+            first_draw_seconds=cold,
+            cached_update_seconds=cached,
+            fresh_source_draw_seconds=fresh,
+        ),
+    )
+    print(f"First draw: {cold:.6f} s; cached: {cached}; fresh: {fresh}")
+    return options.finish()
 
-    end = time.perf_counter()
-    print(f"Run {i+1}: {end - start:.6f} s")
 
-
-# # Plot pressure isobars
-# range_x = np.linspace(s_min, s_max, 51) * 1e3
-# range_y = np.linspace(T_min, T_max, 51) + 273.15
-# prop_dict = fluid.get_states(jxp.SmassT_INPUTS, range_x, range_y, generalize_quality=False)
-# contour = ax.contour(
-#     prop_dict["entropy"],
-#     prop_dict["temperature"],
-#     prop_dict["pressure"] / 1e5,
-#     levels=np.asarray(np.linspace(60, 100, 11)),
-#     cmap=colormap,
-#     zorder=1,
-# )
-
-# contourf = ax.contourf(
-#     prop_dict["entropy"],
-#     prop_dict["temperature"],
-#     prop_dict["pressure"]/1e5,
-#     levels=np.asarray(np.linspace(60, 100, 11)),
-#     cmap=colormap,
-#     zorder=1,
-# )
-# contourf.set_visible(False)
-
-# # Add a colorbar with a label
-# colorbar = fig.colorbar(contourf, ax=ax, label="Pressure (bar)")
-
-# # Set plot scale
-# jxp.scale_graphics_x(fig, +1e-3, mode="multiply")
-# jxp.scale_graphics_y(fig, -273.15, mode="add")
-# # ax.relim(visible_only=False)
-# # ax.autoscale_view()
-
-# # Add legend with heat capacity definitions
-# ax.plot([], [], label=r"$c_p = \left( \frac{\partial h}{\partial T} \right)_p = T \left( \frac{\partial s}{\partial T} \right)_p$")
-# ax.legend(loc="lower right")
-
-# # Adjust pad
-# fig.tight_layout(pad=1)
-
-# # Save figure
-# filename = os.path.join(outdir, "Ts_diagram_isobars")
-# jxp.savefig_in_formats(fig, filename)
-
-# # Show figures
-# if not os.environ.get("DISABLE_PLOTS"):
-#     plt.show()
+if __name__ == "__main__":
+    main()

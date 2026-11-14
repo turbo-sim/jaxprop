@@ -1,0 +1,1076 @@
+{
+  "date_utc": "2026-11-14T12:04:51.521575+00:00",
+  "package_sha256": "d4049f47413af829aaa7d836a38d411f8b8c73f44ade3abcf51ef74502d5e853",
+  "package_source_unchanged": true,
+  "scope": "Seven binary/ODE/acoustic programs, actual full and quick profiles",
+  "environment": {
+    "JAX_ENABLE_X64": "true",
+    "JAX_PLATFORM_NAME": "cpu",
+    "MPLBACKEND": "Agg"
+  },
+  "outcomes": {
+    "completed": 14,
+    "failed": 0
+  },
+  "elapsed_times_are_benchmarks": false,
+  "scientific_corrections": [
+    "Fixed-composition models replace variadic per-call mass ratios; only supported PT/HP/PS routes are used.",
+    "Water/air ODE uses the correct positive JT term and integrates enthalpy changes for energy-reference-independent error control.",
+    "Sonic sections require an actual continuous Mach-one crossing; Reynolds uses chord in metres, not displayed millimetres.",
+    "Diffrax uses dynamic endpoint parameters on a normalized pressure coordinate and saves numerical coordinates before reconstructing full states.",
+    "The native derivative study uses two ordinary component tables instead of the experimental aggregate table; full resolution is 100x100 per component and the physical point is unchanged.",
+    "Relaxation-study exact endpoints follow homogeneous source behavior; the unused pM formula is explicitly unverified research.",
+    "Each real-fluid Diffrax parameter derivative is checked separately at 0.2%, preventing a mixed-unit norm from hiding pressure sensitivities; maximum actual error is 4.36e-4."
+  ],
+  "cases": [
+    {
+      "example": "two_component/water_nitrogen_example.py",
+      "profile": "full",
+      "exit_code": 0,
+      "seconds": 3.1879084999964107,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\two_component\\water_nitrogen_example.py",
+        "--headless",
+        "--profile",
+        "full",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_example\\full",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "d0e91c7e40e058fb078044612edc3c743d2eae590f935cedaf1e11a566b05dbe",
+      "log": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_example/full/stdout.log",
+      "result": {
+        "example": "two_component/water_nitrogen_example.py",
+        "profile": "full",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_example\\full",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "p": 500000.0,
+            "T": 350.0,
+            "mass_ratio": 50.0
+          },
+          "wood_speed_m_per_s": 66.73909731321142,
+          "equilibrium_speed_m_per_s": 56.35690904923145
+        },
+        "sample_sizes": {},
+        "figures": []
+      },
+      "manifest": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_example/full/example_result.json"
+    },
+    {
+      "example": "two_component/water_nitrogen_consistency.py",
+      "profile": "full",
+      "exit_code": 0,
+      "seconds": 3.20394259999739,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\two_component\\water_nitrogen_consistency.py",
+        "--headless",
+        "--profile",
+        "full",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_consistency\\full",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "2cd65af0d899e48541b37548ac47291e118f892e31420fb755503758ae8fd469",
+      "log": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_consistency/full/stdout.log",
+      "result": {
+        "example": "two_component/water_nitrogen_consistency.py",
+        "profile": "full",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_consistency\\full",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "p": 125000.0,
+            "T": 310.0,
+            "mass_ratios": [
+              100.0,
+              200.0,
+              300.0
+            ]
+          },
+          "field_comparisons": 162
+        },
+        "sample_sizes": {},
+        "figures": []
+      },
+      "manifest": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_consistency/full/example_result.json"
+    },
+    {
+      "example": "two_component/water_nitrogen_speed_sound.py",
+      "profile": "full",
+      "exit_code": 0,
+      "seconds": 6.706009900022764,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\two_component\\water_nitrogen_speed_sound.py",
+        "--headless",
+        "--profile",
+        "full",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_speed_sound\\full",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "b43b2db0956d402cd7f49e3ed8a037db60845c46c92d6a1697172d39202a89cc",
+      "log": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_speed_sound/full/stdout.log",
+      "result": {
+        "example": "two_component/water_nitrogen_speed_sound.py",
+        "profile": "full",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_speed_sound\\full",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "p": 500000.0,
+            "T": 350.0,
+            "mass_ratio_bounds": [
+              50,
+              500
+            ],
+            "sample_points": 51
+          },
+          "maximum_relative_acoustic_error": 3.624551172531909e-07
+        },
+        "sample_sizes": {},
+        "figures": [
+          {
+            "file": "figure_01.png",
+            "axes": 1,
+            "drawn": true,
+            "finite_limits": true
+          }
+        ]
+      },
+      "manifest": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_speed_sound/full/example_result.json"
+    },
+    {
+      "example": "two_component/water_nitrogen_calculations.py",
+      "profile": "full",
+      "exit_code": 0,
+      "seconds": 7.897594500012929,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\two_component\\water_nitrogen_calculations.py",
+        "--headless",
+        "--profile",
+        "full",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_calculations\\full",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "dd89f0fffa27f205cf372bfe8e151f3c9df4123083856d5da80e363d97e2cd3d",
+      "log": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_calculations/full/stdout.log",
+      "result": {
+        "example": "two_component/water_nitrogen_calculations.py",
+        "profile": "full",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_calculations\\full",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "components": [
+              "water",
+              "air"
+            ],
+            "T_in": 298.15,
+            "p_out": 100000.0,
+            "efficiency": 0.8,
+            "inlet_pressures": [
+              700000.0,
+              1300000.0
+            ],
+            "mass_ratios": [
+              20,
+              30,
+              40,
+              50,
+              100,
+              150,
+              200,
+              300,
+              400,
+              500
+            ],
+            "sample_points": 200,
+            "ODE_solver": "LSODA",
+            "ODE_tolerance": 1e-06,
+            "sonic_area_m2": 0.00025,
+            "enthalpy_error_control": "integrated change from inlet, independent of source energy zero"
+          },
+          "trajectory_count": 20,
+          "sonic_crossings": 20,
+          "maximum_enthalpy_consistency_residual_J_per_kg": 2.5122324586845934e-05,
+          "geometry_status": "Reported only for genuine integrated Mach-one crossings; preliminary area assumptions"
+        },
+        "sample_sizes": {},
+        "figures": [
+          {
+            "file": "figure_01.png",
+            "axes": 4,
+            "drawn": true,
+            "finite_limits": true
+          }
+        ]
+      },
+      "manifest": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_calculations/full/example_result.json"
+    },
+    {
+      "example": "optimistix/diffrax_polytropic_expansion.py",
+      "profile": "full",
+      "exit_code": 0,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\optimistix\\diffrax_polytropic_expansion.py",
+        "--headless",
+        "--profile",
+        "full",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\diffrax_final_full",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "69043083056ca384f66f9321ca02c08a347d656a42e29d12da213893c5aa38eb",
+      "result": {
+        "example": "optimistix/diffrax_polytropic_expansion.py",
+        "profile": "full",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\diffrax_final_full",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "fluid": "CO2",
+            "backend": "HEOS",
+            "T_in": 400.0,
+            "p_in": 20000000.0,
+            "p_out": 5000000.0,
+            "efficiencies": [
+              1.0,
+              0.9,
+              0.8,
+              0.7,
+              0.6,
+              0.5,
+              0.3999999999999999,
+              0.29999999999999993,
+              0.19999999999999996,
+              0.1
+            ],
+            "saved_points": 50,
+            "ODE_rtol": 1e-06,
+            "ODE_atol": 1e-09,
+            "max_steps": 10000,
+            "finite_difference_relative_step": 0.0001,
+            "gradient_component_relative_budget": 0.002
+          },
+          "maximum_forward_reverse_relative_error": 3.2528907178695856e-16,
+          "maximum_AD_central_difference_relative_error": 0.00043586790186980686,
+          "synchronized_demonstration_observations": [
+            {
+              "efficiency": 1.0,
+              "exit_temperature_K": 290.17448683359805,
+              "trajectory_ms": 696.7960000038147,
+              "forward_ms": 1014.0835999918636,
+              "reverse_ms": 1535.8108000073116,
+              "finite_difference_ms": 693.2249999954365,
+              "forward_reverse_relative_error": 1.881660276177676e-16,
+              "AD_central_difference_relative_error": 2.616043810306213e-05,
+              "AD_central_difference_relative_norm_error": 8.16126296170706e-06,
+              "parameter_relative_errors": {
+                "h_in": 5.104736744389607e-06,
+                "p_in": 2.616043810306213e-05,
+                "p_out": 4.9691960074004715e-06,
+                "efficiency": 8.161262962271504e-06
+              }
+            },
+            {
+              "efficiency": 0.9,
+              "exit_temperature_K": 292.19874665187217,
+              "trajectory_ms": 22.137700027087703,
+              "forward_ms": 65.86909998441115,
+              "reverse_ms": 154.18630000203848,
+              "finite_difference_ms": 180.92179999803193,
+              "forward_reverse_relative_error": 1.642810343887073e-16,
+              "AD_central_difference_relative_error": 2.976226729548158e-05,
+              "AD_central_difference_relative_norm_error": 8.060455337331498e-06,
+              "parameter_relative_errors": {
+                "h_in": 4.359515750411374e-06,
+                "p_in": 2.976226729548158e-05,
+                "p_out": 5.9605606206731e-06,
+                "efficiency": 8.060455337975952e-06
+              }
+            },
+            {
+              "efficiency": 0.8,
+              "exit_temperature_K": 294.50375418657865,
+              "trajectory_ms": 18.95560001139529,
+              "forward_ms": 49.428700003772974,
+              "reverse_ms": 109.04569999547675,
+              "finite_difference_ms": 174.37159997643903,
+              "forward_reverse_relative_error": 1.450328642002097e-16,
+              "AD_central_difference_relative_error": 4.48558175007121e-05,
+              "AD_central_difference_relative_norm_error": 4.601240482721317e-06,
+              "parameter_relative_errors": {
+                "h_in": 5.294424150048678e-06,
+                "p_in": 4.48558175007121e-05,
+                "p_out": 1.0244946249855246e-05,
+                "efficiency": 4.60124048255047e-06
+              }
+            },
+            {
+              "efficiency": 0.7,
+              "exit_temperature_K": 297.101666428012,
+              "trajectory_ms": 18.011200008913875,
+              "forward_ms": 82.0749000122305,
+              "reverse_ms": 114.5847000007052,
+              "finite_difference_ms": 156.95110001252033,
+              "forward_reverse_relative_error": 1.972681823861961e-21,
+              "AD_central_difference_relative_error": 3.308659006299662e-05,
+              "AD_central_difference_relative_norm_error": 2.882011355853459e-06,
+              "parameter_relative_errors": {
+                "h_in": 4.3436368644279745e-06,
+                "p_in": 3.308659006299662e-05,
+                "p_out": 7.616146160944561e-06,
+                "efficiency": 2.8820113554405396e-06
+              }
+            },
+            {
+              "efficiency": 0.6,
+              "exit_temperature_K": 300.00325993855154,
+              "trajectory_ms": 16.200899990508333,
+              "forward_ms": 48.00809998414479,
+              "reverse_ms": 102.44970000348985,
+              "finite_difference_ms": 153.91940000699833,
+              "forward_reverse_relative_error": 2.3245132351159023e-16,
+              "AD_central_difference_relative_error": 2.0991015529412343e-05,
+              "AD_central_difference_relative_norm_error": 1.0517398784175756e-06,
+              "parameter_relative_errors": {
+                "h_in": 3.5735779172895923e-06,
+                "p_in": 2.0991015529412343e-05,
+                "p_out": 4.835317081748683e-06,
+                "efficiency": 1.0517398771769663e-06
+              }
+            },
+            {
+              "efficiency": 0.5,
+              "exit_temperature_K": 303.2181192904023,
+              "trajectory_ms": 30.199199973139912,
+              "forward_ms": 57.06669998471625,
+              "reverse_ms": 117.5169000052847,
+              "finite_difference_ms": 157.80119999544695,
+              "forward_reverse_relative_error": 0.0,
+              "AD_central_difference_relative_error": 8.511664712686226e-06,
+              "AD_central_difference_relative_norm_error": 8.270145297500901e-07,
+              "parameter_relative_errors": {
+                "h_in": 2.951035129255688e-06,
+                "p_in": 8.511664712686226e-06,
+                "p_out": 2.0474947791788494e-06,
+                "efficiency": 8.270145286697732e-07
+              }
+            },
+            {
+              "efficiency": 0.3999999999999999,
+              "exit_temperature_K": 306.75454816597295,
+              "trajectory_ms": 17.71410001674667,
+              "forward_ms": 52.70040000323206,
+              "reverse_ms": 105.42840001289733,
+              "finite_difference_ms": 138.47450001048855,
+              "forward_reverse_relative_error": 2.9305326891367074e-21,
+              "AD_central_difference_relative_error": 5.111507907858718e-06,
+              "AD_central_difference_relative_norm_error": 2.7940052330240067e-06,
+              "parameter_relative_errors": {
+                "h_in": 2.4426911234938393e-06,
+                "p_in": 5.111507907858718e-06,
+                "p_out": 6.792056381244479e-07,
+                "efficiency": 2.794005233097205e-06
+              }
+            },
+            {
+              "efficiency": 0.29999999999999993,
+              "exit_temperature_K": 310.6196429322379,
+              "trajectory_ms": 18.33360001910478,
+              "forward_ms": 47.29919999954291,
+              "reverse_ms": 116.86320000444539,
+              "finite_difference_ms": 148.55829998850822,
+              "forward_reverse_relative_error": 1.762475758933365e-16,
+              "AD_central_difference_relative_error": 2.3203482175195758e-05,
+              "AD_central_difference_relative_norm_error": 5.249600329411935e-06,
+              "parameter_relative_errors": {
+                "h_in": 2.012354292174675e-06,
+                "p_in": 2.3203482175195758e-05,
+                "p_out": 3.517887511063228e-06,
+                "efficiency": 5.249600329907409e-06
+              }
+            },
+            {
+              "efficiency": 0.19999999999999996,
+              "exit_temperature_K": 314.81934086031555,
+              "trajectory_ms": 17.76309998240322,
+              "forward_ms": 59.32220001704991,
+              "reverse_ms": 114.00939998566173,
+              "finite_difference_ms": 225.0567999726627,
+              "forward_reverse_relative_error": 3.2528907178695856e-16,
+              "AD_central_difference_relative_error": 6.094138359000664e-05,
+              "AD_central_difference_relative_norm_error": 1.0103990122859606e-05,
+              "parameter_relative_errors": {
+                "h_in": 1.6120313858810502e-06,
+                "p_in": 6.094138359000664e-05,
+                "p_out": 7.491991072793928e-06,
+                "efficiency": 1.0103990123945804e-05
+              }
+            },
+            {
+              "efficiency": 0.1,
+              "exit_temperature_K": 319.3581149028207,
+              "trajectory_ms": 18.16589999361895,
+              "forward_ms": 50.67729999427684,
+              "reverse_ms": 93.50570000242442,
+              "finite_difference_ms": 146.66270001907833,
+              "forward_reverse_relative_error": 1.5083293893984519e-16,
+              "AD_central_difference_relative_error": 0.00043586790186980686,
+              "AD_central_difference_relative_norm_error": 8.630314419628849e-05,
+              "parameter_relative_errors": {
+                "h_in": 2.8699122480885804e-06,
+                "p_in": 0.00043586790186980686,
+                "p_out": 3.320071469164427e-05,
+                "efficiency": 8.630314420576902e-05
+              }
+            }
+          ],
+          "timing_scope": "Synchronized single observations after warmup; formal repeat/interleave benchmark is Phase 13"
+        },
+        "sample_sizes": {},
+        "figures": [
+          {
+            "file": "figure_01.png",
+            "axes": 1,
+            "drawn": true,
+            "finite_limits": true
+          }
+        ]
+      },
+      "manifest": "development/example_audit/results/phase12_binary/diffrax_final_full/example_result.json",
+      "pre_strengthening_stdout_log": "development/example_audit/results/phase12_binary/verified_20261114_125321/diffrax_polytropic_expansion/full/stdout.log",
+      "final_stdout_capture": "Tool execution output; complete numerical observations retained in the result manifest",
+      "per_parameter_FD_strengthening_executed": true
+    },
+    {
+      "example": "speed_of_sound/relaxation_hierarchy.py",
+      "profile": "full",
+      "exit_code": 0,
+      "seconds": 6.351117999991402,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\speed_of_sound\\relaxation_hierarchy.py",
+        "--headless",
+        "--profile",
+        "full",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\relaxation_hierarchy\\full",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "2adab31dfc327b9ef2d953d1b8b1dda58f6f505c93b79572cd66a407220e6cbb",
+      "log": "development/example_audit/results/phase12_binary/verified_20261114_125321/relaxation_hierarchy/full/stdout.log",
+      "result": {
+        "example": "speed_of_sound/relaxation_hierarchy.py",
+        "profile": "full",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\relaxation_hierarchy\\full",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "fluid": "Cyclopentane",
+            "saturation_temperature_K": 473.15,
+            "pressure_Pa": 2650165.0032070596,
+            "quality_min": 1e-05,
+            "quality_max": 1.0,
+            "sample_points": 120,
+            "saturation_derivative_relative_step": 0.001
+          },
+          "maximum_HEM_relative_error": 2.5198689124206197e-07,
+          "verified_relaxation_modes": [
+            "frozen",
+            "p_equilibrium",
+            "pT_equilibrium",
+            "pTm_equilibrium"
+          ],
+          "unverified_research_expression": "pM_equilibrium retained with its derivation in notes.md; excluded from the verified CLI study"
+        },
+        "sample_sizes": {},
+        "figures": [
+          {
+            "file": "figure_01.png",
+            "axes": 1,
+            "drawn": true,
+            "finite_limits": true
+          }
+        ]
+      },
+      "manifest": "development/example_audit/results/phase12_binary/verified_20261114_125321/relaxation_hierarchy/full/example_result.json"
+    },
+    {
+      "example": "mixture_properties/test_cal_prop.py",
+      "profile": "full",
+      "exit_code": 0,
+      "seconds": 191.24922679999145,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\mixture_properties\\test_cal_prop.py",
+        "--headless",
+        "--profile",
+        "full",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\test_cal_prop\\full",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "754c23827d80e9421abb2e757ed0faef6c1aa0d1973ea877ac3adfd048c07a4f",
+      "log": "development/example_audit/results/phase12_binary/verified_20261114_125321/test_cal_prop/full/stdout.log",
+      "result": {
+        "example": "mixture_properties/test_cal_prop.py",
+        "profile": "full",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\test_cal_prop\\full",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "h": 100000.0,
+            "p": 200000.0,
+            "mass_ratio": 39.1,
+            "component_names": [
+              "Water",
+              "Nitrogen"
+            ],
+            "component_grid": [
+              100,
+              100
+            ],
+            "pressure_bounds": [
+              20000.0,
+              3000000.0
+            ],
+            "temperature_band": [
+              278.15,
+              318.15
+            ],
+            "relative_comparison_budget": 2e-05
+          },
+          "representation_change": "Two ordinary component tables and the public fixed-composition binary model replace the experimental aggregate binary table",
+          "native_checks": {
+            "density_hp_partials": [
+              -6.420790867858443e-05,
+              0.00038542513244542795
+            ],
+            "density_hp_identity_partials": [
+              -6.420809509890636e-05,
+              0.0003854252029585349
+            ],
+            "du_dp_at_fixed_density": 5.990860652568341,
+            "acoustic_speed_from_PS": 50.987228004496416,
+            "relative_acoustic_error": 2.0496306984973955e-08
+          },
+          "source_checks": {
+            "density_hp_partials": [
+              -6.420806070073616e-05,
+              0.00038542518404325856
+            ],
+            "density_hp_identity_partials": [
+              -6.420809719154228e-05,
+              0.0003854252168088396
+            ],
+            "du_dp_at_fixed_density": 5.990831087388791,
+            "acoustic_speed_from_PS": 50.987228454662876,
+            "relative_acoustic_error": 6.324057277851125e-09
+          },
+          "source_state_field_comparisons": 27
+        },
+        "sample_sizes": {},
+        "figures": []
+      },
+      "manifest": "development/example_audit/results/phase12_binary/verified_20261114_125321/test_cal_prop/full/example_result.json"
+    },
+    {
+      "example": "two_component/water_nitrogen_example.py",
+      "profile": "quick",
+      "exit_code": 0,
+      "seconds": 5.138358800002607,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\two_component\\water_nitrogen_example.py",
+        "--headless",
+        "--profile",
+        "quick",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_example\\quick",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "d0e91c7e40e058fb078044612edc3c743d2eae590f935cedaf1e11a566b05dbe",
+      "log": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_example/quick/stdout.log",
+      "result": {
+        "example": "two_component/water_nitrogen_example.py",
+        "profile": "quick",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_example\\quick",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "p": 500000.0,
+            "T": 350.0,
+            "mass_ratio": 50.0
+          },
+          "wood_speed_m_per_s": 66.73909731321142,
+          "equilibrium_speed_m_per_s": 56.35690904923145
+        },
+        "sample_sizes": {},
+        "figures": []
+      },
+      "manifest": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_example/quick/example_result.json"
+    },
+    {
+      "example": "two_component/water_nitrogen_consistency.py",
+      "profile": "quick",
+      "exit_code": 0,
+      "seconds": 4.681616499990923,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\two_component\\water_nitrogen_consistency.py",
+        "--headless",
+        "--profile",
+        "quick",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_consistency\\quick",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "2cd65af0d899e48541b37548ac47291e118f892e31420fb755503758ae8fd469",
+      "log": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_consistency/quick/stdout.log",
+      "result": {
+        "example": "two_component/water_nitrogen_consistency.py",
+        "profile": "quick",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_consistency\\quick",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "p": 125000.0,
+            "T": 310.0,
+            "mass_ratios": [
+              200.0
+            ]
+          },
+          "field_comparisons": 54
+        },
+        "sample_sizes": {},
+        "figures": []
+      },
+      "manifest": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_consistency/quick/example_result.json"
+    },
+    {
+      "example": "two_component/water_nitrogen_speed_sound.py",
+      "profile": "quick",
+      "exit_code": 0,
+      "seconds": 5.473473699996248,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\two_component\\water_nitrogen_speed_sound.py",
+        "--headless",
+        "--profile",
+        "quick",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_speed_sound\\quick",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "b43b2db0956d402cd7f49e3ed8a037db60845c46c92d6a1697172d39202a89cc",
+      "log": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_speed_sound/quick/stdout.log",
+      "result": {
+        "example": "two_component/water_nitrogen_speed_sound.py",
+        "profile": "quick",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_speed_sound\\quick",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "p": 500000.0,
+            "T": 350.0,
+            "mass_ratio_bounds": [
+              50,
+              500
+            ],
+            "sample_points": 7
+          },
+          "maximum_relative_acoustic_error": 3.624551172531909e-07
+        },
+        "sample_sizes": {},
+        "figures": [
+          {
+            "file": "figure_01.png",
+            "axes": 1,
+            "drawn": true,
+            "finite_limits": true
+          }
+        ]
+      },
+      "manifest": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_speed_sound/quick/example_result.json"
+    },
+    {
+      "example": "two_component/water_nitrogen_calculations.py",
+      "profile": "quick",
+      "exit_code": 0,
+      "seconds": 4.972442800004501,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\two_component\\water_nitrogen_calculations.py",
+        "--headless",
+        "--profile",
+        "quick",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_calculations\\quick",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "dd89f0fffa27f205cf372bfe8e151f3c9df4123083856d5da80e363d97e2cd3d",
+      "log": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_calculations/quick/stdout.log",
+      "result": {
+        "example": "two_component/water_nitrogen_calculations.py",
+        "profile": "quick",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\water_nitrogen_calculations\\quick",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "components": [
+              "water",
+              "air"
+            ],
+            "T_in": 298.15,
+            "p_out": 100000.0,
+            "efficiency": 0.8,
+            "inlet_pressures": [
+              700000.0
+            ],
+            "mass_ratios": [
+              20,
+              100,
+              500
+            ],
+            "sample_points": 31,
+            "ODE_solver": "LSODA",
+            "ODE_tolerance": 1e-06,
+            "sonic_area_m2": 0.00025,
+            "enthalpy_error_control": "integrated change from inlet, independent of source energy zero"
+          },
+          "trajectory_count": 3,
+          "sonic_crossings": 3,
+          "maximum_enthalpy_consistency_residual_J_per_kg": 1.0538569767959416e-05,
+          "geometry_status": "Reported only for genuine integrated Mach-one crossings; preliminary area assumptions"
+        },
+        "sample_sizes": {},
+        "figures": [
+          {
+            "file": "figure_01.png",
+            "axes": 4,
+            "drawn": true,
+            "finite_limits": true
+          }
+        ]
+      },
+      "manifest": "development/example_audit/results/phase12_binary/verified_20261114_125321/water_nitrogen_calculations/quick/example_result.json"
+    },
+    {
+      "example": "optimistix/diffrax_polytropic_expansion.py",
+      "profile": "quick",
+      "exit_code": 0,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\optimistix\\diffrax_polytropic_expansion.py",
+        "--headless",
+        "--profile",
+        "quick",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\diffrax_final_quick",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "69043083056ca384f66f9321ca02c08a347d656a42e29d12da213893c5aa38eb",
+      "result": {
+        "example": "optimistix/diffrax_polytropic_expansion.py",
+        "profile": "quick",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\diffrax_final_quick",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "fluid": "CO2",
+            "backend": "HEOS",
+            "T_in": 400.0,
+            "p_in": 20000000.0,
+            "p_out": 5000000.0,
+            "efficiencies": [
+              1.0,
+              0.55,
+              0.1
+            ],
+            "saved_points": 15,
+            "ODE_rtol": 1e-06,
+            "ODE_atol": 1e-09,
+            "max_steps": 10000,
+            "finite_difference_relative_step": 0.0001,
+            "gradient_component_relative_budget": 0.002
+          },
+          "maximum_forward_reverse_relative_error": 2.2104205607568322e-16,
+          "maximum_AD_central_difference_relative_error": 0.00043586790186980686,
+          "synchronized_demonstration_observations": [
+            {
+              "efficiency": 1.0,
+              "exit_temperature_K": 290.17448683359805,
+              "trajectory_ms": 762.9214999906253,
+              "forward_ms": 1137.36809999682,
+              "reverse_ms": 1966.9262999959756,
+              "finite_difference_ms": 672.6306999917142,
+              "forward_reverse_relative_error": 1.881660276177676e-16,
+              "AD_central_difference_relative_error": 2.616043810306213e-05,
+              "AD_central_difference_relative_norm_error": 8.16126296170706e-06,
+              "parameter_relative_errors": {
+                "h_in": 5.104736744389607e-06,
+                "p_in": 2.616043810306213e-05,
+                "p_out": 4.9691960074004715e-06,
+                "efficiency": 8.161262962271504e-06
+              }
+            },
+            {
+              "efficiency": 0.55,
+              "exit_temperature_K": 301.57098315043936,
+              "trajectory_ms": 17.23099997616373,
+              "forward_ms": 53.13939999905415,
+              "reverse_ms": 101.23609998845495,
+              "finite_difference_ms": 151.51419999892823,
+              "forward_reverse_relative_error": 2.2104205607568322e-16,
+              "AD_central_difference_relative_error": 1.4818936926675886e-05,
+              "AD_central_difference_relative_norm_error": 1.1618324193464026e-07,
+              "parameter_relative_errors": {
+                "h_in": 3.246695236436219e-06,
+                "p_in": 1.4818936926675886e-05,
+                "p_out": 3.432522270763488e-06,
+                "efficiency": 1.1618323182399777e-07
+              }
+            },
+            {
+              "efficiency": 0.1,
+              "exit_temperature_K": 319.3581149028207,
+              "trajectory_ms": 13.015000004088506,
+              "forward_ms": 40.00939999241382,
+              "reverse_ms": 88.66199999465607,
+              "finite_difference_ms": 128.49029997596517,
+              "forward_reverse_relative_error": 1.5083293893984519e-16,
+              "AD_central_difference_relative_error": 0.00043586790186980686,
+              "AD_central_difference_relative_norm_error": 8.630314419628849e-05,
+              "parameter_relative_errors": {
+                "h_in": 2.8699122480885804e-06,
+                "p_in": 0.00043586790186980686,
+                "p_out": 3.320071469164427e-05,
+                "efficiency": 8.630314420576902e-05
+              }
+            }
+          ],
+          "timing_scope": "Synchronized single observations after warmup; formal repeat/interleave benchmark is Phase 13"
+        },
+        "sample_sizes": {},
+        "figures": [
+          {
+            "file": "figure_01.png",
+            "axes": 1,
+            "drawn": true,
+            "finite_limits": true
+          }
+        ]
+      },
+      "manifest": "development/example_audit/results/phase12_binary/diffrax_final_quick/example_result.json",
+      "pre_strengthening_stdout_log": "development/example_audit/results/phase12_binary/verified_20261114_125321/diffrax_polytropic_expansion/quick/stdout.log",
+      "final_stdout_capture": "Tool execution output; complete numerical observations retained in the result manifest",
+      "per_parameter_FD_strengthening_executed": true
+    },
+    {
+      "example": "speed_of_sound/relaxation_hierarchy.py",
+      "profile": "quick",
+      "exit_code": 0,
+      "seconds": 5.559527599980356,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\speed_of_sound\\relaxation_hierarchy.py",
+        "--headless",
+        "--profile",
+        "quick",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\relaxation_hierarchy\\quick",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "2adab31dfc327b9ef2d953d1b8b1dda58f6f505c93b79572cd66a407220e6cbb",
+      "log": "development/example_audit/results/phase12_binary/verified_20261114_125321/relaxation_hierarchy/quick/stdout.log",
+      "result": {
+        "example": "speed_of_sound/relaxation_hierarchy.py",
+        "profile": "quick",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\relaxation_hierarchy\\quick",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "fluid": "Cyclopentane",
+            "saturation_temperature_K": 473.15,
+            "pressure_Pa": 2650165.0032070596,
+            "quality_min": 1e-05,
+            "quality_max": 1.0,
+            "sample_points": 21,
+            "saturation_derivative_relative_step": 0.001
+          },
+          "maximum_HEM_relative_error": 2.5198372000101443e-07,
+          "verified_relaxation_modes": [
+            "frozen",
+            "p_equilibrium",
+            "pT_equilibrium",
+            "pTm_equilibrium"
+          ],
+          "unverified_research_expression": "pM_equilibrium retained with its derivation in notes.md; excluded from the verified CLI study"
+        },
+        "sample_sizes": {},
+        "figures": [
+          {
+            "file": "figure_01.png",
+            "axes": 1,
+            "drawn": true,
+            "finite_limits": true
+          }
+        ]
+      },
+      "manifest": "development/example_audit/results/phase12_binary/verified_20261114_125321/relaxation_hierarchy/quick/example_result.json"
+    },
+    {
+      "example": "mixture_properties/test_cal_prop.py",
+      "profile": "quick",
+      "exit_code": 0,
+      "seconds": 46.797391900006915,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\mixture_properties\\test_cal_prop.py",
+        "--headless",
+        "--profile",
+        "quick",
+        "--output-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\test_cal_prop\\quick",
+        "--table-dir",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables"
+      ],
+      "source_sha256": "754c23827d80e9421abb2e757ed0faef6c1aa0d1973ea877ac3adfd048c07a4f",
+      "log": "development/example_audit/results/phase12_binary/verified_20261114_125321/test_cal_prop/quick/stdout.log",
+      "result": {
+        "example": "mixture_properties/test_cal_prop.py",
+        "profile": "quick",
+        "headless": true,
+        "output_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12_binary\\verified_20261114_125321\\test_cal_prop\\quick",
+        "table_dir": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase12\\tables",
+        "input_path": null,
+        "completed": true,
+        "checks": {
+          "settings": {
+            "h": 100000.0,
+            "p": 200000.0,
+            "mass_ratio": 39.1,
+            "component_names": [
+              "Water",
+              "Nitrogen"
+            ],
+            "component_grid": [
+              12,
+              12
+            ],
+            "pressure_bounds": [
+              20000.0,
+              3000000.0
+            ],
+            "temperature_band": [
+              278.15,
+              318.15
+            ],
+            "relative_comparison_budget": 0.002
+          },
+          "representation_change": "Two ordinary component tables and the public fixed-composition binary model replace the experimental aggregate binary table",
+          "native_checks": {
+            "density_hp_partials": [
+              -6.420829087790615e-05,
+              0.00038526192171516635
+            ],
+            "density_hp_identity_partials": [
+              -6.42078228117555e-05,
+              0.00038542180521443543
+            ],
+            "du_dp_at_fixed_density": 5.988337349277356,
+            "acoustic_speed_from_PS": 50.99794320078929,
+            "relative_acoustic_error": 0.00020571560292825808
+          },
+          "source_checks": {
+            "density_hp_partials": [
+              -6.420806070073616e-05,
+              0.00038542518404325856
+            ],
+            "density_hp_identity_partials": [
+              -6.420809719154228e-05,
+              0.0003854252168088396
+            ],
+            "du_dp_at_fixed_density": 5.990831087388791,
+            "acoustic_speed_from_PS": 50.987228454662876,
+            "relative_acoustic_error": 6.324057277851125e-09
+          },
+          "source_state_field_comparisons": 27
+        },
+        "sample_sizes": {},
+        "figures": []
+      },
+      "manifest": "development/example_audit/results/phase12_binary/verified_20261114_125321/test_cal_prop/quick/example_result.json"
+    }
+  ],
+  "all_current_example_hashes_verified": true,
+  "scientific_tests": {
+    "passed": 10,
+    "failed": 0,
+    "junit": "development/example_audit/results/phase12_binary/scientific_tests_final.xml",
+    "command": "python -m pytest tests/test_phase12_binary_examples.py -c tests/pytest.ini -q",
+    "test_source_sha256": "1748c63e7768fc6ec625dda36ab4734c3a78989110584d3a57fd2641346da95c"
+  },
+  "visual_validation": "Four full-study figures (acoustics, water/air ODE, Diffrax and relaxation hierarchy) rendered and visually inspected; all quick figures drawn with finite limits."
+}

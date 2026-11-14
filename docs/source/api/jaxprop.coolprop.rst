@@ -15,4 +15,3 @@ Submodules
    jaxprop.coolprop.core_calculations
    jaxprop.coolprop.fluid_properties
    jaxprop.coolprop.jax_wrapper
-   jaxprop.coolprop.jax_wrapper_working

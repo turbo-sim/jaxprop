@@ -1495,15 +1495,46 @@ def _perform_flash_calculation(
         raise ConvergenceError(request=calculation_type, reason=msg)
 
     props = problem.compute_properties(rho, T)
-    residual = problem.residual(xf_reduced)
+    # Validate the exact properties we will return. Calling problem.residual
+    # here would flash the same root again and certify that second evaluation
+    # instead of the returned state, while adding unnecessary source work.
+    requests = ((prop_1, prop_1_value), (prop_2, prop_2_value))
+    residual = np.asarray(
+        [
+            (props[name] - target) / scale
+            for (name, target), scale in zip(requests, problem.residual_scales)
+        ]
+    )
+    residual_limits = np.full(2, max(5 * solver_tolerance, 1e-10))
+    for index, ((name, _), scale) in enumerate(zip(requests, problem.residual_scales)):
+        if name == "pressure":
+            # A stiff liquid's small net pressure is obtained by cancellation
+            # of much larger EOS terms. A relative-to-pressure test alone can
+            # reject a valid root at the source's floating representability
+            # floor. Use already returned response values, not extra EOS calls
+            # or checks inside the nonlinear iterations. Other residuals keep
+            # their original, reference-invariant acceptance limits.
+            physical_scales = np.asarray(
+                [
+                    props.get("isothermal_bulk_modulus", np.nan),
+                    props.get("isentropic_bulk_modulus", np.nan),
+                    float(props["density"]) * specific_R * float(props["temperature"]),
+                    props["pressure"],
+                ],
+                dtype=float,
+            )
+            finite_scales = np.abs(physical_scales[np.isfinite(physical_scales)])
+            if finite_scales.size:
+                pressure_roundoff = 128 * np.finfo(float).eps * np.max(finite_scales)
+                residual_limits[index] = max(
+                    residual_limits[index], pressure_roundoff / scale
+                )
     # An LM least-squares termination flag can describe a stationary point with
     # a nonzero thermodynamic residual. Validate the returned root independently.
-    if not np.all(np.isfinite(residual)) or np.max(np.abs(residual)) > max(
-        5 * solver_tolerance, 1e-10
-    ):
+    if not np.all(np.isfinite(residual)) or np.any(np.abs(residual) > residual_limits):
         raise ConvergenceError(
             request=calculation_type,
-            reason=f"Solver terminated without a validated thermodynamic root: residual={residual}.",
+            reason=f"Solver terminated without a validated thermodynamic root: residual={residual}, limits={residual_limits}.",
         )
     return props
 

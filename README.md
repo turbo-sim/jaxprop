@@ -131,6 +131,9 @@ serialization, source-EOS plotting and physical/formal metastable tables, see
 the [fluid lifecycle guide](docs/fluid_lifecycle.md). Configuration snapshots
 are inspection records; verified evaluator snapshots preserve the full model.
 
+For interface changes and reproducible example commands, see the
+[migration guide](docs/migration.md) and [example workflows](examples/README.md).
+
 <!-- research-software-metadata:start -->
 ## Development and citation
 

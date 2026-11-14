@@ -1,0 +1,50 @@
+name: Verify library and example workflows
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      full_examples:
+        description: Run the complete full-resolution standalone example suite
+        type: boolean
+        default: false
+  schedule:
+    - cron: "0 4 * * 0"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      JAX_ENABLE_X64: "true"
+      JAX_PLATFORM_NAME: cpu
+      JAXPROP_TEST_BACKENDS: HEOS
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install scientific/test dependencies
+        run: python -m pip install . pytest black pandas openpyxl
+      - name: Verify the library and scientific example checks
+        run: python -m pytest tests -c tests/pytest.ini -q --junitxml=development/example_audit/results/ci_library.xml
+      - name: Run bounded example smoke profiles
+        run: python examples/run_examples.py --suite smoke --profile quick --output-dir development/example_audit/results/ci_smoke
+      - name: Run full-resolution standalone examples
+        if: github.event_name == 'schedule' || inputs.full_examples == true
+        run: python examples/run_examples.py --suite runnable --profile full --jobs 2 --output-dir development/example_audit/results/ci_full
+      - name: Retain actual execution and failure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: example-verification
+          path: |
+            development/example_audit/results/ci_*
+            !development/example_audit/results/**/tables/**
+            !development/example_audit/results/**/*.pkl
+          retention-days: 7

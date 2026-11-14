@@ -1,3 +1,17 @@
+"""Demo grid convergence.
+
+Use --profile quick for a smaller declared study; --profile full retains the
+full scientific resolution. Outputs and table caches use explicit CLI paths.
+"""
+
+from pathlib import Path
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from examples._common import example_options
+
 import os
 import numpy as np
 import jax.numpy as jnp
@@ -5,157 +19,172 @@ import matplotlib.pyplot as plt
 import jaxprop as jxp
 
 
-jxp.set_plot_options(grid=True)
+def main(argv=None):
+    options = example_options(__file__, argv, description=__doc__)
+    jxp.set_plot_options(grid=True)
 
+    # ---------------------------
+    # Config
+    # ---------------------------
+    grad_method = "central"
+    outdir = str(options.output_dir)
+    fluid_name = "CO2"
+    backend = "HEOS"
 
-# ---------------------------
-# Config
-# ---------------------------
-grad_method = "central"
-outdir = f"results_grid_convergence_{grad_method}"
-fluid_name = "CO2"
-backend = "HEOS"
+    h_min, h_max = 600e3, 1200e3  # J/kg
+    p_min, p_max = 2e6, 20e6  # Pa
 
+    # Grid sizes to test (square grids here; adjust as you like)
+    resolutions = [8, 16, 32, 64, 128] if options.profile == "full" else [8, 16]
+    # resolutions = [8, 16, 32, 64, 128, 256]
 
-h_min, h_max = 600e3, 1200e3  # J/kg
-p_min, p_max = 2e6, 20e6  # Pa
+    # Properties to check (keys must match FluidState)
+    props_to_check = ["temperature", "density", "entropy", "speed_sound"]
 
-# Grid sizes to test (square grids here; adjust as you like)
-resolutions = [8, 16, 32, 64, 128]
-# resolutions = [8, 16, 32, 64, 128, 256]
+    # ---------------------------
+    # Validation grid
+    # ---------------------------
+    N_test = 30 if options.profile == "full" else 8
+    h_nodes_val = jnp.linspace(h_min, h_max, N_test + 1)
+    logp_nodes_val = jnp.linspace(jnp.log(p_min), jnp.log(p_max), N_test + 1)
+    h_val = 0.5 * (h_nodes_val[:-1] + h_nodes_val[1:])
+    p_val = jnp.exp(0.5 * (logp_nodes_val[:-1] + logp_nodes_val[1:]))
+    H_val, P_val = jnp.meshgrid(h_val, p_val, indexing="ij")
+    fluid_ref = jxp.Fluid(fluid_name, method="coolprop_jax", backend=backend)
+    state_ref = fluid_ref.get_state(jxp.HmassP_INPUTS, H_val, P_val)
 
-# Properties to check (keys must match FluidState)
-props_to_check = ["temperature", "density", "entropy", "speed_sound"]
+    # ---------------------------
+    # Convergence sweep
+    # ---------------------------
+    results = {prop: {"abs_error": [], "rel_error": []} for prop in props_to_check}
 
-# ---------------------------
-# Validation grid
-# ---------------------------
-N_test = 30
-h_nodes_val = jnp.linspace(h_min, h_max, N_test + 1)
-logp_nodes_val = jnp.linspace(jnp.log(p_min), jnp.log(p_max), N_test + 1)
-h_val = 0.5 * (h_nodes_val[:-1] + h_nodes_val[1:])
-p_val = jnp.exp(0.5 * (logp_nodes_val[:-1] + logp_nodes_val[1:]))
-H_val, P_val = jnp.meshgrid(h_val, p_val, indexing="ij")
-fluid_ref = jxp.Fluid(fluid_name, method="coolprop_jax", backend=backend)
-state_ref = fluid_ref.get_state(jxp.HmassP_INPUTS, H_val, P_val)
+    for N in resolutions:
 
-# ---------------------------
-# Convergence sweep
-# ---------------------------
-results = {prop: {"abs_error": [], "rel_error": []} for prop in props_to_check}
+        # Define bicubic interpolation fluid
+        print(f"\n=== Building bicubic model N_h=N_p={N} ===")
+        fluid_bicubic = jxp.Fluid(
+            name=fluid_name,
+            method="bicubic",
+            backend=backend,
+            table_options={
+                "h_min": h_min,
+                "h_max": h_max,
+                "p_min": p_min,
+                "p_max": p_max,
+                "N_h": N,
+                "N_p": N,
+                "table_dir": str(options.table_dir),
+                "gradient_method": grad_method,
+            },
+        )
 
-for N in resolutions:
+        # Interpolate on validation points
+        state_interp = fluid_bicubic.get_state(
+            jxp.HmassP_INPUTS, state_ref.h, state_ref.p
+        )
+        # state_interp = fluid_bicubic.get_state(jxp.PT_INPUTS, state_ref.p, state_ref.T)
+        # state_interp = fluid_bicubic.get_state(jxp.PT_INPUTS, state_ref.p, state_ref.T)
 
-    # Define bicubic interpolation fluid
-    print(f"\n=== Building bicubic model N_h=N_p={N} ===")
-    fluid_bicubic = jxp.Fluid(
-        name=fluid_name,
-        method="bicubic",
-        backend=backend,
-        table_options={
-            "h_min": h_min,
-            "h_max": h_max,
-            "p_min": p_min,
-            "p_max": p_max,
-            "N_h": N,
-            "N_p": N,
-            "table_dir": outdir,
-            "gradient_method": grad_method,
-        },
-    )
+        # Compute errors
+        for prop in props_to_check:
+            eps = 1e-16
+            interp = np.ravel(np.array(state_interp[prop]))
+            ref = np.ravel(np.array(state_ref[prop]))
+            diff = interp - ref
+            N_values = diff.size
+            abs_error = np.linalg.norm(diff, ord=2) / np.sqrt(N_values)
+            rel = diff / np.maximum(np.abs(ref), eps)
+            rel_error = np.linalg.norm(rel, ord=2) / np.sqrt(N_values)
+            results[prop]["abs_error"].append(abs_error)
+            results[prop]["rel_error"].append(rel_error)
 
-    # Interpolate on validation points
-    state_interp = fluid_bicubic.get_state(jxp.HmassP_INPUTS, state_ref.h, state_ref.p)
-    # state_interp = fluid_bicubic.get_state(jxp.PT_INPUTS, state_ref.p, state_ref.T)
-    # state_interp = fluid_bicubic.get_state(jxp.PT_INPUTS, state_ref.p, state_ref.T)
-
-    # Compute errors
+    # ---------------------------
+    # Print summary table
+    # ---------------------------
+    header = f"{'Property':<20}{'N':>8}{'Abs error':>15}{'Rel error':>15}"
+    print("\n" + "-" * len(header))
+    print(header)
+    print("-" * len(header))
     for prop in props_to_check:
-        eps = 1e-16
-        interp = np.ravel(np.array(state_interp[prop]))
-        ref = np.ravel(np.array(state_ref[prop]))
-        diff = interp - ref
-        N_test = diff.size
-        abs_error = np.linalg.norm(diff, ord=2) / np.sqrt(N_test)
-        rel = diff / np.maximum(np.abs(ref), eps)
-        rel_error = np.linalg.norm(rel, ord=2) / np.sqrt(N_test)
-        results[prop]["abs_error"].append(abs_error)
-        results[prop]["rel_error"].append(rel_error)
+        for N, abs_error, rel_error in zip(
+            resolutions, results[prop]["abs_error"], results[prop]["rel_error"]
+        ):
+            print(f"{prop:<20}{N:8d}{abs_error:15.3e}{rel_error:15.3e}")
+    print("-" * len(header))
 
+    # ---------------------------------------------------
+    # Visualize interpolation region + convergence plot
+    # ---------------------------------------------------
 
-# ---------------------------
-# Print summary table
-# ---------------------------
-header = f"{'Property':<20}{'N':>8}{'Abs error':>15}{'Rel error':>15}"
-print("\n" + "-" * len(header))
-print(header)
-print("-" * len(header))
-for prop in props_to_check:
-    for N, abs_error, rel_error in zip(
-        resolutions, results[prop]["abs_error"], results[prop]["rel_error"]
-    ):
-        print(f"{prop:<20}{N:8d}{abs_error:15.3e}{rel_error:15.3e}")
-print("-" * len(header))
+    # Plot thermodynamic region
+    fig, ax = jxp.plot_phase_diagram(
+        fluid_ref, x_prop="enthalpy", y_prop="pressure", x_scale="linear", y_scale="log"
+    )
+    ax.scatter(H_val, P_val, s=10, c="tab:orange")
+    h_box = [h_min, h_max, h_max, h_min, h_min]
+    p_box = [p_min, p_min, p_max, p_max, p_min]
+    ax.plot(h_box, p_box, "r-", linewidth=1.25, label="interpolation domain")
+    ax.set_xlabel("Enthalpy [J/kg]")
+    ax.set_ylabel("Pressure [Pa]")
+    ax.legend(loc="best", frameon=True)
+    fig.tight_layout(pad=1)
 
+    # Plot grid convergence trend
+    N0 = min(resolutions)
+    fig, ax = plt.subplots(figsize=(6, 4))
+    colors = plt.cm.magma(jnp.linspace(0.4, 0.8, len(props_to_check)))
 
-# ---------------------------------------------------
-# Visualize interpolation region + convergence plot
-# ---------------------------------------------------
-
-# Plot thermodynamic region
-fig, ax = fluid_ref.fluid.plot_phase_diagram(
-    x_prop="enthalpy", y_prop="pressure", x_scale="linear", y_scale="log"
-)
-ax.scatter(H_val, P_val, s=10, c="tab:orange")
-h_box = [h_min, h_max, h_max, h_min, h_min]
-p_box = [p_min, p_min, p_max, p_max, p_min]
-ax.plot(h_box, p_box, "r-", linewidth=1.25, label="interpolation domain")
-ax.set_xlabel("Enthalpy [J/kg]")
-ax.set_ylabel("Pressure [Pa]")
-ax.legend(loc="best", frameon=True)
-fig.tight_layout(pad=1)
-
-# Plot grid convergence trend
-N0 = min(resolutions)
-fig, ax = plt.subplots(figsize=(6, 4))
-colors = plt.cm.magma(jnp.linspace(0.4, 0.8, len(props_to_check)))
-
-# Reference N^-4 line
-ax.loglog(
-    [N0, max(resolutions)],
-    [1.0, (max(resolutions) / N0) ** (-4)],
-    "k--",
-    lw=1.75,
-    label=r"$\mathcal{O}(N^{-4})$",
-)
-
-for prop, color in zip(props_to_check, colors):
-    N_vals = np.array(resolutions)
-    error = np.array(results[prop]["rel_error"])
-    order = np.argsort(N_vals)
-    N_vals = N_vals[order]
-    error = error[order]
-    err0 = error[N_vals.tolist().index(N0)]  # error at coarsest grid
-    err_norm = error / err0
-
+    # Reference N^-4 line
     ax.loglog(
-        N_vals,
-        err_norm,
-        marker="o",
-        color=color,
-        linewidth=1.75,
-        label=prop.replace("_", " ").capitalize(),
+        [N0, max(resolutions)],
+        [1.0, (max(resolutions) / N0) ** (-4)],
+        "k--",
+        lw=1.75,
+        label=r"$\mathcal{O}(N^{-4})$",
     )
 
-ax.set_xlabel("Number of grid points per direction (N)")
-ax.set_ylabel("Normalized relative error")
-ax.legend(ncol=1, fontsize=10.5, loc="upper right", frameon=True)
-ax.set_xscale("log", base=2)
-ax.set_xticks(resolutions)
-ax.set_xticklabels([str(n) for n in resolutions])
-plt.tight_layout(pad=1)
-jxp.savefig_in_formats(fig, os.path.join(outdir, f"grid_convergence_{grad_method}"))
+    for prop, color in zip(props_to_check, colors):
+        N_vals = np.array(resolutions)
+        error = np.array(results[prop]["rel_error"])
+        order = np.argsort(N_vals)
+        N_vals = N_vals[order]
+        error = error[order]
+        err0 = error[N_vals.tolist().index(N0)]  # error at coarsest grid
+        err_norm = error / err0
+
+        ax.loglog(
+            N_vals,
+            err_norm,
+            marker="o",
+            color=color,
+            linewidth=1.75,
+            label=prop.replace("_", " ").capitalize(),
+        )
+
+    ax.set_xlabel("Number of grid points per direction (N)")
+    ax.set_ylabel("Normalized relative error")
+    ax.legend(ncol=1, fontsize=10.5, loc="upper right", frameon=True)
+    ax.set_xscale("log", base=2)
+    ax.set_xticks(resolutions)
+    ax.set_xticklabels([str(n) for n in resolutions])
+    plt.tight_layout(pad=1)
+    jxp.savefig_in_formats(fig, os.path.join(outdir, f"grid_convergence_{grad_method}"))
+
+    # Show figures
+    # Figure rendering and display are handled by options.finish().
+
+    options.record(
+        "settings",
+        {"fluid_name": fluid_name, "N_test": N_test, "resolutions": resolutions},
+    )
+    for prop in props_to_check:
+        errors = np.asarray(results[prop]["rel_error"])
+        assert np.all(np.isfinite(errors)) and np.all(errors >= 0)
+        assert errors[-1] < errors[0], f"The refined {prop} study did not improve"
+    options.record("convergence", results)
+    options.record("validation_shape", list(H_val.shape))
+    return options.finish()
 
 
-# Show figures
-plt.show()
+if __name__ == "__main__":
+    main()

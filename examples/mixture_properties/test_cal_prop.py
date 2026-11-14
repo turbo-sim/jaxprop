@@ -1,389 +1,181 @@
-# # import CoolProp.CoolProp as CP
-# # import jaxprop.coolprop.core_calculations as CC
-# # import jaxprop as jxp
-# # import jax
-
-
-
-
-# # if __name__  == "__main__":
-
-# #     as1 = CP.AbstractState("HEOS", "water")
-# #     as2 = CP.AbstractState("HEOS", "nitrogen")
-# #     p_mix = 5e6
-# #     h_mix = 120e3
-# #     R = 70
-# #     # props = CC.calculate_mixture_properties_hp(h_mix, p_mix, as1, as2, R)
-# #     # T_mix = props["temperature"]
-
-# #     # # print(f"T_mix:{T_mix}")
-
-# #     # # print(f"enthalpy error={h_mix-props["enthalpy"]}")
-
-# #     fluidmix  = jxp.FluidMix("water_nitrogen_mixture", mixture_ratio=R)
-
-# #     props_mix = fluidmix.get_state(jxp.HmassP_INPUTS, h_mix, p_mix)
-
-# #     # # print(props_mix)
-
-# #     # outdir = "mixture_tables"
-# #     # fluid_name = "water_nitrogen_mixture"
-# #     # h_min = 100e3  # J/kg
-# #     # h_max = 180e3  # J/kg
-# #     # p_min = 2e6    # Pa
-# #     # p_max = 20e6   # Pa
-# #     # N_h = 100
-# #     # N_p = 100
-# #     # mixture_ratio = 70
-
-# #     # fluid_bicubic = jxp.FluidBicubic(
-# #     #     fluid_name=fluid_name,
-# #     #     backend="HEOS",
-# #     #     h_min=h_min, h_max=h_max,
-# #     #     p_min=p_min, p_max=p_max,
-# #     #     N_h=N_h, N_p=N_p,
-# #     #     mixture_ratio=mixture_ratio,
-# #     #     table_dir=outdir,
-# #     #     table_name=f"{fluid_name}_table_{N_h}_{N_p}_{mixture_ratio}"
-# #     # )
-
-# #     # props_bicubic_mix_hp = fluid_bicubic.get_state(jxp.HmassP_INPUTS, h_mix, p_mix)
-# #     # props_bicubic_mix_pT = fluid_bicubic.get_state(jxp.PT_INPUTS, p_mix, T_mix)
-# #     # # print(props_bicubic_mix)
-
-# #     # for k, v in props.items():
-# #     #     diff = props_bicubic_mix_hp[k] - props_bicubic_mix_pT[k]
-# #     #     print(f"{k}: {diff:0.20e}")
-
-# #     # print(f"mix r:{props["mixture_ratio"]}")
-
-# #     # print(CP.PT_INPUTS)
-
-# #     def finite_diff_derivative(func, x):
-# #         dx = 1e-8 * (abs(x) + 1)
-# #         return (func(x + dx) - func(x - dx)) / (2 * dx)
-    
-
-# #     @staticmethod
-# #     def gradients_forward(fluid, h, p, eps_h, eps_p):
-# #         f0 = fluid.get_state(jxp.HmassP_INPUTS, h, p)
-# #         fh = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p)
-# #         fp = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p)
-# #         fhp = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p + eps_p)
-
-# #         grads = {}
-# #         for k in jxp.PROPERTIES_CANONICAL:
-# #             val = f0[k]
-# #             grad_h = (fh[k] - f0[k]) / eps_h
-# #             grad_p = (fp[k] - f0[k]) / eps_p
-# #             grad_hp = (fhp[k] - fh[k] - fp[k] + f0[k]) / (eps_h * eps_p)
-# #             grads[k] = (val, grad_h, grad_p, grad_hp)
-# #         return grads
-
-# #     def get_rho_from_hp(h, p):
-# #         props = CC.calculate_mixture_properties_hp(h, p, as1, as2, R)
-# #         return props["density"]
-
-# #     # Derivatives
-# #     drho_dh_p = finite_diff_derivative(lambda h: get_rho_from_hp(h, p_mix), h_mix)
-# #     drho_dp_h = finite_diff_derivative(lambda p: get_rho_from_hp(h_mix, p), p_mix)
-
-# #     # @jax.custom_vjp
-# #     # def get_rho_from_hp(h, p, AS1, AS2, R):
-# #     #     props = CC.calculate_mixture_properties_hp(float(h), float(p), AS1, AS2, R)
-# #     #     return props["density"]
-
-# #     # # Forward and backward rules
-# #     # def get_rho_from_hp_fwd(h, p, AS1, AS2, R):
-# #     #     rho = get_rho_from_hp(h, p, AS1, AS2, R)
-# #     #     props = CC.calculate_mixture_properties_hp(float(h), float(p), AS1, AS2, R)
-# #     #     G = props["gruneisen_parameter"]
-# #     #     c = props["speed_of_sound"]
-# #     #     rho = props["density"]
-# #     #     return rho, (rho, G, c)
-
-# #     # def get_rho_from_hp_bwd(res, g):
-# #     #     rho, G, c = res
-# #     #     # Analytical partials
-# #     #     drho_dh_p = -rho * G / c**2
-# #     #     drho_dp_h = (1 + G) / c**2
-# #     #     # Chain rule
-# #     #     return (g * drho_dh_p, g * drho_dp_h, None, None, None)
-
-# #     # get_rho_from_hp.defvjp(get_rho_from_hp_fwd, get_rho_from_hp_bwd)
-
-# #     # drho_dh = jax.grad(lambda h: get_rho_from_hp(h, p_mix, as1, as2, R))(h_mix)
-# #     # drho_dp = jax.grad(lambda p: get_rho_from_hp(h_mix, p, AS1, AS2, R))(p_mix)
-# #     props = CC.calculate_mixture_properties_hp(h_mix, p_mix, as1, as2, R)
-# #     rho = props["density"]
-# #     c = props["speed_of_sound"]
-# #     G = props["gruneisen"]
-
-# #     drho_dh_p_model = -rho * G / c**2
-# #     drho_dp_h_model = (1 + G) / c**2
-
-# #     print("Comparison:")
-# #     print(f"(∂ρ/∂h)_p  model = {drho_dh_p_model:.5e},  jax = {drho_dh_p:.5e}")
-# #     print(f"(∂ρ/∂p)_h  model = {drho_dp_h_model:.5e},  jax = {drho_dp_h:.5e}")
-# #     d1 = ((drho_dh_p_model - drho_dh_p)/ drho_dh_p_model)*100
-# #     d2 = ((drho_dp_h_model - drho_dp_h) / drho_dp_h_model)*100
-# #     print("Difference:")
-# #     print(f"(∂ρ/∂h)_p   {d1:.8e}")
-# #     print(f"(∂ρ/∂p)_h   {d2:.5e}")
-
-
-# import CoolProp.CoolProp as CP
-# import jaxprop.coolprop.core_calculations as CC
-# import jaxprop as jxp
-
-
-# # -------------------------------------------------
-# # Forward finite-difference gradient for fluidmix
-# # -------------------------------------------------
-# def gradients_forward(fluid, h, p, eps_h, eps_p):
-#     f0  = fluid.get_state(jxp.HmassP_INPUTS, h, p)
-#     fh  = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p)
-#     fp  = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p)
-
-#     grads = {}
-#     for k in jxp.PROPERTIES_CANONICAL:
-#         grad_h = (fh[k] - f0[k]) / eps_h
-#         grad_p = (fp[k] - f0[k]) / eps_p
-#         grads[k] = dict(value=f0[k], dh=grad_h, dp=grad_p)
-
-#     return grads
-
-
-# # -------------------------------------------------
-# # Main
-# # -------------------------------------------------
-# if __name__ == "__main__":
-
-#     # CoolProp pure fluid states
-#     as1 = CP.AbstractState("HEOS", "water")
-#     as2 = CP.AbstractState("HEOS", "nitrogen")
-
-#     # Mixture state values
-#     p_mix = 20e5    # Pa
-#     h_mix = 100e3   # J/kg
-#     R     = 70      # mixture ratio (water/nitrogen)
-
-#     # JAXProp mixture fluid
-#     fluidmix = jxp.FluidMix("water_nitrogen_mixture", mixture_ratio=R)
-
-#     # Compute forward gradients 
-#     eps_h = 1e-5 * max(abs(h_mix), 1.0)
-#     eps_p = 1e-5 * max(abs(p_mix), 1.0)    # Pa
-#     grads = gradients_forward(fluidmix, h_mix, p_mix, eps_h, eps_p)
-
-#     # Extract forward gradients for density
-#     drho_dh_fwd = grads["density"]["dh"]
-#     drho_dp_fwd = grads["density"]["dp"]
-
-
-
-#     # Analytical model gradients using Grüneisen parameter
-#     props = CC.calculate_mixture_properties_hp(h_mix, p_mix, as1, as2, R)
-#     print(props)
-#     rho = props["density"]
-#     c   = props["speed_of_sound"]
-#     G   = props["gruneisen"]
-#     kappaT = props["isobaric_expansion_coefficient"]
-#     cp = props["isobaric_heat_capacity"]
-#     kappaP = props["isothermal_compressibility"]
-#     T_mix = props["temperature"]
-
-#     print(f"G={G}")
-
-#     drho_dh_model = - rho * kappaT / cp
-#     drho_dp_model = rho * kappaP + (kappaT / cp) * (1 - kappaT * T_mix) 
-
-#     drho_dh_fwd = -rho * G / c**2
-#     drho_dp_fwd = (1 + G) / c**2
-
-#     # -------------------------
-#     # Comparison
-#     # -------------------------
-#     print("\n=== GRADIENT COMPARISON (density) ===")
-#     print(f"Forward (gradients_forward):  dρ/dh = {drho_dh_fwd:.6e}")
-#     # print(f"drho_dh definition:{drho_dh:.6e}")
-#     print(f"Forward (gradients_forward):  dρ/dp = {drho_dp_fwd:.6e}")
-#     # print(f"drho_dp definition:{drho_dp:.6e}\n")
-
-
-#     print(f"Model (Grüneisen):            dρ/dh = {drho_dh_model:.6e}")
-#     print(f"Model (Grüneisen):            dρ/dp = {drho_dp_model:.6e}\n")
-
-#     print("Relative error:")
-#     print(f"dρ/dh: {(drho_dh_fwd - drho_dh_model) / drho_dh_model * 100:.6e} %")
-#     print(f"dρ/dp: {(drho_dp_fwd - drho_dp_model) / drho_dp_model * 100:.6e} %")
-
-# -------------------------------------------------------------------------------------------------------------------
-
-import CoolProp.CoolProp as CP
-import jax
-import jax.numpy as jnp
-import jaxprop as jxp
-import jaxprop.coolprop.core_calculations as CC
-
-
-# -------------------------------------------------
-# JAX-based gradient for density(h, p)
-# -------------------------------------------------
-def density_from_hp(fluid, h, p):
-    """Wrap fluid.get_state so JAX can differentiate it."""
-    state = fluid.get_state(jxp.HmassP_INPUTS, h, p)
-    return state["density"]
-
-
-def gradients_jax(fluid, h, p):
-    """Compute dρ/dh and dρ/dp using JAX autodiff."""
-    # Gradient of density with respect to h and p
-    grad_fn = jax.grad(lambda hp: density_from_hp(fluid, hp[0], hp[1]))
-
-    d_rho_dh, d_rho_dp = grad_fn(jnp.array([h, p]))
-    return float(d_rho_dh), float(d_rho_dp)
-
-
-# ----------------------------------------------------
-# Wrap internal energy as a function of (rho, p)
-# ----------------------------------------------------
-def u_from_rho_p(fluid, rho, p):
-    state = fluid.get_state(jxp.DmassP_INPUTS, rho, p)
-    return state["internal_energy"]
-
-# ----------------------------------------------------
-# Compute du/dp at constant rho
-# ----------------------------------------------------
-def du_dp_const_rho(fluid, rho0, p0):
-    # gradient of u wrt (rho, p)
-    grad_fn = jax.grad(lambda rp: u_from_rho_p(fluid, rp[0], rp[1]))
-    
-    du_drho, du_dp = grad_fn(jnp.array([rho0, p0]))
-    
-    # we return only du/dp at constant rho
-    return float(du_dp)
-
-def speed_of_sound_from_definition(fluid, rho0, s0):
-    # Wrap pressure as a function of (rho, s)
-    def p_from_rho_s(rho, s):
-        state = fluid.get_state(jxp.DmassSmass_INPUTS, rho, s)
-        return state["pressure"]
-
-    # derivative dp/drho at constant s
-    dp_drho = jax.grad(lambda rs: p_from_rho_s(rs[0], rs[1]))(jnp.array([rho0, s0]))[0]
-
-    # speed of sound
-    c = jnp.sqrt(dp_drho)
-    return float(c)
-
-def isentropic_compressibility_from_definition(fluid, rho0, p0, s0):
+"""Signed derivative checks for a native tabulated water/nitrogen parcel model.
+
+The original study used one experimental aggregate mixture table and called
+unsupported density-based inverses. This version uses the public fixed-ratio
+binary evaluator with two ordinary bicubic component objects, plus an independent
+configured source/callback reference. The physical point is unchanged:
+R=39.1, h=100 kJ/kg, p=200 kPa. Full resolution is 100-by-100 per component.
+
+Both components cover the same 20 kPa to 3 MPa pressure range. Their enthalpy
+rectangles are selected inside 278.15-318.15 K: Water is wholly liquid below
+its 20 kPa saturation temperature, and Nitrogen is above its critical temperature.
+This is an explicit interpolation-representation/domain change, rather than a
+claim that old aggregate coefficients are preserved.
+
+HP derivatives also supply du/dp at fixed rho by a Jacobian coordinate change;
+PS derivatives supply acoustic speed and isentropic compressibility. No extra
+input-pair capability or application-side fluid adapter is introduced.
+"""
+
+from pathlib import Path
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from examples._common import example_options
+
+
+def component_table(name, table_dir, points):
+    """Prepare an ordinary, phase-safe table covering the declared point.
+
+    Use the maximum lower-bound and minimum upper-bound source enthalpy across
+    pressure, so every rectangular enthalpy column stays inside the temperature
+    band. Generation independently checks source domain and phase-envelope cells.
     """
-    Compute isentropic compressibility beta_S = -1/V * (dV/dp)_S
-    Inputs:
-        fluid : object with get_state method
-        V0    : reference volume
-        p0    : reference pressure
-        s0    : reference entropy
-    """
-    # Wrap volume as a function of (p, s)
-    def V_from_p_s(p, s):
-        state = fluid.get_state(jxp.PSmass_INPUTS, p, s)  # assuming rho = 1/V
-        return 1 / state["density"]  # volume = 1/rho
+    import numpy as np
+    import jaxprop as jp
 
-    # derivative dV/dp at constant s
-    dV_dp = jax.grad(lambda ps: V_from_p_s(ps[0], ps[1]))(jnp.array([p0, s0]))[0]
+    source = jp.Fluid(name)
+    pressures = np.geomspace(2e4, 3e6, max(2 * points - 1, 65))
+    lower = source.get_state(jp.PT_INPUTS, pressures, 278.15)
+    upper = source.get_state(jp.PT_INPUTS, pressures, 318.15)
+    h_min, h_max = float(np.max(lower.h)), float(np.min(upper.h))
+    if name.lower() == "water":
+        bubble = source.get_state(jp.PQ_INPUTS, 2e4, 0.0)
+        assert 318.15 < bubble.T
+    else:
+        assert 278.15 > source.references["critical_point"].properties["temperature"]
+    model = jp.Fluid(
+        name,
+        method="bicubic",
+        table_options=dict(
+            h_min=h_min,
+            h_max=h_max,
+            p_min=2e4,
+            p_max=3e6,
+            N_h=points,
+            N_p=points,
+            N_p_sat=4,
+            coarse_step=1,
+            table_dir=str(table_dir),
+        ),
+    )
+    temperatures = np.asarray(model.table["temperature"]["value"])
+    assert np.min(temperatures) >= 278.15 - 1e-6
+    assert np.max(temperatures) <= 318.15 + 1e-6
+    return model
 
-    # isentropic compressibility
-    beta_S = -dV_dp * rho0
-    return float(beta_S)
+
+def hp_response_jacobian(fluid, enthalpy, pressure):
+    """Return signed partials of [rho,u] with respect to [h,p]."""
+    import jax
+    import jax.numpy as jnp
+    import jaxprop as jp
+
+    def response(hp):
+        state = fluid.get_state(jp.HmassP_INPUTS, hp[0], hp[1], errors="mask")
+        return jnp.stack(
+            (state.raw_property("density"), state.raw_property("internal_energy"))
+        )
+
+    return jax.jacfwd(response)(jnp.asarray([enthalpy, pressure]))
 
 
-# -------------------------------------------------
-# Main
-# -------------------------------------------------
-if __name__ == "__main__":
+def response_checks(fluid, enthalpy, pressure, *, rtol):
+    """Compare independent response identities with actual numerical derivatives."""
+    import numpy as np
+    import jaxprop as jp
+    from examples.two_component._model import check_state
+    from examples.two_component.water_nitrogen_speed_sound import isentropic_sound_speed
 
-    outdir = "mixture_tables"
-    fluid_name = "water_nitrogen_mixture"
-    h_min = 11761.455626177372  # J/kg
-    h_max = 144060.733331034  # J/kg
-    p_min = 2e4    # Pa
-    p_max = 3e6   # Pa
-    N_h = 100
-    N_p = 100
-    mixture_ratio = 39.1
-
-    fluid_bicubic = jxp.FluidBicubic(
-        fluid_name=fluid_name,
-        backend="HEOS",
-        h_min=h_min, h_max=h_max,
-        p_min=p_min, p_max=p_max,
-        N_h=N_h, N_p=N_p,
-        mixture_ratio=mixture_ratio,
-        table_dir=outdir,
-        table_name=f"{fluid_name}_table_{N_h}_{N_p}_R{mixture_ratio}"
+    state = fluid.get_state(jp.HmassP_INPUTS, enthalpy, pressure)
+    # Component u/rho fields are independently interpolated, so their caloric
+    # identity is checked at the declared resolution budget rather than EOS
+    # roundoff. Direct-source examples retain the strict default check.
+    check_state(state, identity_rtol=rtol)
+    jacobian = np.asarray(hp_response_jacobian(fluid, enthalpy, pressure))
+    assert np.all(np.isfinite(jacobian))
+    expected_density = np.array(
+        [
+            -float(state.rho * state.isobaric_expansion_coefficient / state.cp),
+            float(
+                state.rho * state.isothermal_compressibility
+                - state.rho * state.isobaric_expansion_coefficient * state.joule_thomson
+            ),
+        ]
+    )
+    np.testing.assert_allclose(jacobian[0], expected_density, rtol=rtol, atol=1e-12)
+    # d rho=0 => dh/dp=-rho_p/rho_h, with u=u(h,p).
+    du_dp = jacobian[1, 1] - jacobian[1, 0] * jacobian[0, 1] / jacobian[0, 0]
+    np.testing.assert_allclose(du_dp, 1 / float(state.rho * state.gruneisen), rtol=rtol)
+    acoustic = float(isentropic_sound_speed(fluid, pressure, state.s))
+    np.testing.assert_allclose(acoustic, state.speed_of_sound, rtol=rtol)
+    kappa_s = 1 / (float(state.rho) * acoustic**2)
+    np.testing.assert_allclose(kappa_s, state.isentropic_compressibility, rtol=2 * rtol)
+    return dict(
+        density_hp_partials=jacobian[0].tolist(),
+        density_hp_identity_partials=expected_density.tolist(),
+        du_dp_at_fixed_density=float(du_dp),
+        acoustic_speed_from_PS=float(acoustic),
+        relative_acoustic_error=float(abs(acoustic / float(state.speed_of_sound) - 1)),
     )
 
-    # CoolProp pure fluid states
-    
 
-    # Mixture state values
-    p_mix = 2e5    # Pa
-    h_mix = 100e3   # J/kg
-    R     = mixture_ratio 
+def main(argv=None):
+    options = example_options(__file__, argv, description=__doc__)
+    import numpy as np
+    import jaxprop as jp
+    from examples.two_component._model import mixture
 
-    propers = fluid_bicubic.get_state(jxp.HmassP_INPUTS, h_mix, p_mix)
-    print(f"Input CP:{CP.HmassP_INPUTS}")
-    print(f"Input jxp:{jxp.HmassP_INPUTS}\n")
+    points = 100 if options.profile == "full" else 12
+    components = tuple(
+        component_table(name, options.table_dir, points)
+        for name in ("Water", "Nitrogen")
+    )
+    native = mixture(components, 39.1)
+    callbacks = tuple(
+        jp.Fluid(name, method="coolprop_jax") for name in ("Water", "Nitrogen")
+    )
+    reference = mixture(callbacks, 39.1)
+    h, p = 100e3, 2e5
+    tolerance = 2e-5 if options.profile == "full" else 2e-3
+    native_checks = response_checks(native, h, p, rtol=tolerance)
+    source_checks = response_checks(reference, h, p, rtol=2e-5)
+    actual, expected = native.get_state(jp.HmassP_INPUTS, h, p), reference.get_state(
+        jp.HmassP_INPUTS, h, p
+    )
+    comparisons = 0
+    for name in sorted(actual.available_properties & expected.available_properties):
+        a, b = actual.raw_property(name), expected.raw_property(name)
+        np.testing.assert_allclose(
+            a, b, rtol=tolerance, atol=1e-6, equal_nan=True, err_msg=name
+        )
+        comparisons += 1
+    print("Native HP density partials:", native_checks["density_hp_partials"])
+    print("Source HP density partials:", source_checks["density_hp_partials"])
+    print("Native PS acoustic speed:", native_checks["acoustic_speed_from_PS"])
+    options.record(
+        "settings",
+        dict(
+            h=h,
+            p=p,
+            mass_ratio=39.1,
+            component_names=["Water", "Nitrogen"],
+            component_grid=[points, points],
+            pressure_bounds=[2e4, 3e6],
+            temperature_band=[278.15, 318.15],
+            relative_comparison_budget=tolerance,
+        ),
+    )
+    options.record(
+        "representation_change",
+        "Two ordinary component tables and the public fixed-composition binary model replace the experimental aggregate binary table",
+    )
+    options.record("native_checks", native_checks)
+    options.record("source_checks", source_checks)
+    options.record("source_state_field_comparisons", comparisons)
+    options.finish()
 
 
-
-    # -------------------------
-    # Analytical model gradients
-    # -------------------------
-    fluid = jxp.FluidMix(fluid_name, mixture_ratio=mixture_ratio)
-    props = fluid.get_state(jxp.HmassP_INPUTS, h_mix, p_mix)
-    rho = props["density"]
-    c   = props["speed_of_sound"]
-    s = props["entropy"]
-    betaS = props["isentropic_compressibility"]
-    # G   = props["gruneisen"]
-    # kappaT = props["isobaric"]
-
-    c_def = speed_of_sound_from_definition(fluid_bicubic, rho, s)
-
-    sconst_compr = isentropic_compressibility_from_definition(fluid_bicubic, rho, p_mix, s)
-
-    print(f"Def SoS      :{c_def}")
-    print(f"Computed SoS :{c}")
-    print(f"Delta        :{(c-c_def)/c_def*100}%\n")
-
-    print(f"Def betaS       :{sconst_compr}")
-    print(f"Computed betaS  :{betaS}")
-    print(f"Delta betaS     :{(betaS-sconst_compr)/sconst_compr*100}")
-    
-
-    # drho_dh_model = props["drho_dh"]
-    # drho_dp_model = props["drho_dp"]
-
-    # # -------------------------
-    # # Compute JAX gradients
-    # # -------------------------
-    # drho_dh_jax, drho_dp_jax = gradients_jax(fluid, h_mix, p_mix)
-
-    # # -------------------------
-    # # Comparison
-    # # -------------------------
-    # print("\n=== GRADIENT COMPARISON (density) ===")
-    # print(f"JAX autodiff:                 dρ/dh = {drho_dh_jax:.6e}")
-    # print(f"JAX autodiff:                 dρ/dp = {drho_dp_jax:.6e}\n")
-
-    # print(f"Model (Grüneisen):            dρ/dh = {drho_dh_model:.6e}")
-    # print(f"Model (Grüneisen):            dρ/dp = {drho_dp_model:.6e}\n")
-
-    # # print(f"Drho_Dh:{rho * }")
-
-    # print("Relative error:")
-    # print(f"dρ/dh: {abs(drho_dh_jax - drho_dh_model) / abs(drho_dh_model) * 100:.10f} %")
-    # print(f"dρ/dp: {abs(drho_dp_jax - drho_dp_model) / abs(drho_dp_model) * 100:.10f} %")
+if __name__ == "__main__":
+    main()
