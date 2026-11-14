@@ -223,11 +223,11 @@ def test_factory_does_not_disguise_bicubic_calculation_or_cache_io_failures(
         ((0.2, 0.2), "mass_fractions"),
         ((-0.1, 1.1), "mass_fractions"),
         ((np.nan, 1.0), "mass_fractions"),
-        ((0.0, 1.0), "model"),
-        ((1.0, 0.0), "model"),
+        ((0.0, 1.0), "components"),
+        ((1.0, 0.0), "components"),
     ],
 )
-def test_binary_requests_are_validated_without_faking_the_component_model(
+def test_binary_requests_reject_invalid_fractions_and_unconfigured_components(
     fractions, expected_request
 ):
     component = SimpleNamespace(get_state=lambda *args: None)
@@ -242,8 +242,7 @@ def test_binary_requests_are_validated_without_faking_the_component_model(
             },
         )
     assert captured.value.request == expected_request
-    if expected_request == "model":
-        assert "consolidation" in captured.value.reason
+    assert captured.value.reason
 
 
 def test_configuration_is_a_recursive_snapshot_and_preserves_explicit_identity():

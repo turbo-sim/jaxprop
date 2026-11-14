@@ -1,14 +1,18 @@
 import difflib
+import hashlib
+import json
 import numpy as np
+import jax
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
 import CoolProp.CoolProp as CP
 import pysolver_view as psv
 import math
+from scipy.optimize import root_scalar
 from threading import RLock
 from numbers import Integral
 
-from functools import wraps
+from functools import lru_cache
 
 from . import core_calculations as core
 from ..errors import (
@@ -20,7 +24,10 @@ from ..errors import (
     UnsupportedOperationError,
     JaxPropError,
     UnsupportedExecutionModeError,
+    UnsupportedOptionError,
+    UnsupportedPropertyError,
 )
+from ..property_schema import ALIAS_TO_CANONICAL
 from ..configuration import FluidCapabilities, FluidDomain, build_configuration
 from ..source_references import (
     SourceReferencesMixin,
@@ -70,88 +77,31 @@ _SOURCE_CORE_FIELDS = (
 # source boundary. This is not an EOS accuracy claim or a clipping/extrapolation
 # option. Reusing a recovered boundary coordinate must use the same policy.
 _SOURCE_BOUNDARY_RTOL = 1e-9
-
-# def _handle_computation_exceptions(func):
-#     @wraps(func)
-#     def wrapper(self, *args, **kwargs):
-#         try:
-#             # Perform the computation
-#             result = func(self, *args, **kwargs)
-#             self.converged_flag = True
-#             return result
-#         except Exception as e:
-#             self.converged_flag = False
-#             if self.exceptions:
-#                 input_type = args[0]
-#                 value_1 = args[1]
-#                 value_2 = args[2]
-#                 label = INPUT_TYPE_MAP.get(
-#                     input_type, f"Unknown input type ({input_type})"
-#                 )
-
-#                 msg = (
-#                     f"Thermodynamic property calculations failed:\n"
-#                     f"  Input type : {label}\n"
-#                     f"  Property 1 : {value_1}\n"
-#                     f"  Property 2 : {value_2}\n"
-#                     f"  Error      : {str(e)}"
-#                 )
-#                 raise RuntimeError(msg)
-#             return None
-
-#     return wrapper
+_EAGER_TRACE_STATE = jax.core.get_opaque_trace_state()
 
 
-def _handle_computation_exceptions(func):
-    # Fast parameter-name mapping (no inspect call inside the hot loop)
-    arg_names = func.__code__.co_varnames[1 : func.__code__.co_argcount]  # skip self
+@lru_cache(maxsize=128)
+def _blended_reference_id(
+    reference_id, phase_change, variable, onset, width, generalize_quality
+):
+    """Identify the constitutive interpolation independently of its source EOS.
 
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        # Merge positional + keyword into one dict
-        call = {name: val for name, val in zip(arg_names, args)}
-        call.update(kwargs)
-
-        try:
-            result = func(self, *args, **kwargs)
-            self.converged_flag = True
-            return result
-        except JaxPropError:
-            self.converged_flag = False
-            raise
-        except Exception as e:
-            self.converged_flag = False
-            if not self.exceptions:
-                return None
-
-            input_type = call.get("input_type", None)
-            prop_1 = call.get("prop_1", None)
-            prop_2 = call.get("prop_2", None)
-            prop_1_value = call.get("prop_1_value", call.get("prop_1", None))
-            prop_2_value = call.get("prop_2_value", call.get("prop_2", None))
-
-            if input_type is not None:
-                label = INPUT_TYPE_MAP.get(
-                    input_type, f"Unknown input type ({input_type})"
-                )
-                msg = (
-                    "Thermodynamic property calculations failed:\n"
-                    f"  Input type : {label}\n"
-                    f"  Property 1 : {prop_1_value}\n"
-                    f"  Property 2 : {prop_2_value}\n"
-                    f"  Error      : {type(e).__name__}: {e}"
-                )
-            else:
-                msg = (
-                    "Thermodynamic property calculations failed:\n"
-                    f"  Property 1 : {prop_1} = {prop_1_value}\n"
-                    f"  Property 2 : {prop_2} = {prop_2_value}\n"
-                    f"  Error      : {type(e).__name__}: {e}"
-                )
-
-            raise RuntimeError(msg) from e
-
-    return wrapper
+    The bounded cache holds immutable settings only, never a source handle or a
+    numerical state. A blended state must not be combined with unmodified EOS
+    states under an identity that implies identical constitutive equations.
+    """
+    recipe = (
+        "equilibrium-metastable-blend-v1",
+        reference_id,
+        core.PHASE_CHANGE_ALIASES[phase_change],
+        variable,
+        float(onset),
+        float(width),
+        bool(generalize_quality),
+    )
+    return hashlib.sha256(
+        json.dumps(recipe, separators=(",", ":")).encode()
+    ).hexdigest()
 
 
 class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
@@ -172,9 +122,11 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
         Legacy constructor option. Only True is accepted; select per-call
         ``errors="mask"`` for numerical failures without exceptions.
     converged_flag : bool
-        Flag indicating whether properties calculations converged.
-    properties : dict
-        Dictionary of various fluid properties. Accessible directly as attributes (e.g., `fluid.p` for pressure).
+        Legacy last-call diagnostic. Use the returned state's status for the
+        result of an individual call, especially with concurrent consumers.
+    references : SourceReferences
+        Immutable source reference records, independent of mutable evaluation
+        handles. Numerical properties belong to the returned FluidState.
     critical_point : FluidState
         Properties at the fluid's critical point.
     triple_point_liquid : FluidState
@@ -318,7 +270,7 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
             input_pairs=SOURCE_PAIRS,
             properties=SOURCE_PROPERTIES | DIAGNOSTIC_PROPERTIES,
             options={"generalize_quality", "supersaturation"},
-            phase_operations={"saturation"},
+            phase_operations={"saturation", "equilibrium", "metastable", "blending"},
             error_modes={"raise", "mask"},
             domain=FluidDomain(
                 description=domain_description,
@@ -626,7 +578,209 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
             )
         return self.get_state(input_type, prop_1, prop_2, errors=errors)
 
-    @_handle_computation_exceptions
+    def _get_phase_state(
+        self,
+        calculation_type,
+        prop_1,
+        prop_1_value,
+        prop_2,
+        prop_2_value,
+        *,
+        errors="raise",
+        **settings,
+    ):
+        """Run a scalar legacy phase calculation on the configured source basis.
+
+        These scientific phase solvers are eager operations, separate from the
+        ordinary vectorized/JAX state interface. One reentrant lock covers the
+        complete solve, its scratch calculations and final state assembly.
+        Numerical mask mode preserves the enabled schema; malformed requests
+        and unsupported settings still raise their informative typed errors.
+        """
+        context = dict(fluid_name=self.name, provider=self.provider, model=self.model)
+        request = calculation_type
+        if not isinstance(errors, str) or errors not in ("raise", "mask", "clip"):
+            raise UnsupportedOptionError(
+                request="errors",
+                reason="Choose 'raise' or 'mask' for source phase calculations.",
+                supported=("raise", "mask"),
+                **context,
+            )
+        if errors == "clip":
+            raise UnsupportedExecutionModeError(
+                request="errors=clip",
+                reason="A unique physical projection is not defined for source phase solves.",
+                supported=("raise", "mask"),
+                **context,
+            )
+        if jax.core.get_opaque_trace_state() != _EAGER_TRACE_STATE:
+            raise UnsupportedExecutionModeError(
+                request=request,
+                reason="Legacy phase solvers require eager scalar execution.",
+                supported=("eager",),
+                **context,
+            )
+        for name, value in (
+            ("prop_1_value", prop_1_value),
+            ("prop_2_value", prop_2_value),
+        ):
+            try:
+                array = np.asarray(value)
+            except (TypeError, ValueError) as cause:
+                raise InvalidStateError(
+                    request=name,
+                    reason="Phase solver inputs must be real scalars.",
+                    **context,
+                ) from cause
+            if array.ndim != 0 or array.dtype.kind not in "fiu":
+                raise InvalidStateError(
+                    request=name,
+                    reason="Phase solvers accept real scalar inputs; use get_state for broadcast ordinary states.",
+                    **context,
+                )
+        for option in ("supersaturation", "generalize_quality", "print_convergence"):
+            if not isinstance(settings[option], (bool, np.bool_)):
+                raise UnsupportedOptionError(
+                    request=option,
+                    reason="This option must be a static boolean.",
+                    supported=(False, True),
+                    **context,
+                )
+        available = enabled_properties(
+            self, supersaturation=settings["supersaturation"]
+        )
+        for name in (prop_1, prop_2):
+            canonical = ALIAS_TO_CANONICAL.get(name) if isinstance(name, str) else None
+            if canonical not in available:
+                raise UnsupportedPropertyError(
+                    request=name,
+                    reason="This source phase solver does not enable the requested property.",
+                    supported=tuple(sorted(available)),
+                    **context,
+                )
+
+        def state(data, *, blended=False, status=StatusCode.SUCCESS):
+            model, identity = self.model, self.reference_id
+            if blended:
+                model = "blended_real_fluid"
+                identity = _blended_reference_id(
+                    self.reference_id,
+                    settings["phase_change"],
+                    ALIAS_TO_CANONICAL[settings["blending_variable"]],
+                    float(settings["blending_onset"]),
+                    float(settings["blending_width"]),
+                    bool(settings["generalize_quality"]),
+                )
+            return FluidState(
+                fluid_name=self.name,
+                identifier=self.identifier,
+                provider=self.provider,
+                model=model,
+                reference_id=identity,
+                available_properties=available,
+                error_policy=errors,
+                status=np.asarray(status, dtype=np.int32),
+                **{name: data.get(name, np.nan) for name in available},
+            )
+
+        def failed(code):
+            if calculation_type == "blending":
+                return (
+                    state({}, blended=True, status=code),
+                    state({}, status=code),
+                    state({}, status=code),
+                )
+            return state({}, status=code)
+
+        with self._state_lock:
+            self.converged_flag = False
+            try:
+                result = core.compute_properties(
+                    self._AS,
+                    prop_1=prop_1,
+                    prop_1_value=prop_1_value,
+                    prop_2=prop_2,
+                    prop_2_value=prop_2_value,
+                    calculation_type=calculation_type,
+                    source_context=self._source_context,
+                    **settings,
+                )
+                rows = result if calculation_type == "blending" else (result,)
+                if any(
+                    not np.isfinite(data[name])
+                    for data in rows
+                    for name in _SOURCE_CORE_FIELDS
+                ):
+                    raise CalculationError(
+                        request=request,
+                        reason="The phase calculation returned nonfinite core properties.",
+                        index=(),
+                        **context,
+                    )
+                output = (
+                    tuple(
+                        state(data, blended=index == 0)
+                        for index, data in enumerate(rows)
+                    )
+                    if calculation_type == "blending"
+                    else state(result)
+                )
+                self.converged_flag = True
+                return output
+            except (
+                OutOfDomainError,
+                InvalidStateError,
+                ConvergenceError,
+                CalculationError,
+            ) as error:
+                if errors == "raise":
+                    if error.fluid_name is None or error.index is None:
+                        raise type(error)(
+                            request=error.request,
+                            reason=error.reason,
+                            supported=error.supported,
+                            index=() if error.index is None else error.index,
+                            indices=error.indices,
+                            **context,
+                        ) from error
+                    raise
+                code = (
+                    StatusCode.OUT_OF_DOMAIN
+                    if isinstance(error, OutOfDomainError)
+                    else (
+                        StatusCode.INVALID_INPUT
+                        if isinstance(error, InvalidStateError)
+                        else (
+                            StatusCode.NONCONVERGENCE
+                            if isinstance(error, ConvergenceError)
+                            else StatusCode.PROVIDER_FAILURE
+                        )
+                    )
+                )
+                return failed(code)
+            except JaxPropError as error:
+                if error.fluid_name is None:
+                    raise type(error)(
+                        request=error.request,
+                        reason=error.reason,
+                        supported=error.supported,
+                        index=error.index,
+                        indices=error.indices,
+                        **context,
+                    ) from error
+                raise
+            except (
+                ValueError,
+                RuntimeError,
+                OverflowError,
+                FloatingPointError,
+            ) as cause:
+                if errors == "mask":
+                    return failed(StatusCode.PROVIDER_FAILURE)
+                raise CalculationError(
+                    request=request, reason=str(cause), index=(), **context
+                ) from cause
+
     def get_state_equilibrium(
         self,
         prop_1,
@@ -640,9 +794,16 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
         solver_tolerance=1e-6,
         solver_max_iterations=100,
         print_convergence=False,
+        *,
+        errors="raise",
     ):
         r"""
         Calculate fluid properties according to thermodynamic equilibrium.
+
+        This is an eager scalar phase solver. Density/temperature pairs use a
+        direct source call; other pairs need a density/temperature guess.
+        ``errors="mask"`` returns a failed scalar state for numerical failures.
+        Static settings remain validated and source clipping is unsupported.
 
         .. note::
 
@@ -650,14 +811,12 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
             documentation of the function :ref:`compute_properties <compute_properties>`.
 
         """
-        # TODO: add vectorization
-        props = core.compute_properties(
-            self._AS,
+        return self._get_phase_state(
+            "equilibrium",
             prop_1=prop_1,
             prop_1_value=prop_1_value,
             prop_2=prop_2,
             prop_2_value=prop_2_value,
-            calculation_type="equilibrium",
             rhoT_guess_equilibrium=rhoT_guess,
             supersaturation=supersaturation,
             generalize_quality=generalize_quality,
@@ -665,18 +824,9 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
             solver_tolerance=solver_tolerance,
             solver_max_iterations=solver_max_iterations,
             print_convergence=print_convergence,
-        )
-        return FluidState(
-            fluid_name=self.name,
-            identifier=self.identifier,
-            provider=self.provider,
-            model=self.model,
-            reference_id=self.reference_id,
-            available_properties=frozenset(PROPERTIES_CANONICAL),
-            **props,
+            errors=errors,
         )
 
-    @_handle_computation_exceptions
     def get_state_metastable(
         self,
         prop_1,
@@ -690,12 +840,17 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
         solver_tolerance=1e-6,
         solver_max_iterations=100,
         print_convergence=False,
+        *,
+        errors="raise",
     ):
-
-        # print(f"Calculating metastable state for {self.name} with inputs: {prop_1}={prop_1_value}, {prop_2}={prop_2_value}")
-        # TODO: add vectorization
         r"""
         Calculate fluid properties assuming phase metastability
+
+        Evaluate the homogeneous Helmholtz branch, including formal unstable
+        states needed by stability studies. Independent density and temperature
+        must be positive and finite; optional singular responses are unavailable.
+        Scalar ``raise``/``mask`` policies use the configured source reference
+        context and protect the complete calculation with its reentrant lock.
 
         .. note::
 
@@ -703,50 +858,22 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
             documentation of the function :ref:`compute_properties <compute_properties>`.
 
         """
-        if prop_1 == "rho" and prop_2 == "T":
-            props = core.compute_properties_metastable_rhoT(
-                abstract_state=self._AS,
-                rho=prop_1_value,
-                T=prop_2_value,
-                generalize_quality=generalize_quality,
-                supersaturation=supersaturation,
-            )
-        elif prop_1 == "T" and prop_2 == "rho":
-            props = core.compute_properties_metastable_rhoT(
-                abstract_state=self._AS,
-                rho=prop_2_value,
-                T=prop_1_value,
-                generalize_quality=generalize_quality,
-                supersaturation=supersaturation,
-            )
-        else:
-            props = core.compute_properties(
-                self._AS,
-                prop_1=prop_1,
-                prop_1_value=prop_1_value,
-                prop_2=prop_2,
-                prop_2_value=prop_2_value,
-                calculation_type="metastable",
-                rhoT_guess_metastable=rhoT_guess,
-                supersaturation=supersaturation,
-                generalize_quality=generalize_quality,
-                solver_algorithm=solver_algorithm,
-                solver_tolerance=solver_tolerance,
-                solver_max_iterations=solver_max_iterations,
-                print_convergence=print_convergence,
-            )
-
-        return FluidState(
-            fluid_name=self.name,
-            identifier=self.identifier,
-            provider=self.provider,
-            model=self.model,
-            reference_id=self.reference_id,
-            available_properties=frozenset(PROPERTIES_CANONICAL),
-            **props,
+        return self._get_phase_state(
+            "metastable",
+            prop_1=prop_1,
+            prop_1_value=prop_1_value,
+            prop_2=prop_2,
+            prop_2_value=prop_2_value,
+            rhoT_guess_metastable=rhoT_guess,
+            supersaturation=supersaturation,
+            generalize_quality=generalize_quality,
+            solver_algorithm=solver_algorithm,
+            solver_tolerance=solver_tolerance,
+            solver_max_iterations=solver_max_iterations,
+            print_convergence=print_convergence,
+            errors=errors,
         )
 
-    @_handle_computation_exceptions
     def get_state_blending(
         self,
         prop_1,
@@ -765,9 +892,18 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
         solver_tolerance=1e-6,
         solver_max_iterations=100,
         print_convergence=False,
+        *,
+        errors="raise",
     ):
         r"""
         Calculate fluid properties by blending equilibrium and metastable properties
+
+        Return blended, equilibrium and metastable FluidState objects. The blend
+        is a constitutive interpolation, tagged ``blended_real_fluid`` with its
+        own settings-dependent identity; it need not satisfy source-EOS response
+        identities. Algorithm coordinates and weights are not thermodynamic
+        fields (``sigma`` retains its surface-tension meaning). Execution is
+        scalar/eager with explicit ``raise`` or ``mask`` numerical policies.
 
         .. note::
 
@@ -775,14 +911,12 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
             documentation of the function :ref:`compute_properties <compute_properties>`.
 
         """
-        # TODO: add vectorization
-        blended, equilibrium, metastable = core.compute_properties(
-            self._AS,
+        return self._get_phase_state(
+            "blending",
             prop_1=prop_1,
             prop_1_value=prop_1_value,
             prop_2=prop_2,
             prop_2_value=prop_2_value,
-            calculation_type="blending",
             rhoT_guess_equilibrium=rhoT_guess_equilibrium,
             rhoT_guess_metastable=rhoT_guess_metastable,
             blending_variable=blending_variable,
@@ -795,36 +929,7 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
             solver_tolerance=solver_tolerance,
             solver_max_iterations=solver_max_iterations,
             print_convergence=print_convergence,
-        )
-
-        return (
-            FluidState(
-                fluid_name=self.name,
-                identifier=self.identifier,
-                provider=self.provider,
-                model=self.model,
-                reference_id=self.reference_id,
-                available_properties=frozenset(PROPERTIES_CANONICAL),
-                **blended,
-            ),
-            FluidState(
-                fluid_name=self.name,
-                identifier=self.identifier,
-                provider=self.provider,
-                model=self.model,
-                reference_id=self.reference_id,
-                available_properties=frozenset(PROPERTIES_CANONICAL),
-                **equilibrium,
-            ),
-            FluidState(
-                fluid_name=self.name,
-                identifier=self.identifier,
-                provider=self.provider,
-                model=self.model,
-                reference_id=self.reference_id,
-                available_properties=frozenset(PROPERTIES_CANONICAL),
-                **metastable,
-            ),
+            errors=errors,
         )
 
     def plot_phase_diagram(
@@ -1093,226 +1198,45 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
 Fluid = FluidCoolProp
 
 
-class FluidMix(SourceReferencesMixin, ReadonlyConfigurationMixin):
-    """
-    Represents a binary fluid mixture with thermodynamic properties
-    calculated using the `calculate_mixture_properties_hp()` function.
-    """
+# The legacy constructor now returns the one consolidated binary evaluator.
+# It translates names/mass ratio only at construction, without wrapping calls.
+from ..binary_mixture.compat import FluidMix
 
-    _configuration_fields = frozenset(
-        {
-            "name",
-            "backend",
-            "provider",
-            "model",
-            "identifier",
-            "reference_id",
-            "_references",
-            "mixture_ratio",
-            "fluid_1",
-            "fluid_2",
-        }
-    )
 
-    def __getstate__(self):
-        """Strip CoolProp AbstractStates to make the object pickleable."""
-        state = self.__dict__.copy()
-        state["_AS1"] = None
-        state["_AS2"] = None
-        return state
-
-    def __setstate__(self, state):
-        """Restore FluidMix without AbstractStates (can be rebuilt later)."""
-        self.__dict__.update(state)
-        self._AS1 = None
-        self._AS2 = None
-
-    def __init__(
-        self,
-        name: str,
-        backend: str = "HEOS",
-        mixture_ratio: float = None,
-        exceptions: bool = True,
-        identifier: str = None,
+# ------------------------------------------------------------------------------------ #
+# Phase and reference curves
+# ------------------------------------------------------------------------------------ #
+def _grid_count(value, name, minimum=1):
+    """Validate setup-only sampling controls before source evaluation."""
+    if (
+        isinstance(value, (bool, np.bool_))
+        or not isinstance(value, Integral)
+        or value < minimum
     ):
-        """
-        Initialize the FluidMix object.
-
-        Parameters
-        ----------
-        name : str
-            Mixture name, e.g. "water_nitrogen_mixture".
-        backend : str, optional
-            CoolProp backend, by default "HEOS".
-        exceptions : bool, optional
-            Whether to raise exceptions, by default True.
-        identifier : str, optional
-            Optional user-specified identifier.
-        """
-        backend = "HEOS" if backend is None else backend
-        # Validate common identity before the legacy component-name parser.
-        build_configuration(name, "native", "binary_mixture", backend, identifier)
-        from numbers import Real
-
-        if (
-            isinstance(mixture_ratio, (bool, np.bool_))
-            or not isinstance(mixture_ratio, Real)
-            or not np.isfinite(mixture_ratio)
-            or mixture_ratio < 0
-        ):
-            raise InvalidConfigurationError(
-                fluid_name=name,
-                provider="native",
-                model="binary_mixture",
-                request="mixture_ratio",
-                reason="Provide a finite nonnegative scalar component mass ratio.",
-            )
-        self.name = name
-        self.backend = backend
-        self.exceptions = exceptions
-        self.identifier = identifier
-        self.provider = "native"
-        self.model = "binary_mixture"
-        self.converged_flag = False
-        self.mixture_ratio = mixture_ratio
-
-        # Parse mixture name
-        if not name.lower().endswith("_mixture"):
-            raise InvalidConfigurationError(
-                fluid_name=name,
-                provider=self.provider,
-                model=self.model,
-                request="name",
-                reason="Expected a legacy binary name such as 'water_nitrogen_mixture'.",
-            )
-
-        # Extract fluid component names
-        parts = name.replace("_mixture", "").split("_")
-        if len(parts) != 2:
-            raise InvalidConfigurationError(
-                fluid_name=name,
-                provider=self.provider,
-                model=self.model,
-                request="name",
-                reason=f"Expected exactly two component names, got: {parts}.",
-            )
-        self.fluid_1, self.fluid_2 = parts
-        self._configuration = build_configuration(
-            name,
-            self.provider,
-            self.model,
-            backend,
-            identifier,
-            model_options={
-                "component_names": (self.fluid_1, self.fluid_2),
-                "mixture_ratio": mixture_ratio,
-            },
+        raise InvalidConfigurationError(
+            request=name,
+            reason=f"Expected an integer greater than or equal to {minimum}.",
         )
-        self._capabilities = FluidCapabilities(
-            input_pairs=frozenset({CP.HmassP_INPUTS}),
-            properties=LEGACY_MIXTURE_PROPERTIES,
-            domain=FluidDomain(
-                description="Legacy scalar common-pressure/common-temperature binary model."
-            ),
-        )
-        # Initialize AbstractStates for each component
-        self._AS1 = try_initialize_fluid(self.fluid_1, backend)
-        self._AS2 = try_initialize_fluid(self.fluid_2, backend)
-        components = tuple(
-            initialize_source_references(component, backend, state=state)
-            for component, state in (
-                (self.fluid_1, self._AS1),
-                (self.fluid_2, self._AS2),
-            )
-        )
-        self._references = composite_source_references(
-            name, backend, components, mixture_ratio
-        )
-        self.reference_id = self._references.reference_id
+    return int(value)
 
-        # # Temperature and pressure limits (approximate from components)
-        # self.p_min = max(1.0, min(self._AS1.pmin(), self._AS2.pmin()))
-        # self.p_max = min(self._AS1.pmax(), self._AS2.pmax())
-        # self.T_min = max(self._AS1.Tmin(), self._AS2.Tmin())
-        # self.T_max = min(self._AS1.Tmax(), self._AS2.Tmax())
 
-    @_handle_computation_exceptions
-    def get_state(
-        self,
-        input_type,
-        prop_1,
-        prop_2,
-        *,
-        generalize_quality=False,
-        supersaturation=False,
-        errors="raise",
-        **options,
+def _saturation_temperature_levels(fluid, count, dT_crit):
+    """Return distinct temperatures from the near-critical to lower endpoint."""
+    count = _grid_count(count, "num_points", minimum=2)
+    critical = float(fluid.critical_point.T)
+    lower = max(float(fluid.triple_point_liquid.T), float(fluid.triple_point_vapor.T))
+    delta = np.asarray(dT_crit)
+    if (
+        delta.shape != ()
+        or delta.dtype.kind not in "fiu"
+        or not np.isfinite(delta)
+        or not 0 < delta < critical - lower
     ):
-        """
-        Compute the thermodynamic state of the mixture at given h and p.
-
-        Parameters
-        ----------
-        h_mix : float
-            Mixture specific enthalpy [J/kg].
-        p_mix : float
-            Mixture pressure [Pa].
-        R : float
-            Mixture mass flow ratio (m_dot_1 / m_dot_2).
-
-        Returns
-        -------
-        FluidState
-            Object containing the computed mixture thermodynamic properties.
-        """
-        prop_1, prop_2 = validate_request(
-            self,
-            input_type,
-            prop_1,
-            prop_2,
-            generalize_quality=generalize_quality,
-            supersaturation=supersaturation,
-            errors=errors,
-            array_backend="numpy",
-            options=options,
+        raise InvalidConfigurationError(
+            request="dT_crit",
+            reason="Expected a positive critical offset smaller than the saturation temperature span.",
         )
-        if prop_1.shape:
-            raise UnsupportedExecutionModeError(
-                fluid_name=self.name,
-                provider=self.provider,
-                model=self.model,
-                request="batch evaluation",
-                reason="The legacy binary model supports scalar evaluation only until Phase 9.",
-                supported=("scalar",),
-            )
-
-        props_mix = core.calculate_mixture_properties_hp(
-            h_mix=float(prop_1),
-            p_mix=float(prop_2),
-            AS1=self._AS1,
-            AS2=self._AS2,
-            R=self.mixture_ratio,
-        )
-
-        self.converged_flag = True
-
-        # return props_mix
-
-        return FluidState(
-            fluid_name=self.name,
-            identifier=self.identifier,
-            provider=self.provider,
-            model=self.model,
-            reference_id=self.reference_id,
-            available_properties=self.capabilities.properties,
-            error_policy=errors,
-            **props_mix,
-        )
-
-
-# ------------------------------------------------------------------------------------ #
-# ------------------------------------------------------------------------------------ #
-# ------------------------------------------------------------------------------------ #
+    return critical - np.geomspace(float(delta), critical - lower, count)
 
 
 def compute_saturation_line(fluid, N=100, dT_crit=0.5):
@@ -1324,7 +1248,8 @@ def compute_saturation_line(fluid, N=100, dT_crit=0.5):
     fluid : object
         The fluid object containing thermodynamic properties and methods.
     N : int, optional
-        Number of points to compute along the saturation line. Default is 100.
+        Number of distinct subcritical samples. The critical endpoint is
+        prepended, so each returned branch has N+1 states. Default is 100.
 
     Returns
     -------
@@ -1334,12 +1259,7 @@ def compute_saturation_line(fluid, N=100, dT_crit=0.5):
         Batched FluidState for the vapor saturation line.
     """
     # Define temperature array with refinement close to the critical point
-    R = 1 - fluid.triple_point_liquid.T / fluid.critical_point.T
-    R_crit = dT_crit / fluid.critical_point.T
-    t1 = np.logspace(np.log10(R_crit), np.log10(R / 2), int(np.ceil(N / 2)))
-    t2 = np.linspace(R / 2, R, int(np.floor(N / 2)))
-    # t2 = np.asarray([])
-    T_sat = (1 - np.concatenate([t1, t2])) * fluid.critical_point.T
+    T_sat = _saturation_temperature_levels(fluid, N, dT_crit)
 
     # Source references keep canonical source identity. A plotted curve belongs
     # to the caller's fluid/stream, matching its ordinary saturation states.
@@ -1359,8 +1279,8 @@ def compute_saturation_line(fluid, N=100, dT_crit=0.5):
     vap_states = [critical_state]
 
     for T in T_sat:
-        liq_states.append(fluid.get_state(CP.QT_INPUTS, 0.00, T))
-        vap_states.append(fluid.get_state(CP.QT_INPUTS, 1.00, T))
+        liq_states.append(fluid.get_state_saturation(CP.QT_INPUTS, 0.00, T))
+        vap_states.append(fluid.get_state_saturation(CP.QT_INPUTS, 1.00, T))
 
     # Reverse the liquid branch if needed
     # liq_states = list(reversed(liq_states))
@@ -1375,18 +1295,19 @@ def compute_saturation_line(fluid, N=100, dT_crit=0.5):
 def compute_pseudocritical_line(fluid, N_points=100):
     """Compute pseudocritical line (approximate, defined here at critical density)."""
     # Define temperature array with refinement close to the critical point
+    N_points = _grid_count(N_points, "N_points")
     tau = np.logspace(np.log10(1e-3), np.log10(1), N_points)
     T_range = (1 + tau) * fluid.critical_point.T
 
-    states = []
-    for T in T_range:
-        if T >= fluid.abstract_state.Tmax():
-            break
-        state = fluid.get_state(CP.DmassT_INPUTS, fluid.critical_point.d, T)
-        states.append(state)
-
-    # Stack all computed states into one batched FluidState
-    return FluidState.stack(states)
+    maximum = fluid.capabilities.domain.bounds.get("temperature", (None, None))[1]
+    if maximum is not None:
+        T_range = T_range[T_range < maximum]
+    if not T_range.size:
+        raise OutOfDomainError(
+            request="pseudocritical_line",
+            reason="The source temperature domain contains no requested pseudocritical points.",
+        )
+    return fluid.get_state(CP.DmassT_INPUTS, fluid.critical_point.d, T_range)
 
 
 def compute_spinodal_line(
@@ -1422,6 +1343,12 @@ def compute_spinodal_line(
         Batched FluidState for the vapor spinodal line.
     """
 
+    N = _grid_count(N, "N", minimum=2)
+    if not np.isfinite(tolerance) or tolerance <= 0:
+        raise InvalidConfigurationError(
+            request="tolerance", reason="Expected a finite positive tolerance."
+        )
+
     # Temperature array with refinement close to the critical point
     alpha = 0.01
     T_max = fluid.critical_point.T - dT_crit
@@ -1444,6 +1371,7 @@ def compute_spinodal_line(
         "liquid",
         method=method,
         supersaturation=supersaturation,
+        tolerance=tolerance,
     )
     for T in T_spinodal:
         rho = props_liq["rho"] if use_previous_as_initial_guess else None
@@ -1464,7 +1392,12 @@ def compute_spinodal_line(
     # --- vapor branch
     states_vap = []
     props_vap = compute_spinodal_point(
-        T_spinodal[0], fluid, "vapor", method=method, supersaturation=supersaturation
+        T_spinodal[0],
+        fluid,
+        "vapor",
+        method=method,
+        supersaturation=supersaturation,
+        tolerance=tolerance,
     )
     for T in T_spinodal:
         rho = props_vap["rho"] if use_previous_as_initial_guess else None
@@ -1475,12 +1408,18 @@ def compute_spinodal_line(
             rho_guess=rho,
             method=method,
             supersaturation=supersaturation,
+            tolerance=tolerance,
         )
         if s_min < props_vap["s"] < s_max:
             states_vap.append(props_vap)
         else:
             break
 
+    if not states_liq or not states_vap:
+        raise ConvergenceError(
+            request="spinodal_line",
+            reason="No valid spinodal samples were obtained inside the source entropy bounds.",
+        )
     # Convert to batched FluidState objects
     spinodal_liq = FluidState.stack(states_liq)
     spinodal_vap = FluidState.stack(states_vap)
@@ -1568,7 +1507,31 @@ def compute_spinodal_point_general(
     ... )
     """
 
-    # Define residual to be driven to zero
+    canonical = (
+        core.ALIAS_TO_CANONICAL.get(prop_type) if isinstance(prop_type, str) else None
+    )
+    if canonical is None:
+        raise InvalidConfigurationError(
+            request="prop_type", reason="Unknown spinodal target property or alias."
+        )
+    if np.ndim(prop_value) != 0 or not np.isfinite(prop_value):
+        raise InvalidConfigurationError(
+            request="prop_value", reason="Expected a finite scalar target."
+        )
+    if not np.isfinite(tolerance) or tolerance <= 0:
+        raise InvalidConfigurationError(
+            request="tolerance", reason="Expected a finite positive tolerance."
+        )
+    scale = max(abs(float(prop_value)), 1.0)
+    if canonical in {"enthalpy", "internal_energy", "entropy"}:
+        specific_R = fluid._AS.gas_constant() / fluid._AS.molar_mass()
+        scale = (
+            specific_R
+            if canonical == "entropy"
+            else specific_R * float(fluid.critical_point.T)
+        )
+
+    # Define a dimensionless residual; h/s scales are reference-gauge invariant.
     def residual(T):
         props = compute_spinodal_point(
             T,
@@ -1581,12 +1544,14 @@ def compute_spinodal_point_general(
             print_convergence=print_convergence,
             supersaturation=supersaturation,
         )
-        return props[prop_type] - prop_value
+        return (props[canonical] - prop_value) / scale
 
     # Try to compute spinodal point
     try:
         bracket = [fluid.triple_point_vapor.T + 0.1, fluid.critical_point.T - 0.1]
-        result = root_scalar(residual, method="toms748", bracket=bracket)
+        result = root_scalar(
+            residual, method="toms748", bracket=bracket, xtol=tolerance
+        )
     except ValueError as e:
         raise ValueError(
             f"Failed to find a spinodal point for {prop_type}={prop_value:.2e}.\n"
@@ -1702,6 +1667,28 @@ def compute_spinodal_point(
 
     """
 
+    # Validate scientific setup before allowing an optimizer to mutate a source.
+    if branch not in ("liquid", "vapor"):
+        raise InvalidConfigurationError(
+            request="branch", reason="Expected 'liquid' or 'vapor'."
+        )
+    N_trial = _grid_count(N_trial, "N_trial", minimum=3)
+    if np.ndim(temperature) != 0 or not np.isfinite(temperature) or temperature <= 0:
+        raise InvalidConfigurationError(
+            request="temperature",
+            reason="Expected a finite positive scalar temperature.",
+        )
+    if not np.isfinite(tolerance) or tolerance <= 0:
+        raise InvalidConfigurationError(
+            request="tolerance", reason="Expected a finite positive tolerance."
+        )
+    if rho_guess is not None and (
+        np.ndim(rho_guess) != 0 or not np.isfinite(rho_guess) or rho_guess <= 0
+    ):
+        raise InvalidConfigurationError(
+            request="rho_guess", reason="Expected a finite positive density guess."
+        )
+
     # Instantiate new abstract state to compute saturation properties without changing the state of the class
 
     # Check that the inlet temperature is lower than the critical temperature
@@ -1746,12 +1733,43 @@ def compute_spinodal_point(
 
     # Solve the problem using the provided or generated initial guess
     rho_opt = solver.solve(rho_guess).item()
+    if not np.isfinite(rho_opt) or not problem.rho_vap <= rho_opt <= problem.rho_liq:
+        raise ConvergenceError(
+            request="spinodal",
+            reason="Optimizer returned a density outside the saturation interval.",
+        )
+    if not solver.success:
+        # Near-critical EOS curvature can make SLSQP report incompatible
+        # inequalities at an almost correct density. Recover an actual zero of
+        # the signed modulus on the requested branch instead of accepting the
+        # optimizer's flag or discarding a physically validated stability limit.
+        bracket = problem.first_bulk_modulus_bracket(N_trial)
+        if bracket is not None:
+            recovered = root_scalar(
+                problem.signed_bulk_modulus,
+                bracket=bracket,
+                method="brentq",
+                xtol=max(tolerance * problem.rho_liq, np.finfo(float).eps),
+                rtol=max(tolerance, 4 * np.finfo(float).eps),
+            )
+            if not recovered.converged:
+                raise ConvergenceError(
+                    request="spinodal",
+                    reason="The bounded bulk-modulus root did not converge.",
+                )
+            rho_opt = recovered.root
+        elif float(problem.fitness(rho_opt)[0]) > max(100 * tolerance, 1e-6):
+            raise ConvergenceError(
+                request="spinodal",
+                reason=f"Spinodal optimization failed: {solver.message}",
+            )
     state = fluid.get_state_metastable(
         "rho",
         rho_opt,
         "T",
         temperature,
         supersaturation=supersaturation,
+        generalize_quality=False,
     )
 
     # I tried different combinations of solvers and initial guesses
@@ -1771,6 +1789,10 @@ def compute_spinodal_point(
     #
     # With this enhancements, SLSQP produces good spinodal line results
     #
+    # Near criticality an SLSQP failure can still sit beside a true K_T zero.
+    # The bounded signed-modulus recovery above follows the first crossing
+    # from the requested saturation branch. It is distinct from the documented
+    # closest-modulus pseudo-spinodal used when an EOS has no true crossing.
 
     return state
 
@@ -1817,6 +1839,11 @@ class _SpinodalPointProblem(psv.OptimizationProblem):
                 self.rho_guess = rho_array[i + 1]
                 return self.rho_guess
 
+        # Some EOS have no true zero of the bulk modulus on this branch. Their
+        # documented pseudo-spinodal is the closest sampled interior minimum.
+        self.rho_guess = rho_array[1 + int(np.argmin(residual[1:-1]))]
+        return self.rho_guess
+
     def fitness(self, rho):
         """
         Compute the objective function of the optimization problem: the absolute value of the isothermal bulk modulus.
@@ -1828,12 +1855,44 @@ class _SpinodalPointProblem(psv.OptimizationProblem):
 
         Not a good idea to scale the bulk modulus by pressure because it can take negative values or zero when evaluated with the HEOS.
         """
+        return np.atleast_1d(np.abs(self.signed_bulk_modulus(rho))) / 1e6
+
+    def signed_bulk_modulus(self, rho):
+        """Return the actual homogeneous derivative, including unstable signs."""
         # Optimizers supply a one-variable vector; CoolProp requires scalar density.
         rho = np.asarray(rho).item()
         state = self.fluid.get_state_metastable(
-            "rho", rho, "T", self.T, supersaturation=self.supersaturation
+            "rho",
+            rho,
+            "T",
+            self.T,
+            supersaturation=self.supersaturation,
+            generalize_quality=False,
         )
-        return np.atleast_1d(np.abs(state["isothermal_bulk_modulus"])) / 1e6
+        return float(state["isothermal_bulk_modulus"])
+
+    def first_bulk_modulus_bracket(self, count):
+        """Find the first true stability crossing from the selected endpoint."""
+        densities = np.geomspace(self.rho_vap, self.rho_liq, count)
+        if self.branch == "liquid":
+            densities = densities[::-1]
+        previous_density = float(densities[0])
+        previous_value = self.signed_bulk_modulus(previous_density)
+        for density in densities[1:]:
+            density = float(density)
+            value = self.signed_bulk_modulus(density)
+            if (
+                np.isfinite(previous_value)
+                and np.isfinite(value)
+                and (
+                    previous_value == 0
+                    or value == 0
+                    or np.signbit(previous_value) != np.signbit(value)
+                )
+            ):
+                return tuple(sorted((previous_density, density)))
+            previous_density, previous_value = density, value
+        return None
 
     def get_bounds(self):
         """Compute the bounds of the optimization problem."""
@@ -1941,18 +2000,49 @@ class _SpinodalPointProblem(psv.OptimizationProblem):
 
 
 def compute_quality_grid(fluid, num_points, quality_levels, dT_crit=1.0):
+    """Return a common state on quality/temperature axes, without source bypasses.
+
+    HEOS pseudo-pure models implement QT only at bubble/dew endpoints. Interior
+    quality is therefore rejected explicitly here; use ordinary PQ calls when
+    a pressure/quality grid is the intended physical geometry.
+    """
     # Define temperature levels
-    R = 1 - fluid.triple_point_liquid.T / fluid.critical_point.T
-    R_crit = dT_crit / fluid.critical_point.T
-    t1 = np.logspace(np.log10(R_crit), np.log10(R / 2), int(np.ceil(num_points / 2)))
-    t2 = np.linspace(R / 2, R, int(np.floor(num_points / 2)))
-    temperature_levels = (1 - np.concatenate([t1, t2])) * fluid.critical_point.T
+    temperature_levels = _saturation_temperature_levels(fluid, num_points, dT_crit)
+    quality_levels = np.asarray(quality_levels)
+    if (
+        quality_levels.ndim != 1
+        or not quality_levels.size
+        or quality_levels.dtype.kind not in "fiu"
+        or not np.all(np.isfinite(quality_levels))
+        or np.any((quality_levels < 0) | (quality_levels > 1))
+    ):
+        raise InvalidConfigurationError(
+            request="quality_levels",
+            reason="Expected a nonempty vector of finite qualities in [0, 1].",
+        )
+    if (
+        fluid.provider in {"coolprop", "coolprop_jax"}
+        and fluid.references.critical.classification == "pseudo_pure"
+        and fluid.references.critical.backend == "HEOS"
+        and np.any((quality_levels > 0) & (quality_levels < 1))
+    ):
+        raise UnsupportedOperationError(
+            fluid_name=fluid.name,
+            provider=fluid.provider,
+            model=fluid.model,
+            request="quality_grid",
+            reason="HEOS pseudo-pure QT grids support only qualities 0 and 1. Use PQ calls for interior pressure/quality states.",
+            supported=(
+                "quality_levels=(0, 1)",
+                "get_state(PQ_INPUTS, pressure, quality)",
+            ),
+        )
 
     # Create meshgrid for (quality, temperature)
     Q, T = np.meshgrid(quality_levels, temperature_levels, indexing="ij")
 
     # Vectorized property evaluation
-    return fluid.get_state(CP.QT_INPUTS, Q, T)
+    return fluid.get_state_saturation(CP.QT_INPUTS, Q, T)
 
 
 # def compute_property_grid(
@@ -2024,19 +2114,47 @@ def compute_property_grid_rhoT(
     rho_array,
     T_array,
 ):
+    """Evaluate homogeneous states on temperature rows and density columns.
+
+    The returned FluidState retains identity, optional availability and the
+    exact grid shape. Calls use the configured fluid's locked/reference-aware
+    public homogeneous path rather than mutating its raw source handle.
+    """
+    axes = []
+    for name, values in (("rho_array", rho_array), ("T_array", T_array)):
+        array = np.asarray(values)
+        if (
+            array.ndim != 1
+            or not array.size
+            or array.dtype.kind not in "fiu"
+            or not np.all(np.isfinite(array))
+            or np.any(array <= 0)
+        ):
+            raise InvalidConfigurationError(
+                request=name,
+                reason="Expected a nonempty vector of finite positive coordinates.",
+            )
+        axes.append(array)
+    rho_array, T_array = axes
 
     # Calculate property grid
     states_meta = []
     for T in T_array:
         row = []
         for rho in rho_array:
-            row.append(core.compute_properties_metastable_rhoT(fluid._AS, rho, T))
-        states_meta.append(row)
+            row.append(
+                fluid.get_state_metastable(
+                    "density",
+                    rho,
+                    "temperature",
+                    T,
+                    supersaturation=False,
+                    generalize_quality=False,
+                )
+            )
+        states_meta.append(FluidState.stack(row))
 
-    # Convert nested list of dictionaries into dictionary of 2D arrays
-    states_meta = states_to_dict_2d(states_meta)
-
-    return states_meta
+    return FluidState.stack(states_meta)
 
 
 # def get_state_Qs(fluid, Q, s):

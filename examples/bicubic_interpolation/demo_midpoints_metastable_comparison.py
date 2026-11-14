@@ -16,8 +16,8 @@ h_min = -145e3  # J/kg
 h_max = -10e3  # J/kg
 p_min = 3e4  # Pa
 p_max = 1e6  # Pa
-N_p = 100 # Number of pressure points
-N_h = 100 # Number of enthalpy points
+N_p = 100  # Number of pressure points
+N_h = 100  # Number of enthalpy points
 metastable_phase = "liquid"
 
 # fluid_name = "nitrogen"
@@ -37,13 +37,30 @@ outdir = "demo_metastable_table_generation"
 fluid_bicubic = jxp.FluidBicubic(
     fluid_name=fluid_name,
     backend="HEOS",
-    h_min=h_min, h_max=h_max,
-    p_min=p_min, p_max=p_max,
-    N_h=N_h, N_p=N_p,
+    h_min=h_min,
+    h_max=h_max,
+    p_min=p_min,
+    p_max=p_max,
+    N_h=N_h,
+    N_p=N_p,
     table_dir=outdir,
     metastable_phase=metastable_phase,
     gradient_method="forward",
 )
+
+# Mechanical continuation alone does not establish caloric stability. Keep
+# every requested point visible, but report where this broad domain includes
+# nonpositive cv: Gamma can have a pole at cv=0 and interpolation across it is
+# not an accepted physical accuracy result.
+cv_nodes = np.asarray(fluid_bicubic.table["isochoric_heat_capacity"]["value"])
+calorically_unstable_nodes = np.count_nonzero(cv_nodes <= 0)
+if calorically_unstable_nodes:
+    print(
+        "Caloric-domain notice: "
+        f"{calorically_unstable_nodes}/{cv_nodes.size} nodes have cv <= 0. "
+        "Gamma has a pole at cv=0; the physical domain/model needs review. "
+        "No points or errors are masked by this notice."
+    )
 
 # ---------------------------
 # FluidJax reference with get_state_metastable
@@ -54,8 +71,8 @@ print(f"Metastable {metastable_phase}")
 # ---------------------------
 # Midpoint grid (evaluation points)
 # ---------------------------
-h_nodes = np.linspace(h_min, h_max, int(N_h*0.5))
-p_nodes = np.exp(np.linspace(np.log(p_min), np.log(p_max), int(N_p*0.5)))
+h_nodes = np.linspace(h_min, h_max, int(N_h * 0.5))
+p_nodes = np.exp(np.linspace(np.log(p_min), np.log(p_max), int(N_p * 0.5)))
 h_vals = 0.5 * (h_nodes[:-1] + h_nodes[1:])
 p_vals = 0.5 * (p_nodes[:-1] + p_nodes[1:])
 H_mesh, P_mesh = np.meshgrid(h_vals, p_vals, indexing="ij")
@@ -63,15 +80,20 @@ H_mesh, P_mesh = np.meshgrid(h_vals, p_vals, indexing="ij")
 # ---------------------------
 # Evaluate bicubic interpolation (vectorized)
 # ---------------------------
-interp_grid = {prop: np.full(H_mesh.shape, np.nan) for prop in jxp.PROPERTIES_CANONICAL}
+interp_grid = {
+    prop: np.full(H_mesh.shape, np.nan)
+    for prop in fluid_bicubic.capabilities.properties
+}
 total = H_mesh.size
 print(f"Evaluating bicubic interpolation ({total} points)...")
 for count, idx in enumerate(np.ndindex(H_mesh.shape)):
     if count % 1000 == 0:
         print(f"  {count}/{total} points evaluated", flush=True)
-    state = fluid_bicubic.get_state(jxp.HmassP_INPUTS, float(H_mesh[idx]), float(P_mesh[idx]))
-    for prop in jxp.PROPERTIES_CANONICAL:
-        interp_grid[prop][idx] = float(state[prop])
+    state = fluid_bicubic.get_state(
+        jxp.HmassP_INPUTS, float(H_mesh[idx]), float(P_mesh[idx])
+    )
+    for prop in interp_grid:
+        interp_grid[prop][idx] = float(state.raw_property(prop))
 print(f"  {total}/{total} points evaluated")
 # ---------------------------
 # Evaluate FluidJax reference (sweep left-to-right per pressure)
@@ -118,7 +140,7 @@ for j in range(n_p_mid):
                 generalize_quality=True,
             )
             for prop in properties:
-                true_grid[prop][i, j] = float(state[prop])
+                true_grid[prop][i, j] = float(state.raw_property(prop))
             # Update guess for next enthalpy point
             rho_guess = float(state.rho)
             T_guess = float(state.T)
@@ -128,6 +150,10 @@ for j in range(n_p_mid):
         count += 1
 
 print(f"  {total}/{total} points evaluated")
+print(
+    "Finite temperature reference comparisons: "
+    f"{np.count_nonzero(np.isfinite(true_grid['temperature']))}/{total}"
+)
 
 # ---------------------------
 # Collect error statistics
@@ -141,25 +167,33 @@ for prop in properties:
     abs_err = np.abs(interp_val - true_val)
     rel_err = abs_err / np.maximum(np.abs(true_val), 1e-30) * 100.0
 
-    error_summary.append({
-        "property": prop,
-        "abs_min": np.nanmin(abs_err),
-        "abs_max": np.nanmax(abs_err),
-        "rel_min": np.nanmin(rel_err),
-        "rel_max": np.nanmax(rel_err),
-        "rel_mean": np.nanmean(rel_err),
-        "field": rel_err,
-    })
+    error_summary.append(
+        {
+            "property": prop,
+            "abs_min": np.nanmin(abs_err),
+            "abs_max": np.nanmax(abs_err),
+            "rel_min": np.nanmin(rel_err),
+            "rel_max": np.nanmax(rel_err),
+            "rel_mean": np.nanmean(rel_err),
+            "field": rel_err,
+        }
+    )
 
 # ---------------------------
 # Print error summary table
 # ---------------------------
-print("\nProperty interpolation error summary (bicubic vs CoolProp specify_phase, midpoints):")
-print(f"{'Prop':<25} {'| Abs min':>12} {'Abs max':>12} {'% min':>12} {'% max':>12} {'% mean':>12}")
+print(
+    "\nProperty interpolation error summary (bicubic vs CoolProp specify_phase, midpoints):"
+)
+print(
+    f"{'Prop':<25} {'| Abs min':>12} {'Abs max':>12} {'% min':>12} {'% max':>12} {'% mean':>12}"
+)
 print("-" * 80)
 for e in error_summary:
-    print(f"{e['property']:<25} | {e['abs_min']:>12.3e} {e['abs_max']:>12.3e} "
-          f"{e['rel_min']:>12.3e} {e['rel_max']:>12.3e} {e['rel_mean']:>12.3e}")
+    print(
+        f"{e['property']:<25} | {e['abs_min']:>12.3e} {e['abs_max']:>12.3e} "
+        f"{e['rel_min']:>12.3e} {e['rel_max']:>12.3e} {e['rel_mean']:>12.3e}"
+    )
 
 # ---------------------------
 # Plot subplot grid for selected properties
@@ -169,6 +203,11 @@ ncols = 3
 nrows = int(np.ceil(n_props / ncols))
 
 fig = plt.figure(figsize=(4 * ncols, 3 * nrows))
+if calorically_unstable_nodes:
+    fig.suptitle(
+        r"Domain includes $c_v\leq0$: Gamma pole; scientific domain review required",
+        fontsize=11,
+    )
 gs = gridspec.GridSpec(nrows, ncols + 1, width_ratios=[1] * ncols + [0.05], figure=fig)
 
 axes = []
@@ -188,23 +227,26 @@ for ax, prop in zip(axes, properties):
     # Phase diagram background
     fluid_bg = jxp.Fluid(fluid_name)
     fluid_bg.plot_phase_diagram(
-        x_prop="enthalpy", y_prop="pressure", axes=ax,
-        x_scale="linear", y_scale="log"
+        x_prop="enthalpy", y_prop="pressure", axes=ax, x_scale="linear", y_scale="log"
     )
 
     # Contour
     cf = ax.contourf(
-        H_mesh, P_mesh, rel_err_field,
+        H_mesh,
+        P_mesh,
+        rel_err_field,
         levels=levels,
         norm=LogNorm(vmin=levels[0], vmax=levels[-1]),
-        cmap="viridis", extend="both"
+        cmap="viridis",
+        extend="both",
     )
 
     # Interpolation domain box
     ax.plot(
         [h_min, h_max, h_max, h_min, h_min],
         [p_min, p_min, p_max, p_max, p_min],
-        "r--", linewidth=1.5,
+        "r--",
+        linewidth=1.5,
     )
 
     ax.set_title(f"{prop} [% error]", fontsize=11)
@@ -223,7 +265,7 @@ for i in range(n_props, total_axes):
     r, c = divmod(i, ncols)
     fig.delaxes(fig.add_subplot(gs[r, c]))
 
-plt.tight_layout(pad=1)
+plt.tight_layout(pad=1, rect=(0, 0, 1, 0.94) if calorically_unstable_nodes else None)
 
 # Show figures
 if not os.environ.get("DISABLE_PLOTS"):

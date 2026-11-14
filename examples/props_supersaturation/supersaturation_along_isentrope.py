@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import jaxprop.coolprop as jxp
 from jaxprop import Fluid
 
-
 # Create the folder to save figures
 jxp.set_plot_options(grid=False)
 colors = jxp.COLORS_MATLAB
@@ -87,7 +86,7 @@ fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), gridspec_kw={"wspace": 0.2
 # Plot phase diagram and thermodynamic points on the first subplot
 x1 = "s"
 y1 = "T"
-ax1.set_xlabel("Entropy (J/kg/K))")
+ax1.set_xlabel("Entropy (J/kg/K)")
 ax1.set_ylabel("Temperature (K)")
 ax1.set_xlim([1.5 * fluid.triple_point_liquid[x1], 0.9 * fluid.triple_point_vapor[x1]])
 ax1.set_ylim([1.2 * fluid.triple_point_liquid[y1], 1.1 * fluid.critical_point[y1]])
@@ -102,6 +101,8 @@ fluid.plot_phase_diagram(
 )
 
 # Plot equilibrium and metastable states
+# Offset the equilibrium entropy by 0.5% only in this plot to separate the
+# overlapping isentropes; the solved state entropies remain unchanged.
 ax1.plot(
     states_equilibrium[x1][[0, -1]] * 1.005,
     states_equilibrium[y1][[0, -1]],
@@ -154,7 +155,8 @@ ax2.set_ylim([0, 1.2 * states_equilibrium[y2][0]])
 # Create a secondary y-axis for the supersaturation degree
 ax2_secondary = ax2.twinx()
 ax2_secondary.set_ylabel("Supersaturation degree (K)")
-ax2_secondary.set_ylim(1.2 * np.asarray([-1, 1]) * np.max(states_metastable[y2_bis]))
+degree_limit = 1.2 * np.nanmax(np.abs(states_metastable.raw_property(y2_bis)))
+ax2_secondary.set_ylim([-degree_limit, degree_limit])
 (line4,) = ax2_secondary.plot(
     states_equilibrium[x2],
     states_equilibrium[y2_bis],
@@ -253,7 +255,7 @@ fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), gridspec_kw={"wspace": 0.2
 # Plot phase diagram and thermodynamic points on the first subplot
 x1 = "s"
 y1 = "T"
-ax1.set_xlabel("Entropy (J/kg/K))")
+ax1.set_xlabel("Entropy (J/kg/K)")
 ax1.set_ylabel("Temperature (K)")
 ax1.set_xlim([1.5 * fluid.triple_point_liquid[x1], 0.9 * fluid.triple_point_vapor[x1]])
 ax1.set_ylim([1.2 * fluid.triple_point_liquid[y1], 1.1 * fluid.critical_point[y1]])
@@ -268,6 +270,7 @@ fluid.plot_phase_diagram(
 )
 
 # Plot equilibrium and metastable states
+# The 0.5% entropy offset is visual only, as in the liquid-isentrope plot.
 ax1.plot(
     states_equilibrium[x1][[0, -1]] * 1.005,
     states_equilibrium[y1][[0, -1]],
@@ -320,7 +323,8 @@ ax2.set_ylim([0, 1.2 * states_equilibrium[y2][0]])
 # Create a secondary y-axis for the supersaturation degree
 ax2_secondary = ax2.twinx()
 ax2_secondary.set_ylabel("Supersaturation degree (K)")
-ax2_secondary.set_ylim(1.2 * np.asarray([-1, 1]) * np.max(states_metastable[y2_bis]))
+degree_limit = 1.2 * np.nanmax(np.abs(states_metastable.raw_property(y2_bis)))
+ax2_secondary.set_ylim([-degree_limit, degree_limit])
 (line4,) = ax2_secondary.plot(
     states_equilibrium[x2],
     states_equilibrium[y2_bis],
@@ -350,4 +354,3 @@ jxp.savefig_in_formats(
 # Show figures
 if not os.environ.get("DISABLE_PLOTS"):
     plt.show()
-

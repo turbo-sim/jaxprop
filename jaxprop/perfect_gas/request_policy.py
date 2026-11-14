@@ -37,20 +37,23 @@ def _temperature_limit(constants, cp, cv, numerical):
     maximum = numerical.max
     intercept = constants.h_ref - cp * constants.T_ref
     remaining = 1 - intercept / maximum
-    upper = jnp.minimum(
-        maximum,
+    # Factor out the representability ceiling before differentiation. A direct
+    # maximum/cp has a finite primal/derivative, but its forward-AD rule can form
+    # maximum*dcp before division and overflow a discarded clipping branch.
+    fraction = jnp.minimum(
+        1.0,
         jnp.minimum(
-            maximum / jnp.maximum(cp, 1.0),
+            1.0 / jnp.maximum(cp, 1.0),
             jnp.minimum(
-                maximum / jnp.maximum(constants.R, 1.0),
+                1.0 / jnp.maximum(constants.R, 1.0),
                 jnp.minimum(
-                    maximum * (remaining / jnp.maximum(cp, remaining)),
-                    maximum * (remaining / jnp.maximum(cv, remaining)),
+                    remaining / jnp.maximum(cp, remaining),
+                    remaining / jnp.maximum(cv, remaining),
                 ),
             ),
         ),
     )
-    return upper * (1 - 64 * numerical.eps)
+    return (maximum * fraction) * (1 - 64 * numerical.eps)
 
 
 def resolve_pair(input_type, first, second, constants, *, errors, return_success=False):

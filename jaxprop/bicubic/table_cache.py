@@ -12,8 +12,8 @@ import numpy as np
 from ..property_schema import PROPERTIES_CANONICAL
 from .cache_metadata import metadata_fingerprint
 
-CACHE_FORMAT_VERSION = 1
-GENERATOR_REVISION = 1
+CACHE_FORMAT_VERSION = 2
+GENERATOR_REVISION = 2
 TABLE_ARRAYS = (
     "value",
     "grad_h",
@@ -45,12 +45,19 @@ def table_validation_error(table, metadata):
         return "generation metadata is not a valid canonical manifest"
     if not matching_metadata:
         return "generation metadata does not match exactly"
-    expected_keys = set(PROPERTIES_CANONICAL) | {"metadata", "saturation_props"}
+    expected_keys = set(PROPERTIES_CANONICAL) | {
+        "metadata",
+        "saturation_props",
+        "phase_cell_validity",
+    }
     if set(table) != expected_keys:
         return "table property schema is incomplete or contains unknown entries"
     shape = (metadata["N_h"], metadata["N_p"])
     coefficient_shape = (shape[0] - 1, shape[1] - 1, 16)
     dtype = np.dtype(metadata["numeric_dtype"])
+    phase_cells = np.asarray(table["phase_cell_validity"])
+    if phase_cells.shape != coefficient_shape[:2] or phase_cells.dtype != np.bool_:
+        return "phase-cell validity: incorrect shape or boolean dtype"
     for name in PROPERTIES_CANONICAL:
         entry = table[name]
         if not isinstance(entry, dict) or set(entry) != set(TABLE_ARRAYS):
@@ -175,6 +182,10 @@ def normalize_generated_arrays(table, metadata):
                 for key in ("value", "grad_p"):
                     if key in entry:
                         entry[key] = normalized(entry[key])
+    if "phase_cell_validity" in table:
+        mask = table["phase_cell_validity"]
+        if not isinstance(mask, jax.Array) or mask.dtype != np.bool_:
+            table["phase_cell_validity"] = jnp.asarray(mask, dtype=bool)
     return table
 
 

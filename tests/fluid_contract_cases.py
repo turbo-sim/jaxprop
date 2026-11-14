@@ -1,7 +1,7 @@
 """Fixed public-contract cases, independent of evaluator dispatch/capabilities.
 
-Implemented models use the common public initializer. The legacy binary
-constructor remains a fixed row until Phase 9 supplies the consolidated model.
+All advertised models use the common public initializer, including the
+consolidated component-object binary model.
 """
 
 from dataclasses import dataclass
@@ -74,7 +74,7 @@ CONTRACT_CASES = (
         "binary_mixture",
         "native",
         "binary_mixture",
-        "FluidMix",
+        "FluidBinaryMixture",
         "water_nitrogen_mixture",
         BINARY_PAIRS,
     ),
@@ -108,11 +108,14 @@ def build_current_fluid(case, table_dir, identifier=None):
             model_options=dict(T_ref=600.0, p_ref=1e5),
         )
     if case.id == "binary_mixture":
-        return jxp.FluidMix(
+        return jxp.Fluid(
             name=case.name,
-            backend="HEOS",
+            method="binary_mixture",
             identifier=identifier,
-            mixture_ratio=0.1,
+            model_options=dict(
+                components=(jxp.Fluid("Water"), jxp.Fluid("Nitrogen")),
+                mass_fractions=(1 / 11, 10 / 11),
+            ),
         )
     return jxp.Fluid(
         name=case.name,

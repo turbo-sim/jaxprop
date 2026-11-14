@@ -97,6 +97,7 @@ def test_real_binary_table_persists_composition_and_loads_complete_arrays(
         tmp_path,
         fluid_name="water_nitrogen_mixture",
         mixture_ratio=0.1,
+        table_name="binary-dependency",
         h_min=500e3,
         h_max=510e3,
         p_min=8e6,
@@ -109,8 +110,13 @@ def test_real_binary_table_persists_composition_and_loads_complete_arrays(
     assert first.table["metadata"]["mixture_ratio"] == 0.1
     assert first.table["metadata"]["table_mode"] == "mixture"
     assert table_validation_error(first.table, first.metadata) is None
+    native = jxp.FluidMix("water_nitrogen_mixture", mixture_ratio=0.1)
+    assert first.reference_id == native.reference_id
+
+    generated = []
 
     def unexpected_generation(fluid):
+        generated.append(True)
         raise AssertionError("matching binary cache must be loaded")
 
     monkeypatch.setattr(
@@ -124,6 +130,24 @@ def test_real_binary_table_persists_composition_and_loads_complete_arrays(
     assert all(
         np.isfinite(state.raw_property(name)) for name in ("T", "rho", "h", "s", "u")
     )
+    assert generated == []
+    old_cache = _cache_path(first).read_bytes()
+    real_read_bytes = Path.read_bytes
+
+    def changed_physics(path):
+        data = real_read_bytes(path)
+        if path.name == "physics.py" and path.parent.name == "binary_mixture":
+            return data + b"\n# simulated model revision\n"
+        return data
+
+    monkeypatch.setattr(Path, "read_bytes", changed_physics)
+    with pytest.warns(UserWarning, match="generation metadata"):
+        with pytest.raises(jxp.CalculationError, match="matching binary cache"):
+            jxp.FluidBicubic(**settings)
+    # Fingerprint the delegated model too: changing its equations must invoke
+    # generation, and a failed rebuild must retain the previous complete cache.
+    assert generated == [True]
+    assert _cache_path(first).read_bytes() == old_cache
 
 
 @pytest.mark.parametrize(

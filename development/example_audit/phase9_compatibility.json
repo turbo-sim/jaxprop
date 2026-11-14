@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-14",
+  "scope": "One minimal binary-mixture example migration and successful actual default execution. No example benchmarking or figure verification; broader studies remain deferred.",
+  "executed_examples": [
+    {
+      "file": "two_component/water_nitrogen_example.py",
+      "outcome": "completed_default_run",
+      "parameters": {
+        "pressure_Pa": 500000.0,
+        "temperature_K": 350.0,
+        "mass_ratio_1_over_2": 50.0
+      },
+      "printed_property": "speed_of_sound_p",
+      "printed_value_m_per_s": 66.73909731321142,
+      "figures_produced": 0,
+      "change": "Construct configured Water/Nitrogen callback components and Fluid(method='binary_mixture') with fixed mass fractions R/(1+R), 1/(1+R); preserve the original default state and frozen acoustic output."
+    }
+  ],
+  "migrated_examples": 1,
+  "figures_verified": 0,
+  "numerical_settings_changed": false,
+  "all_example_ast_verification": "Tracked separately in the final Phase 9 verification evidence; this record does not claim all programs were executed.",
+  "remaining_findings": [
+    {
+      "file": "two_component/water_nitrogen_consistency.py",
+      "owner_phase": 14,
+      "reason": "Uses varying composition as a fourth positional state input, obsolete mixture field names and input pairs beyond the declared PT/HP/PS model. Rebuild the study around fixed-composition objects and independent supported inverse checks, retaining explicit unsupported properties."
+    },
+    {
+      "file": "two_component/water_nitrogen_speed_sound.py",
+      "owner_phase": 14,
+      "reason": "Uses a vector of per-call mass ratios and a density/entropy inverse to differentiate pressure. The current model fixes composition at construction and does not advertise that inverse. Preserve the distinct acoustic relaxation assumptions when redesigning the derivative comparison."
+    },
+    {
+      "file": "two_component/water_nitrogen_calculations.py",
+      "owner_phase": 14,
+      "reason": "Larger parameter/ODE/plotting study uses legacy constructors and repeated convenience model construction. It needs configured-object reuse, supported state/schema migration and validation of the temperature ODE Joule-Thomson sign before full scientific execution."
+    }
+  ],
+  "limitations": [
+    "A printed finite acoustic value and successful program exit do not establish every thermodynamic or derivative identity; independent library tests provide their own acceptance evidence.",
+    "The original execution audit and its per-file counts remain historical records, not rerun outcomes for all 65 programs.",
+    "No resolution, physical default, solver tolerance or iteration budget was relaxed to obtain this example completion."
+  ]
+}

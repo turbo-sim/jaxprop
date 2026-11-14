@@ -40,8 +40,8 @@ def create_fluid(
     """Create the requested physical model and numerical provider.
 
     Provider selectors are exact lowercase strings. The backend is the source
-    EOS and defaults to HEOS for single-source models. Binary component-object
-    construction remains unavailable until its numerical model is consolidated.
+    EOS and defaults to HEOS for single-source models. Binary models use the
+    already configured component objects and have no backend override.
     """
     # Primitive metadata validation must precede backend initialization. Options
     # are validated below before recursively snapshotting their accepted values.
@@ -87,11 +87,12 @@ def create_fluid(
                 "backend",
                 "A composite uses its component source backends; an override is unsupported.",
             )
-        expected = {"components", "mass_fractions"}
-        if set(physical) != expected:
+        required = {"components", "mass_fractions"}
+        expected = required | {"inverse_max_steps", "inverse_tolerance"}
+        if not required <= set(physical) or set(physical) - expected:
             invalid(
                 "model_options",
-                "A binary model requires only components and mass_fractions.",
+                "A binary model requires components and mass_fractions; optional inverse controls are setup settings.",
                 expected,
             )
         components = physical["components"]
@@ -122,15 +123,16 @@ def create_fluid(
                 "mass_fractions",
                 "Provide two finite, nonnegative scalar mass fractions.",
             )
-        if not math.isclose(sum(fractions), 1.0, rel_tol=0.0, abs_tol=1e-12):
+        if not math.isclose(
+            sum(float(w) for w in fractions), 1.0, rel_tol=0.0, abs_tol=1e-12
+        ):
             invalid(
                 "mass_fractions",
                 "Mass fractions must sum to one without normalization.",
             )
-        invalid(
-            "model",
-            "Component-object binary construction awaits consolidation of the binary-mixture model.",
-        )
+        from .binary_mixture.fluid import FluidBinaryMixture
+
+        return FluidBinaryMixture(name=name, identifier=identifier, **physical)
 
     source_backend = "HEOS" if backend is None else backend
     if model == "perfect_gas":

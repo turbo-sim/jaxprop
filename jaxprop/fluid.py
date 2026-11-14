@@ -25,8 +25,8 @@ class Fluid(metaclass=ABCMeta):
     ``method`` selects the numerical implementation and physical model.
     ``backend`` selects its CoolProp source, with ``None`` resolving to HEOS
     for single-source methods. Table and calibration settings use their
-    respective option mappings. Binary construction remains reserved until
-    the consolidated physical model is implemented.
+    respective option mappings. A binary model takes configured components and
+    fixed mass fractions through ``model_options``.
 
     The result is the actual evaluator, such as ``FluidCoolProp`` or
     ``FluidPerfectGas``. Evaluator classes are registered virtual subclasses,

@@ -15,8 +15,8 @@ h_min = -100e3  # J/kg
 h_max = -10e3  # J/kg
 p_min = 2e5  # Pa
 p_max = 1e7  # Pa
-N_p = 21 # Number of pressure points
-N_h = 21 # Number of enthalpy points
+N_p = 21  # Number of pressure points
+N_h = 21  # Number of enthalpy points
 metastable_phase = "liquid"
 
 outdir = "demo_metastable_table_generation"
@@ -27,9 +27,12 @@ outdir = "demo_metastable_table_generation"
 fluid_bicubic = jxp.FluidBicubic(
     fluid_name=fluid_name,
     backend="HEOS",
-    h_min=h_min, h_max=h_max,
-    p_min=p_min, p_max=p_max,
-    N_h=N_h, N_p=N_p,
+    h_min=h_min,
+    h_max=h_max,
+    p_min=p_min,
+    p_max=p_max,
+    N_h=N_h,
+    N_p=N_p,
     table_dir=outdir,
     metastable_phase=metastable_phase,
     gradient_method="forward",
@@ -57,7 +60,9 @@ p_sat_max = np.exp(logP_sat_nodes[-1])
 p_ext_max = max(p_max, 1.5 * p_crit)
 dlogP = fluid_bicubic.delta_logP_sat
 n_extra = int(np.ceil(np.log(p_ext_max / p_sat_max) / dlogP))
-logP_sat_nodes = np.append(logP_sat_nodes, logP_sat_nodes[-1] + dlogP * np.arange(1, n_extra + 1))
+logP_sat_nodes = np.append(
+    logP_sat_nodes, logP_sat_nodes[-1] + dlogP * np.arange(1, n_extra + 1)
+)
 
 logP_midpoints = 0.5 * (logP_sat_nodes[:-1] + logP_sat_nodes[1:])
 p_midpoints = np.exp(logP_midpoints)
@@ -80,7 +85,7 @@ for p in p_midpoints:
     sat_cp = fluid_cp.get_state(jxp.PQ_INPUTS, float(p), Q_sat, errors="mask")
 
     for prop in properties:
-        val_interp = float(sat_interp[prop])
+        val_interp = float(sat_interp.raw_property(prop))
         val_cp = float(sat_cp.raw_property(prop))
         interp_vals[prop].append(val_interp)
         cp_vals[prop].append(val_cp)
@@ -107,12 +112,16 @@ print(header)
 print("-" * len(header))
 for prop in properties:
     err = error_data[prop][in_table]
-    print(f"{prop:<10} {np.nanmin(err):>12.3e} {np.nanmax(err):>12.3e} {np.nanmean(err):>12.3e}")
+    print(
+        f"{prop:<10} {np.nanmin(err):>12.3e} {np.nanmax(err):>12.3e} {np.nanmean(err):>12.3e}"
+    )
 
 # ---------------------------
 # Plot: relative error vs pressure
 # ---------------------------
-fig, axes = plt.subplots(len(properties), 1, figsize=(8, 3 * len(properties)), sharex=True)
+fig, axes = plt.subplots(
+    len(properties), 1, figsize=(8, 3 * len(properties)), sharex=True
+)
 if len(properties) == 1:
     axes = [axes]
 
@@ -124,19 +133,30 @@ for ax, prop in zip(axes, properties):
     ax.grid(True, which="both", ls="--", alpha=0.5)
 
 axes[-1].set_xlabel("Pressure [MPa]")
-axes[0].set_title(f"Saturation interpolation error at midpoints ({fluid_name}, Q={Q_sat})")
+axes[0].set_title(
+    f"Saturation interpolation error at midpoints ({fluid_name}, Q={Q_sat})"
+)
 plt.tight_layout()
 
 # ---------------------------
 # Plot: interpolated vs CoolProp values
 # ---------------------------
-fig2, axes2 = plt.subplots(len(properties), 1, figsize=(8, 3 * len(properties)), sharex=True)
+fig2, axes2 = plt.subplots(
+    len(properties), 1, figsize=(8, 3 * len(properties)), sharex=True
+)
 if len(properties) == 1:
     axes2 = [axes2]
 
 for ax, prop in zip(axes2, properties):
     ax.plot(p_midpoints / 1e6, cp_vals[prop], "k-", label="CoolProp", linewidth=1.5)
-    ax.plot(p_midpoints / 1e6, interp_vals[prop], "r--o", label="Bicubic", linewidth=1.5, markersize=3)
+    ax.plot(
+        p_midpoints / 1e6,
+        interp_vals[prop],
+        "r--o",
+        label="Bicubic",
+        linewidth=1.5,
+        markersize=3,
+    )
     ax.axvline(p_sat_max / 1e6, color="gray", ls=":")
     ax.axvline(p_crit / 1e6, color="k", ls=":")
     ax.set_ylabel(prop)

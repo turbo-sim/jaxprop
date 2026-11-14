@@ -1,6 +1,7 @@
 """Setup-only source scratch state for reference-consistent helper calculations."""
 
 import CoolProp.CoolProp as CP
+import numpy as np
 
 from ..errors import InvalidConfigurationError
 from ..source_references import source_reference_metadata
@@ -19,6 +20,8 @@ class SourceEvaluationContext:
     def __init__(self, primary_state, references, *, name, backend):
         self.references = references
         self.critical_entropy = references.critical.properties.get("entropy")
+        self.entropy_scale = primary_state.gas_constant() / primary_state.molar_mass()
+        self.is_pseudo_pure = references.critical.classification == "pseudo_pure"
         # Bounds belong to the selected source, including separate bubble/dew
         # lower endpoints for pseudo-pure fluids. Reuse initialization records
         # rather than flashing these fixed endpoints on every diagnostic call.
@@ -58,10 +61,57 @@ class SourceEvaluationContext:
 
 
 def helper_state(abstract_state, source_context=None):
-    """Return setup scratch state, or a fresh legacy standalone helper state."""
+    """Return configured scratch, or verify a legacy helper's reference basis.
+
+    A new CoolProp object snapshots the *current* global convention, which can
+    differ from an already configured object. The ordinary configured path is
+    prepared once and does no repeated verification. Standalone legacy calls
+    must reject a mismatching helper rather than mix entropy/energy gauges.
+    The primary object is never flashed by this compatibility check.
+    """
     if source_context is not None:
         return source_context.auxiliary_state
-    fluids = abstract_state.fluid_names()
+    # A homogeneous diagnostic snapshot may intentionally expose different
+    # h/s than its underlying equilibrium source at the same density/T.
+    # Check the convention against the raw source, never against that model.
+    reference_state = getattr(abstract_state, "_reference_source_state", abstract_state)
+    fluids = reference_state.fluid_names()
     if len(fluids) != 1:
         raise ValueError(f"Expected one fluid, got {fluids}")
-    return CP.AbstractState(abstract_state.backend_name(), fluids[0])
+    auxiliary = CP.AbstractState(reference_state.backend_name(), fluids[0])
+    recipes = [(CP.DmassT_INPUTS, reference_state.rhomass(), reference_state.T())]
+    quality = reference_state.Q()
+    if reference_state.phase() == CP.iphase_twophase and 0 <= quality <= 1:
+        # Pseudo-pure source maps need not use the same interpolation geometry
+        # for DmassT and PQ. Accept either exact source reconstruction.
+        recipes.append((CP.PQ_INPUTS, reference_state.p(), quality))
+    compatible = False
+    for recipe in recipes:
+        try:
+            auxiliary.update(*recipe)
+            compatible = all(
+                np.isclose(
+                    getattr(auxiliary, field)(),
+                    getattr(reference_state, field)(),
+                    rtol=2e-8,
+                    atol=1e-7,
+                )
+                for field in ("hmass", "smass")
+            )
+            if compatible:
+                break
+        except (ValueError, RuntimeError, NotImplementedError):
+            pass
+    if not compatible:
+        raise InvalidConfigurationError(
+            fluid_name=fluids[0],
+            provider="coolprop",
+            model="real_fluid",
+            request="source_reference",
+            reason=(
+                "A newly created helper has a different enthalpy/entropy "
+                "reference convention. Reuse a configured Fluid object "
+                "and its prepared source context."
+            ),
+        )
+    return auxiliary

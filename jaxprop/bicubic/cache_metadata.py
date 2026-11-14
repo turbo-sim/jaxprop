@@ -381,10 +381,12 @@ def source_signature(fluid_name, backend, mixture_ratio=None):
                 "A finite nonnegative component-1/component-2 mass ratio is required",
                 mixture=True,
             )
+        from ..binary_mixture.compat import fractions_from_ratio
+
         composition = {
             "basis": "mass_ratio",
             "component_1_to_2": ratio,
-            "mass_fractions": [ratio / (1.0 + ratio), 1.0 / (1.0 + ratio)],
+            "mass_fractions": list(fractions_from_ratio(ratio)),
         }
     else:
         components = [fluid_name]
@@ -418,10 +420,11 @@ def source_signature(fluid_name, backend, mixture_ratio=None):
         ) from error
     if composition is not None:
         signature["composition"] = composition
-        signature["source_reference_id"] = (
-            "binary_mixture",
-            tuple(item["source_reference_id"] for item in signature["components"]),
-            ("mass_ratio", ratio),
+        from ..source_references import _binary_model_reference_id
+
+        signature["source_reference_id"] = _binary_model_reference_id(
+            (item["source_reference_id"] for item in signature["components"]),
+            composition["mass_fractions"],
         )
     else:
         signature["source_reference_id"] = signature["components"][0][

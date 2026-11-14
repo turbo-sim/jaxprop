@@ -55,6 +55,8 @@ _PROPERTY_UNITS = {
     "isothermal_bulk_modulus": "Pa",
     "isentropic_bulk_modulus": "Pa",
     "speed_of_sound": "m/s",
+    "speed_of_sound_p": "m/s",
+    "speed_of_sound_pT": "m/s",
     "viscosity": "Pa s",
     "conductivity": "W/(m K)",
     "gruneisen": "1",

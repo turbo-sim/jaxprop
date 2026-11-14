@@ -1,7 +1,9 @@
 """
-This script shows how to do basic function calculations used the custom Flash solver
+Recover one equilibrium state from different property pairs with the custom
+density/temperature flash solver, then verify the complete core state.
 """
 
+import numpy as np
 import jaxprop.coolprop as jxp
 from jaxprop import Fluid
 
@@ -14,7 +16,7 @@ T_guess = 25 + state.T
 rho_guess = 1.1 * state.rho
 rhoT_guess = [rho_guess, T_guess]
 
-# h-s function call
+# p-T function call
 properties_pT = fluid.get_state_equilibrium(
     prop_1="p",
     prop_1_value=state.p,
@@ -43,6 +45,27 @@ properties_hs = fluid.get_state_equilibrium(
     rhoT_guess=rhoT_guess,
     print_convergence=True,
 )
+
+# Check recovery, rather than relying only on a solver termination message.
+# This independent comparison budget is consistent with the original default
+# root tolerance (1e-6); no solver settings or input state are changed.
+core_properties = (
+    "pressure",
+    "temperature",
+    "density",
+    "enthalpy",
+    "entropy",
+    "internal_energy",
+)
+for recovered in (properties_pT, properties_hp, properties_hs):
+    assert recovered.valid
+    for name in core_properties:
+        np.testing.assert_allclose(
+            recovered.raw_property(name),
+            state.raw_property(name),
+            rtol=1e-5,
+            atol=1e-7,
+        )
 
 # Print properties
 print(

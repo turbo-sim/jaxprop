@@ -125,6 +125,276 @@ remains Phase 13, and example execution acceptance remains Phase 14.
 Temporary timing workers, extracted source copies, tables and helper scripts
 were removed after preserving these compact records and the full test run.
 
+## Phase 9 consolidated binary model
+
+The [Phase 9 guard](phase9_validation.json) passes its warmed-call checkpoint:
+all 13 comparable medians remain below the 10% regression budget. Source binary
+calls are substantially faster; pure PG/bicubic control changes range from
+-5.7% to +2.8%. This result has the numerical and execution scope below.
+
+The baseline is the unchanged committed Phase 8 package at `4c6ae84`. Four
+independent workers per version run **serially** in ABBAABBA order, with nine
+samples per case, explicit warmup and `jax.block_until_ready` after every
+measured call. Package paths/source hashes, dependencies, CPU/x64 settings,
+thread settings and returned full-state fields are recorded. Construction and
+first-call compilation are separate from warmed complete-state timings. This
+is a phase-to-phase guard, not the Phase 13 comparison against a PyPI release.
+
+The workload matrix has **13 comparable cases**: four legacy scalar source-HP
+mixtures, one 16-state source-HP batch, and eight scalar/batch eager/compiled
+PG/bicubic full-state controls. The source cases cover Water/Nitrogen at two
+mass fractions, CO2/Nitrogen and Nitrogen/Oxygen. The old batch counterpart is
+explicitly a scalar loop followed by public `FluidState.stack`; the new version
+uses its public broadcast call. Each implementation returns its complete state,
+including the new model's additional supported fields.
+
+The timing sources use HEOS. Bicubic controls use separate per-worker 16-by-16
+CO2 tables over 600–850 kJ/kg and 5–12 MPa. Warmed medians below are microseconds
+per complete call; grouped control rows list scalar/batch values.
+
+| Comparable complete call | Phase 8 | Phase 9 | New / old |
+| --- | ---: | ---: | ---: |
+| Source HP Water/Nitrogen, water mass fraction 0.8 | 1,117.1 | 536.1 | 0.480 |
+| Source HP Water/Nitrogen, water mass fraction 0.2 | 1,017.3 | 468.3 | 0.460 |
+| Source HP CO2/Nitrogen | 954.3 | 495.2 | 0.519 |
+| Source HP Nitrogen/Oxygen | 934.0 | 434.5 | 0.465 |
+| Source HP Water/Nitrogen, batch 16 | 16,784.4 | 5,705.7 | 0.340 |
+| PG eager HP full scalar / batch 1,024 | 50.0 / 134.3 | 49.8 / 136.2 | 0.998 / 1.014 |
+| PG compiled HP full scalar / batch 1,024 | 35.0 / 94.7 | 35.0 / 96.4 | 0.999 / 1.018 |
+| Bicubic eager HP full scalar / batch 1,024 | 109.5 / 761.8 | 108.9 / 759.9 | 0.994 / 0.998 |
+| Bicubic compiled HP full scalar / batch 1,024 | 65.3 / 607.1 | 61.6 / 624.0 | 0.943 / 1.028 |
+
+Source HP scalar calls improve 1.93–2.17 times and batch16 improves 2.94 times.
+The inverse iterations query only selected component enthalpies, preparing
+source helpers at construction and assembling complete states after the root
+passes its residual check. No numerical tolerance is relaxed for timing.
+Individual paired control ratios remain variable: compiled PG batch ratios
+range from 0.887 to 1.162. The bicubic optimized program is identical across
+versions (703 instructions, no callback); PG retains 821 instructions and no
+callback, with changed stable representability-bound algebra. The small control
+shifts do not demonstrate a general kernel speedup or absence of all overhead.
+
+The numerical comparison retains **19 binary fields**: the six core variables,
+cp, expansion, isothermal compressibility/bulk modulus, sound speed, transport,
+Gruneisen and composition fields. Inverse targets come from independent source
+PT states in valid single-phase domains; matching an unchecked root across a
+phase discontinuity is not an accuracy requirement. The old mass-averaged cv
+and mass-weighted isentropic compressibility/bulk modulus are intentionally
+corrected. Their new values are checked against
+$c_v=c_p-T\alpha_p^2/(\rho\kappa_T)$,
+$\kappa_s=1/(\rho a^2)$ and $K_s=\rho a^2$; they are not silently normalized
+into equality with the old inconsistent output labels. The complete-call
+timing includes these corrections and the larger 27-property state.
+
+The **20 new-only cases** measure native PG/PG and bicubic/PG PT/HP/PS states
+(eager scalar, compiled scalar and compiled batch), plus compiled whole-host
+callback PT/HP states. The baseline has no working equivalent component-object
+native/callback binary API. Their absolute complete-state medians are:
+
+| New binary call | Eager scalar | Compiled scalar | Compiled batch |
+| --- | ---: | ---: | ---: |
+| PG/PG PT | 190.6 | 50.9 | 420.0, batch 1,024 |
+| PG/PG HP | 206.7 | 53.6 | 492.4, batch 1,024 |
+| PG/PG PS | 205.7 | 52.1 | 455.2, batch 1,024 |
+| Bicubic/PG PT | 304.5 | 92.5 | 274.9, batch 128 |
+| Bicubic/PG HP | 319.9 | 123.3 | 771.5, batch 128 |
+| Bicubic/PG PS | 343.4 | 141.1 | 980.4, batch 128 |
+
+Whole-host compiled callback PT/HP scalar medians are 529.8/717.6 us. All 27
+enabled properties match their PT round trips, including paired unavailable
+fields; the PG and bicubic/PG HP derivative checks pass. These new-only rows
+receive no legacy speedup ratio. The larger native binary graphs remain a
+profiling opportunity in Phase 11, particularly nested bicubic PT inversions.
+
+Construction is separate from repeated evaluation. Four initial construction
+samples per version give case medians of 4.58–8.43 ms for configured source binaries versus
+2.11–3.84 ms for the old constructor: approximately 2.2–4.6 ms additional setup.
+These are initial per-worker samples, not a dedicated warmed setup benchmark.
+Reference/configuration/helper preparation remains enabled; Phase 11 tracks
+profiling and reuse without moving these checks into state calls.
+
+The [final HEOS/REFPROP verification](phase9_verification.json) passes **2,463
+tests with four existing strict expected failures**, zero unexpected failures
+and zero skips. Phase 9 adds **267 passing cases**, resolves 11 binary expected
+failures and adds three schema/factory cases. All **54,272 numerical comparisons**
+remain: **50,189 finite values and 4,083 paired unavailable values**, zero
+failures. All **5,256 sampled old/new benchmark comparisons** pass across the
+four worker pairs; every worker passes its own physical/round-trip checks.
+The current timing package exactly matches the final full-suite source hash.
+All 65 examples parse; one binary example actually runs, with larger studies
+explicitly deferred in the [example audit](../../z_EXAMPLES_AUDIT.md).
+
+The historical PG and Phase 8 caveats above remain valid for their measured
+source versions. Broader devices, phase domains, ThermOpt consumers and the
+latest published-release acceptance remain Phases 12–14 work. Temporary timing
+workers, extracted source copies, generated tables and probe scripts were
+removed after preserving these compact records and the final correctness run.
+
+## Phase 10 phase calculations and source diagnostics
+
+The [Phase 10 guard](phase10_validation.json) passes all 23 comparable warmed
+cases within the 10% checkpoint budget. Native control medians range from
+-4.6% to +3.4%, with identical optimized programs across all eight workers.
+The repaired source phase/diagnostic paths are substantially faster.
+
+The baseline is the exact accepted Phase 9 source snapshot, SHA256
+`5f36b74dd8879e7c3921a5366bb7f6036d3c19f77cf560e3c3d1e9b31a7c4c01`.
+That snapshot includes the uncommitted Phase 9 implementation; a Git commit
+alone would not identify these measured source bytes. The comparison
+uses four independent workers per version, **serially in ABBAABBA order**, with
+eight warm calls and nine rotated/reversed samples per case. Every measured
+call returns a complete state and synchronizes its numerical outputs.
+Construction, cached loading and first-call compilation are recorded separately.
+Import locations, exact package hashes, dependencies, CPU/x64/thread settings,
+returned state fields, optimized native programs and paired-worker variability
+are retained with the result. This remains a phase-to-phase guard; the formal
+comparison against the latest published release belongs to Phase 13.
+
+The exact [compressed Phase 9 source](phase10_baseline_phase9.zip) is retained
+for reproducibility, with its archive/package hashes in the verification
+record. It contains the package Python sources and can be extracted into an
+isolated import directory alongside the recorded dependencies.
+
+There are **23 comparable timing cases when REFPROP is available**, or 20 with
+HEOS alone. Eight are eager/compiled PG and pure-bicubic HP scalar/batch controls.
+Independent 16-by-16 HEOS CO2 tables cover 600–850 kJ/kg and 5–12 MPa. The other
+cases cover ordinary source CO2 PT scalar/batch16, requested scalar diagnostics,
+ordinary Water PT, compiled CO2 callback scalar/batch16, Water/Air/R410A PQ
+states on HEOS and optional REFPROP, an actual homogeneous metastable Water
+liquid evaluated by rhoT and PH inverse, and a legacy equilibrium PH inverse.
+The metastable point is Water at 450 K and 0.7 MPa, with an independently
+specified homogeneous liquid source as its reference. Both inverse versions
+use the same requested tolerance; numerical budgets are not relaxed for speed.
+
+Warmed complete-call medians below are microseconds. Grouped entries list
+scalar/batch or HEOS/REFPROP values in that order.
+
+| Comparable complete call | Phase 9 | Phase 10 | New / old |
+| --- | ---: | ---: | ---: |
+| PG eager HP scalar / batch 1,024 | 49.5 / 139.9 | 49.0 / 133.4 | 0.989 / 0.954 |
+| PG compiled HP scalar / batch 1,024 | 34.9 / 93.7 | 33.3 / 92.8 | 0.954 / 0.990 |
+| Bicubic eager HP scalar / batch 1,024 | 107.8 / 721.8 | 111.2 / 738.5 | 1.032 / 1.023 |
+| Bicubic compiled HP scalar / batch 1,024 | 61.6 / 591.0 | 62.3 / 610.8 | 1.012 / 1.034 |
+| Source CO2 PT scalar / batch 16 | 348.3 / 870.2 | 350.4 / 871.5 | 1.006 / 1.001 |
+| Source CO2 PT with requested diagnostics | 987.9 | 433.2 | 0.439 |
+| Source Water PT scalar | 354.2 | 353.0 | 0.997 |
+| Compiled CO2 callback PT scalar / batch 16 | 426.0 / 1,008.1 | 426.1 / 965.1 | 1.000 / 0.957 |
+| Source Water PQ scalar, HEOS / REFPROP | 585.4 / 876.9 | 405.2 / 445.8 | 0.692 / 0.508 |
+| Source Air PQ scalar, HEOS / REFPROP | 524.5 / 1,313.4 | 465.4 / 518.4 | 0.887 / 0.395 |
+| Source R410A PQ scalar, HEOS / REFPROP | 600.8 / 1,355.9 | 447.4 / 549.8 | 0.745 / 0.406 |
+| Metastable Water rhoT scalar | 1,234.7 | 368.2 | 0.298 |
+| Metastable Water PH inverse | 12,783.7 | 1,696.6 | 0.133 |
+| Equilibrium Water PH inverse | 3,621.3 | 1,078.0 | 0.298 |
+
+Requested diagnostics improve 2.28 times; two-phase calls improve 1.13–2.53
+times; the tested metastable/equilibrium calls improve 3.35–7.54 times. Prepared
+reference contexts avoid repeated source construction, related coefficients
+share PQ samples, diagnostic transactions share saturation flashes, and host
+quality limiters use NumPy rather than dispatching scalar JAX operations.
+Numerical settings and comparison tolerances are retained. Small native shifts
+are within paired-worker variation; for example, one eager bicubic batch pair
+is 17.7% slower while its aggregate is +2.3%. The PG/bicubic optimized programs
+are identical across both versions and all eight workers (821/703 instructions,
+no callbacks). These controls add no native numerical work in this workload;
+they do not establish every device, domain or application timing.
+
+Preserved ordinary single-phase fields and core quantities must match within
+the recorded numerical tolerance, including paired unavailable values. Native
+controls compare all enabled fields at scalar states and sampled batch rows;
+ordinary source/callback batches compare all 16 rows of their preserved common
+fields.
+Two-phase comparisons intentionally use a narrower physical scope. Pure Water
+compares core quantities, compressibility factor and transport. Air/R410A
+compare core quantities and compressibility factor. Their corrected actual-PQ
+quality and phase volumes also change the empirical volume-averaged transport;
+those transport values are independently checked rather than forced equal to
+the old common-temperature endpoint construction.
+
+The corrected two-phase heat capacities, acoustic, Gruneisen and Joule–Thomson
+responses follow derivatives of the actual source PQ map. They do not preserve
+the old phase-weighted response labels. Singular or undefined pure-fluid
+coexistence responses remain unavailable. Current quality/phase-volume values
+are checked against the actual source flash, transport against its actual
+phase volumes and source PQ endpoint coefficients, and sound speed against an
+independent fixed-entropy pressure difference. The latter solves quality from
+raw PQ flashes with Brent's method at neighboring pressures; it does not reuse
+the package's derivative helper or assume every pseudo-pure backend supports
+an interior PS flash. These explicit corrections must remain visible in the
+retained comparison record.
+
+The legacy metastable timing cases select `generalize_quality=True` in **both**
+versions. Phase 9's `False` route assigned a returned quality tuple to both
+fields, accidentally broadcasting scalar core values into duplicated length-two
+arrays. Treating that malformed result as an old scalar timing baseline would
+be misleading. The new `False` route has its own scalar correctness tests;
+quality indicators are excluded from cross-version metastable equivalence
+checks. The legacy enabled-property correction is also explicit: old phase
+states advertised the whole canonical schema, including unsupported fields;
+new phase states enable only the applicable 25 ordinary or 31 diagnostic
+properties. Both versions still return their complete states during timing.
+
+Quality extensions outside coexistence are documented indicators, not physical
+vapor fractions. The supercritical extension now uses entropy differences and
+a gas-constant scale, preserving the result under permitted reference shifts.
+Configured phase solvers retain the source's prepared reference context and
+hold its lock through the complete calculation. Finite-difference helpers
+preserve the caller's state. Requested diagnostic transactions share bubble/dew
+data; default state calls do not perform that extra diagnostic work.
+
+Bicubic phase-envelope validation is paid during generation, with a validated
+boolean cell mask persisted in cache format 2. Adaptive source PQ envelope
+probes catch interior curvature missed by nodal flags while retaining cells
+wholly within a valid two-phase region. This is a finite, conservative policy,
+not a proof of the exact EOS envelope throughout every retained cell. Cached
+loading reuses the stored guard, and native evaluation uses its existing mask
+lookup without new source queries. Metastable generation steps scale with the
+table's enthalpy span, not absolute enthalpy; reference-shift tests and explicit
+unresolvable-stencil errors protect derivative conditioning. Their policy is
+captured in the generation manifest. Setup/cache costs must be reported
+separately from repeated property evaluation, without claiming zero setup cost.
+
+Setup remains separate. Case medians across four initial per-worker samples
+measure fresh table construction at 1.382 versus 1.340 seconds and cached
+loading at 94.44 versus 95.36 ms. Initial callback construction is 2.86 versus
+3.24 ms (+0.38 ms), with variable individual samples; this is retained as a
+Phase 11 setup-profiling opportunity. These are not dedicated repeated warmed
+setup benchmarks, and no setup validation is disabled.
+
+The [final verification](phase10_verification.json) passes **2,733 HEOS/REFPROP
+tests**, with **two existing Phase 11 serialization expected failures**, zero
+unexpected failures and zero skips. Phase 10 adds **268 passing tests** and
+resolves the two pseudo-pure quality expected failures. All **54,272 numerical
+comparisons** remain: **47,867 finite values and 6,405 paired unavailable values**,
+with zero failures. Relative to Phase 9, 2,322 finite surrogate-label assertions
+become explicit paired-unavailable checks: 774 each for pure two-phase Cp,
+heat-capacity ratio and isothermal Joule–Thomson. The comparisons and their
+tolerances are retained; availability changes are recorded rather than hidden
+as unchanged finite coverage.
+
+All **6,992 old/new benchmark comparisons** pass (6,768 finite and 224 paired
+unavailable), and every worker passes its independent source/geometry/sound
+checks. The final full-suite source hash exactly matches all current timing
+workers. All 65 examples parse; no example study or figure execution is claimed
+for Phase 10. [Example audit](../../z_EXAMPLES_AUDIT.md).
+
+Temporary workers, extracted source snapshots, generated tables and probes were removed
+after preserving the compact records and final full-suite evidence. Broader
+devices, full phase domains, ThermOpt application performance and complete
+example studies remain Phases 11–14 work. Historical Phase 7–9 measurements
+above retain their original source versions and acceptance limits.
+
+The subsequent [metastable example follow-up](../example_audit/metastable_solver_followup.json)
+fixes a construction-only continuation seed defect, verified by four new tests
+and a full run of **2,737 passing cases with two existing expected failures**.
+Its package hash is `851d8c9…`; the timings above remain measurements of the
+recorded `9e30ce5…` version, whose exact [source archive](phase10_measured_source.zip)
+is retained. All other package files and runtime evaluator functions are
+identical; the constructor differs only by two generation-policy manifest
+strings, and the two metastable generation methods use corrected seeds.
+No repeated state-evaluation checks or arithmetic were added by this repair.
+Example execution times under concurrent correctness workloads are not used
+as a new timing comparison.
+
 ## Method and scope of the original PyPI checkpoint
 
 Six separate workers ran serially in baseline/current/current/baseline/baseline/current order. Each implementation has three workers and five samples per warmed workload, with multiple calls per sample and synchronized JAX outputs. Cold table construction has one sample per worker. Import paths, source hashes, dependencies, device/precision, and thread settings were verified.

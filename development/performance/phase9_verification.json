@@ -1,0 +1,45 @@
+{
+  "test_backends": [
+    "HEOS",
+    "REFPROP"
+  ],
+  "counts": {
+    "passed": 2463,
+    "xfailed": 4
+  },
+  "property_comparisons": 54272,
+  "finite_values_compared": 50189,
+  "unavailable_values_checked": 4083,
+  "failed_comparisons": 0,
+  "seconds": 697.7241397000034,
+  "source_sha256": "5f36b74dd8879e7c3921a5366bb7f6036d3c19f77cf560e3c3d1e9b31a7c4c01",
+  "source_unchanged_during_run": true,
+  "full_run": "development/test_audit/results/phase9/full_20261114_011758",
+  "additional_tests": {
+    "test_phase9_api.py": 139,
+    "test_phase9_host.py": 21,
+    "test_phase9_inverses.py": 43,
+    "test_phase9_model_jvp.py": 36,
+    "test_phase9_physics.py": 28
+  },
+  "additional_test_count": 267,
+  "resolved_expected_failures": 11,
+  "additional_schema_cases": 2,
+  "additional_factory_cases": 1,
+  "examples_ast_parsed": 65,
+  "executed_examples": [
+    "two_component/water_nitrogen_example.py"
+  ],
+  "source_matches_benchmark": true,
+  "benchmark_matched_scalar_comparisons": 5256,
+  "comparable_timing_cases": 13,
+  "new_only_timing_cases": 20,
+  "unexpected_failures": 0,
+  "skips": 0,
+  "python_formatting": {
+    "tool": "black --check",
+    "files_checked": 36,
+    "result": "passed"
+  },
+  "temporary_timing_sources_tables_and_probes_removed": true
+}

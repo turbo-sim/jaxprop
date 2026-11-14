@@ -1,0 +1,2708 @@
+{
+  "date_utc": "2026-11-14T00:35:45.884856+00:00",
+  "baseline_commit": "4c6ae84bb1cfd3acb4fc45b949072e9707024754",
+  "method": {
+    "workers_per_version": 4,
+    "order": [
+      "baseline1",
+      "current1",
+      "current2",
+      "baseline2",
+      "baseline3",
+      "current3",
+      "current4",
+      "baseline4"
+    ],
+    "samples_per_worker": 9,
+    "scope": "all",
+    "selected_cases": null,
+    "calls_per_sample_multiplier": 1,
+    "synchronization": "jax.block_until_ready after every measured full-state call",
+    "source_hash_method": "Sorted jaxprop/**/*.py relative POSIX path, NUL, exact bytes, NUL; SHA256.",
+    "mixture_model": "Fixed mass fractions, additive specific volume/enthalpy/entropy, common pressure and temperature. No molecular entropy-of-mixing term.",
+    "comparable_binary_scope": "Legacy FluidMix scalar HP vs common Fluid constructor using source components. Batch16 counterpart is explicitly legacy scalar-loop plus public FluidState.stack vs new broadcast call.",
+    "intentional_physics_changes": "Old mass-averaged cv and reported mass-weighted isentropic compressibility/bulk modulus are inconsistent with the retained common-p/T model. New values are checked against cp-T*alpha^2/(rho*kT), kS=1/(rho*a^2), KS=rho*a^2. No old/new ratio assigned to these changed outputs.",
+    "missing_old_capabilities": "Working native component-object, PT/PS, JAX binary implementations were unavailable. New-only complete-state rows receive no legacy speedup ratio.",
+    "numerical_sampling": "All 19 preserved binary fields at 12 scalar source states and all 16 source-batch rows; all enabled pure-control fields except unavailable surface tension at one scalar and 16 batch rows. New-only round trips check all 27 enabled properties with paired NaNs for unavailable fields."
+  },
+  "environment": {
+    "python": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "processors": 28,
+    "jax": "0.6.2",
+    "jaxlib": "0.6.2",
+    "CoolProp": "7.2.0",
+    "equinox": "0.12.2",
+    "numpy": "2.4.4",
+    "device": "TFRT_CPU_0",
+    "x64": true,
+    "threads": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1"
+    },
+    "xla_flags": null,
+    "affinity": "unchanged inherited CPU affinity"
+  },
+  "source_hashes": {
+    "baseline": "81dcd08a8b2aad30761893fc2e0266dbd9235ea166de8bb27fc37c499d510bfe",
+    "current": "5f36b74dd8879e7c3921a5366bb7f6036d3c19f77cf560e3c3d1e9b31a7c4c01"
+  },
+  "correctness": {
+    "matched_scalar_comparisons": 5256,
+    "mismatches": [],
+    "all_worker_own_checks_passed": true
+  },
+  "intentional_corrections": {
+    "baseline": {
+      "binary_water_nitrogen_liquid08_0": {
+        "actual": {
+          "isochoric_heat_capacity": 3450.850006661363,
+          "isentropic_compressibility": 1.4173213671493681e-07,
+          "isentropic_bulk_modulus": 7055562.860886527
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 3491.106863277679,
+          "isentropic_compressibility": 9.412868233940155e-07,
+          "isentropic_bulk_modulus": 1062375.4366328865
+        }
+      },
+      "binary_water_nitrogen_liquid08_1": {
+        "actual": {
+          "isochoric_heat_capacity": 3259.303310253963,
+          "isentropic_compressibility": 1.419216303261533e-07,
+          "isentropic_bulk_modulus": 7046142.280791712
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 3502.1791705309042,
+          "isentropic_compressibility": 9.438243213531703e-07,
+          "isentropic_bulk_modulus": 1059519.2107004512
+        }
+      },
+      "binary_water_nitrogen_liquid08_2": {
+        "actual": {
+          "isochoric_heat_capacity": 3054.9074496118615,
+          "isentropic_compressibility": 1.4223841819612536e-07,
+          "isentropic_bulk_modulus": 7030449.386895956
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 3550.9670603864643,
+          "isentropic_compressibility": 9.460016815250975e-07,
+          "isentropic_bulk_modulus": 1057080.5734592872
+        }
+      },
+      "binary_water_nitrogen_liquid02_0": {
+        "actual": {
+          "isochoric_heat_capacity": 1405.2846391178923,
+          "isentropic_compressibility": 2.7988297535514666e-07,
+          "isentropic_bulk_modulus": 3572921.856826371
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 1432.8677150809967,
+          "isentropic_compressibility": 4.214842722554783e-07,
+          "isentropic_bulk_modulus": 2372567.770201068
+        }
+      },
+      "binary_water_nitrogen_liquid02_1": {
+        "actual": {
+          "isochoric_heat_capacity": 1345.0311190675613,
+          "isentropic_compressibility": 2.8084573993036265e-07,
+          "isentropic_bulk_modulus": 3560673.5578326946
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 1442.27210237767,
+          "isentropic_compressibility": 4.217634530417069e-07,
+          "isentropic_bulk_modulus": 2370997.280082286
+        }
+      },
+      "binary_water_nitrogen_liquid02_2": {
+        "actual": {
+          "isochoric_heat_capacity": 1308.3058900273581,
+          "isentropic_compressibility": 2.815887490731914e-07,
+          "isentropic_bulk_modulus": 3551278.249899384
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 1459.0183019808924,
+          "isentropic_compressibility": 4.22557523805592e-07,
+          "isentropic_bulk_modulus": 2366541.6982613583
+        }
+      },
+      "binary_co2_nitrogen_0": {
+        "actual": {
+          "isochoric_heat_capacity": 805.1861468940702,
+          "isentropic_compressibility": 8.991447540583941e-08,
+          "isentropic_bulk_modulus": 11121679.746074079
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 840.8718907659745,
+          "isentropic_compressibility": 8.797920711115435e-08,
+          "isentropic_bulk_modulus": 11366322.030347282
+        }
+      },
+      "binary_co2_nitrogen_1": {
+        "actual": {
+          "isochoric_heat_capacity": 803.39116714996,
+          "isentropic_compressibility": 9.275546128444611e-08,
+          "isentropic_bulk_modulus": 10781036.352494396
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 806.8608507917111,
+          "isentropic_compressibility": 9.157143843193092e-08,
+          "isentropic_bulk_modulus": 10920435.641549347
+        }
+      },
+      "binary_co2_nitrogen_2": {
+        "actual": {
+          "isochoric_heat_capacity": 838.8660066801353,
+          "isentropic_compressibility": 9.425399135212003e-08,
+          "isentropic_bulk_modulus": 10609630.272994347
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 839.7947904263679,
+          "isentropic_compressibility": 9.357007065737335e-08,
+          "isentropic_bulk_modulus": 10687177.99371673
+        }
+      },
+      "binary_nitrogen_oxygen_0": {
+        "actual": {
+          "isochoric_heat_capacity": 680.0804718435672,
+          "isentropic_compressibility": 3.5764859937243782e-06,
+          "isentropic_bulk_modulus": 279604.0587757618
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 680.0804816813007,
+          "isentropic_compressibility": 3.576118115696204e-06,
+          "isentropic_bulk_modulus": 279632.8218608961
+        }
+      },
+      "binary_nitrogen_oxygen_1": {
+        "actual": {
+          "isochoric_heat_capacity": 702.6117906667956,
+          "isentropic_compressibility": 3.6110891093153743e-06,
+          "isentropic_bulk_modulus": 276924.76417165727
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 702.6117925966645,
+          "isentropic_compressibility": 3.6101474932913655e-06,
+          "isentropic_bulk_modulus": 276996.9930198895
+        }
+      },
+      "binary_nitrogen_oxygen_2": {
+        "actual": {
+          "isochoric_heat_capacity": 737.9095198111153,
+          "isentropic_compressibility": 3.660807335078142e-06,
+          "isentropic_bulk_modulus": 273163.78833103884
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 737.909520427,
+          "isentropic_compressibility": 3.6596431218212595e-06,
+          "isentropic_bulk_modulus": 273250.6877616907
+        }
+      }
+    },
+    "current": {
+      "binary_water_nitrogen_liquid08_0": {
+        "actual": {
+          "isochoric_heat_capacity": 3491.1068632781926,
+          "isentropic_compressibility": 9.412868233940176e-07,
+          "isentropic_bulk_modulus": 1062375.4366328842
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 3491.1068632781926,
+          "isentropic_compressibility": 9.412868233940175e-07,
+          "isentropic_bulk_modulus": 1062375.4366328842
+        }
+      },
+      "binary_water_nitrogen_liquid08_1": {
+        "actual": {
+          "isochoric_heat_capacity": 3502.1791705308706,
+          "isentropic_compressibility": 9.4382432135317e-07,
+          "isentropic_bulk_modulus": 1059519.2107004516
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 3502.17917053087,
+          "isentropic_compressibility": 9.438243213531702e-07,
+          "isentropic_bulk_modulus": 1059519.2107004514
+        }
+      },
+      "binary_water_nitrogen_liquid08_2": {
+        "actual": {
+          "isochoric_heat_capacity": 3550.967060386423,
+          "isentropic_compressibility": 9.460016815250974e-07,
+          "isentropic_bulk_modulus": 1057080.5734592872
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 3550.967060386423,
+          "isentropic_compressibility": 9.460016815250975e-07,
+          "isentropic_bulk_modulus": 1057080.5734592872
+        }
+      },
+      "binary_water_nitrogen_liquid02_0": {
+        "actual": {
+          "isochoric_heat_capacity": 1432.867715081027,
+          "isentropic_compressibility": 4.21484272255479e-07,
+          "isentropic_bulk_modulus": 2372567.770201064
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 1432.8677150810245,
+          "isentropic_compressibility": 4.21484272255479e-07,
+          "isentropic_bulk_modulus": 2372567.770201064
+        }
+      },
+      "binary_water_nitrogen_liquid02_1": {
+        "actual": {
+          "isochoric_heat_capacity": 1442.2721023776683,
+          "isentropic_compressibility": 4.217634530417067e-07,
+          "isentropic_bulk_modulus": 2370997.2800822873
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 1442.2721023776676,
+          "isentropic_compressibility": 4.2176345304170676e-07,
+          "isentropic_bulk_modulus": 2370997.280082287
+        }
+      },
+      "binary_water_nitrogen_liquid02_2": {
+        "actual": {
+          "isochoric_heat_capacity": 1459.0183019808926,
+          "isentropic_compressibility": 4.2255752380559203e-07,
+          "isentropic_bulk_modulus": 2366541.6982613583
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 1459.018301980893,
+          "isentropic_compressibility": 4.225575238055921e-07,
+          "isentropic_bulk_modulus": 2366541.698261358
+        }
+      },
+      "binary_co2_nitrogen_0": {
+        "actual": {
+          "isochoric_heat_capacity": 840.8718907659451,
+          "isentropic_compressibility": 8.79792071111578e-08,
+          "isentropic_bulk_modulus": 11366322.030346837
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 840.871890765945,
+          "isentropic_compressibility": 8.797920711115782e-08,
+          "isentropic_bulk_modulus": 11366322.030346835
+        }
+      },
+      "binary_co2_nitrogen_1": {
+        "actual": {
+          "isochoric_heat_capacity": 806.8608507917111,
+          "isentropic_compressibility": 9.15714384319309e-08,
+          "isentropic_bulk_modulus": 10920435.641549349
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 806.8608507917111,
+          "isentropic_compressibility": 9.157143843193088e-08,
+          "isentropic_bulk_modulus": 10920435.64154935
+        }
+      },
+      "binary_co2_nitrogen_2": {
+        "actual": {
+          "isochoric_heat_capacity": 839.7947904265354,
+          "isentropic_compressibility": 9.357007065737813e-08,
+          "isentropic_bulk_modulus": 10687177.993716184
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 839.7947904266136,
+          "isentropic_compressibility": 9.357007065737813e-08,
+          "isentropic_bulk_modulus": 10687177.993716184
+        }
+      },
+      "binary_nitrogen_oxygen_0": {
+        "actual": {
+          "isochoric_heat_capacity": 680.0804816813011,
+          "isentropic_compressibility": 3.5761181156962045e-06,
+          "isentropic_bulk_modulus": 279632.8218608961
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 680.0804816813027,
+          "isentropic_compressibility": 3.5761181156962036e-06,
+          "isentropic_bulk_modulus": 279632.82186089613
+        }
+      },
+      "binary_nitrogen_oxygen_1": {
+        "actual": {
+          "isochoric_heat_capacity": 702.6117925966641,
+          "isentropic_compressibility": 3.610147493291365e-06,
+          "isentropic_bulk_modulus": 276996.9930198895
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 702.6117925966641,
+          "isentropic_compressibility": 3.6101474932913655e-06,
+          "isentropic_bulk_modulus": 276996.9930198895
+        }
+      },
+      "binary_nitrogen_oxygen_2": {
+        "actual": {
+          "isochoric_heat_capacity": 737.9095204269956,
+          "isentropic_compressibility": 3.6596431218212684e-06,
+          "isentropic_bulk_modulus": 273250.68776169006
+        },
+        "thermodynamic_reference": {
+          "isochoric_heat_capacity": 737.9095204270222,
+          "isentropic_compressibility": 3.659643121821268e-06,
+          "isentropic_bulk_modulus": 273250.68776169006
+        }
+      }
+    }
+  },
+  "new_only_checks": {
+    "PG_PT_roundtrip": true,
+    "PG_HP_roundtrip": true,
+    "PG_PS_roundtrip": true,
+    "PG_HP_derivative": true,
+    "bicubic_PG_PT_roundtrip": true,
+    "bicubic_PG_HP_roundtrip": true,
+    "bicubic_PG_PS_roundtrip": true,
+    "bicubic_PG_HP_derivative": true,
+    "callback_PT_roundtrip": true,
+    "callback_HP_roundtrip": true
+  },
+  "programs": {
+    "baseline": {
+      "control_PG_full_batch": {
+        "instructions": 821,
+        "sha256": "250aa5fd4a029e843b60ff3bda7589d4f90f1ba7599530bde8208af0af9a7a16",
+        "callback": false
+      },
+      "control_bicubic_full_batch": {
+        "instructions": 703,
+        "sha256": "1e793525b67b7440ccdc46483705a09241dac2348019fcab57eb92a5f8a8d675",
+        "callback": false
+      }
+    },
+    "current": {
+      "control_PG_full_batch": {
+        "instructions": 821,
+        "sha256": "2549df1e4528856818fbf22dda79ee595932c40a01ca50eee73d2e1d415722cb",
+        "callback": false
+      },
+      "control_bicubic_full_batch": {
+        "instructions": 703,
+        "sha256": "1e793525b67b7440ccdc46483705a09241dac2348019fcab57eb92a5f8a8d675",
+        "callback": false
+      },
+      "new_binary_PG_PT_full_batch": {
+        "instructions": 5829,
+        "sha256": "9737a97c09c1c1d4482b989d270dcdacff050a9b15a83984f772fdfd850e208c",
+        "callback": false
+      },
+      "new_binary_bicubic_PG_PT_full_batch": {
+        "instructions": 12583,
+        "sha256": "e698538ced80876df4c33a7d0fef493e17048f1b38f6da13aca15a7f0c606d39",
+        "callback": false
+      }
+    }
+  },
+  "returned_fields": {
+    "baseline": {
+      "binary_source_HP_water_nitrogen_liquid08_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 23,
+        "array_elements": 23,
+        "shape": []
+      },
+      "binary_source_HP_water_nitrogen_batch16": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 23,
+        "array_elements": 368,
+        "shape": [
+          16
+        ]
+      },
+      "binary_source_HP_water_nitrogen_liquid02_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 23,
+        "array_elements": 23,
+        "shape": []
+      },
+      "binary_source_HP_co2_nitrogen_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 23,
+        "array_elements": 23,
+        "shape": []
+      },
+      "binary_source_HP_nitrogen_oxygen_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 23,
+        "array_elements": 23,
+        "shape": []
+      },
+      "control_PG_public_HP_scalar": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "speed_of_sound",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 23,
+        "array_elements": 23,
+        "shape": []
+      },
+      "control_PG_public_HP_batch1024": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "speed_of_sound",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 23,
+        "array_elements": 23552,
+        "shape": [
+          1024
+        ]
+      },
+      "control_PG_compiled_HP_scalar": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "speed_of_sound",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 23,
+        "array_elements": 23,
+        "shape": []
+      },
+      "control_PG_compiled_HP_batch1024": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "speed_of_sound",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 23,
+        "array_elements": 23552,
+        "shape": [
+          1024
+        ]
+      },
+      "control_bicubic_public_HP_scalar": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "quality_mass",
+          "quality_volume",
+          "speed_of_sound",
+          "surface_tension",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 26,
+        "array_elements": 26,
+        "shape": []
+      },
+      "control_bicubic_public_HP_batch1024": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "quality_mass",
+          "quality_volume",
+          "speed_of_sound",
+          "surface_tension",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 26,
+        "array_elements": 26624,
+        "shape": [
+          1024
+        ]
+      },
+      "control_bicubic_compiled_HP_scalar": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "quality_mass",
+          "quality_volume",
+          "speed_of_sound",
+          "surface_tension",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 26,
+        "array_elements": 26,
+        "shape": []
+      },
+      "control_bicubic_compiled_HP_batch1024": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "quality_mass",
+          "quality_volume",
+          "speed_of_sound",
+          "surface_tension",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 26,
+        "array_elements": 26624,
+        "shape": [
+          1024
+        ]
+      }
+    },
+    "current": {
+      "binary_source_HP_water_nitrogen_liquid08_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "binary_source_HP_water_nitrogen_batch16": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 448,
+        "shape": [
+          16
+        ]
+      },
+      "binary_source_HP_water_nitrogen_liquid02_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "binary_source_HP_co2_nitrogen_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "binary_source_HP_nitrogen_oxygen_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "control_PG_public_HP_scalar": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "speed_of_sound",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 23,
+        "array_elements": 23,
+        "shape": []
+      },
+      "control_PG_public_HP_batch1024": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "speed_of_sound",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 23,
+        "array_elements": 23552,
+        "shape": [
+          1024
+        ]
+      },
+      "control_PG_compiled_HP_scalar": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "speed_of_sound",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 23,
+        "array_elements": 23,
+        "shape": []
+      },
+      "control_PG_compiled_HP_batch1024": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "speed_of_sound",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 23,
+        "array_elements": 23552,
+        "shape": [
+          1024
+        ]
+      },
+      "control_bicubic_public_HP_scalar": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "quality_mass",
+          "quality_volume",
+          "speed_of_sound",
+          "surface_tension",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 26,
+        "array_elements": 26,
+        "shape": []
+      },
+      "control_bicubic_public_HP_batch1024": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "quality_mass",
+          "quality_volume",
+          "speed_of_sound",
+          "surface_tension",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 26,
+        "array_elements": 26624,
+        "shape": [
+          1024
+        ]
+      },
+      "control_bicubic_compiled_HP_scalar": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "quality_mass",
+          "quality_volume",
+          "speed_of_sound",
+          "surface_tension",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 26,
+        "array_elements": 26,
+        "shape": []
+      },
+      "control_bicubic_compiled_HP_batch1024": {
+        "available_properties": [
+          "compressibility_factor",
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "is_two_phase",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "pressure",
+          "quality_mass",
+          "quality_volume",
+          "speed_of_sound",
+          "surface_tension",
+          "temperature",
+          "viscosity"
+        ],
+        "array_leaves": 26,
+        "array_elements": 26624,
+        "shape": [
+          1024
+        ]
+      },
+      "new_binary_PG_public_PT_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "new_binary_PG_compiled_PT_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "new_binary_PG_compiled_PT_batch1024": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28672,
+        "shape": [
+          1024
+        ]
+      },
+      "new_binary_PG_public_HP_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "new_binary_PG_compiled_HP_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "new_binary_PG_compiled_HP_batch1024": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28672,
+        "shape": [
+          1024
+        ]
+      },
+      "new_binary_PG_public_PS_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "new_binary_PG_compiled_PS_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "new_binary_PG_compiled_PS_batch1024": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28672,
+        "shape": [
+          1024
+        ]
+      },
+      "new_binary_bicubic_PG_public_PT_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "new_binary_bicubic_PG_compiled_PT_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "new_binary_bicubic_PG_compiled_PT_batch128": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 3584,
+        "shape": [
+          128
+        ]
+      },
+      "new_binary_bicubic_PG_public_HP_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "new_binary_bicubic_PG_compiled_HP_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "new_binary_bicubic_PG_compiled_HP_batch128": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 3584,
+        "shape": [
+          128
+        ]
+      },
+      "new_binary_bicubic_PG_public_PS_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "new_binary_bicubic_PG_compiled_PS_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "new_binary_bicubic_PG_compiled_PS_batch128": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 3584,
+        "shape": [
+          128
+        ]
+      },
+      "new_binary_callback_compiled_PT_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      },
+      "new_binary_callback_compiled_HP_scalar": {
+        "available_properties": [
+          "conductivity",
+          "density",
+          "enthalpy",
+          "entropy",
+          "gruneisen",
+          "heat_capacity_ratio",
+          "internal_energy",
+          "isentropic_bulk_modulus",
+          "isentropic_compressibility",
+          "isobaric_expansion_coefficient",
+          "isobaric_heat_capacity",
+          "isochoric_heat_capacity",
+          "isothermal_bulk_modulus",
+          "isothermal_compressibility",
+          "isothermal_joule_thomson",
+          "joule_thomson",
+          "mass_frac_1",
+          "mass_frac_2",
+          "mixture_ratio",
+          "pressure",
+          "speed_of_sound",
+          "speed_of_sound_p",
+          "speed_of_sound_pT",
+          "temperature",
+          "viscosity",
+          "vol_frac_1",
+          "vol_frac_2"
+        ],
+        "array_leaves": 28,
+        "array_elements": 28,
+        "shape": []
+      }
+    }
+  },
+  "setup_us": {
+    "baseline1": {
+      "water_nitrogen_liquid08": 4203.1,
+      "water_nitrogen_liquid02": 2236.6,
+      "co2_nitrogen": 2099.1,
+      "nitrogen_oxygen": 1939.7
+    },
+    "current1": {
+      "water_nitrogen_liquid08": 7955.9,
+      "water_nitrogen_liquid02": 5919.2,
+      "co2_nitrogen": 4543.0,
+      "nitrogen_oxygen": 5152.8
+    },
+    "current2": {
+      "water_nitrogen_liquid08": 8568.7,
+      "water_nitrogen_liquid02": 6098.1,
+      "co2_nitrogen": 5121.6,
+      "nitrogen_oxygen": 5070.1
+    },
+    "baseline2": {
+      "water_nitrogen_liquid08": 3482.0,
+      "water_nitrogen_liquid02": 2916.9,
+      "co2_nitrogen": 2411.3,
+      "nitrogen_oxygen": 2488.0
+    },
+    "baseline3": {
+      "water_nitrogen_liquid08": 4316.4,
+      "water_nitrogen_liquid02": 2881.1,
+      "co2_nitrogen": 2415.8,
+      "nitrogen_oxygen": 2058.7
+    },
+    "current3": {
+      "water_nitrogen_liquid08": 8560.1,
+      "water_nitrogen_liquid02": 5097.0,
+      "co2_nitrogen": 4617.1,
+      "nitrogen_oxygen": 4975.9
+    },
+    "current4": {
+      "water_nitrogen_liquid08": 8308.7,
+      "water_nitrogen_liquid02": 5588.3,
+      "co2_nitrogen": 4441.1,
+      "nitrogen_oxygen": 4497.2
+    },
+    "baseline4": {
+      "water_nitrogen_liquid08": 3079.1,
+      "water_nitrogen_liquid02": 2915.5,
+      "co2_nitrogen": 2316.5,
+      "nitrogen_oxygen": 2168.1
+    }
+  },
+  "first_call_us": {
+    "baseline1": {
+      "binary_source_HP_water_nitrogen_liquid08_scalar": 1117.1,
+      "binary_source_HP_water_nitrogen_batch16": 13870.8,
+      "binary_source_HP_water_nitrogen_liquid02_scalar": 1861.7,
+      "binary_source_HP_co2_nitrogen_scalar": 1148.8,
+      "binary_source_HP_nitrogen_oxygen_scalar": 919.0,
+      "control_PG_public_HP_scalar": 71197.5,
+      "control_PG_public_HP_batch1024": 104253.7,
+      "control_PG_compiled_HP_scalar": 98441.9,
+      "control_PG_compiled_HP_batch1024": 140312.0,
+      "control_bicubic_public_HP_scalar": 178113.8,
+      "control_bicubic_public_HP_batch1024": 186422.0,
+      "control_bicubic_compiled_HP_scalar": 139134.6,
+      "control_bicubic_compiled_HP_batch1024": 221373.7
+    },
+    "current1": {
+      "binary_source_HP_water_nitrogen_liquid08_scalar": 590.1,
+      "binary_source_HP_water_nitrogen_batch16": 6306.3,
+      "binary_source_HP_water_nitrogen_liquid02_scalar": 626.7,
+      "binary_source_HP_co2_nitrogen_scalar": 526.7,
+      "binary_source_HP_nitrogen_oxygen_scalar": 399.5,
+      "control_PG_public_HP_scalar": 68641.8,
+      "control_PG_public_HP_batch1024": 93284.7,
+      "control_PG_compiled_HP_scalar": 89619.4,
+      "control_PG_compiled_HP_batch1024": 175126.1,
+      "control_bicubic_public_HP_scalar": 148686.0,
+      "control_bicubic_public_HP_batch1024": 194951.8,
+      "control_bicubic_compiled_HP_scalar": 151985.2,
+      "control_bicubic_compiled_HP_batch1024": 227177.9,
+      "new_binary_PG_public_PT_scalar": 631.9,
+      "new_binary_PG_compiled_PT_scalar": 267700.0,
+      "new_binary_PG_compiled_PT_batch1024": 460344.2,
+      "new_binary_PG_public_HP_scalar": 341.4,
+      "new_binary_PG_compiled_HP_scalar": 365187.9,
+      "new_binary_PG_compiled_HP_batch1024": 563441.4,
+      "new_binary_PG_public_PS_scalar": 532.8,
+      "new_binary_PG_compiled_PS_scalar": 336633.2,
+      "new_binary_PG_compiled_PS_batch1024": 580090.5,
+      "new_binary_bicubic_PG_public_PT_scalar": 566.5,
+      "new_binary_bicubic_PG_compiled_PT_scalar": 788816.1,
+      "new_binary_bicubic_PG_compiled_PT_batch128": 929112.3,
+      "new_binary_bicubic_PG_public_HP_scalar": 449.9,
+      "new_binary_bicubic_PG_compiled_HP_scalar": 2497813.3,
+      "new_binary_bicubic_PG_compiled_HP_batch128": 3529753.6,
+      "new_binary_bicubic_PG_public_PS_scalar": 799.3,
+      "new_binary_bicubic_PG_compiled_PS_scalar": 2476169.5,
+      "new_binary_bicubic_PG_compiled_PS_batch128": 3632173.0,
+      "new_binary_callback_compiled_PT_scalar": 838.1,
+      "new_binary_callback_compiled_HP_scalar": 987.5
+    },
+    "current2": {
+      "binary_source_HP_water_nitrogen_liquid08_scalar": 647.9,
+      "binary_source_HP_water_nitrogen_batch16": 4801.3,
+      "binary_source_HP_water_nitrogen_liquid02_scalar": 488.8,
+      "binary_source_HP_co2_nitrogen_scalar": 2087.3,
+      "binary_source_HP_nitrogen_oxygen_scalar": 550.9,
+      "control_PG_public_HP_scalar": 77976.3,
+      "control_PG_public_HP_batch1024": 97206.6,
+      "control_PG_compiled_HP_scalar": 105938.5,
+      "control_PG_compiled_HP_batch1024": 162653.6,
+      "control_bicubic_public_HP_scalar": 147864.9,
+      "control_bicubic_public_HP_batch1024": 209826.6,
+      "control_bicubic_compiled_HP_scalar": 163643.2,
+      "control_bicubic_compiled_HP_batch1024": 229850.4,
+      "new_binary_PG_public_PT_scalar": 358.1,
+      "new_binary_PG_compiled_PT_scalar": 267667.6,
+      "new_binary_PG_compiled_PT_batch1024": 452329.7,
+      "new_binary_PG_public_HP_scalar": 677.0,
+      "new_binary_PG_compiled_HP_scalar": 354796.6,
+      "new_binary_PG_compiled_HP_batch1024": 550393.7,
+      "new_binary_PG_public_PS_scalar": 356.7,
+      "new_binary_PG_compiled_PS_scalar": 372798.0,
+      "new_binary_PG_compiled_PS_batch1024": 598415.5,
+      "new_binary_bicubic_PG_public_PT_scalar": 605.6,
+      "new_binary_bicubic_PG_compiled_PT_scalar": 820868.6,
+      "new_binary_bicubic_PG_compiled_PT_batch128": 941121.3,
+      "new_binary_bicubic_PG_public_HP_scalar": 1065.7,
+      "new_binary_bicubic_PG_compiled_HP_scalar": 2634511.8,
+      "new_binary_bicubic_PG_compiled_HP_batch128": 3838120.6,
+      "new_binary_bicubic_PG_public_PS_scalar": 679.3,
+      "new_binary_bicubic_PG_compiled_PS_scalar": 2515991.3,
+      "new_binary_bicubic_PG_compiled_PS_batch128": 3784115.9,
+      "new_binary_callback_compiled_PT_scalar": 1039.7,
+      "new_binary_callback_compiled_HP_scalar": 1305.6
+    },
+    "baseline2": {
+      "binary_source_HP_water_nitrogen_liquid08_scalar": 1120.5,
+      "binary_source_HP_water_nitrogen_batch16": 13464.9,
+      "binary_source_HP_water_nitrogen_liquid02_scalar": 1048.7,
+      "binary_source_HP_co2_nitrogen_scalar": 1098.3,
+      "binary_source_HP_nitrogen_oxygen_scalar": 853.7,
+      "control_PG_public_HP_scalar": 70204.3,
+      "control_PG_public_HP_batch1024": 93926.4,
+      "control_PG_compiled_HP_scalar": 94018.5,
+      "control_PG_compiled_HP_batch1024": 145213.4,
+      "control_bicubic_public_HP_scalar": 152711.4,
+      "control_bicubic_public_HP_batch1024": 202398.6,
+      "control_bicubic_compiled_HP_scalar": 145263.8,
+      "control_bicubic_compiled_HP_batch1024": 226891.4
+    },
+    "baseline3": {
+      "binary_source_HP_water_nitrogen_liquid08_scalar": 1180.7,
+      "binary_source_HP_water_nitrogen_batch16": 14573.1,
+      "binary_source_HP_water_nitrogen_liquid02_scalar": 1180.7,
+      "binary_source_HP_co2_nitrogen_scalar": 941.6,
+      "binary_source_HP_nitrogen_oxygen_scalar": 985.4,
+      "control_PG_public_HP_scalar": 65884.1,
+      "control_PG_public_HP_batch1024": 98158.3,
+      "control_PG_compiled_HP_scalar": 106140.4,
+      "control_PG_compiled_HP_batch1024": 147553.3,
+      "control_bicubic_public_HP_scalar": 145387.7,
+      "control_bicubic_public_HP_batch1024": 196976.1,
+      "control_bicubic_compiled_HP_scalar": 157697.5,
+      "control_bicubic_compiled_HP_batch1024": 241700.1
+    },
+    "current3": {
+      "binary_source_HP_water_nitrogen_liquid08_scalar": 572.6,
+      "binary_source_HP_water_nitrogen_batch16": 4802.6,
+      "binary_source_HP_water_nitrogen_liquid02_scalar": 535.1,
+      "binary_source_HP_co2_nitrogen_scalar": 2163.1,
+      "binary_source_HP_nitrogen_oxygen_scalar": 519.0,
+      "control_PG_public_HP_scalar": 68870.9,
+      "control_PG_public_HP_batch1024": 98080.8,
+      "control_PG_compiled_HP_scalar": 92639.2,
+      "control_PG_compiled_HP_batch1024": 153254.8,
+      "control_bicubic_public_HP_scalar": 148636.5,
+      "control_bicubic_public_HP_batch1024": 211328.1,
+      "control_bicubic_compiled_HP_scalar": 157518.8,
+      "control_bicubic_compiled_HP_batch1024": 243448.6,
+      "new_binary_PG_public_PT_scalar": 529.4,
+      "new_binary_PG_compiled_PT_scalar": 272203.1,
+      "new_binary_PG_compiled_PT_batch1024": 448918.1,
+      "new_binary_PG_public_HP_scalar": 353.6,
+      "new_binary_PG_compiled_HP_scalar": 337639.4,
+      "new_binary_PG_compiled_HP_batch1024": 572181.4,
+      "new_binary_PG_public_PS_scalar": 723.4,
+      "new_binary_PG_compiled_PS_scalar": 397243.1,
+      "new_binary_PG_compiled_PS_batch1024": 651435.3,
+      "new_binary_bicubic_PG_public_PT_scalar": 513.4,
+      "new_binary_bicubic_PG_compiled_PT_scalar": 855778.5,
+      "new_binary_bicubic_PG_compiled_PT_batch128": 998480.1,
+      "new_binary_bicubic_PG_public_HP_scalar": 708.8,
+      "new_binary_bicubic_PG_compiled_HP_scalar": 2481200.9,
+      "new_binary_bicubic_PG_compiled_HP_batch128": 3713169.2,
+      "new_binary_bicubic_PG_public_PS_scalar": 650.5,
+      "new_binary_bicubic_PG_compiled_PS_scalar": 2589627.9,
+      "new_binary_bicubic_PG_compiled_PS_batch128": 3701902.0,
+      "new_binary_callback_compiled_PT_scalar": 794.2,
+      "new_binary_callback_compiled_HP_scalar": 1179.9
+    },
+    "current4": {
+      "binary_source_HP_water_nitrogen_liquid08_scalar": 808.5,
+      "binary_source_HP_water_nitrogen_batch16": 5559.0,
+      "binary_source_HP_water_nitrogen_liquid02_scalar": 538.1,
+      "binary_source_HP_co2_nitrogen_scalar": 2895.8,
+      "binary_source_HP_nitrogen_oxygen_scalar": 438.9,
+      "control_PG_public_HP_scalar": 65559.7,
+      "control_PG_public_HP_batch1024": 100267.8,
+      "control_PG_compiled_HP_scalar": 87214.1,
+      "control_PG_compiled_HP_batch1024": 139840.4,
+      "control_bicubic_public_HP_scalar": 144080.6,
+      "control_bicubic_public_HP_batch1024": 201095.6,
+      "control_bicubic_compiled_HP_scalar": 154066.7,
+      "control_bicubic_compiled_HP_batch1024": 234765.5,
+      "new_binary_PG_public_PT_scalar": 324.3,
+      "new_binary_PG_compiled_PT_scalar": 277906.3,
+      "new_binary_PG_compiled_PT_batch1024": 491223.2,
+      "new_binary_PG_public_HP_scalar": 285.6,
+      "new_binary_PG_compiled_HP_scalar": 353063.0,
+      "new_binary_PG_compiled_HP_batch1024": 564770.0,
+      "new_binary_PG_public_PS_scalar": 517.8,
+      "new_binary_PG_compiled_PS_scalar": 340084.6,
+      "new_binary_PG_compiled_PS_batch1024": 558451.5,
+      "new_binary_bicubic_PG_public_PT_scalar": 420.1,
+      "new_binary_bicubic_PG_compiled_PT_scalar": 832909.4,
+      "new_binary_bicubic_PG_compiled_PT_batch128": 1003131.4,
+      "new_binary_bicubic_PG_public_HP_scalar": 443.5,
+      "new_binary_bicubic_PG_compiled_HP_scalar": 2449623.5,
+      "new_binary_bicubic_PG_compiled_HP_batch128": 3701768.3,
+      "new_binary_bicubic_PG_public_PS_scalar": 551.7,
+      "new_binary_bicubic_PG_compiled_PS_scalar": 2819126.2,
+      "new_binary_bicubic_PG_compiled_PS_batch128": 3686389.3,
+      "new_binary_callback_compiled_PT_scalar": 723.0,
+      "new_binary_callback_compiled_HP_scalar": 1213.6
+    },
+    "baseline4": {
+      "binary_source_HP_water_nitrogen_liquid08_scalar": 1126.8,
+      "binary_source_HP_water_nitrogen_batch16": 13513.3,
+      "binary_source_HP_water_nitrogen_liquid02_scalar": 932.6,
+      "binary_source_HP_co2_nitrogen_scalar": 1088.3,
+      "binary_source_HP_nitrogen_oxygen_scalar": 863.6,
+      "control_PG_public_HP_scalar": 67179.3,
+      "control_PG_public_HP_batch1024": 102962.6,
+      "control_PG_compiled_HP_scalar": 96632.5,
+      "control_PG_compiled_HP_batch1024": 168716.1,
+      "control_bicubic_public_HP_scalar": 179000.8,
+      "control_bicubic_public_HP_batch1024": 221067.2,
+      "control_bicubic_compiled_HP_scalar": 154148.5,
+      "control_bicubic_compiled_HP_batch1024": 236172.8
+    }
+  },
+  "rows": [
+    {
+      "case": "binary_source_HP_water_nitrogen_liquid08_scalar",
+      "baseline": {
+        "median_us": 1117.055625,
+        "iqr_us": [
+          1091.67,
+          1159.0434375
+        ]
+      },
+      "current": {
+        "median_us": 536.06375,
+        "iqr_us": [
+          523.10375,
+          550.7525
+        ]
+      },
+      "current_over_baseline": 0.4798899338607243,
+      "paired_ratios": [
+        0.48723116292294566,
+        0.48967758146121954,
+        0.4749028139771171,
+        0.4580009760276527
+      ]
+    },
+    {
+      "case": "binary_source_HP_water_nitrogen_batch16",
+      "baseline": {
+        "median_us": 16784.4125,
+        "iqr_us": [
+          16597.78125,
+          17089.371875
+        ]
+      },
+      "current": {
+        "median_us": 5705.68125,
+        "iqr_us": [
+          5472.31875,
+          5803.284375
+        ]
+      },
+      "current_over_baseline": 0.3399392889086824,
+      "paired_ratios": [
+        0.34754237107856695,
+        0.3427649271386731,
+        0.32310827958281196,
+        0.3384814415388639
+      ]
+    },
+    {
+      "case": "binary_source_HP_water_nitrogen_liquid02_scalar",
+      "baseline": {
+        "median_us": 1017.266875,
+        "iqr_us": [
+          986.221875,
+          1052.560625
+        ]
+      },
+      "current": {
+        "median_us": 468.34187499999996,
+        "iqr_us": [
+          455.9459375,
+          496.5625
+        ]
+      },
+      "current_over_baseline": 0.4603923380479679,
+      "paired_ratios": [
+        0.46024264652765545,
+        0.4529816319159097,
+        0.46104736276219,
+        0.4832973772240268
+      ]
+    },
+    {
+      "case": "binary_source_HP_co2_nitrogen_scalar",
+      "baseline": {
+        "median_us": 954.35,
+        "iqr_us": [
+          922.2525,
+          985.495
+        ]
+      },
+      "current": {
+        "median_us": 495.15812500000004,
+        "iqr_us": [
+          480.7784375,
+          509.420625
+        ]
+      },
+      "current_over_baseline": 0.5188433226803584,
+      "paired_ratios": [
+        0.5102799273908475,
+        0.5380468663067479,
+        0.5118207478313666,
+        0.5302939907080657
+      ]
+    },
+    {
+      "case": "binary_source_HP_nitrogen_oxygen_scalar",
+      "baseline": {
+        "median_us": 933.94625,
+        "iqr_us": [
+          896.9584375,
+          963.8490625
+        ]
+      },
+      "current": {
+        "median_us": 434.484375,
+        "iqr_us": [
+          424.1128125,
+          448.063125
+        ]
+      },
+      "current_over_baseline": 0.46521346919054496,
+      "paired_ratios": [
+        0.4783099996656003,
+        0.48495732988793205,
+        0.48101287978952867,
+        0.44239462710688615
+      ]
+    },
+    {
+      "case": "control_PG_public_HP_scalar",
+      "baseline": {
+        "median_us": 49.95233333333333,
+        "iqr_us": [
+          48.261916666666664,
+          51.732083333333335
+        ]
+      },
+      "current": {
+        "median_us": 49.826166666666666,
+        "iqr_us": [
+          47.72983333333333,
+          51.43866666666667
+        ]
+      },
+      "current_over_baseline": 0.9974742587933831,
+      "paired_ratios": [
+        1.013207924754853,
+        0.9529965605619963,
+        1.0269034628355223,
+        1.0048601263375014
+      ]
+    },
+    {
+      "case": "control_PG_public_HP_batch1024",
+      "baseline": {
+        "median_us": 134.3025,
+        "iqr_us": [
+          125.42406249999999,
+          143.255
+        ]
+      },
+      "current": {
+        "median_us": 136.164375,
+        "iqr_us": [
+          124.7984375,
+          177.943125
+        ]
+      },
+      "current_over_baseline": 1.0138632936840342,
+      "paired_ratios": [
+        1.097128523601938,
+        1.0152956572584761,
+        0.8424603784575307,
+        1.0180413559134531
+      ]
+    },
+    {
+      "case": "control_PG_compiled_HP_scalar",
+      "baseline": {
+        "median_us": 35.036500000000004,
+        "iqr_us": [
+          33.69265,
+          36.9465
+        ]
+      },
+      "current": {
+        "median_us": 34.9854,
+        "iqr_us": [
+          33.45399999999999,
+          37.2228
+        ]
+      },
+      "current_over_baseline": 0.9985415209852581,
+      "paired_ratios": [
+        0.9784011220196352,
+        0.9576805893453992,
+        1.0106228735479472,
+        1.0064598656859611
+      ]
+    },
+    {
+      "case": "control_PG_compiled_HP_batch1024",
+      "baseline": {
+        "median_us": 94.699,
+        "iqr_us": [
+          85.41749999999999,
+          105.18116666666667
+        ]
+      },
+      "current": {
+        "median_us": 96.42466666666667,
+        "iqr_us": [
+          90.39683333333333,
+          106.06016666666667
+        ]
+      },
+      "current_over_baseline": 1.0182226493063988,
+      "paired_ratios": [
+        1.0782264130460069,
+        1.0982588007092091,
+        0.8869387805267752,
+        1.1619468961942516
+      ]
+    },
+    {
+      "case": "control_bicubic_public_HP_scalar",
+      "baseline": {
+        "median_us": 109.4855,
+        "iqr_us": [
+          105.99991666666668,
+          114.718
+        ]
+      },
+      "current": {
+        "median_us": 108.87566666666666,
+        "iqr_us": [
+          104.8235,
+          121.76658333333333
+        ]
+      },
+      "current_over_baseline": 0.9944300082354892,
+      "paired_ratios": [
+        0.9614120385178957,
+        0.9968684854939873,
+        0.9506124050069672,
+        1.1406363481835178
+      ]
+    },
+    {
+      "case": "control_bicubic_public_HP_batch1024",
+      "baseline": {
+        "median_us": 761.819375,
+        "iqr_us": [
+          737.020625,
+          807.9359375
+        ]
+      },
+      "current": {
+        "median_us": 759.926875,
+        "iqr_us": [
+          731.3171875,
+          787.4618750000001
+        ]
+      },
+      "current_over_baseline": 0.9975158153466496,
+      "paired_ratios": [
+        0.9810747421560996,
+        1.024275610012621,
+        0.9648983624936461,
+        1.037644869165595
+      ]
+    },
+    {
+      "case": "control_bicubic_compiled_HP_scalar",
+      "baseline": {
+        "median_us": 65.326,
+        "iqr_us": [
+          62.2947,
+          78.1688
+        ]
+      },
+      "current": {
+        "median_us": 61.6064,
+        "iqr_us": [
+          58.79045,
+          78.1657
+        ]
+      },
+      "current_over_baseline": 0.9430609558215719,
+      "paired_ratios": [
+        0.9310663898488336,
+        0.8863811292357787,
+        0.9507242540460348,
+        0.9527184470722739
+      ]
+    },
+    {
+      "case": "control_bicubic_compiled_HP_batch1024",
+      "baseline": {
+        "median_us": 607.109,
+        "iqr_us": [
+          593.7388333333333,
+          632.7381666666666
+        ]
+      },
+      "current": {
+        "median_us": 624.039,
+        "iqr_us": [
+          597.7813333333334,
+          664.6041666666667
+        ]
+      },
+      "current_over_baseline": 1.027886260951493,
+      "paired_ratios": [
+        1.0036969713918173,
+        1.0376988429692033,
+        1.0035691626981815,
+        1.0867060466998573
+      ]
+    }
+  ],
+  "new_only_rows": [
+    {
+      "case": "new_binary_PG_public_PT_scalar",
+      "current": {
+        "median_us": 190.5916666666667,
+        "iqr_us": [
+          171.2395,
+          249.88783333333333
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_PG_compiled_PT_scalar",
+      "current": {
+        "median_us": 50.8562,
+        "iqr_us": [
+          47.911500000000004,
+          56.3545
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_PG_compiled_PT_batch1024",
+      "current": {
+        "median_us": 419.94500000000005,
+        "iqr_us": [
+          367.6105,
+          449.567
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_PG_public_HP_scalar",
+      "current": {
+        "median_us": 206.69333333333333,
+        "iqr_us": [
+          182.31683333333334,
+          297.35316666666665
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_PG_compiled_HP_scalar",
+      "current": {
+        "median_us": 53.6142,
+        "iqr_us": [
+          45.3952,
+          60.496
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_PG_compiled_HP_batch1024",
+      "current": {
+        "median_us": 492.401,
+        "iqr_us": [
+          444.945,
+          551.9515
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_PG_public_PS_scalar",
+      "current": {
+        "median_us": 205.67233333333334,
+        "iqr_us": [
+          178.81383333333332,
+          268.1921666666667
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_PG_compiled_PS_scalar",
+      "current": {
+        "median_us": 52.0852,
+        "iqr_us": [
+          48.2875,
+          81.4334
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_PG_compiled_PS_batch1024",
+      "current": {
+        "median_us": 455.245,
+        "iqr_us": [
+          401.2805,
+          529.257
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_bicubic_PG_public_PT_scalar",
+      "current": {
+        "median_us": 304.483,
+        "iqr_us": [
+          265.1981666666667,
+          360.6501666666667
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_bicubic_PG_compiled_PT_scalar",
+      "current": {
+        "median_us": 92.4936,
+        "iqr_us": [
+          85.2403,
+          110.1756
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_bicubic_PG_compiled_PT_batch128",
+      "current": {
+        "median_us": 274.894,
+        "iqr_us": [
+          248.53300000000002,
+          329.1505
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_bicubic_PG_public_HP_scalar",
+      "current": {
+        "median_us": 319.89866666666666,
+        "iqr_us": [
+          307.52733333333333,
+          337.4128333333333
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_bicubic_PG_compiled_HP_scalar",
+      "current": {
+        "median_us": 123.321,
+        "iqr_us": [
+          117.1173,
+          130.2532
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_bicubic_PG_compiled_HP_batch128",
+      "current": {
+        "median_us": 771.531,
+        "iqr_us": [
+          744.9929999999999,
+          835.9945
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_bicubic_PG_public_PS_scalar",
+      "current": {
+        "median_us": 343.38,
+        "iqr_us": [
+          321.14683333333335,
+          401.8841666666667
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_bicubic_PG_compiled_PS_scalar",
+      "current": {
+        "median_us": 141.0708,
+        "iqr_us": [
+          134.70159999999998,
+          173.5498
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_bicubic_PG_compiled_PS_batch128",
+      "current": {
+        "median_us": 980.4100000000001,
+        "iqr_us": [
+          920.821,
+          1107.6644999999999
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_callback_compiled_PT_scalar",
+      "current": {
+        "median_us": 529.80625,
+        "iqr_us": [
+          513.4937500000001,
+          558.475625
+        ]
+      },
+      "comparable_legacy": false
+    },
+    {
+      "case": "new_binary_callback_compiled_HP_scalar",
+      "current": {
+        "median_us": 717.59375,
+        "iqr_us": [
+          690.39625,
+          738.48875
+        ]
+      },
+      "comparable_legacy": false
+    }
+  ]
+}

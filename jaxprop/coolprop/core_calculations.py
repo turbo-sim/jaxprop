@@ -7,6 +7,14 @@ from .. import math
 from .. import utils
 
 from ..helpers_props import PROPERTY_ALIASES, ALIAS_TO_CANONICAL
+from ..fluid_api import SOURCE_PROPERTIES, DIAGNOSTIC_PROPERTIES
+from collections.abc import Mapping
+from ..errors import (
+    ConvergenceError,
+    InvalidConfigurationError,
+    InvalidStateError,
+    UnsupportedPropertyError,
+)
 from .source_context import helper_state
 
 _OPTIONAL_PROPERTY_ERRORS = (
@@ -35,7 +43,7 @@ def _optional_divide(numerator, denominator):
 
 
 class _DiagnosticStateView:
-    """Read original scalar inputs after legacy response helpers perturb AS."""
+    """Read fixed scalar inputs throughout one isolated diagnostic transaction."""
 
     def __init__(self, state, properties, phase, quality):
         self._state = state
@@ -67,8 +75,80 @@ class _DiagnosticStateView:
     def Q(self):
         return self._quality
 
+    @property
+    def _reference_source_state(self):
+        """Use raw source thermodynamics solely to verify a helper's gauge.
+
+        Homogeneous Helmholtz snapshots can lie inside the equilibrium dome;
+        their h/s intentionally differ from the underlying equilibrium flash.
+        They must still supply their own scalars to actual diagnostics.
+        """
+        return getattr(self._state, "_reference_source_state", self._state)
+
     def __getattr__(self, name):
         return getattr(self._state, name)
+
+
+class _SaturationDiagnosticTransaction:
+    """Share only requested endpoint samples within one diagnostic call.
+
+    The owning evaluator holds its source lock. This short-lived cache stores
+    immutable scalar samples, not a mutable source state shared across calls.
+    Failure of a bubble, dew or pseudo-critical request is cached independently;
+    unrelated optional diagnostics can still succeed.
+    """
+
+    def __init__(self, state, source_context):
+        self.state = helper_state(state, source_context)
+        self.context = source_context
+        self.samples = {}
+        self.critical_pressure = (
+            state.p_critical()
+            if source_context is None
+            else source_context.critical_pressure
+        )
+        self.critical_temperature = (
+            state.T_critical()
+            if source_context is None
+            else source_context.critical_temperature
+        )
+        self.critical_density = (
+            state.rhomass_critical()
+            if source_context is None
+            else source_context.critical_density
+        )
+        self.triple_temperature = (
+            state.Ttriple()
+            if source_context is None
+            else source_context.triple_temperature
+        )
+
+    def sample(self, pair, first, second):
+        key = pair, float(first), float(second)
+        if key not in self.samples:
+            try:
+                self.state.update(*key)
+                self.samples[key] = {
+                    "temperature": self.state.T(),
+                    "pressure": self.state.p(),
+                    "enthalpy": self.state.hmass(),
+                    "cp": _optional_value(self.state.cpmass),
+                }
+            except _OPTIONAL_PROPERTY_ERRORS:
+                self.samples[key] = None
+        value = self.samples[key]
+        if value is None:
+            raise ValueError("This source saturation endpoint is unavailable.")
+        return value
+
+    def triple_pressure(self, quality):
+        if self.context is not None:
+            return (
+                self.context.triple_pressure_liquid
+                if quality == 0
+                else self.context.triple_pressure_vapor
+            )
+        return self.sample(CP.QT_INPUTS, quality, self.triple_temperature)["pressure"]
 
 
 def _add_optional_diagnostics(
@@ -79,14 +159,19 @@ def _add_optional_diagnostics(
     if quality is None:
         quality = _optional_value(state.Q)
     original = _DiagnosticStateView(state, properties, phase, quality)
+    transaction = _SaturationDiagnosticTransaction(original, source_context)
     properties = calculate_supersaturation(
-        original, properties, source_context=source_context
+        original, properties, source_context=source_context, _transaction=transaction
     )
     properties["subcooling"] = _optional_value(
-        lambda: calculate_subcooling(original, source_context=source_context)
+        lambda: calculate_subcooling(
+            original, source_context=source_context, _transaction=transaction
+        )
     )
     properties["superheating"] = _optional_value(
-        lambda: calculate_superheating(original, source_context=source_context)
+        lambda: calculate_superheating(
+            original, source_context=source_context, _transaction=transaction
+        )
     )
     return properties
 
@@ -205,8 +290,6 @@ def compute_properties_1phase(
         "is_two_phase": 0.0,
         "quality_volume": q_vol,
         "surface_tension": np.nan,
-        "subcooling": np.nan,
-        "superheating": np.nan,
     }
 
     # Note: behavior of quality and void fraction in the single phase region should produce a behavior that is consistent with the two-phase values to ensure barotropy polynomials are well posed.
@@ -226,81 +309,69 @@ def compute_properties_1phase(
 def compute_properties_2phase(
     abstract_state, supersaturation=False, source_context=None
 ):
-    """Compute two-phase fluid properties from CoolProp abstract state
+    """Return homogeneous-equilibrium responses of the actual source PQ map.
 
-    Get two-phase properties from mixing rules and single-phase CoolProp properties
+    Phase-change mass transfer is included in equilibrium response functions.
+    In particular, cv is not a mass average of phase heat capacities. For a pure
+    fluid in the dome, temperature is fixed by pressure: cp, expansion,
+    isothermal compressibility and (dh/dp)_T are singular or not uniquely defined
+    and remain unavailable. Exact endpoints expose one-phase responses instead.
 
-    Homogeneous equilibrium model
-
-    TODO State formulas for T=T, p=p, mfrac/vfrac(rho), h-s-g-u-cp-cv, mu-k, a
-
+    Pseudo-pure source models have temperature glide. Phase densities come from
+    the actual flash, not a new QT flash at the bulk temperature. PQ Jacobians
+    respect each backend's empirical interpolation geometry. Sound speed is
+    sqrt((dp/drho)_s), equivalent to the usual pure-fluid HEM sound relation.
+    Transport retains an empirical phase-volume average of the pressure's
+    bubble/dew endpoint correlations. In particular, REFPROP does not expose
+    actual quality-dependent phase transport through its saturation getters;
+    these endpoint averages are a model approximation, not an exact mixture law.
     """
-    # --- basic properties
     AS = abstract_state
-    T = AS.T()
-    p = AS.p()
-    rho = AS.rhomass()
-    u = AS.umass()
-    h = AS.hmass()
-    s = AS.smass()
-    if supersaturation:
-        original_phase, original_quality = AS.phase(), AS.Q()
-    try:
-        surface_tension = AS.surface_tension()
-    except Exception:
-        surface_tension = np.nan
+    T, p, rho = AS.T(), AS.p(), AS.rhomass()
+    u, h, s, q = AS.umass(), AS.hmass(), AS.smass(), AS.Q()
+    if q == 0.0 or q == 1.0:
+        props = compute_properties_1phase(AS, source_context=source_context)
+        props["is_two_phase"] = 1.0
+        props["surface_tension"] = _optional_value(AS.surface_tension)
+        if supersaturation:
+            props = _add_optional_diagnostics(AS, props, source_context)
+        return props
 
-    # --- saturation states for mixing
-    cloned_AS = helper_state(AS, source_context)
-    cloned_AS.update(CP.QT_INPUTS, 0.0, T)
-    rho_L = cloned_AS.rhomass()
-    cp_L = _optional_value(cloned_AS.cpmass)
-    cv_L = _optional_value(cloned_AS.cvmass)
-    k_L = get_conductivity(cloned_AS)
-    mu_L = get_viscosity(cloned_AS)
-    a_L = _optional_value(cloned_AS.speed_sound)
-    dsdp_L = _optional_value(lambda: compute_dsdp_q(cloned_AS, p, quality=0.0))
+    # REFPROP pseudo-pure densities depend on the actual quality flash; even
+    # pressure-endpoint densities can give an incorrect volume lever rule.
+    rho_L = _optional_value(lambda: AS.saturated_liquid_keyed_output(CP.iDmass))
+    rho_V = _optional_value(lambda: AS.saturated_vapor_keyed_output(CP.iDmass))
+    vfrac_V = _optional_divide(q * rho, rho_V)
+    vfrac_L = _optional_divide((1.0 - q) * rho, rho_L)
 
-    cloned_AS.update(CP.QT_INPUTS, 1.0, T)
-    rho_V = cloned_AS.rhomass()
-    cp_V = _optional_value(cloned_AS.cpmass)
-    cv_V = _optional_value(cloned_AS.cvmass)
-    k_V = get_conductivity(cloned_AS)
-    mu_V = get_viscosity(cloned_AS)
-    a_V = _optional_value(cloned_AS.speed_sound)
-    dsdp_V = _optional_value(lambda: compute_dsdp_q(cloned_AS, p, quality=1.0))
-
-    # --- volume/mass fractions
-    vfrac_V = (rho - rho_L) / (rho_V - rho_L)
-    vfrac_L = 1.0 - vfrac_V
-    mfrac_V = (1 / rho - 1 / rho_L) / (1 / rho_V - 1 / rho_L)
-    mfrac_L = 1.0 - mfrac_V
-
-    # --- mixture cp, cv
-    cp = mfrac_L * cp_L + mfrac_V * cp_V
-    cv = mfrac_L * cv_L + mfrac_V * cv_V
-    gamma = cp / cv
-
-    # --- transport properties
-    k = vfrac_L * k_L + vfrac_V * k_V
-    mu = vfrac_L * mu_L + vfrac_V * mu_V
-
-    # --- compressibility factor
-    M = AS.molar_mass()
-    Z = p / (rho * (AS.gas_constant() / M) * T)
-
-    # --- speed of sound (HEM)
-    B1 = vfrac_L / (rho_L * a_L**2) + vfrac_V / (rho_V * a_V**2)
-    B2 = vfrac_L * rho_L / cp_L * dsdp_L**2 + vfrac_V * rho_V / cp_V * dsdp_V**2
-    comp_HEM = B1 + T * B2
-    if mfrac_V < 1e-6:
-        a = a_L
-    elif mfrac_V > 1.0 - 1e-6:
-        a = a_V
-    else:
-        a = (1 / rho / comp_HEM) ** 0.5
-
-    # --- final dict (canonical only)
+    scratch = helper_state(AS, source_context)
+    scratch.update(CP.PQ_INPUTS, p, 0.0)
+    k_L, mu_L = get_conductivity(scratch), get_viscosity(scratch)
+    liquid = (scratch.rhomass(), scratch.hmass(), scratch.smass(), scratch.umass())
+    scratch.update(CP.PQ_INPUTS, p, 1.0)
+    k_V, mu_V = get_conductivity(scratch), get_viscosity(scratch)
+    vapor = (scratch.rhomass(), scratch.hmass(), scratch.smass(), scratch.umass())
+    pseudo = (
+        source_context.is_pseudo_pure
+        if source_context is not None
+        else CP.get_fluid_param_string(AS.fluid_names()[0], "pure") == "false"
+    )
+    q_derivatives = (
+        None
+        if pseudo
+        else np.asarray(
+            (
+                0.0,
+                -(rho**2) * (1.0 / vapor[0] - 1.0 / liquid[0]),
+                vapor[1] - liquid[1],
+                vapor[2] - liquid[2],
+                vapor[3] - liquid[3],
+            )
+        )
+    )
+    response = _two_phase_responses(
+        scratch, p, q, rho, pseudo, q_derivatives=q_derivatives
+    )
     props = {
         "temperature": T,
         "pressure": p,
@@ -308,140 +379,292 @@ def compute_properties_2phase(
         "internal_energy": u,
         "enthalpy": h,
         "entropy": s,
-        "isochoric_heat_capacity": cv,
-        "isobaric_heat_capacity": cp,
-        "heat_capacity_ratio": gamma,
-        "compressibility_factor": Z,
-        "speed_of_sound": a,
-        "isentropic_bulk_modulus": rho * a**2,
-        "isentropic_compressibility": 1.0 / (rho * a**2),
-        "isothermal_bulk_modulus": np.nan,
-        "isothermal_compressibility": np.nan,
-        "isobaric_expansion_coefficient": np.nan,
-        "gruneisen": _optional_value(lambda: compute_gruneisen(AS)),
-        "isothermal_joule_thomson": _optional_value(
-            lambda: compute_isothermal_joule_thomson(AS)
-        ),
-        "joule_thomson": _optional_value(lambda: compute_joule_thomson(AS)),
-        "viscosity": mu,
-        "conductivity": k,
-        "quality_mass": mfrac_V,
+        "compressibility_factor": p / (rho * (AS.gas_constant() / AS.molar_mass()) * T),
+        **response,
+        "viscosity": vfrac_L * mu_L + vfrac_V * mu_V,
+        "conductivity": vfrac_L * k_L + vfrac_V * k_V,
+        "quality_mass": q,
         "quality_volume": vfrac_V,
-        "surface_tension": surface_tension,
+        "surface_tension": _optional_value(AS.surface_tension),
         "is_two_phase": 1.0,
-        "subcooling": np.nan,
-        "superheating": np.nan,
     }
-
     if supersaturation:
-        props = _add_optional_diagnostics(
-            AS, props, source_context, phase=original_phase, quality=original_quality
-        )
-
+        props = _add_optional_diagnostics(AS, props, source_context)
     return props
 
 
+def _two_phase_responses(
+    scratch,
+    pressure,
+    quality,
+    density,
+    pseudo,
+    *,
+    relative_step=1e-5,
+    q_derivatives=None,
+):
+    """Differentiate the PQ map without perturbing the primary source state.
+
+    Central pressure/quality differences use at most four probes, sharing
+    analytically known pure quality slopes from already sampled endpoints.
+    For f(p,q),
+    cv=(u_p*rho_q-u_q*rho_p)/(T_p*rho_q-T_q*rho_p). Corresponding Jacobian ratios
+    give the sound speed, Gruneisen and Joule--Thomson coefficients. Steps depend
+    on physical coordinates, never the arbitrary energy/entropy references.
+
+    Pseudo-pure correlations can approximate thermodynamic identities
+    differently: these fields describe derivatives of their actual flash map.
+    """
+    names = (
+        "isochoric_heat_capacity",
+        "isobaric_heat_capacity",
+        "heat_capacity_ratio",
+        "speed_of_sound",
+        "isentropic_bulk_modulus",
+        "isentropic_compressibility",
+        "isothermal_bulk_modulus",
+        "isothermal_compressibility",
+        "isobaric_expansion_coefficient",
+        "gruneisen",
+        "isothermal_joule_thomson",
+        "joule_thomson",
+    )
+    result = dict.fromkeys(names, np.nan)
+
+    def sample(p, q):
+        scratch.update(CP.PQ_INPUTS, p, q)
+        return np.asarray(
+            (
+                scratch.T(),
+                scratch.rhomass(),
+                scratch.hmass(),
+                scratch.smass(),
+                scratch.umass(),
+            )
+        )
+
+    try:
+        dp = max(pressure * relative_step, 1e-3)
+        dq = min(relative_step, quality / 4, (1.0 - quality) / 4)
+        if not np.isfinite(dq) or dq <= 0:
+            return result
+        q_lo, q_hi = max(0.0, quality - dq), min(1.0, quality + dq)
+        d_p = (sample(pressure + dp, quality) - sample(pressure - dp, quality)) / (
+            2 * dp
+        )
+        d_q = (
+            q_derivatives
+            if q_derivatives is not None
+            else (sample(pressure, q_hi) - sample(pressure, q_lo)) / (q_hi - q_lo)
+        )
+        tp, rp, hp, sp, up = d_p
+        tq, rq, hq, sq, uq = d_q
+        # Pure saturation temperature has no independent quality coordinate.
+        if not pseudo:
+            tq = 0.0
+        determinant_u_rho = up * rq - uq * rp
+        cv = _optional_divide(determinant_u_rho, tp * rq - tq * rp)
+        cp = _optional_divide(hq, tq) if pseudo else np.nan
+        a_squared = _optional_divide(1.0, rp - _optional_divide(rq * sp, sq))
+        speed = np.sqrt(a_squared) if a_squared > 0 else np.nan
+        kappa_t = (
+            _optional_divide(rp - _optional_divide(rq * tp, tq), density)
+            if pseudo
+            else np.nan
+        )
+        result.update(
+            {
+                "isochoric_heat_capacity": cv,
+                "isobaric_heat_capacity": cp,
+                "heat_capacity_ratio": _optional_divide(cp, cv),
+                "speed_of_sound": speed,
+                "isentropic_bulk_modulus": density * a_squared,
+                "isentropic_compressibility": _optional_divide(
+                    1.0, density * a_squared
+                ),
+                "isothermal_compressibility": kappa_t,
+                "isothermal_bulk_modulus": _optional_divide(1.0, kappa_t),
+                "isobaric_expansion_coefficient": (
+                    _optional_divide(-rq, density * tq) if pseudo else np.nan
+                ),
+                "gruneisen": _optional_divide(rq, density * determinant_u_rho),
+                "joule_thomson": tp - _optional_divide(tq * hp, hq),
+                "isothermal_joule_thomson": (
+                    hp - _optional_divide(hq * tp, tq) if pseudo else np.nan
+                ),
+            }
+        )
+    except _OPTIONAL_PROPERTY_ERRORS:
+        pass
+    return result
+
+
+def _source_restore_recipe(state):
+    """Capture a reference-safe flash recipe without changing the source."""
+    quality = state.Q()
+    if state.phase() == CP.iphase_twophase and 0 <= quality <= 1:
+        return CP.PQ_INPUTS, state.p(), quality
+    # A one-phase PT flash also preserves REFPROP's phase/quality sentinel;
+    # a density/temperature restore can return a different nonphysical Q label.
+    return CP.PT_INPUTS, state.p(), state.T()
+
+
+def _derivative_scratch(state, source_context):
+    """Use prepared scratch, or restore a standalone object's original state."""
+    if source_context is not None and source_context.auxiliary_state is not state:
+        return source_context.auxiliary_state, None
+    return state, _source_restore_recipe(state)
+
+
+def _is_pseudo_source(state, source_context):
+    if source_context is not None:
+        return source_context.is_pseudo_pure
+    return CP.get_fluid_param_string(state.fluid_names()[0], "pure") == "false"
+
+
 def compute_dsdp_q(AS, pressure, quality, rel_dp=1e-4):
-    """
-    Compute ds/dp|q using analytic method if available, otherwise fall back to finite difference.
+    """Return a saturation entropy derivative without retaining perturbations.
 
-    Parameters:
-        AS : CoolProp.AbstractState
-            AbstractState instance (already configured with fluid and backend)
-        pressure : float
-            Pressure [Pa]
-        quality : float
-            Vapor quality. 0.0 for saturated liquid, 1.0 for saturated vapor
-        rel_dp : float
-            Relative pressure perturbation for finite difference (default: 1e-4)
-
-    Returns:
-        dsdp : float or np.nan
-            Derivative of entropy with respect to pressure at constant quality
+    Analytic endpoint derivatives are preferred. The finite-difference fallback
+    is central in pressure, with its physical step independent of entropy zero.
+    Even failed source flashes restore a standalone caller's original state.
     """
+    recipe = _source_restore_recipe(AS)
     try:
-        # Try analytic saturation derivative
-        AS.update(CP.PQ_INPUTS, pressure, quality)
-        dsdp = AS.first_saturation_deriv(CP.iSmass, CP.iP)
-        return dsdp
-    except ValueError:
-        try:
-            # Fallback: finite difference
-            dp = rel_dp * pressure
+        if not (
+            AS.phase() == CP.iphase_twophase
+            and AS.p() == pressure
+            and AS.Q() == quality
+        ):
             AS.update(CP.PQ_INPUTS, pressure, quality)
-            s0 = AS.smass()
+        try:
+            return AS.first_saturation_deriv(CP.iSmass, CP.iP)
+        except _OPTIONAL_PROPERTY_ERRORS:
+            dp = rel_dp * pressure
+            if not np.isfinite(dp) or dp <= 0:
+                return np.nan
             AS.update(CP.PQ_INPUTS, pressure + dp, quality)
-            s1 = AS.smass()
-            return (s1 - s0) / dp
-        except Exception:
+            above = AS.smass()
+            AS.update(CP.PQ_INPUTS, pressure - dp, quality)
+            below = AS.smass()
+            return (above - below) / (2 * dp)
+    except _OPTIONAL_PROPERTY_ERRORS:
+        return np.nan
+    finally:
+        AS.update(*recipe)
+
+
+def _equilibrium_derivative(AS, source_context, name, relative_step):
+    """Share actual PQ derivatives for an interior two-phase helper call."""
+    scratch, recipe = _derivative_scratch(AS, source_context)
+    try:
+        values = _two_phase_responses(
+            scratch,
+            AS.p(),
+            AS.Q(),
+            AS.rhomass(),
+            _is_pseudo_source(AS, source_context),
+            relative_step=relative_step,
+        )
+        return values[name]
+    finally:
+        if recipe is not None:
+            scratch.update(*recipe)
+
+
+def compute_gruneisen(AS, rel_du=1e-5, source_context=None):
+    """Return Gamma=(1/rho)*(dp/du)_rho while preserving source state.
+
+    Interior two-phase derivatives use the natural PQ map, avoiding unsupported
+    pseudo-pure density/energy flashes. Homogeneous analytic EOS derivatives
+    are preferred; a central energy fallback uses cv*T and p/rho as physical,
+    reference-independent scales. The primary configured state is untouched.
+    """
+    if AS.phase() == CP.iphase_twophase and 0 < AS.Q() < 1:
+        return _equilibrium_derivative(AS, source_context, "gruneisen", rel_du)
+    try:
+        return AS.first_partial_deriv(CP.iP, CP.iUmass, CP.iDmass) / AS.rhomass()
+    except _OPTIONAL_PROPERTY_ERRORS:
+        pass
+    scratch, recipe = _derivative_scratch(AS, source_context)
+    try:
+        rho, u = AS.rhomass(), AS.umass()
+        scale = max(abs(AS.cvmass() * AS.T()), abs(AS.p() / rho), 1.0)
+        du = rel_du * scale
+        if not np.isfinite(du) or du <= 0:
             return np.nan
-
-
-def compute_gruneisen(AS, rel_du=1e-5):
-    """
-    Compute Gruneisen parameter Γ = (1/rho) * (∂p/∂e)_rho
-    using finite differences.
-    """
-    try:
-        rho = AS.rhomass()
-        u0 = AS.umass()
-        p0 = AS.p()
-        du = rel_du * abs(u0)
-
-        # Perturb internal energy
-        AS.update(CP.DmassUmass_INPUTS, rho, u0 - du)
-        p1 = AS.p()
-
-        AS.update(CP.DmassUmass_INPUTS, rho, u0 + du)
-        p2 = AS.p()
-
-        dpde = (p2 - p1) / (2.0 * du)
-        Gamma = (1.0 / rho) * dpde
-        return Gamma
-    except Exception:
+        scratch.update(CP.DmassUmass_INPUTS, rho, u + du)
+        above = scratch.p()
+        scratch.update(CP.DmassUmass_INPUTS, rho, u - du)
+        below = scratch.p()
+        return (above - below) / (2 * du * rho)
+    except _OPTIONAL_PROPERTY_ERRORS:
         return np.nan
+    finally:
+        if recipe is not None:
+            scratch.update(*recipe)
 
 
-def compute_joule_thomson(AS, rel_dp=1e-5):
-    """
-    Compute Joule-Thomson coefficient μ_JT = (∂T/∂p)_h
-    using finite differences.
-    """
+def compute_joule_thomson(AS, rel_dp=1e-5, source_context=None):
+    """Return mu_JT=(dT/dp)_h with isolated analytic/central source evaluation."""
+    if AS.phase() == CP.iphase_twophase and 0 < AS.Q() < 1:
+        return _equilibrium_derivative(AS, source_context, "joule_thomson", rel_dp)
     try:
-        h = AS.hmass()
-        p0 = AS.p()
-        T0 = AS.T()
-        dp = rel_dp * p0
-
-        # Perturb pressure at constant enthalpy
-        AS.update(CP.HmassP_INPUTS, h, p0 + dp)
-        T1 = AS.T()
-
-        mu_JT = (T1 - T0) / dp
-        return mu_JT
-    except Exception:
-        return np.nan
-
-
-def compute_isothermal_joule_thomson(AS, rel_dp=1e-5):
-    """
-    Compute isothermal Joule-Thomson coefficient μ_T = (∂h/∂p)_T
-    using finite differences.
-    """
+        return AS.first_partial_deriv(CP.iT, CP.iP, CP.iHmass)
+    except _OPTIONAL_PROPERTY_ERRORS:
+        pass
+    scratch, recipe = _derivative_scratch(AS, source_context)
     try:
-        T = AS.T()
-        p0 = AS.p()
-        h0 = AS.hmass()
-        dp = rel_dp * p0
-
-        # Perturb pressure at constant T
-        AS.update(CP.PT_INPUTS, p0 + dp, T)
-        h1 = AS.hmass()
-
-        mu_T = (h1 - h0) / dp
-        return mu_T
-    except Exception:
+        p, h = AS.p(), AS.hmass()
+        dp = rel_dp * p
+        if not np.isfinite(dp) or dp <= 0:
+            return np.nan
+        scratch.update(CP.HmassP_INPUTS, h, p + dp)
+        above = scratch.T()
+        scratch.update(CP.HmassP_INPUTS, h, p - dp)
+        below = scratch.T()
+        return (above - below) / (2 * dp)
+    except _OPTIONAL_PROPERTY_ERRORS:
         return np.nan
+    finally:
+        if recipe is not None:
+            scratch.update(*recipe)
+
+
+def compute_isothermal_joule_thomson(AS, rel_dp=1e-5, source_context=None):
+    """Return mu_T=(dh/dp)_T, unavailable on a pure saturation manifold.
+
+    Pure interior states have dependent pressure and temperature, so this
+    derivative is not defined by an equilibrium two-phase EOS. A PT perturbation
+    would jump to a one-phase branch and produce a misleading finite number.
+    Pseudo-pure glide is differentiated through its actual PQ map instead.
+    """
+    if AS.phase() == CP.iphase_twophase and 0 < AS.Q() < 1:
+        if not _is_pseudo_source(AS, source_context):
+            return np.nan
+        return _equilibrium_derivative(
+            AS, source_context, "isothermal_joule_thomson", rel_dp
+        )
+    try:
+        return AS.first_partial_deriv(CP.iHmass, CP.iP, CP.iT)
+    except _OPTIONAL_PROPERTY_ERRORS:
+        pass
+    scratch, recipe = _derivative_scratch(AS, source_context)
+    try:
+        p, temperature = AS.p(), AS.T()
+        dp = rel_dp * p
+        if not np.isfinite(dp) or dp <= 0:
+            return np.nan
+        scratch.update(CP.PT_INPUTS, p + dp, temperature)
+        above = scratch.hmass()
+        scratch.update(CP.PT_INPUTS, p - dp, temperature)
+        below = scratch.hmass()
+        return (above - below) / (2 * dp)
+    except _OPTIONAL_PROPERTY_ERRORS:
+        return np.nan
+    finally:
+        if recipe is not None:
+            scratch.update(*recipe)
 
 
 # ------------------------------------------------------------------------------------ #
@@ -452,7 +675,12 @@ def _to_scalar(x):
 
 
 def compute_properties_metastable_rhoT(
-    abstract_state, rho, T, supersaturation=False, generalize_quality=False
+    abstract_state,
+    rho,
+    T,
+    supersaturation=False,
+    generalize_quality=False,
+    source_context=None,
 ):
     r"""
     Compute the thermodynamic properties of a fluid using temperature-density calls to the Helmholtz energy equation of state (HEOS).
@@ -467,6 +695,14 @@ def compute_properties_metastable_rhoT(
         Temperature of the fluid (K).
     supersaturation : bool, optional
         Whether to evaluate supersaturation properties. Default is False.
+    generalize_quality : bool, optional
+        Request the documented generalized entropy coordinate instead of the
+        trimmed one-phase label. Neither is an equilibrium vapor fraction for
+        a homogeneous metastable point.
+    source_context : SourceEvaluationContext, optional
+        Construction-prepared helper state and reference data matching the
+        supplied source. Configured Fluid calls provide this context so no
+        runtime source construction or later global reference convention is used.
 
     Returns
     -------
@@ -539,8 +775,25 @@ def compute_properties_metastable_rhoT(
     This function can be used to estimate metastable properties using the equation of state beyond the saturation lines.
     """
 
-    # print("Are we in compute_properties_metastable_rhoT?")
-    # print("We are in final metastable property calculation with rho-T inputs.")
+    # Homogeneous evaluation also serves spinodal searches, where pressure or
+    # bulk modulus can be negative. Only its independent coordinates must be
+    # finite and positive; do not silently project an unstable branch.
+    if (
+        np.ndim(rho) != 0
+        or np.ndim(T) != 0
+        or isinstance(rho, (bool, np.bool_))
+        or isinstance(T, (bool, np.bool_))
+    ):
+        raise InvalidStateError(
+            request="DmassT_INPUTS",
+            reason="Homogeneous density/temperature inputs must be real scalars.",
+        )
+    rho, T = float(rho), float(T)
+    if not np.isfinite(rho) or not np.isfinite(T) or rho <= 0 or T <= 0:
+        raise InvalidStateError(
+            request="DmassT_INPUTS",
+            reason="Homogeneous density and temperature must be finite and positive.",
+        )
     # Update CoolProp state
     AS = abstract_state
     # AS.update(CP.DmassT_INPUTS, _to_scalar(rho), _to_scalar(T))
@@ -549,9 +802,6 @@ def compute_properties_metastable_rhoT(
     # Fluid constants
     R = AS.gas_constant()
     M = AS.molar_mass()
-    T_crit = AS.T_critical()
-    rho_crit = AS.rhomass_critical()
-
     # Helmholtz derivatives use the EOS reducing coordinates. They need not
     # coincide with numerically determined critical coordinates (e.g. R134a).
     tau = AS.tau()
@@ -570,45 +820,47 @@ def compute_properties_metastable_rhoT(
     h = (R / M) * T * (tau * dalpha_dTau + delta * dalpha_dDelta)
     s = (R / M) * (tau * dalpha_dTau - alpha)
     cv = (R / M) * (-(tau**2) * d2alpha_dTau2)
+    density_response = 2 * delta * dalpha_dDelta + delta**2 * d2alpha_dDelta2
+    thermal_response = delta * dalpha_dDelta - delta * tau * d2alpha_dDelta_dTau
     cp = (R / M) * (
         -(tau**2) * d2alpha_dTau2
-        + (delta * dalpha_dDelta - delta * tau * d2alpha_dDelta_dTau) ** 2
-        / (2 * delta * dalpha_dDelta + delta**2 * d2alpha_dDelta2 + 1e-12)
+        + _optional_divide(thermal_response**2, density_response)
     )
-    gamma = cp / cv
+    gamma = _optional_divide(cp, cv)
 
     p = (R / M) * T * rho * delta * dalpha_dDelta
     Z = delta * dalpha_dDelta
 
     # Speed of sound
     a_square = (R / M * T) * (
-        (2 * delta * dalpha_dDelta + delta**2 * d2alpha_dDelta2)
-        - (delta * dalpha_dDelta - delta * tau * d2alpha_dDelta_dTau) ** 2
-        / (tau**2 * d2alpha_dTau2 + 1e-12)
+        density_response - _optional_divide(thermal_response**2, tau**2 * d2alpha_dTau2)
     )
     a = np.sqrt(a_square) if a_square > 0 else np.nan
 
     # Bulk/compressibility
     K_s = rho * a_square
-    kappa_s = 1.0 / K_s if K_s > 0 else np.nan
-    K_T = (R / M) * T * rho * (2 * delta * dalpha_dDelta + delta**2 * d2alpha_dDelta2)
-    kappa_T = 1.0 / (K_T + 1e-12)
-    alpha_p = (
-        (1 / T)
-        * (delta * dalpha_dDelta - delta * tau * d2alpha_dDelta_dTau)
-        / (2 * delta * dalpha_dDelta + delta**2 * d2alpha_dDelta2 + 1e-12)
-    )
+    kappa_s = _optional_divide(1.0, K_s)
+    K_T = (R / M) * T * rho * density_response
+    kappa_T = _optional_divide(1.0, K_T)
+    alpha_p = _optional_divide(thermal_response, T * density_response)
 
     # Transport
     mu = get_viscosity(AS)
     k = get_conductivity(AS)
 
     # Grüneisen
-    gruneisen = (alpha_p / kappa_T) / (rho * cv)
+    # Cancel the isothermal denominator analytically. At a spinodal alpha and
+    # cp diverge, but Gamma and mu_JT can retain finite well-defined limits.
+    gruneisen = _optional_divide((R / M) * thermal_response, cv)
 
     # Joule-Thomson
-    mu_JT = (alpha_p * T - 1.0) / (rho * cp)
-    mu_T = -mu_JT * cp
+    mu_JT = _optional_divide(
+        thermal_response - density_response,
+        rho
+        * (R / M)
+        * (thermal_response**2 - tau**2 * d2alpha_dTau2 * density_response),
+    )
+    mu_T = _optional_divide(density_response - thermal_response, rho * density_response)
 
     # Canonical dict
     props = {
@@ -637,33 +889,30 @@ def compute_properties_metastable_rhoT(
         "is_two_phase": 0.0,  # always for Helmholtz EoS
         "quality_mass": np.nan,
         "quality_volume": np.nan,
-        "subcooling": np.nan,
-        "superheating": np.nan,
-        "pressure_saturation": np.nan,
-        "supersaturation_ratio": np.nan,
-        "temperature_saturation": np.nan,
-        "supersaturation_degree": np.nan,
     }
 
-    # Supersaturation options
+    # Inside the envelope CoolProp's ordinary DmassT state can report an
+    # equilibrium pressure/entropy although its Helmholtz derivatives still
+    # describe the requested homogeneous point. Diagnostics must use the
+    # homogeneous scalars above and never label it a two-phase mixture.
+    diagnostic_state = _DiagnosticStateView(AS, props, CP.iphase_unknown, np.nan)
     if supersaturation:
-        props.update(calculate_supersaturation(AS, props))
+        props = _add_optional_diagnostics(diagnostic_state, props, source_context)
 
     # Quality handling
     if generalize_quality:
-        q_mass = calculate_generalized_quality(AS)
+        q_mass = calculate_generalized_quality(
+            diagnostic_state, source_context=source_context
+        )
         props["quality_mass"] = q_mass
         props["quality_volume"] = np.nan
         props["is_two_phase"] = False
     else:
-        # crude check vs critical entropy
-        fluids = AS.fluid_names()
-        cloned_AS = CP.AbstractState(AS.backend_name(), fluids[0])
-        cloned_AS.update(CP.DmassT_INPUTS, rho_crit, T_crit)
-        s_crit = cloned_AS.smass()
-        frac_mass = 1.0 if AS.smass() > s_crit else 0.0
+        frac_mass, frac_volume = calculate_trimmed_quality(
+            diagnostic_state, source_context=source_context
+        )
         props["quality_mass"] = frac_mass
-        props["quality_volume"] = frac_mass
+        props["quality_volume"] = frac_volume
         props["is_two_phase"] = False
 
     return props
@@ -760,6 +1009,7 @@ def compute_properties(
     solver_tolerance=1e-6,
     solver_max_iterations=100,
     print_convergence=False,
+    source_context=None,
 ):
     r"""
     .. _compute_properties:
@@ -780,12 +1030,21 @@ def compute_properties(
      
       
     
-    TODO    The calculations :math:`y_1(\rho,\, T)` and
-    :math:`y_2(\rho,\, T)` are performed by [dependns on input]
-    
-    equilibrium calculations (coolprop)
-    evaluating the Helmholtz energy equation of state.
-    blending of both
+    Equilibrium residuals use CoolProp's phase-equilibrium state. Metastable
+    residuals evaluate the homogeneous Helmholtz potential at the supplied
+    density and temperature, including continuation beyond saturation. The
+    blending route solves both branches for the same two target properties
+    before interpolating their numerical properties. That interpolation is a
+    constitutive transition model, not a single differentiated EOS potential;
+    independent thermodynamic identities need not hold inside its transition.
+
+    Density/temperature pairs are evaluated directly without a root or initial
+    guess. Other pairs require finite positive density/temperature guesses.
+    Energy and entropy residuals use the reference-invariant scales
+    :math:`R_sT_c` and :math:`R_s`, where :math:`R_s` belongs to the selected EOS.
+    Zero quality/energy targets therefore remain well-defined. Solver success
+    is checked against the actual final thermodynamic residual independently
+    of its termination flag.
 
 
     Parameters
@@ -822,6 +1081,9 @@ def compute_properties(
         Maximum number of iterations of the solver. Defaults to 100.
     print_convergence : bool, optional
         If True, displays the convergence progress. Defaults to False.
+    source_context : SourceEvaluationContext, optional
+        Matching configured helper/reference context, reused throughout the
+        complete solve. The owning Fluid holds its reentrant transaction lock.
 
     Returns
     -------
@@ -829,9 +1091,110 @@ def compute_properties(
         Thermodynamic properties corresponding to the given input pair.
     """
 
+    # Construction/settings errors are independent of the numerical failure
+    # policy. Validate them before a solver can mutate the source state.
+    for name in (prop_1, prop_2):
+        if not isinstance(name, str) or name not in ALIAS_TO_CANONICAL:
+            raise UnsupportedPropertyError(
+                request=str(name),
+                reason="Unknown thermodynamic property name or alias.",
+            )
+    for option, value in (
+        ("supersaturation", supersaturation),
+        ("generalize_quality", generalize_quality),
+        ("print_convergence", print_convergence),
+    ):
+        if not isinstance(value, (bool, np.bool_)):
+            raise InvalidConfigurationError(
+                request=option, reason="Expected a static boolean."
+            )
+    available = SOURCE_PROPERTIES | (
+        DIAGNOSTIC_PROPERTIES if supersaturation else frozenset()
+    )
+    for name in (prop_1, prop_2):
+        canonical = ALIAS_TO_CANONICAL[name]
+        if canonical not in available:
+            raise UnsupportedPropertyError(
+                request=canonical,
+                reason="This source calculation does not enable the requested input property.",
+                supported=tuple(sorted(available)),
+            )
+    if ALIAS_TO_CANONICAL[prop_1] == ALIAS_TO_CANONICAL[prop_2]:
+        raise InvalidConfigurationError(
+            request="input_properties", reason="Two distinct properties are required."
+        )
+    if not isinstance(solver_algorithm, str) or solver_algorithm not in ("hybr", "lm"):
+        raise InvalidConfigurationError(
+            request="solver_algorithm",
+            reason="Unsupported thermodynamic root algorithm.",
+            supported=("hybr", "lm"),
+        )
+    tolerance_array = np.asarray(solver_tolerance)
+    if (
+        tolerance_array.shape != ()
+        or tolerance_array.dtype.kind not in "fiu"
+        or not np.isfinite(tolerance_array)
+        or tolerance_array <= 0
+    ):
+        raise InvalidConfigurationError(
+            request="solver_tolerance", reason="Expected a finite positive tolerance."
+        )
+    if (
+        isinstance(solver_max_iterations, (bool, np.bool_))
+        or not isinstance(solver_max_iterations, (int, np.integer))
+        or solver_max_iterations < 1
+    ):
+        raise InvalidConfigurationError(
+            request="solver_max_iterations", reason="Expected a positive integer."
+        )
+
+    if calculation_type == "blending":
+        _validated_blending_settings(
+            phase_change, blending_variable, blending_onset, blending_width
+        )
+    for name, value in ((prop_1, prop_1_value), (prop_2, prop_2_value)):
+        array = np.asarray(value)
+        if array.shape != () or array.dtype.kind not in "fiu" or not np.isfinite(array):
+            raise InvalidStateError(
+                request=ALIAS_TO_CANONICAL[name],
+                reason="Expected a finite real scalar thermodynamic input.",
+            )
+        if ALIAS_TO_CANONICAL[name] in {"density", "temperature"} and array <= 0:
+            raise InvalidStateError(
+                request=ALIAS_TO_CANONICAL[name],
+                reason="Density and temperature inputs must be positive.",
+            )
+
+    coordinates = {
+        ALIAS_TO_CANONICAL[prop_1]: prop_1_value,
+        ALIAS_TO_CANONICAL[prop_2]: prop_2_value,
+    }
+    if coordinates.keys() == {"density", "temperature"}:
+        if calculation_type == "metastable":
+            return compute_properties_metastable_rhoT(
+                abstract_state,
+                coordinates["density"],
+                coordinates["temperature"],
+                supersaturation=supersaturation,
+                generalize_quality=generalize_quality,
+                source_context=source_context,
+            )
+        if calculation_type == "equilibrium":
+            return compute_properties_coolprop(
+                abstract_state,
+                CP.DmassT_INPUTS,
+                coordinates["density"],
+                coordinates["temperature"],
+                supersaturation=supersaturation,
+                generalize_quality=generalize_quality,
+                source_context=source_context,
+            )
+
     # Perform calculations according to specified type
     if calculation_type == "equilibrium":
-        rho_guess, T_guess = np.asarray(rhoT_guess_equilibrium)
+        rho_guess, T_guess = _validated_flash_guess(
+            rhoT_guess_equilibrium, "rhoT_guess_equilibrium"
+        )
         return _perform_flash_calculation(
             abstract_state=abstract_state,
             prop_1=prop_1,
@@ -847,11 +1210,13 @@ def compute_properties(
             solver_tolerance=solver_tolerance,
             solver_max_iterations=solver_max_iterations,
             print_convergence=print_convergence,
+            source_context=source_context,
         )
 
     elif calculation_type == "metastable":
-        # print("Are we here?")
-        rho_guess, T_guess = np.asarray(rhoT_guess_metastable)
+        rho_guess, T_guess = _validated_flash_guess(
+            rhoT_guess_metastable, "rhoT_guess_metastable"
+        )
         return _perform_flash_calculation(
             abstract_state=abstract_state,
             prop_1=prop_1,
@@ -867,6 +1232,7 @@ def compute_properties(
             solver_tolerance=solver_tolerance,
             solver_max_iterations=solver_max_iterations,
             print_convergence=print_convergence,
+            source_context=source_context,
         )
 
     elif calculation_type == "blending":
@@ -884,10 +1250,20 @@ def compute_properties(
                 f"   3. blending_onset: {blending_onset}\n"
                 f"   4. blending_width: {blending_width}\n"
             )
-            raise ValueError(msg)
+            raise InvalidConfigurationError(request="blending", reason=msg)
+
+        # Normalize/validate the settings before either potentially costly flash.
+        phase_change, blending_variable = _validated_blending_settings(
+            phase_change, blending_variable, blending_onset, blending_width
+        )
 
         # Equilibrium state
-        rho_guess, T_guess = np.asarray(rhoT_guess_equilibrium)
+        rho_guess, T_guess = _validated_flash_guess(
+            rhoT_guess_equilibrium, "rhoT_guess_equilibrium"
+        )
+        meta_guess = _validated_flash_guess(
+            rhoT_guess_metastable, "rhoT_guess_metastable"
+        )
         props_eq = _perform_flash_calculation(
             abstract_state=abstract_state,
             prop_1=prop_1,
@@ -903,10 +1279,11 @@ def compute_properties(
             solver_tolerance=solver_tolerance,
             solver_max_iterations=solver_max_iterations,
             print_convergence=print_convergence,
+            source_context=source_context,
         )
 
         # Metastable properties
-        rho_guess, T_guess = np.asarray(rhoT_guess_metastable)
+        rho_guess, T_guess = meta_guess
         props_meta = _perform_flash_calculation(
             abstract_state=abstract_state,
             prop_1=prop_1,
@@ -922,6 +1299,7 @@ def compute_properties(
             solver_tolerance=solver_tolerance,
             solver_max_iterations=solver_max_iterations,
             print_convergence=print_convergence,
+            source_context=source_context,
         )
         props_meta["quality_mass"] = 1.00 if phase_change == "condensation" else 0.00
 
@@ -937,10 +1315,34 @@ def compute_properties(
 
         return props_blended, props_eq, props_meta
 
-    raise ValueError(f"Unknown calculation type: {calculation_type}")
+    raise InvalidConfigurationError(
+        request="calculation_type",
+        reason=f"Unknown calculation type: {calculation_type}",
+        supported=("equilibrium", "metastable", "blending"),
+    )
 
 
 # Helper functions
+def _validated_flash_guess(value, name):
+    """Validate one legacy scalar-solver guess before unpacking or source work."""
+    try:
+        array = np.asarray(value)
+        valid = (
+            array.shape == (2,)
+            and array.dtype.kind in "fiu"
+            and np.all(np.isfinite(array))
+            and np.all(array > 0)
+        )
+    except (TypeError, ValueError):
+        valid = False
+    if not valid:
+        raise InvalidConfigurationError(
+            request=name,
+            reason="Expected two finite positive scalar guesses: density and temperature.",
+        )
+    return tuple(float(item) for item in array)
+
+
 def _perform_flash_calculation(
     abstract_state,
     prop_1,
@@ -956,23 +1358,33 @@ def _perform_flash_calculation(
     solver_tolerance,
     solver_max_iterations,
     print_convergence,
+    source_context=None,
 ):
 
     # Normalize property names to canonical ---
     try:
         prop_1 = ALIAS_TO_CANONICAL[prop_1]
     except KeyError:
-        raise ValueError(f"Unknown property name or alias: {prop_1}")
+        raise UnsupportedPropertyError(
+            request=prop_1, reason="Unknown property name or alias."
+        )
 
     try:
         prop_2 = ALIAS_TO_CANONICAL[prop_2]
     except KeyError:
-        raise ValueError(f"Unknown property name or alias: {prop_2}")
+        raise UnsupportedPropertyError(
+            request=prop_2, reason="Unknown property name or alias."
+        )
 
     # Ensure prop_1_value and prop_2_value are scalar numbers
-    if not utils.is_float(prop_1_value) or not utils.is_float(prop_2_value):
+    if (
+        not utils.is_float(prop_1_value)
+        or not utils.is_float(prop_2_value)
+        or not np.isfinite(prop_1_value)
+        or not np.isfinite(prop_2_value)
+    ):
         msg = f"Both prop_1_value and prop_2_value must be scalar numbers. Received: prop_1_value={prop_1_value}, prop_2_value={prop_2_value}"
-        raise ValueError(msg)
+        raise InvalidStateError(request="input_properties", reason=msg)
 
     # Validate initial guesses for rho and T
     if not utils.is_float(rho_guess) or not utils.is_float(T_guess):
@@ -988,6 +1400,7 @@ def _perform_flash_calculation(
             prop_2=T,
             generalize_quality=generalize_quality,
             supersaturation=supersaturation,
+            source_context=source_context,
         )
     elif calculation_type == "metastable":
         # print("Are we here in the metastable section of _perform_flash_calculation?")
@@ -997,14 +1410,23 @@ def _perform_flash_calculation(
             T=T,
             generalize_quality=generalize_quality,
             supersaturation=supersaturation,
+            source_context=source_context,
         )
     else:
         msg = f"Invalid calculation type '{calculation_type}'. Valid options are: 'equilibrium' and 'metastable'"
-        raise ValueError(msg)
+        raise InvalidConfigurationError(request="calculation_type", reason=msg)
 
     # Define the problem (find root of temperature-density residual)
     rho_crit = abstract_state.rhomass_critical()
     T_crit = abstract_state.T_critical()
+    specific_R = abstract_state.gas_constant() / abstract_state.molar_mass()
+    invariant_scales = {
+        "enthalpy": specific_R * T_crit,
+        "internal_energy": specific_R * T_crit,
+        "entropy": specific_R,
+        "quality_mass": 1.0,
+        "quality_volume": 1.0,
+    }
     # print(f"rho_crit: {rho_crit}, T_crit: {T_crit}")
 
     problem = _FlashCalculationResidual(
@@ -1015,6 +1437,10 @@ def _perform_flash_calculation(
         function_handle=function_handle,
         rho_scale=rho_crit,
         T_scale=T_crit,
+        residual_scales=tuple(
+            invariant_scales.get(name, max(abs(float(value)), 1.0))
+            for name, value in ((prop_1, prop_1_value), (prop_2, prop_2_value))
+        ),
     )
 
     # Define root-finding solver object
@@ -1033,18 +1459,52 @@ def _perform_flash_calculation(
     # x0 = np.asarray([rho_guess, T_guess])
 
     x0_reduced = np.asarray([rho_guess / rho_crit, T_guess / T_crit])
-    xf_reduced = solver.solve(x0_reduced)
+    try:
+        xf_reduced = solver.solve(x0_reduced)
+    except (InvalidConfigurationError, UnsupportedPropertyError):
+        raise
+    except (
+        InvalidStateError,
+        ValueError,
+        RuntimeError,
+        OverflowError,
+        FloatingPointError,
+    ) as cause:
+        # The public targets/guess were validated before iteration. A solver
+        # stepping outside the homogeneous/source domain is nonconvergence,
+        # rather than invalid caller input or a partially successful state.
+        raise ConvergenceError(
+            request=calculation_type,
+            reason=f"A thermodynamic root iterate could not be evaluated: {cause}",
+        ) from cause
+    xf_reduced = np.asarray(xf_reduced)
+    if (
+        xf_reduced.shape != (2,)
+        or not np.all(np.isfinite(xf_reduced))
+        or np.any(xf_reduced <= 0)
+    ):
+        raise ConvergenceError(
+            request=calculation_type,
+            reason="The root solver returned invalid density/temperature coordinates.",
+        )
     rho, T = xf_reduced[0] * rho_crit, xf_reduced[1] * T_crit
 
     # Check if solver converged
     if not solver.success:
         msg = f"Property calculation did not converge for calculation_type={calculation_type}.\n{solver.message}"
-        raise ValueError(msg)
+        raise ConvergenceError(request=calculation_type, reason=msg)
 
     props = problem.compute_properties(rho, T)
-    # print("hello the props should be printed below\n")
-    # print(f"Final props: {props}")
-    # props["residual"]  = np.linalg.norm(problem.residual(xf_reduced))
+    residual = problem.residual(xf_reduced)
+    # An LM least-squares termination flag can describe a stationary point with
+    # a nonzero thermodynamic residual. Validate the returned root independently.
+    if not np.all(np.isfinite(residual)) or np.max(np.abs(residual)) > max(
+        5 * solver_tolerance, 1e-10
+    ):
+        raise ConvergenceError(
+            request=calculation_type,
+            reason=f"Solver terminated without a validated thermodynamic root: residual={residual}.",
+        )
     return props
 
 
@@ -1060,6 +1520,7 @@ class _FlashCalculationResidual(psv.NonlinearSystemProblem):
         function_handle,
         rho_scale,
         T_scale,
+        residual_scales=None,
     ):
         self.prop_1 = prop_1
         self.prop_2 = prop_2
@@ -1068,6 +1529,12 @@ class _FlashCalculationResidual(psv.NonlinearSystemProblem):
         self.compute_properties = function_handle
         self.rho_scale = rho_scale
         self.T_scale = T_scale
+        # A target may be exactly zero after an arbitrary h/s reference shift,
+        # or at a quality endpoint. Never divide by that target itself.
+        self.residual_scales = residual_scales or (
+            max(abs(float(prop_1_value)), 1.0),
+            max(abs(float(prop_2_value)), 1.0),
+        )
 
     def residual(self, x):
         # Ensure x can be indexed and contains exactly two elements
@@ -1081,16 +1548,16 @@ class _FlashCalculationResidual(psv.NonlinearSystemProblem):
         props = self.compute_properties(rho, T)
 
         # Compute residual
-        def compute_residual(prop_name, target_value):
+        def compute_residual(prop_name, target_value, scale):
             value = props[prop_name]
-            # if prop_name == "quality_mass":
-            if prop_name == "Q":
-                return value - target_value
-            else:
-                return 1.0 - value / target_value
+            return (value - target_value) / scale
 
-        res_1 = compute_residual(self.prop_1, self.prop_1_value)
-        res_2 = compute_residual(self.prop_2, self.prop_2_value)
+        res_1 = compute_residual(
+            self.prop_1, self.prop_1_value, self.residual_scales[0]
+        )
+        res_2 = compute_residual(
+            self.prop_2, self.prop_2_value, self.residual_scales[1]
+        )
 
         return np.asarray([res_1, res_2])
 
@@ -1104,7 +1571,15 @@ def blend_properties(
     blending_width,
 ):
     """
-    Calculate blending between equilibrum and metastable fluid properties
+    Calculate blending between equilibrium and metastable fluid properties.
+
+    A cubic smoothstep has zero slope at each transition endpoint. At an exact
+    endpoint the selected branch is recovered even if an optional field on the
+    inactive branch is unavailable. Inside the transition both optional values
+    are needed. ``is_two_phase`` is unavailable inside the constitutive blend,
+    since a fractional phase flag would not have its usual physical meaning.
+    The coordinate/factor are not returned as thermodynamic fields: ``sigma``
+    already denotes surface tension in the public property schema.
 
     Parameters
     ----------
@@ -1127,48 +1602,124 @@ def blend_properties(
         Blended thermodynamic properties.
     """
 
-    # Map aliases to their respective phase change
-    normalized_phase_change = PHASE_CHANGE_ALIASES.get(phase_change)
-
-    # Convert to dicts
-    props_equilibrium = props_equilibrium.to_dict()
-    props_metastable = props_metastable.to_dict()
-    blending_variable = ALIAS_TO_CANONICAL[blending_variable]
-
-    # Validate the normalized phase change
-    if normalized_phase_change is None:
-        msg = (
-            f"Invalid value for phase_change='{phase_change}'. "
-            f"Valid values are: {', '.join(PHASE_CHANGE_ALIASES.keys())}."
+    normalized_phase_change, blending_variable = _validated_blending_settings(
+        phase_change, blending_variable, blending_onset, blending_width
+    )
+    props_equilibrium = _blending_property_dict(props_equilibrium)
+    props_metastable = _blending_property_dict(props_metastable)
+    if blending_variable not in props_equilibrium:
+        raise UnsupportedPropertyError(
+            request=blending_variable,
+            reason="The equilibrium state does not enable the selected blending property.",
         )
-        raise ValueError(msg)
+    coordinate = np.asarray(props_equilibrium[blending_variable])
+    if not np.all(np.isfinite(coordinate)):
+        raise InvalidStateError(
+            request=blending_variable,
+            reason="The blending coordinate must be finite at every requested state.",
+        )
 
     # Calculate the value of "x" based on the normalized phase change
     if normalized_phase_change == "condensation":
-        x = 1 + (props_equilibrium[blending_variable] - blending_onset) / blending_width
+        x = 1 + (coordinate - blending_onset) / blending_width
     elif normalized_phase_change == "evaporation":
-        x = 1 - (props_equilibrium[blending_variable] - blending_onset) / blending_width
+        x = 1 - (coordinate - blending_onset) / blending_width
 
     # Calculate the blending factor sigma
-    sigma = math.sigmoid_smoothstep(x)
-    # sigma = math.sigmoid_smootherstep(x)
+    limited = np.clip(x, 0.0, 1.0)
+    sigma = limited * limited * (3.0 - 2.0 * limited)
 
     # Blend properties
     props_blended = {}
-    for key in props_equilibrium.keys():
+    for key in props_equilibrium.keys() | props_metastable.keys():
         prop_equilibrium = props_equilibrium.get(key, np.nan)
         prop_metastable = props_metastable.get(key, np.nan)
-        props_blended[key] = prop_equilibrium * (1 - sigma) + prop_metastable * sigma
-        # if utils.is_numeric(prop_equilibrium) and utils.is_numeric(prop_metastable):
-        # props_blended[key] = prop_equilibrium * (1 - sigma) + prop_metastable * sigma
-        # else:
-        #     props_blended[key] = None
+        # Exact endpoint selection avoids NaN*0 from an inactive optional field.
+        # The transition requires both endpoints. A phase flag is not a
+        # continuously blendable physical quantity.
+        interior = (
+            np.nan
+            if key == "is_two_phase"
+            else prop_equilibrium * (1 - sigma) + prop_metastable * sigma
+        )
+        props_blended[key] = np.where(
+            sigma == 0,
+            prop_equilibrium,
+            np.where(sigma == 1, prop_metastable, interior),
+        )
 
-    # Add additional properties
-    props_blended["x"] = x
-    props_blended["sigma"] = sigma
+    # The coordinate/factor are algorithm data, not extra thermodynamic fields.
+    # In particular, sigma is already the public alias for surface tension.
 
     return props_blended
+
+
+def _validated_blending_settings(phase_change, variable, onset, width):
+    """Normalize static constitutive settings before source/solver evaluation."""
+    normalized = (
+        PHASE_CHANGE_ALIASES.get(phase_change)
+        if isinstance(phase_change, str)
+        else None
+    )
+    if normalized is None:
+        raise InvalidConfigurationError(
+            request="phase_change",
+            reason="Unknown phase-change direction.",
+            supported=tuple(PHASE_CHANGE_ALIASES),
+        )
+    if not isinstance(variable, str) or variable not in ALIAS_TO_CANONICAL:
+        raise UnsupportedPropertyError(
+            request=str(variable), reason="Unknown blending property name or alias."
+        )
+    for name, value in (("blending_onset", onset), ("blending_width", width)):
+        array = np.asarray(value)
+        if (
+            array.shape != ()
+            or array.dtype.kind not in "fiu"
+            or not np.isfinite(array)
+            or (name == "blending_width" and array <= 0)
+        ):
+            raise InvalidConfigurationError(
+                request=name,
+                reason="Expected a finite scalar; blending width must be positive.",
+            )
+    return normalized, ALIAS_TO_CANONICAL[variable]
+
+
+def _blending_property_dict(properties):
+    """Accept public states or mappings and retain canonical numeric data."""
+    if hasattr(properties, "to_dict"):
+        properties = properties.to_dict()
+    if not isinstance(properties, Mapping):
+        raise InvalidConfigurationError(
+            request="blending_properties",
+            reason="Expected a FluidState or property mapping.",
+        )
+    result = {}
+    for name, value in properties.items():
+        if not isinstance(name, str) or name not in ALIAS_TO_CANONICAL:
+            raise UnsupportedPropertyError(
+                request=str(name),
+                reason="Unknown property in a blending input mapping.",
+            )
+        canonical = ALIAS_TO_CANONICAL[name]
+        array = np.asarray(value)
+        if canonical == "is_two_phase" and array.dtype.kind == "b":
+            array = array.astype(float)
+        if array.dtype.kind not in "fiu":
+            raise InvalidStateError(
+                request=canonical,
+                reason="Blended properties must be real numeric arrays.",
+            )
+        if canonical in result and not np.array_equal(
+            result[canonical], array, equal_nan=True
+        ):
+            raise InvalidConfigurationError(
+                request=canonical,
+                reason="Conflicting canonical and alias property values.",
+            )
+        result[canonical] = array
+    return result
 
 
 # ------------------------------------------------------------------------------------ #
@@ -1255,121 +1806,95 @@ def blend_properties(
 
 
 def calculate_generalized_quality(abstract_state, alpha=10, source_context=None):
-    r"""
-    Calculate the generalized quality of a fluid using specific entropy, extending the quality computation beyond
-    the two-phase region by extrapolating entropy values.
+    r"""Return physical quality in the dome and an entropy extension outside.
 
-    The quality, :math:`Q`, is given by:
+    Subcritical one-phase states use saturated entropies at their temperature:
+    Q=(s-s_L)/(s_V-s_L). For supercritical temperatures no physical vapor fraction
+    exists. The conventional entropy coordinate is centered on the source's
+    critical-density isochore, with positive half-width
+    R_specific*max(T/Tc-1, sqrt(machine_epsilon)). This gas-constant scale replaces
+    multiples of absolute critical entropy: reference changes cannot change the
+    indicator or reverse its orientation. The tiny reduced-temperature floor
+    defines the exact critical limit without division by zero.
 
-    .. math::
-
-        Q = \frac{s - s(T, Q=0)}{h(T, Q=1) - s(T, Q=0)}
-
-    where :math:`s` is the specific enthalpy and :math:`T` is the temperature.
-
-    Smoothing limiters keep the quality in the range [-1, 2] using a `logsumexp` formulation.
-
-    Parameters
-    ----------
-    abstract_state : CoolProp.AbstractState
-        CoolProp abstract state of the fluid.
-
-    alpha : float
-        Smoothing factor of the quality-calculation limiters.
-
-    Returns
-    -------
-    float
-        The calculated quality of the fluid.
+    Outside the physical dome the log-sum-exp limiters smoothly bound the
+    coordinate near [-1, 2]. It is an indicator, not an equilibrium quality or
+    metastable branch selector. Missing source endpoints remain unavailable.
     """
-    # Instantiate new abstract state to compute saturation properties without changing the state of the class
     AS = abstract_state
-    cloned_AS = helper_state(AS, source_context)
-
-    # Extend quality calculation beyond the two-phase region
-    # Checking if subcritical using temperature works better than with pressure
-    if AS.T() < AS.T_critical():
-        # Subcritical: use actual saturation properties
-        cloned_AS.update(CP.QT_INPUTS, 0.0, AS.T())
-        s_liq = cloned_AS.smass()
-
-        cloned_AS.update(CP.QT_INPUTS, 1.0, AS.T())
-        s_vap = cloned_AS.smass()
+    if not np.isfinite(alpha) or alpha <= 0:
+        raise ValueError(
+            "The quality smoothing parameter alpha must be finite and positive."
+        )
+    if AS.phase() == CP.iphase_twophase and 0.0 <= AS.Q() <= 1.0:
+        return float(AS.Q())
+    T = AS.T()
+    T_crit = (
+        AS.T_critical()
+        if source_context is None
+        else source_context.critical_temperature
+    )
+    scratch = helper_state(AS, source_context)
+    if T < T_crit:
+        scratch.update(CP.QT_INPUTS, 0.0, T)
+        s_liq = scratch.smass()
+        scratch.update(CP.QT_INPUTS, 1.0, T)
+        s_vap = scratch.smass()
+        quality = _optional_divide(AS.smass() - s_liq, s_vap - s_liq)
     else:
-        # Supercritical: extrapolate enthalpy bounds from critical point
-        # For states at or above the critical temperature, the concept of saturation states is not applicable
-        # Instead, an artificial two-phase region is created around the pseudo-critical density line (line of critical density)
-        # The width of the artificial two-phase region is assumed to increase linearly with temperature
-
-        T = AS.T()
-        rho_crit, T_crit = AS.rhomass_critical(), AS.T_critical()
-        if source_context is None:
-            cloned_AS.update(CP.DmassT_INPUTS, rho_crit, T_crit)
-            s_crit = cloned_AS.smass()
-        else:
-            s_crit = source_context.critical_entropy
-            if s_crit is None:
-                return np.nan
-
-        T_hat = 1.5 * T_crit
-        s_hat_liq = 1.1 * s_crit
-        s_hat_vap = 0.9 * s_crit
-        s_liq = s_crit + (s_hat_liq - s_crit) * (T - T_crit) / (T_hat - T_crit)
-        s_vap = s_crit + (s_hat_vap - s_crit) * (T - T_crit) / (T_hat - T_crit)
-
-    # Compute quality from enthalpy
-    s = AS.smass()
-    quality = (s - s_liq) / (s_vap - s_liq + 1e-6)
-
-    # Apply smooth limiting between [-1, 2]
-    quality = math.smooth_minimum(quality, 2, method="logsumexp", alpha=alpha)
-    quality = math.smooth_maximum(quality, -1, method="logsumexp", alpha=alpha)
-
-    return quality.item()
+        rho_crit = (
+            AS.rhomass_critical()
+            if source_context is None
+            else source_context.critical_density
+        )
+        entropy_scale = (
+            AS.gas_constant() / AS.molar_mass()
+            if source_context is None
+            else source_context.entropy_scale
+        )
+        scratch.update(CP.DmassT_INPUTS, rho_crit, T)
+        center = scratch.smass()
+        reduced_width = max(T / T_crit - 1.0, np.sqrt(np.finfo(float).eps))
+        quality = 0.5 + _optional_divide(
+            AS.smass() - center, 2 * entropy_scale * reduced_width
+        )
+    # This is an eager host-source helper. NumPy avoids separate JAX scalar
+    # dispatches solely to limit one scalar from an already eager EOS call.
+    quality = np.clip(quality, -1.0 - 100 / alpha, 2.0 + 100 / alpha)
+    quality = -np.logaddexp(-alpha * quality, -2.0 * alpha) / alpha
+    quality = np.logaddexp(alpha * quality, -alpha) / alpha
+    return float(quality)
 
 
 def calculate_trimmed_quality(abstract_state, source_context=None):
+    """Return exact flash quality/void fraction, or a one-phase entropy label.
 
-    # Instantiate new abstract state to compute saturation properties without changing the state of the class
+    Volume quality uses actual flashed vapor density, including the quality-
+    dependent density of gliding pseudo-pure REFPROP models. The one-phase 0/1
+    extension is only a critical-entropy label, not a physical vapor fraction.
+    """
     AS = abstract_state
-
-    # Retrieve single-phase properties
-    is_two_phase = abstract_state.phase() == CP.iphase_twophase
-    if not is_two_phase:
-
-        # Determine quality based on actual vs critical entropy
-        if source_context is None:
-            cloned_AS = helper_state(AS)
-            rho_crit, T_crit = AS.rhomass_critical(), AS.T_critical()
-            cloned_AS.update(CP.DmassT_INPUTS, rho_crit, T_crit)
-            s_crit = cloned_AS.smass()
-        else:
-            s_crit = source_context.critical_entropy
-            if s_crit is None:
-                return np.nan, np.nan
-        frac_mass = 1.0 if abstract_state.smass() > s_crit else 0.0
-        frac_vol = frac_mass
-
+    if AS.phase() == CP.iphase_twophase:
+        quality = AS.Q()
+        if quality == 0.0 or quality == 1.0:
+            return float(quality), float(quality)
+        vapor_density = _optional_value(
+            lambda: AS.saturated_vapor_keyed_output(CP.iDmass)
+        )
+        return float(quality), _optional_divide(quality * AS.rhomass(), vapor_density)
+    if source_context is None:
+        scratch = helper_state(AS)
+        scratch.update(CP.DmassT_INPUTS, AS.rhomass_critical(), AS.T_critical())
+        critical_entropy = scratch.smass()
     else:
-        cloned_AS = helper_state(AS, source_context)
-
-        # Saturated liquid density
-        cloned_AS.update(CP.QT_INPUTS, 0.00, AS.T())
-        rho_L = cloned_AS.rhomass()
-
-        # Saturated vapor density
-        cloned_AS.update(CP.QT_INPUTS, 1.00, AS.T())
-        rho_V = cloned_AS.rhomass()
-
-        # Mass and volume fractions of gas
-        rho_mix = AS.rhomass()
-        frac_mass = (rho_mix - rho_L) / (rho_V - rho_L)
-        frac_vol = (1 / rho_mix - 1 / rho_L) / (1 / rho_V - 1 / rho_L)
-
-    return frac_mass, frac_vol
+        critical_entropy = source_context.critical_entropy
+        if critical_entropy is None:
+            return np.nan, np.nan
+    quality = float(AS.smass() > critical_entropy)
+    return quality, quality
 
 
-def calculate_superheating(abstract_state, source_context=None):
+def calculate_superheating(abstract_state, source_context=None, *, _transaction=None):
     r"""
     Calculate the degree of superheating for a given CoolProp abstract state.
 
@@ -1424,56 +1949,22 @@ def calculate_superheating(abstract_state, source_context=None):
     >>> print(f"Superheating is {superheating:+0.3f} K")
     Superheating is -54.244 K
     """
-    # Instantiate new abstract state to compute saturation properties without changing the state of the class
     AS = abstract_state
-    sat_AS = helper_state(AS, source_context)
-
-    p_critical = (
-        AS.p_critical() if source_context is None else source_context.critical_pressure
+    transaction = _transaction or _SaturationDiagnosticTransaction(AS, source_context)
+    pressure, enthalpy, temperature = AS.p(), AS.hmass(), AS.T()
+    if pressure < transaction.critical_pressure:
+        minimum = transaction.triple_pressure(1.0)
+        endpoint = transaction.sample(CP.PQ_INPUTS, max(minimum, pressure), 1.0)
+        if enthalpy < endpoint["enthalpy"]:
+            return _optional_divide(enthalpy - endpoint["enthalpy"], endpoint["cp"])
+        return temperature - endpoint["temperature"]
+    endpoint = transaction.sample(
+        CP.DmassP_INPUTS, transaction.critical_density, pressure
     )
-
-    # Check if the pressure is below the critical pressure of the fluid
-    if AS.p() < p_critical:
-
-        # Compute triple pressure (needed to avoid error at low pressure)
-        if source_context is None:
-            sat_AS.update(CP.QT_INPUTS, 1.00, AS.Ttriple())
-            p_triple = sat_AS.p()
-        else:
-            p_triple = source_context.triple_pressure_vapor
-
-        # Set the saturation state of the fluid at the given pressure
-        sat_AS.update(CP.PQ_INPUTS, max(p_triple, AS.p()), 1.00)
-
-        # Check if the fluid is in the two-phase or liquid regions
-        if AS.hmass() < sat_AS.hmass():
-            # Below the vapor saturation enthalpy, define superheating as the normalized difference in enthalpy
-            # The normalization is done using the specific heat capacity at saturation (cp)
-            # This provides a continuous measure of superheating, even in the two-phase region
-            superheating = (AS.hmass() - sat_AS.hmass()) / sat_AS.cpmass()
-        else:
-            # Outside the two-phase region, superheating is the difference in temperature
-            # from the saturation temperature at the same pressure
-            superheating = AS.T() - sat_AS.T()
-    else:
-        # For states at or above the critical pressure, the concept of saturation temperature is not applicable
-        # Instead, use a 'pseudo-critical' state for comparison, where the density is set to the critical density
-        # but the pressure is the same as the state of interest
-        rho_crit = (
-            AS.rhomass_critical()
-            if source_context is None
-            else source_context.critical_density
-        )
-        sat_AS.update(CP.DmassP_INPUTS, rho_crit, AS.p())
-
-        # Define superheating as the difference in enthalpy from this 'pseudo-critical' state
-        # This approach extends the definition of superheating to conditions above the critical pressure
-        superheating = AS.T() - sat_AS.T()
-
-    return superheating
+    return temperature - endpoint["temperature"]
 
 
-def calculate_subcooling(abstract_state, source_context=None):
+def calculate_subcooling(abstract_state, source_context=None, *, _transaction=None):
     r"""
     Calculate the degree of subcooling for a given CoolProp abstract state.
 
@@ -1529,55 +2020,24 @@ def calculate_subcooling(abstract_state, source_context=None):
     Subcooling is -26.763 K
     """
 
-    # Instantiate new abstract state to compute saturation properties without changing the state of the class
     AS = abstract_state
-    sat_AS = helper_state(AS, source_context)
-    p_critical = (
-        AS.p_critical() if source_context is None else source_context.critical_pressure
+    transaction = _transaction or _SaturationDiagnosticTransaction(AS, source_context)
+    pressure, enthalpy, temperature = AS.p(), AS.hmass(), AS.T()
+    if pressure < transaction.critical_pressure:
+        minimum = transaction.triple_pressure(0.0)
+        endpoint = transaction.sample(CP.PQ_INPUTS, max(minimum, pressure), 0.0)
+        if enthalpy > endpoint["enthalpy"]:
+            return _optional_divide(endpoint["enthalpy"] - enthalpy, endpoint["cp"])
+        return endpoint["temperature"] - temperature
+    endpoint = transaction.sample(
+        CP.DmassP_INPUTS, transaction.critical_density, pressure
     )
-
-    # Check if the pressure is below the critical pressure of the fluid
-    if AS.p() < p_critical:
-
-        # Compute triple pressure (needed to avoid error at low pressure)
-        if source_context is None:
-            sat_AS.update(CP.QT_INPUTS, 0.00, AS.Ttriple())
-            p_triple = sat_AS.p()
-        else:
-            p_triple = source_context.triple_pressure_liquid
-
-        # Set the saturation state of the fluid at the given pressure
-        sat_AS.update(CP.PQ_INPUTS, max(p_triple, AS.p()), 0.00)
-
-        # Check if the fluid is in the two-phase or vapor regions
-        if AS.hmass() > sat_AS.hmass():
-            # Above the liquid saturation enthalpy, define superheating as the normalized difference in enthalpy
-            # The normalization is done using the specific heat capacity at saturation (cp)
-            # This provides a continuous measure of superheating, even in the two-phase region
-            subcooling = (sat_AS.hmass() - AS.hmass()) / sat_AS.cpmass()
-        else:
-            # Outside the two-phase region, superheating is the difference in temperature
-            # from the saturation temperature at the same pressure
-            subcooling = sat_AS.T() - AS.T()
-    else:
-        # For states at or above the critical pressure, the concept of saturation temperature is not applicable
-        # Instead, use a 'pseudo-critical' state for comparison, where the density is set to the critical density
-        # but the pressure is the same as the state of interest
-        rho_crit = (
-            AS.rhomass_critical()
-            if source_context is None
-            else source_context.critical_density
-        )
-        sat_AS.update(CP.DmassP_INPUTS, rho_crit, AS.p())
-
-        # Define superheating as the difference in enthalpy from this 'pseudo-critical' state
-        # This approach extends the definition of superheating to conditions above the critical pressure
-        subcooling = sat_AS.T() - AS.T()
-
-    return subcooling
+    return endpoint["temperature"] - temperature
 
 
-def calculate_supersaturation(abstract_state, props, source_context=None):
+def calculate_supersaturation(
+    abstract_state, props, source_context=None, *, _transaction=None
+):
     r"""
     Evaluate degree of supersaturation and supersaturation ratio.
 
@@ -1620,282 +2080,69 @@ def calculate_supersaturation(abstract_state, props, source_context=None):
         Thermodynamic properties including supersaturation properties
 
     """
-    # Use the bubble lower endpoint for bubble-temperature requests. In a
-    # pseudo-pure source it need not equal the dew endpoint pressure.
     AS = abstract_state
+    keys = (
+        "pressure_saturation",
+        "supersaturation_ratio",
+        "temperature_saturation",
+        "supersaturation_degree",
+    )
+    props.update(dict.fromkeys(keys, np.nan))
     try:
-        AS = helper_state(AS, source_context)
-        if source_context is None:
-            AS.update(CP.QT_INPUTS, 0.00, AS.Ttriple())
-            p_triple = AS.p()
-            T_triple, T_critical, p_critical = (
-                AS.Ttriple(),
-                AS.T_critical(),
-                AS.p_critical(),
-            )
-        else:
-            p_triple = source_context.triple_pressure_liquid
-            T_triple = source_context.triple_temperature
-            T_critical = source_context.critical_temperature
-            p_critical = source_context.critical_pressure
+        transaction = _transaction or _SaturationDiagnosticTransaction(
+            AS, source_context
+        )
+        minimum_pressure = transaction.triple_pressure(0.0)
     except _OPTIONAL_PROPERTY_ERRORS:
-        for key in (
-            "pressure_saturation",
-            "supersaturation_ratio",
-            "temperature_saturation",
-            "supersaturation_degree",
-        ):
-            props[key] = np.nan
         return props
 
-    # Compute supersaturation for subcritical states
-    if T_triple < props["temperature"] < T_critical:
+    if (
+        transaction.triple_temperature
+        < props["temperature"]
+        < transaction.critical_temperature
+    ):
         try:
-            AS.update(CP.QT_INPUTS, 0.00, props["temperature"])
-            props["pressure_saturation"] = AS.p()
-            props["supersaturation_ratio"] = props["pressure"] / AS.p()
+            endpoint = transaction.sample(CP.QT_INPUTS, 0.0, props["temperature"])
+            props["pressure_saturation"] = endpoint["pressure"]
+            props["supersaturation_ratio"] = props["pressure"] / endpoint["pressure"]
         except _OPTIONAL_PROPERTY_ERRORS:
-            props["pressure_saturation"] = props["supersaturation_ratio"] = np.nan
-    else:
-        props["pressure_saturation"] = np.nan
-        props["supersaturation_ratio"] = np.nan
-
-    if p_triple < props["pressure"] < p_critical:
+            pass
+    if minimum_pressure < props["pressure"] < transaction.critical_pressure:
         try:
-            AS.update(CP.PQ_INPUTS, props["pressure"], 0.00)
-            props["temperature_saturation"] = AS.T()
-            props["supersaturation_degree"] = props["temperature"] - AS.T()
+            endpoint = transaction.sample(CP.PQ_INPUTS, props["pressure"], 0.0)
+            props["temperature_saturation"] = endpoint["temperature"]
+            props["supersaturation_degree"] = (
+                props["temperature"] - endpoint["temperature"]
+            )
         except _OPTIONAL_PROPERTY_ERRORS:
-            props["temperature_saturation"] = props["supersaturation_degree"] = np.nan
-    else:
-        props["temperature_saturation"] = np.nan
-        props["supersaturation_degree"] = np.nan
-
-    return props
-
-    # # ------------------------------------------------------------------------------------ #
-    # # Properties of a two-component mixture (e.g., water and nitrogen)
-    # # ------------------------------------------------------------------------------------ #
-
-    # def calculate_mixture_properties(props_1, props_2, y_1, y_2):
-    #     """
-    #     Calculate the thermodynamic properties of the mixture.
-
-    #     TODO: add model equations and explanation
-
-    #     Parameters
-    #     ----------
-    #     state_1 : dict
-    #         Thermodynamic properties of fluid 1.
-    #     state_2 : dict
-    #         Thermodynamic properties of fluid 2.
-    #     y_1 : float
-    #         Mass fraction of fluid 1.
-    #     y_2 : float
-    #         Mass fraction of fluid 2.
-
-    #     Returns
-    #     -------
-    #     mixture_properties : dict
-    #         A dictionary containing the mixture's properties.
-    #     """
-
-    #     # Validate mass fractions
-    #     if not utils.is_float(y_1) or not utils.is_float(y_2) or np.abs(y_1 + y_2 - 1) > 1e-12:
-    #         raise ValueError(f"The mass fractions must be floats and their sum must equal 1. Received y_1={y_1} and y_2={y_2}.")
-
-    #     # Mass-averaged properties
-    #     cv = y_1 * props_1['cvmass'] + y_2 * props_2['cvmass']
-    #     cp = y_1 * props_1['cpmass'] + y_2 * props_2['cpmass']
-    #     umass = y_1 * props_1['umass'] + y_2 * props_2['umass']
-    #     hmass = y_1 * props_1['hmass'] + y_2 * props_2['hmass']
-    #     smass = y_1 * props_1['smass'] + y_2 * props_2['smass']
-
-    #     # Enthalpy derivative for the two-component barotropic model
-    #     alphaP_1 = props_1['isobaric_expansion_coefficient']
-    #     alphaP_2 = props_2['isobaric_expansion_coefficient']
-    #     dhdp_T_1 = (1 - props_1['T'] * alphaP_1) / props_1['rho']
-    #     dhdp_T_2 = (1 - props_2['T'] * alphaP_2) / props_2['rho']
-    #     dhdp_T = y_1 * dhdp_T_1 + y_2 * dhdp_T_2
-
-    #     # Compute volume fractions and void fraction
-    #     rho = 1 / (y_1 / props_1['rho'] + y_2 / props_2['rho'])
-    #     vol_1 = y_1 * rho/props_1['rhomass']
-    #     vol_2 = y_2 * rho/props_2['rhomass']
-    #     quality_mass = y_1 if props_1['rho'] < props_2['rho'] else vol_2
-    #     quality_volume = vol_1 if props_1['rho'] < props_2['rho'] else vol_2
-
-    #     # Isothermal compressibility
-    #     betaT_1 = props_1["isothermal_compressibility"]
-    #     betaT_2 = props_2["isothermal_compressibility"]
-    #     isothermal_compressibility = vol_1 * betaT_1 + vol_2 * betaT_2
-    #     isothermal_bulk_modulus = 1 / isothermal_compressibility
-
-    #     # Isentropic compressibility and speed of sound (Wood's formula)
-    #     betaS_1 = props_1["isentropic_compressibility"]
-    #     betaS_2 = props_2["isentropic_compressibility"]
-    #     isentropic_compressibility = vol_1 * betaS_1 + vol_2 * betaS_2
-    #     isentropic_bulk_modulus = 1 / isentropic_compressibility
-    #     speed_sound = np.sqrt(isentropic_bulk_modulus / rho)
-
-    #     # Transport properties as volume averages
-    #     conductivity = vol_1 * props_1['conductivity'] + vol_2 * props_2['conductivity']
-    #     viscosity = vol_1 * props_1['viscosity'] + vol_2 * props_2['viscosity']
-
-    #     # Group up mixture properties
-    #     props = {
-    #         "mass_frac_1": y_1,
-    #         "mass_frac_2": y_2,
-    #         "vol_frac_1": vol_1,
-    #         "vol_frac_2": vol_2,
-    #         "mixture_ratio": y_1 / y_2,
-    #         "quality_mass": quality_mass,
-    #         "quality_volume": quality_volume,
-    #         "pressure": props_1['p'],
-    #         "temperature": props_1['T'],
-    #         "density": rho,
-    #         "enthalpy": hmass,
-    #         "umass": umass,
-    #         "smass": smass,
-    #         "cvmass": cv,
-    #         "isobaric_heat_capacity": cp,
-    #         "isothermal_compressibility": isothermal_compressibility,
-    #         "isothermal_bulk_modulus": isothermal_bulk_modulus,
-    #         "isentropic_compressibility": isentropic_compressibility,
-    #         "isentropic_bulk_modulus": isentropic_bulk_modulus,
-    #         "speed_of_sound": speed_sound,
-    #         "conductivity": conductivity,
-    #         "viscosity": viscosity,
-    #         "viscosity_kinematic": viscosity / rho,
-    #         "dhdp_T": dhdp_T,
-    #     }
-
-    #     # # Add properties as aliases (if property exists)
-    #     # for key, value in PROPERTY_ALIASES.items():
-    #     #     props[key] = props.get(value, np.nan)
-
+            pass
     return props
 
 
 def calculate_mixture_properties_hp(h_mix, p_mix, AS1, AS2, R):
-    """
-    Calculate the thermodynamic properties of the mixture with h-p calls.
-
-    TODO: add model equations and explanation
+    """Evaluate the common-p/T parcel model from caller-owned source states.
 
     Parameters
     ----------
-    state_1 : dict
-        Thermodynamic properties of fluid 1.
-    state_2 : dict
-        Thermodynamic properties of fluid 2.
-    y_1 : float
-        Mass fraction of fluid 1.
-    y_2 : float
-        Mass fraction of fluid 2.
+    h_mix, p_mix : float
+        Mixture specific enthalpy [J/kg] and common pressure [Pa].
+    AS1, AS2 : CoolProp.AbstractState
+        Configured component states. Their existing reference conventions are
+        retained; this compatibility call does not reconstruct source objects.
     R : float
-        Mixture ratio defined as m_dot_1/m_dot_2
+        Nonnegative component mass ratio, mass_1 / mass_2.
+
     Returns
     -------
-    mixture_properties : dict
-        A dictionary containing the mixture's properties.
+    dict
+        Canonical full properties from the consolidated binary kernel. Density
+        uses additive specific volumes; h/u/s use mass weights. Thermal response
+        and acoustic properties follow the same equilibrium thermodynamics.
+
+    Repeated applications should construct Fluid(method='binary_mixture') once
+    and use its complete get_state API. This raw compatibility entry shares its
+    inverse and mixing implementation rather than maintaining a second model.
     """
+    from ..binary_mixture.host import legacy_hp
 
-    ### --- Find the h of each fluid ---
-    x1 = R / (R + 1)
-    x2 = 1 - x1
-
-    def residual_enthalpy(T, *args):
-        AS1.update(CP.PT_INPUTS, p_mix, T)
-        h1_guess = AS1.hmass()
-        AS2.update(CP.PT_INPUTS, p_mix, T)
-        h2_guess = AS2.hmass()
-        h_mix_guess = x1 * h1_guess + x2 * h2_guess
-        return h_mix - h_mix_guess
-
-    # Temperature bounds (analogous to your JAX code)
-    T_low = max(AS1.Ttriple(), AS2.Ttriple())
-    T_high = min(AS1.T_critical(), AS2.T_critical()) * 5.0
-
-    # Solve using root_scalar with Brent method
-    sol_root = root_scalar(
-        residual_enthalpy,
-        args=(AS1, AS2, x1, x2),  # your parameters
-        method="brentq",
-        bracket=[T_low, T_high],
-        xtol=1e-12,  # tolerance for convergence
-        rtol=1e-12,
-    )
-
-    T_mix = sol_root.root
-
-    AS1.update(CP.PT_INPUTS, p_mix, T_mix)
-    AS2.update(CP.PT_INPUTS, p_mix, T_mix)
-    props_1 = compute_properties_1phase(AS1)
-    props_2 = compute_properties_1phase(AS2)
-
-    # Compute volume fractions and void fraction v2
-    vol_1 = 1 / (1 + ((x2 / x1) * (props_1["density"] / props_2["density"])))
-    vol_2 = 1 - vol_1
-    rho = vol_1 * props_1["density"] + vol_2 * props_2["density"]
-
-    # Mass-averaged properties
-    cv = (
-        x1 * props_1["isochoric_heat_capacity"]
-        + x2 * props_2["isochoric_heat_capacity"]
-    )
-    cp = x1 * props_1["isobaric_heat_capacity"] + x2 * props_2["isobaric_heat_capacity"]
-    umass = x1 * props_1["internal_energy"] + x2 * props_2["internal_energy"]
-    smass = x1 * props_1["entropy"] + x2 * props_2["entropy"]
-
-    # Enthalpy derivative for the two-component barotropic model
-    kappaT_1 = props_1["isobaric_expansion_coefficient"]
-    kappaT_2 = props_2["isobaric_expansion_coefficient"]
-    kappaT = vol_1 * kappaT_1 + vol_2 * kappaT_2
-
-    # Isothermal compressibility
-    kappaP_1 = props_1["isothermal_compressibility"]
-    kappaP_2 = props_2["isothermal_compressibility"]
-    kappaP = vol_1 * kappaP_1 + vol_2 * kappaP_2
-    isothermal_bulk_modulus = 1 / kappaP
-
-    # Isentropic compressibility and speed of sound (Wood's formula)
-    betaS_1 = props_1["isentropic_compressibility"]
-    betaS_2 = props_2["isentropic_compressibility"]
-    isentropic_compressibility = x1 * betaS_1 + x2 * betaS_2  # TODO: to be checked
-    isentropic_bulk_modulus = 1 / isentropic_compressibility
-    speed_sound = (rho * kappaP - kappaT**2 * T_mix / cp) ** -0.5
-
-    # Transport properties as volume averages
-    conductivity = vol_1 * props_1["conductivity"] + vol_2 * props_2["conductivity"]
-    viscosity = vol_1 * props_1["viscosity"] + vol_2 * props_2["viscosity"]
-
-    gruneisen = (rho * cp * kappaP / kappaT - T_mix * kappaT) ** -1
-
-    # Group up mixture properties
-    props_mix = {
-        "mass_frac_1": x1,
-        "mass_frac_2": x2,
-        "vol_frac_1": vol_1,
-        "vol_frac_2": vol_2,
-        "mixture_ratio": R,
-        "pressure": p_mix,
-        "temperature": T_mix,
-        "density": rho,
-        "enthalpy": h_mix,
-        "internal_energy": umass,
-        "entropy": smass,
-        "isochoric_heat_capacity": cv,
-        "isobaric_heat_capacity": cp,
-        "isothermal_compressibility": kappaP,
-        "isobaric_expansion_coefficient": kappaT,
-        "isothermal_bulk_modulus": isothermal_bulk_modulus,
-        "isentropic_compressibility": isentropic_compressibility,
-        "isentropic_bulk_modulus": isentropic_bulk_modulus,
-        "speed_of_sound": speed_sound,
-        "conductivity": conductivity,
-        "viscosity": viscosity,
-        "gruneisen": gruneisen,
-    }
-
-    return props_mix
+    return legacy_hp(h_mix, p_mix, AS1, AS2, R)

@@ -237,7 +237,9 @@ def test_binary_source_identity_contains_both_sources_and_the_unrounded_mass_rat
     assert first["source_reference_id"] == (
         "binary_mixture",
         tuple(item["source_reference_id"] for item in first["components"]),
-        ("mass_ratio", 0.104),
+        ("mass_fractions", (0.104 / 1.104, 1.0 - 0.104 / 1.104)),
+        "common_pT_no_mass_exchange",
+        "pressure_temperature_equilibrium_acoustics",
     )
     assert first["source_reference_id"] != second["source_reference_id"]
     assert metadata_fingerprint(first) != metadata_fingerprint(second)

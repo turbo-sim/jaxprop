@@ -37,18 +37,23 @@ from . import bicubic
 
 # Import API classes
 from .perfect_gas import FluidPerfectGas
-from .coolprop import FluidCoolProp, FluidJAX, FluidMix
+from .coolprop import FluidCoolProp, FluidJAX
 from .bicubic import FluidBicubic
+from .binary_mixture import FluidBinaryMixture, FluidMix, FluidTwoComponent
 from .fluid import Fluid
 from .property_derivatives import PropertyDerivatives
 
 # Virtual registration leaves concrete evaluator inheritance and numerical
 # PyTrees unchanged, while exposing one runtime type for consuming packages.
-for _fluid_type in (FluidCoolProp, FluidJAX, FluidBicubic, FluidPerfectGas, FluidMix):
+for _fluid_type in (
+    FluidCoolProp,
+    FluidJAX,
+    FluidBicubic,
+    FluidPerfectGas,
+    FluidBinaryMixture,
+):
     Fluid.register(_fluid_type)
 del _fluid_type
-
-# from .two_component import FluidTwoComponent, get_mixture_state
 
 
 # Package info

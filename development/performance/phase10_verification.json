@@ -1,0 +1,204 @@
+{
+  "date_utc": "2026-11-14T01:21:36.912844+00:00",
+  "test_backends": [
+    "HEOS",
+    "REFPROP"
+  ],
+  "counts": {
+    "passed": 2733,
+    "xfailed": 2
+  },
+  "property_comparisons": 54272,
+  "finite_values_compared": 47867,
+  "unavailable_values_checked": 6405,
+  "failed_comparisons": 0,
+  "seconds": 619.1160969000048,
+  "source_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+  "source_unchanged_during_run": true,
+  "coverage_by_property": {
+    "pressure": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "temperature": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "density": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "enthalpy": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "entropy": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "internal_energy": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "isobaric_heat_capacity": {
+      "finite": 1616,
+      "unavailable": 774,
+      "failed": 0
+    },
+    "isochoric_heat_capacity": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "heat_capacity_ratio": {
+      "finite": 1616,
+      "unavailable": 774,
+      "failed": 0
+    },
+    "compressibility_factor": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "isothermal_compressibility": {
+      "finite": 1616,
+      "unavailable": 774,
+      "failed": 0
+    },
+    "isentropic_compressibility": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "isothermal_bulk_modulus": {
+      "finite": 1616,
+      "unavailable": 774,
+      "failed": 0
+    },
+    "isentropic_bulk_modulus": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "speed_of_sound": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "viscosity": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "conductivity": {
+      "finite": 2245,
+      "unavailable": 145,
+      "failed": 0
+    },
+    "gruneisen": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "isobaric_expansion_coefficient": {
+      "finite": 1616,
+      "unavailable": 774,
+      "failed": 0
+    },
+    "isothermal_joule_thomson": {
+      "finite": 1616,
+      "unavailable": 774,
+      "failed": 0
+    },
+    "joule_thomson": {
+      "finite": 2390,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "is_two_phase": {
+      "finite": 1206,
+      "unavailable": 0,
+      "failed": 0
+    },
+    "surface_tension": {
+      "finite": 774,
+      "unavailable": 1616,
+      "failed": 0
+    },
+    "quality_mass": {
+      "finite": 486,
+      "unavailable": 0,
+      "failed": 0
+    }
+  },
+  "full_run": "development/test_audit/results/phase10/full_20261114_012136",
+  "additional_tests": {
+    "test_phase10_calculations.py": 61,
+    "test_phase10_grids.py": 40,
+    "test_phase10_legacy_api.py": 55,
+    "test_phase10_quality.py": 88,
+    "test_phase10_table_physics.py": 24
+  },
+  "additional_test_count": 268,
+  "resolved_expected_failures": 2,
+  "unexpected_failures": 0,
+  "skips": 0,
+  "baseline_source_sha256": "5f36b74dd8879e7c3921a5366bb7f6036d3c19f77cf560e3c3d1e9b31a7c4c01",
+  "availability_changes": {
+    "reason": "Pure interior two-phase Cp, Cp/Cv and isothermal Joule-Thomson are undefined/singular on the saturation manifold; paired unavailable assertions replace old finite surrogate labels without removing comparisons.",
+    "fields": [
+      "isobaric_heat_capacity",
+      "heat_capacity_ratio",
+      "isothermal_joule_thomson"
+    ],
+    "comparisons_per_field": 774,
+    "finite_to_paired_unavailable": 2322
+  },
+  "source_matches_benchmark": true,
+  "benchmark_correctness": {
+    "matched_finite_comparisons": 6768,
+    "paired_unavailable_values": 224,
+    "matched_scalar_comparisons": 6992,
+    "mismatches": [],
+    "all_worker_own_checks_passed": true
+  },
+  "comparable_timing_cases": 23,
+  "timing_regression_budget": 0.1,
+  "comparable_cases_above_budget": [],
+  "native_programs": {
+    "control_PG_full_batch": {
+      "hash_equal_across_all_workers_and_versions": true,
+      "instructions": 821,
+      "callback": false,
+      "sha256": "280e9f37c219b937de25df7e07603c366c9371546088bcf8d481a90bd254e969"
+    },
+    "control_bicubic_full_batch": {
+      "hash_equal_across_all_workers_and_versions": true,
+      "instructions": 703,
+      "callback": false,
+      "sha256": "1e793525b67b7440ccdc46483705a09241dac2348019fcab57eb92a5f8a8d675"
+    }
+  },
+  "examples_ast_parsed": 65,
+  "executed_examples_this_phase": [],
+  "example_scope": "Library paths independently tested; no example study or figure execution claimed. See development/example_audit/phase10_compatibility.json.",
+  "baseline_archive": {
+    "path": "development/performance/phase10_baseline_phase9.zip",
+    "sha256": "7439bee0efb05426abfba0e6056501f8cc7aa439a5cfa4e50360317478e4597f",
+    "python_files": 39,
+    "bytes": 151977,
+    "reason": "Exact accepted Phase 9 source was uncommitted; retain its compressed bytes for reproducibility."
+  },
+  "python_formatting": {
+    "tool": "black --check",
+    "files_checked": 48,
+    "result": "passed"
+  },
+  "temporary_workers_extracted_sources_tables_and_probes_removed": true
+}

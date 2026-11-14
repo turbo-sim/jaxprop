@@ -67,6 +67,8 @@ MIXTURE_PROPERTIES = frozenset(
         "mass_frac_2",
         "vol_frac_1",
         "vol_frac_2",
+        "speed_of_sound_p",
+        "speed_of_sound_pT",
     }
 )
 SOURCE_PROPERTIES = frozenset(PROPERTIES_CANONICAL) - (

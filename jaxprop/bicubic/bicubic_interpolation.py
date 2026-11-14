@@ -29,6 +29,7 @@ from ..source_references import (
     composite_source_references,
 )
 from .cache_metadata import metadata_fingerprint, source_signature
+from .phase_envelope import PHASE_ENVELOPE_SETTINGS, source_phase_cell_validity
 from .runtime import (
     InspectionPayload,
     inspection_view,
@@ -248,6 +249,8 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 "A legacy binary '_mixture' source requires its mass ratio; ordinary sources do not accept it.",
             )
         if is_mixture:
+            from ..binary_mixture.compat import fractions_from_ratio
+
             try:
                 if np.asarray(mixture_ratio).ndim != 0:
                     invalid("mixture_ratio", "Provide a scalar mass ratio.")
@@ -368,7 +371,11 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 for component in fluid_name[: -len("_mixture")].split("_")
             )
             self._references = composite_source_references(
-                fluid_name, backend, components, mixture_ratio
+                fluid_name,
+                backend,
+                components,
+                mass_fractions=fractions_from_ratio(mixture_ratio),
+                component_reference_ids=tuple(c.reference_id for c in components),
             )
         else:
             self._references = initialize_source_references(fluid_name, backend)
@@ -420,6 +427,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             Path(__file__),
             Path(__file__).with_name("cache_metadata.py"),
             Path(__file__).with_name("table_cache.py"),
+            Path(__file__).with_name("phase_envelope.py"),
             Path(__file__).parents[1] / "coolprop" / "core_calculations.py",
             Path(__file__).parents[1] / "coolprop" / "source_context.py",
             Path(__file__).parents[1] / "coolprop" / "fluid_properties.py",
@@ -427,6 +435,14 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             Path(__file__).parents[1] / "property_schema.py",
             Path(__file__).parents[1] / "source_references.py",
         )
+        if is_mixture:
+            # A thin legacy constructor now delegates generation to this shared
+            # model. Fingerprint the actual dependencies, not only its wrapper,
+            # so a physics/inverse change cannot reuse stale mixture tables.
+            code_files += tuple(
+                Path(__file__).parents[1] / "binary_mixture" / name
+                for name in ("fluid.py", "host.py", "physics.py", "compat.py")
+            )
         code_identity = {
             str(path.relative_to(Path(__file__).parents[1])): hashlib.sha256(
                 path.read_bytes()
@@ -470,6 +486,10 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             generation_settings=dict(
                 finite_difference_relative_step=1e-5,
                 step_scale_floor=1.0,
+                metastable_enthalpy_step_scale="table_enthalpy_span",
+                metastable_enthalpy_residual_scale="cp_times_temperature_and_step",
+                metastable_step_rounding_fraction=1e-3,
+                phase_envelope=copy.deepcopy(PHASE_ENVELOPE_SETTINGS),
                 grid_axes=["enthalpy", "log_pressure"],
                 saturation_critical_pressure_fraction=0.98,
                 metastable_solver_defaults={
@@ -480,6 +500,8 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                     if name.startswith("solver_")
                 },
                 metastable_generation_solver_tolerance=1e-10,
+                metastable_initial_seed="matching_homogeneous_or_requested_saturation_endpoint",
+                metastable_column_seed="validated_homogeneous_anchor_row",
                 metastable_residual_step_fraction=1e-8,
                 metastable_residual_roundoff_ulps=512,
                 metastable_mixed_derivative_scheme="central",
@@ -640,6 +662,8 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         }
         try:
             table = generators[self.table_mode]()
+            if isinstance(table, dict):
+                table["phase_cell_validity"] = self._source_phase_cell_validity()
             table = normalize_generated_arrays(table, self.metadata)
             reason = table_validation_error(table, self.metadata)
         except CalculationError:
@@ -681,6 +705,48 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         path = os.path.join(self.table_dir, f"{self.table_name}.pkl")
         save_table_atomic(table, path)
         print(f"Saved property table to: {path}")
+
+    def _source_phase_cell_validity(self):
+        """Persist adaptive source-envelope guards without native EOS queries."""
+        shape = (self.N_h - 1, self.N_p - 1)
+        if self.table_mode != "equilibrium":
+            return np.ones(shape, dtype=bool)
+        critical = self.references["critical_point"]
+        if not critical.available:
+            # Ordinary calls remain usable when a source reference is absent;
+            # the runtime nodal guard still applies in that configuration.
+            return np.ones(shape, dtype=bool)
+        if self.p_min >= critical.properties["pressure"]:
+            return np.ones(shape, dtype=bool)
+        source = CP.AbstractState(self.backend, self.fluid_name)
+        actual_references = initialize_source_references(
+            self.fluid_name, self.backend, state=source
+        )
+        if actual_references.reference_id != self.reference_id:
+            raise CalculationError(
+                fluid_name=self.fluid_name,
+                provider="bicubic",
+                model=self.model,
+                request="table_generation",
+                reason="Source reference convention changed before phase-envelope validation.",
+            )
+        minima = [
+            point.properties["pressure"]
+            for point in (
+                self.references["triple_point_liquid"],
+                self.references["triple_point_vapor"],
+            )
+            if point.available
+        ]
+        return source_phase_cell_validity(
+            source,
+            self.h_vals,
+            self.logP_vals,
+            critical_pressure=critical.properties["pressure"],
+            critical_enthalpy=critical.properties["enthalpy"],
+            minimum_saturation_pressure=min(minima) if minima else None,
+            settings=self.metadata["generation_settings"]["phase_envelope"],
+        )
 
     def _initialize_table_arrays(self):
         """Use one schema and exact independent coordinates in every mode."""
@@ -965,18 +1031,19 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
     def _generate_metastable_liquid_property_table(self):
         # Initialize fluid (single component)
         fluid = jxp.FluidCoolProp(self.fluid_name, self.backend)
+        # The coordinate span is invariant under an enthalpy reference shift.
+        # An absolute-h step would change physical derivative accuracy solely
+        # because the application selected a different energy zero.
+        eps_h = 1e-5 * max(self.h_max - self.h_min, 1.0)
 
         # metadata
         table = self._initialize_table_arrays()
         enthalpy_vals = table["enthalpy"]["value"]
         pressure_vals = table["pressure"]["value"]
 
-        rho_guess = fluid.get_state(
-            jxp.HmassP_INPUTS, enthalpy_vals[0][0], pressure_vals[-1][-1]
-        )["density"]
-        T_guess = fluid.get_state(
-            jxp.HmassP_INPUTS, enthalpy_vals[0][0], pressure_vals[-1][-1]
-        )["temperature"]
+        rho_guess, T_guess = self._metastable_initial_guess(
+            fluid, enthalpy_vals[0][0], pressure_vals[-1][-1], "liquid"
+        )
 
         # Define the specific keys you want to protect/skip
         keys_to_skip = {"metadata", "pressure", "enthalpy"}
@@ -1004,7 +1071,6 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 for i, h in enumerate(np.asarray(self.h_vals)):
                     # print(f"({i},{j})")
                     # finite difference steps (avoid zero)
-                    eps_h = 1e-5 * max(abs(h), 1.0)
                     eps_p = 1e-5 * max(abs(p), 1.0)
 
                     try:
@@ -1074,12 +1140,12 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
 
                     pbar.update(1)
 
-                rho_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], p)[
-                    "density"
-                ]
-                T_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[0][0], p)[
-                    "temperature"
-                ]
+                # Continue the requested homogeneous branch across pressure
+                # columns. An ordinary HP flash at this anchor can be an
+                # equilibrium mixture, whose bulk density is not a liquid
+                # root guess, even though a valid metastable liquid exists.
+                rho_guess = table["density"]["value"][0, j]
+                T_guess = table["temperature"]["value"][0, j]
 
                 # compute coefficients after full table computed
                 for k in jxp.PROPERTIES_CANONICAL:
@@ -1193,18 +1259,16 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
     def _generate_metastable_vapor_property_table(self):
         # Initialize fluid (single component)
         fluid = jxp.FluidCoolProp(self.fluid_name, self.backend)
+        eps_h = 1e-5 * max(self.h_max - self.h_min, 1.0)
 
         # metadata
         table = self._initialize_table_arrays()
         enthalpy_vals = table["enthalpy"]["value"]
         pressure_vals = table["pressure"]["value"]
 
-        rho_guess = fluid.get_state(
-            jxp.HmassP_INPUTS, enthalpy_vals[-1][-1], pressure_vals[-1][-1]
-        )["density"]
-        T_guess = fluid.get_state(
-            jxp.HmassP_INPUTS, enthalpy_vals[-1][-1], pressure_vals[-1][-1]
-        )["temperature"]
+        rho_guess, T_guess = self._metastable_initial_guess(
+            fluid, enthalpy_vals[-1][-1], pressure_vals[-1][-1], "vapor"
+        )
 
         # Define the specific keys you want to protect/skip
         keys_to_skip = {"metadata", "pressure", "enthalpy"}
@@ -1230,7 +1294,6 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 for i, h in reversed(list(enumerate(np.asarray(self.h_vals)))):
                     # print(f"({i},{j})")
                     # finite difference steps (avoid zero)
-                    eps_h = 1e-5 * max(abs(h), 1.0)
                     eps_p = 1e-5 * max(abs(p), 1.0)
 
                     try:
@@ -1300,12 +1363,10 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
 
                     pbar.update(1)
 
-                rho_guess = fluid.get_state(
-                    jxp.HmassP_INPUTS, enthalpy_vals[-1][-1], p
-                )["density"]
-                T_guess = fluid.get_state(jxp.HmassP_INPUTS, enthalpy_vals[-1][-1], p)[
-                    "temperature"
-                ]
+                # The last enthalpy row is this vapor sweep's validated
+                # homogeneous anchor, not an ordinary two-phase bulk state.
+                rho_guess = table["density"]["value"][-1, j]
+                T_guess = table["temperature"]["value"][-1, j]
 
                 # compute coefficients after full table computed
                 for k in jxp.PROPERTIES_CANONICAL:
@@ -1419,6 +1480,28 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
 
     # ------------------ Gradient helpers ------------------
     @staticmethod
+    def _metastable_initial_guess(fluid, enthalpy, pressure, phase):
+        """Select a homogeneous seed for the requested construction branch.
+
+        Ordinary HP states are useful when they already lie on that branch or
+        above the critical pressure. A subcritical equilibrium mixture (or the
+        other homogeneous phase) must instead start at the requested bubble or
+        dew endpoint. Subsequent columns reuse validated homogeneous anchors.
+        All source queries here belong to table construction only.
+        """
+        state = fluid.get_state(jxp.HmassP_INPUTS, enthalpy, pressure)
+        source = fluid.abstract_state
+        requested = (
+            (CP.iphase_liquid, CP.iphase_supercritical_liquid)
+            if phase == "liquid"
+            else (CP.iphase_gas, CP.iphase_supercritical_gas)
+        )
+        if pressure < source.p_critical() and source.phase() not in requested:
+            quality = 0.0 if phase == "liquid" else 1.0
+            state = fluid.get_state(jxp.PQ_INPUTS, pressure, quality)
+        return float(state.rho), float(state.T)
+
+    @staticmethod
     def _gradients_forward(fluid, h, p, eps_h, eps_p):
         # Export raw values once per sample. Optional NaNs remain available to
         # table generation without repeated bound-method lookups per property.
@@ -1470,6 +1553,32 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
     @staticmethod
     def _gradients_metastable_forward(fluid, h, p, eps_h, eps_p, rho_guess, T_guess):
         """Sample the homogeneous branch with residuals below the FD budget."""
+        for name, coordinate, step in (
+            ("enthalpy", h, eps_h),
+            ("pressure", p, eps_p),
+        ):
+            coordinate, step = float(coordinate), float(step)
+            increments = np.asarray(
+                [(coordinate + step) - coordinate, coordinate - (coordinate - step)]
+            )
+            if (
+                not np.isfinite(step)
+                or step <= 0
+                or not np.all(np.isfinite(increments))
+                or np.any(np.abs(increments - step) > 1e-3 * step)
+            ):
+                raise CalculationError(
+                    fluid_name=fluid.name,
+                    provider="bicubic",
+                    model="real_fluid",
+                    request="table_generation",
+                    reason=(
+                        f"The metastable {name} stencil step {step!r} cannot be "
+                        f"represented accurately at coordinate {coordinate!r}. "
+                        "Use a resolvable table span/reference convention; "
+                        "refusing reference-dependent or zero derivatives."
+                    ),
+                )
         rhoT_guess = np.array([rho_guess, T_guess])
         sample = lambda enthalpy, pressure: FluidBicubic._metastable_generation_sample(
             fluid, enthalpy, pressure, eps_h, eps_p, rhoT_guess
@@ -1557,13 +1666,17 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 else (properties.get("isobaric_heat_capacity", 0.0) * temperature,)
             )
             scale = max(
-                abs(target),
+                abs(target) if name == "pressure" else abs(step),
                 1.0,
                 *(abs(float(item)) for item in scales if np.isfinite(item)),
             )
             budget = max(
                 1e-8 * abs(step),
                 512 * np.finfo(float).eps * scale,
+                # Offsetting an energy zero changes representable spacing,
+                # not the physical residual scale. Account for that rounding
+                # separately rather than granting a relative-to-offset error.
+                4 * abs(np.spacing(target)),
             )
             if not np.isfinite(value) or abs(value - target) > budget:
                 raise CalculationError(

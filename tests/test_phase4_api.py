@@ -29,7 +29,7 @@ def assert_context(error, fluid, request):
     assert str(request) in str(error)
 
 
-@pytest.mark.parametrize("case", CONTRACT_CASES[:-1], ids=lambda case: case.id)
+@pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
 def test_factory_returns_native_class_and_resolves_source_defaults(case, tmp_path):
     settings = factory_arguments(case, tmp_path)
     settings["backend"] = None
@@ -38,7 +38,7 @@ def test_factory_returns_native_class_and_resolves_source_defaults(case, tmp_pat
     assert type(fluid) is getattr(jxp, case.current_class)
     assert fluid.name == case.name
     assert fluid.identifier == ""
-    assert fluid.backend == "HEOS"
+    assert fluid.backend == (None if case.model == "binary_mixture" else "HEOS")
     assert fluid.configuration.name == case.name
     assert fluid.configuration.provider == case.provider
     assert fluid.configuration.model == case.model
@@ -106,9 +106,7 @@ def test_configuration_and_capabilities_are_immutable(case, fluids):
         capability.domain.phases,
     ):
         assert isinstance(value, frozenset)
-    expected_modes = (
-        {"raise", "mask"} if case.id in {"coolprop", "coolprop_jax"} else {"raise"}
-    )
+    expected_modes = {"raise", "mask"}
     if case.id in {"perfect_gas", "bicubic"}:
         expected_modes = {"raise", "mask", "clip"}
     assert capability.error_modes == frozenset(expected_modes)
@@ -130,7 +128,7 @@ def test_configuration_and_capabilities_are_immutable(case, fluids):
         with pytest.raises((FrozenInstanceError, AttributeError, TypeError)):
             fluid.mixture_ratio = 1.0
         with pytest.raises((FrozenInstanceError, AttributeError, TypeError)):
-            del fluid.fluid_1
+            del fluid.components
     assert fluid.name == case.name and fluid.configuration is configuration
 
 
@@ -264,12 +262,24 @@ def test_malformed_arrays_fail_even_with_requested_numerical_masking(
     [case for case in CONTRACT_CASES if case.id == "binary_mixture"],
     ids=lambda case: case.id,
 )
-def test_unimplemented_numerical_mask_mode_is_rejected_explicitly(case, fluids):
+def test_binary_numerical_mask_preserves_valid_rows_and_masks_failed_elements(
+    case, fluids
+):
     fluid = fluids[case.id]
-    enthalpy = 500e3 if case.id == "binary_mixture" else 700e3
-    with pytest.raises(jxp.UnsupportedExecutionModeError) as captured:
-        fluid.get_state(jxp.HmassP_INPUTS, enthalpy, 8e6, errors="mask")
-    assert_context(captured.value, fluid, "errors=mask")
+    expected = fluid.get_state(jxp.HmassP_INPUTS, [500e3, 510e3], 8e6)
+    state = fluid.get_state(
+        jxp.HmassP_INPUTS, [500e3, np.nan, 510e3], 8e6, errors="mask"
+    )
+    np.testing.assert_array_equal(state.status, [0, 1, 0])
+    np.testing.assert_array_equal(state.valid, [True, False, True])
+    for name in state.available_properties:
+        actual = state.raw_property(name)
+        assert actual.shape == (3,) and np.isnan(actual[1]), name
+        np.testing.assert_array_equal(actual[[0, 2]], expected.raw_property(name))
+    with pytest.raises(jxp.InvalidStateError) as captured:
+        fluid.get_state(jxp.HmassP_INPUTS, [500e3, np.nan, 510e3], 8e6)
+    assert captured.value.index == (1,)
+    assert_context(captured.value, fluid, "HmassP_INPUTS")
 
 
 @pytest.mark.parametrize("case", CONTRACT_CASES[:4], ids=lambda case: case.id)

@@ -1,0 +1,68 @@
+{
+  "date": "2026-11-14",
+  "scope": "Read-only example compatibility review of Phase 10 library changes. No example execution, benchmark, figure verification or source edits were performed for this record.",
+  "executed_examples": [],
+  "migrated_examples": 0,
+  "figures_verified": 0,
+  "numerical_settings_changed": false,
+  "all_example_ast_verification": "Owned by the final Phase 10 verification evidence; this read-only review does not claim a separate syntax or execution run.",
+  "library_implications": [
+    {
+      "topic": "Homogeneous density/temperature grid",
+      "function": "compute_property_grid_rhoT",
+      "return_type": "FluidState",
+      "axes": ["temperature", "density"],
+      "shape": "(len(T_array), len(rho_array))",
+      "effect": "Configured public homogeneous calls retain source-reference context, locking, identity, status and optional availability. Existing property[row, column] indexing in spinodal_lines.py remains applicable."
+    },
+    {
+      "topic": "Saturation, pseudocritical and quality grids",
+      "effect": "Saturation branches contain one critical state plus N subcritical states, giving N+1 rows. Pseudocritical curves contain at most N_points ordinary states after source-domain filtering, without a prepended critical state. Quality-grid axes are (quality, temperature). Critical optional fields can be unavailable.",
+      "pseudo_pure_limit": "HEOS Air/R410A QT grids accept endpoint qualities 0 and 1; interior qualities raise an explicit unsupported-operation error with PQ guidance. REFPROP's supported fractional QT route remains distinct."
+    },
+    {
+      "topic": "Two-phase derivative conventions",
+      "effect": "Pure-fluid two-phase interior cp and heat-capacity ratio are unavailable, while cv follows the repaired equilibrium derivative. Copied endpoint-averaging formulas in the examples require a scientific review rather than restoration merely to match historical output."
+    },
+    {
+      "topic": "Constitutive blending",
+      "effect": "Outputs contain canonical thermodynamic property names, with no algorithmic x or smoothing-factor sigma fields. sigma retains its surface-tension alias. Blended states have a distinct model/reference identity, their interior phase flag is unavailable, and exact endpoints preserve selected-branch optional values."
+    },
+    {
+      "topic": "Phase-solver validation",
+      "effect": "Direct homogeneous density/temperature aliases need no guess. Other inverse calls require valid positive density/temperature guesses and valid settings. Finite targets, unsupported properties and independent final residual checks can expose previously unnoticed failed or stationary solves."
+    }
+  ],
+  "remaining_findings": [
+    {
+      "files": ["blending_calculations/blending_flashing.py", "blending_calculations/blending_condensing.py"],
+      "owner_phase": 14,
+      "reason": "Default high-level sweeps need actual full-resolution execution and figure/numerical checks after the library repair. Inactive low-level branches read aliases from canonical raw mappings and operate on a raw source handle; revise those branches deliberately without changing scientific defaults. No minimal active-source edit was required by this read-only review."
+    },
+    {
+      "files": ["spinodal_lines/spinodal_lines.py", "spinodal_lines/spinodal_lines_PT.py", "props_supersaturation/supersaturation_along_spinodal.py"],
+      "owner_phase": 14,
+      "reason": "The removed library grid-conversion helper is repaired and shape/indexing is documented. Dense EOS grids, branch/domain behavior, optional-property plotting and complete figures still require deliberate execution; no old timeout or failure was promoted to a pass."
+    },
+    {
+      "files": ["props_supersaturation/supersaturation_along_isentrope.py", "props_supersaturation/supersaturation_along_isobar.py"],
+      "owner_phase": 14,
+      "reason": "Check continuation guesses and root failure handling throughout the actual scientific sweeps, keeping equilibrium, homogeneous and blended state collections separate by model identity. Validate diagnostics under their declared physical definitions."
+    },
+    {
+      "files": ["two_phase_derivatives/saturation_derivatives.py", "two_phase_derivatives/enthalpy_derivatives.py", "two_phase_derivatives/check_gruneisen.py", "two_phase_derivatives/check_speed_sound.py"],
+      "owner_phase": 14,
+      "reason": "Review copied two-phase formulas and actual differentiation constraints against the repaired model. The saturation script retains an obsolete nested state schema and removed collection helper. Replace those scientific/data-flow assumptions with supported endpoint/state APIs and independent checks while preserving locally undefined properties. Dormant copied kernels are not validated by successful execution of another active body."
+    },
+    {
+      "files": ["basic_calculations/solver_equilibrium.py", "basic_calculations/solver_metastable.py"],
+      "owner_phase": 14,
+      "reason": "Calls already use valid high-level aliases and explicit guesses; direct homogeneous density/temperature calls remain supported without a guess. Their historical success remains a checkpoint outcome until actual programs are rerun against the final source."
+    }
+  ],
+  "limitations": [
+    "Library unit/integration tests are recorded separately and do not establish full example, plot or application acceptance.",
+    "The original 65-file execution audit and its outcome counts remain historical; this review does not claim a rerun of those programs.",
+    "No example equations, resolutions, model bounds, solver tolerances, iteration budgets or defaults were relaxed or edited."
+  ]
+}

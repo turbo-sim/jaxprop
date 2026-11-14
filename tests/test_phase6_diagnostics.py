@@ -120,11 +120,10 @@ def test_diagnostics_reuse_fixed_bounds_without_reflashing_triple_endpoints(sour
             source_context=context,
         )
         assert np.isfinite(props["pressure_saturation"])
-        # Two bubble and one dew flashes at the requested pressure, plus the
-        # requested-temperature bubble pressure. No repeated lower endpoints.
+        # Share the requested-pressure bubble endpoint between departure and
+        # subcooling, and use one independent dew endpoint.
         assert updates == [
             (CP.QT_INPUTS, 0.0, temperature),
-            (CP.PQ_INPUTS, props["pressure"], 0.0),
             (CP.PQ_INPUTS, props["pressure"], 0.0),
             (CP.PQ_INPUTS, props["pressure"], 1.0),
         ]
@@ -140,7 +139,6 @@ def test_diagnostics_reuse_fixed_bounds_without_reflashing_triple_endpoints(sour
         assert np.isnan(props["temperature_saturation"])
         assert np.isnan(props["pressure_saturation"])
         assert updates == [
-            (CP.DmassP_INPUTS, context.critical_density, props["pressure"]),
             (CP.DmassP_INPUTS, context.critical_density, props["pressure"]),
         ]
     finally:
@@ -398,6 +396,7 @@ def test_missing_optional_endpoint_getter_preserves_two_phase_state(
     fluid = jxp.Fluid("Water", method=method, backend=backend)
     source = fluid.fluid if method == "coolprop_jax" else fluid
     auxiliary = source._source_context.auxiliary_state
+    expected = fluid.get_state(jxp.PQ_INPUTS, 1e5, 0.3).raw_property(property_name)
 
     class WithoutResponse:
         def __getattr__(self, key):
@@ -413,8 +412,16 @@ def test_missing_optional_endpoint_getter_preserves_two_phase_state(
     for errors in ("raise", "mask"):
         state = fluid.get_state(jxp.PQ_INPUTS, 1e5, 0.3, errors=errors)
         assert int(state.status) == 0
-        assert not state.property_valid(property_name)
-        assert np.isnan(state.raw_property(property_name))
+        if getter in {"cvmass", "speed_sound"}:
+            # Equilibrium Cv and sound now come from the shared source PQ
+            # Jacobian, so missing homogeneous endpoint getters do not gate them.
+            assert state.property_valid(property_name)
+            np.testing.assert_allclose(
+                state.raw_property(property_name), expected, rtol=1e-8
+            )
+        else:
+            assert not state.property_valid(property_name)
+            assert np.isnan(state.raw_property(property_name))
         for name in (
             "pressure",
             "temperature",
@@ -469,10 +476,11 @@ def test_missing_transport_getter_preserves_single_phase_state(
         ("compute_joule_thomson", "joule_thomson"),
     ],
 )
-def test_missing_two_phase_response_helper_preserves_core_and_call_order(
+def test_legacy_response_helpers_do_not_gate_shared_two_phase_jacobian(
     backend, method, error_type, helper, property_name, monkeypatch
 ):
     fluid = jxp.Fluid("Water", method=method, backend=backend)
+    expected = fluid.get_state(jxp.PQ_INPUTS, 1e5, 0.3).raw_property(property_name)
     calls = []
     for name in (
         "compute_dsdp_q",
@@ -489,19 +497,14 @@ def test_missing_two_phase_response_helper_preserves_core_and_call_order(
             return _original(*args, **kwargs)
 
         monkeypatch.setattr(core, name, recorded)
-    expected_order = [
-        "compute_dsdp_q",
-        "compute_dsdp_q",
-        "compute_gruneisen",
-        "compute_isothermal_joule_thomson",
-        "compute_joule_thomson",
-    ]
     for errors in ("raise", "mask"):
         calls.clear()
         state = fluid.get_state(jxp.PQ_INPUTS, 1e5, 0.3, errors=errors)
         assert int(state.status) == 0
-        assert not state.property_valid(property_name)
-        assert np.isnan(state.raw_property(property_name))
+        np.testing.assert_allclose(
+            state.raw_property(property_name), expected, rtol=1e-8, equal_nan=True
+        )
+        assert bool(state.property_valid(property_name)) == bool(np.isfinite(expected))
         for name in (
             "pressure",
             "temperature",
@@ -511,7 +514,7 @@ def test_missing_two_phase_response_helper_preserves_core_and_call_order(
             "internal_energy",
         ):
             assert np.isfinite(state.raw_property(name)), name
-        assert calls == expected_order
+        assert calls == []
 
 
 def test_old_source_diagnostics_and_quality_keep_their_convention_after_global_changes():

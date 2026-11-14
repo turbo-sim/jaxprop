@@ -1,8 +1,8 @@
 """Executable target contract for the staged public fluid-interface refactor.
 
-Strict expected failures identify confirmed implementation work in later phases.
-Each test exercises one concern through the public constructor and native
-evaluator; future binary construction retains its own narrow expected failure.
+The fixed cases keep current capabilities from silently narrowing the required
+coverage. Each test exercises one concern through the public constructor and
+native evaluator, including the consolidated component-object binary model.
 """
 
 import jax.numpy as jnp
@@ -23,21 +23,6 @@ from fluid_contract_cases import (
     build_current_fluid,
     constructor_arguments,
 )
-
-
-def pending(phase, reason, raises=AssertionError):
-    return pytest.mark.xfail(
-        strict=True, raises=raises, reason=f"phase{phase}: {reason}"
-    )
-
-
-def parameters_with_gaps(gaps):
-    return [
-        pytest.param(
-            case, id=case.id, marks=([gaps[case.id]] if case.id in gaps else [])
-        )
-        for case in CONTRACT_CASES
-    ]
 
 
 @pytest.fixture(scope="module")
@@ -90,7 +75,7 @@ def test_fixed_conformance_matrix_covers_current_and_consolidated_models():
         "FluidJAX",
         "FluidBicubic",
         "FluidPerfectGas",
-        "FluidMix",
+        "FluidBinaryMixture",
     }
     assert {(case.provider, case.model) for case in CONTRACT_CASES} == {
         ("coolprop", "real_fluid"),
@@ -103,18 +88,7 @@ def test_fixed_conformance_matrix_covers_current_and_consolidated_models():
     assert len(SOURCE_PAIRS) == 10 and len(BINARY_PAIRS) == 3
 
 
-@pytest.mark.parametrize(
-    "case",
-    parameters_with_gaps(
-        {
-            "binary_mixture": pending(
-                9,
-                "component-based binary construction awaits mixture consolidation",
-                (jxp.InvalidConfigurationError, jxp.UnsupportedOperationError),
-            )
-        }
-    ),
-)
+@pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
 def test_common_constructor_constructs_each_advertised_model(case, tmp_path):
     fluid = jxp.Fluid(**constructor_arguments(case, tmp_path))
     assert fluid.name == case.name
@@ -155,14 +129,7 @@ def test_metadata_and_capability_queries(case, fluid_objects):
         assert "saturation" not in capability.phase_operations
 
 
-@pytest.mark.parametrize(
-    "case",
-    parameters_with_gaps(
-        {
-            "binary_mixture": pending(9, "binary PT/PS support awaits consolidation"),
-        }
-    ),
-)
+@pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
 def test_target_capability_minimums_remain_explicit(case, fluid_objects):
     capability = fluid_objects[case.id].capabilities
     assert set(getattr(jxp, name) for name in case.required_pairs) <= set(
@@ -210,10 +177,7 @@ def test_disabled_diagnostics_are_noops_for_every_model(case, fluid_objects):
         )
 
 
-@pytest.mark.parametrize(
-    "case",
-    parameters_with_gaps({}),
-)
+@pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
 def test_successful_scalar_states_have_finite_mass_based_core_fields(
     case, fluid_objects
 ):
@@ -241,19 +205,10 @@ SHAPES = (
 SHAPE_PARAMETERS = []
 for _case in CONTRACT_CASES:
     for _label, _h, _p, _shape in SHAPES:
-        _marks = []
-        if _case.id == "binary_mixture" and _label != "scalar":
-            _marks = [
-                pending(
-                    9,
-                    "FluidMix only evaluates scalar inputs",
-                    (RuntimeError, AssertionError, jxp.UnsupportedExecutionModeError),
-                )
-            ]
         if _case.id == "binary_mixture":
             _h = np.asarray(_h) - 200e3
         SHAPE_PARAMETERS.append(
-            pytest.param(_case, _h, _p, _shape, id=f"{_case.id}-{_label}", marks=_marks)
+            pytest.param(_case, _h, _p, _shape, id=f"{_case.id}-{_label}")
         )
 
 
@@ -268,18 +223,7 @@ def test_numeric_fields_preserve_exact_broadcast_shape(
         assert np.all(np.isfinite(value)), property_name
 
 
-@pytest.mark.parametrize(
-    "case",
-    parameters_with_gaps(
-        {
-            "binary_mixture": pending(
-                9,
-                "FluidMix does not yet evaluate broadcast batches",
-                (RuntimeError, jxp.UnsupportedExecutionModeError),
-            ),
-        }
-    ),
-)
+@pytest.mark.parametrize("case", CONTRACT_CASES, ids=lambda case: case.id)
 def test_enabled_numeric_fields_status_and_property_masks_share_broadcast_shape(
     case, fluid_objects
 ):
@@ -310,18 +254,7 @@ def test_enabled_numeric_fields_status_and_property_masks_share_broadcast_shape(
 ARRAY_PARAMETERS = []
 for _case in CONTRACT_CASES:
     for _kind in ("list", "numpy", "jax"):
-        _marks = []
-        if _case.id == "binary_mixture":
-            _marks = [
-                pending(
-                    9,
-                    "FluidMix rejects array-like batch inputs",
-                    (RuntimeError, jxp.UnsupportedExecutionModeError),
-                )
-            ]
-        ARRAY_PARAMETERS.append(
-            pytest.param(_case, _kind, id=f"{_case.id}-{_kind}", marks=_marks)
-        )
+        ARRAY_PARAMETERS.append(pytest.param(_case, _kind, id=f"{_case.id}-{_kind}"))
 
 
 @pytest.mark.parametrize("case,kind", ARRAY_PARAMETERS)
@@ -339,18 +272,7 @@ for _case in CONTRACT_CASES:
     for _pair in _case.required_pairs:
         if _pair not in PAIR_FIELDS:
             continue  # Saturation endpoints are checked separately below.
-        _marks = []
-        if _case.id == "binary_mixture" and _pair != "HmassP_INPUTS":
-            _marks = [
-                pending(
-                    9,
-                    "FluidMix has only the HmassP inversion",
-                    (RuntimeError, jxp.UnsupportedInputPairError),
-                )
-            ]
-        PAIR_PARAMETERS.append(
-            pytest.param(_case, _pair, id=f"{_case.id}-{_pair}", marks=_marks)
-        )
+        PAIR_PARAMETERS.append(pytest.param(_case, _pair, id=f"{_case.id}-{_pair}"))
 
 
 @pytest.mark.parametrize("case,pair_name", PAIR_PARAMETERS)

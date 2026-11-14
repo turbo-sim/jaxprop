@@ -1,0 +1,484 @@
+{
+  "date_utc": "2026-11-14T10:07:35.115245+00:00",
+  "scope": "Direct metastable/equilibrium/blending callers, spinodal/homogeneous-grid examples and six default metastable-table builders, plus one external-table plotting study.",
+  "counts": {
+    "reviewed_examples": 17,
+    "completed_default_programs": 14,
+    "failed_default_physical_domains": 2,
+    "external_input_required": 1
+  },
+  "acceptance_note": "Completion is distinct from whole-table accuracy: two broad Nitrogen domains have caloric-instability limitations, and the 100x100 Gamma interpolation is inaccurate across a Cv=0 pole.",
+  "scientific_defaults_resolutions_solver_tolerances_and_budgets_unchanged": true,
+  "execution": "Isolated headless subprocesses with original exports, complete scientific grids and numerical/figure checks; elapsed concurrent execution times are not benchmarks.",
+  "changed_package": {
+    "baseline_package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+    "current_package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+    "only_modified_package_file": "jaxprop/bicubic/bicubic_interpolation.py",
+    "changed_functions": [
+      "FluidBicubic.__init__",
+      "FluidBicubic._generate_metastable_liquid_property_table",
+      "FluidBicubic._generate_metastable_vapor_property_table"
+    ],
+    "new_function": "FluidBicubic._metastable_initial_guess",
+    "constructor_numeric_ast_identical_after_excluding_two_generation_policy_strings": true,
+    "all_existing_other_functions_ast_identical": true,
+    "all_other_package_files_byte_identical": true,
+    "native_runtime_code_changed": false,
+    "prior_timing_record": "development/performance/phase10_validation.json",
+    "measured_package_archive": "development/performance/phase10_measured_source.zip",
+    "archive_sha256": "794a0460da32843e1afb9fc3b09e1c11696f9ab1fb034ac3b4dbf092b6a41937",
+    "complete_package_ast_identical_outside_generation_and_two_policy_strings": true
+  },
+  "full_suite": {
+    "source_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+    "test_backends": [
+      "HEOS",
+      "REFPROP"
+    ],
+    "counts": {
+      "passed": 2737,
+      "xfailed": 2
+    },
+    "property_comparisons": 54272,
+    "finite_values_compared": 47867,
+    "unavailable_values_checked": 6405,
+    "failed_comparisons": 0,
+    "source_unchanged_during_run": true
+  },
+  "full_suite_record": "development/test_audit/results/metastable_followup/full_20261114_103619/summary.json",
+  "new_continuation_regressions": 4,
+  "examples_ast_parsed": 65,
+  "figures_rendered": 18,
+  "visual_acceptance": "All figures drawn; representative figures inspected, including every basic/supersaturation/root plot and the bicubic caloric-error band. Scientific accuracy limitations remain explicit.",
+  "basic_before_after_core_comparison": {
+    "sampled_core_scalar_values": 3636,
+    "all_match": true,
+    "bitwise_identical": true,
+    "rtol": 1e-12,
+    "atol": 1e-07
+  },
+  "supersaturation_validation": {
+    "checked_state_rows_including_repeated_solver_plot_evaluations": 77795,
+    "returned_states_checked_against_pressure_and_entropy_targets": 800,
+    "spinodal_points_independently_checked": 202,
+    "max_abs_spinodal_KT_over_rhoRT": 9.266840850230551e-09
+  },
+  "mechanical_domain_findings": [
+    {
+      "example": "bicubic_interpolation/demo_interpolation_midpoints_metastable.py",
+      "fluid": "Nitrogen",
+      "failed_index": [
+        39,
+        39
+      ],
+      "target_enthalpy": 10000.0,
+      "target_pressure": 3000000.0,
+      "liquid_spinodal": {
+        "density": 411.59660432808414,
+        "temperature": 124.20429288652068,
+        "pressure": 3000000.0000000084,
+        "enthalpy": 7250.624424239421,
+        "isothermal_bulk_modulus": -3.3691334418363206e-09
+      },
+      "target_minus_spinodal_enthalpy": 2749.3755757605786
+    },
+    {
+      "example": "bicubic_interpolation/demo_metastable_calculations.py",
+      "fluid": "Water",
+      "failed_index": [
+        112,
+        119
+      ],
+      "target_enthalpy": 1711764.705882353,
+      "target_pressure": 13000000.0,
+      "liquid_spinodal": {
+        "density": 526.6652169280283,
+        "temperature": 621.2233237230826,
+        "pressure": 13000000.000000348,
+        "enthalpy": 1710150.8088949814,
+        "isothermal_bulk_modulus": -2.3168043154394913e-05
+      },
+      "target_minus_spinodal_enthalpy": 1613.8969873716123
+    }
+  ],
+  "caloric_domain_evidence": "development/example_audit/results/metastable_followup/branch_probe_endpoint.json",
+  "evidence": [
+    "development/example_audit/results/metastable_followup/group_summary.json",
+    "development/example_audit/results/metastable_followup/supersaturation_group.json",
+    "development/example_audit/metastable_bicubic_followup.json",
+    "development/example_audit/results/metastable_followup/branch_probe.json"
+  ],
+  "cases": [
+    {
+      "example": "examples/basic_calculations/solver_equilibrium.py",
+      "source_sha256": "d1c2bb0088882b2c6293f18b7ffedb8ec04f281fb4b8ab6cd833eb424071fb86",
+      "package_sha256_at_execution": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+      "outcome": "completed_default_with_checks",
+      "checks": {
+        "core_states": 4,
+        "inverse_states": 3,
+        "eos_identity_states": 4,
+        "blend_convexity_fields": 0,
+        "maximum_relative_inverse_error": 1.3395909399668758e-10
+      },
+      "figures": [],
+      "log": "development/example_audit/results/metastable_followup/final_verified/solver_equilibrium/stdout.log"
+    },
+    {
+      "example": "examples/basic_calculations/solver_metastable.py",
+      "source_sha256": "c01b4decb9e02bcc3271663c9fc0ffb9720057d303e88a2f2111a80c54a097e3",
+      "package_sha256_at_execution": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+      "outcome": "completed_default_with_checks",
+      "checks": {
+        "core_states": 204,
+        "inverse_states": 3,
+        "eos_identity_states": 204,
+        "blend_convexity_fields": 0,
+        "maximum_relative_inverse_error": 5.472577028322042e-13
+      },
+      "figures": [
+        {
+          "file": "development/example_audit/results/metastable_followup/final_verified/solver_metastable/figure_001.png",
+          "inspected": true,
+          "axes": 1
+        }
+      ],
+      "log": "development/example_audit/results/metastable_followup/final_verified/solver_metastable/stdout.log"
+    },
+    {
+      "example": "examples/blending_calculations/blending_flashing.py",
+      "source_sha256": "92d35098c844434bc813bce9670d147adf0b830dfe9d0af68fcdc71fb878b3ab",
+      "package_sha256_at_execution": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+      "outcome": "completed_default_with_checks",
+      "checks": {
+        "core_states": 1502,
+        "inverse_states": 300,
+        "eos_identity_states": 1402,
+        "blend_convexity_fields": 600,
+        "maximum_relative_inverse_error": 2.198656774537905e-11
+      },
+      "figures": [
+        {
+          "file": "development/example_audit/results/metastable_followup/final_verified/blending_flashing/figure_001.png",
+          "inspected": true,
+          "axes": 3
+        }
+      ],
+      "log": "development/example_audit/results/metastable_followup/final_verified/blending_flashing/stdout.log"
+    },
+    {
+      "example": "examples/blending_calculations/blending_condensing.py",
+      "source_sha256": "4a3280ba9dfe7581aaa355477bab72e9c7adea93eacedb9e0aee0ea9b260d5ac",
+      "package_sha256_at_execution": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+      "outcome": "completed_default_with_checks",
+      "checks": {
+        "core_states": 1502,
+        "inverse_states": 300,
+        "eos_identity_states": 1402,
+        "blend_convexity_fields": 600,
+        "maximum_relative_inverse_error": 3.1047823825073246e-12
+      },
+      "figures": [
+        {
+          "file": "development/example_audit/results/metastable_followup/final_verified/blending_condensing/figure_001.png",
+          "inspected": true,
+          "axes": 3
+        }
+      ],
+      "log": "development/example_audit/results/metastable_followup/final_verified/blending_condensing/stdout.log"
+    },
+    {
+      "example": "examples/props_supersaturation/supersaturation_along_isobar.py",
+      "source_sha256": "fcc75c1119041d03263d00794c18a7db38b43e9bbca81a8b131b7265fa27dc44",
+      "executed_source_sha256": "fcc75c1119041d03263d00794c18a7db38b43e9bbca81a8b131b7265fa27dc44",
+      "post_execution_formatting": null,
+      "package_sha256_at_execution": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+      "outcome": "completed_default_with_checks",
+      "checks": {
+        "core_states_checked": 18226,
+        "inverse_count": 200,
+        "max_inverse_p_relative_error": 1.6609150916337968e-10,
+        "max_inverse_s_relative_error": 7.462351055300557e-12,
+        "spinodals": {
+          "spndl_liq": {
+            "points": 1,
+            "max_abs_KT_over_rhoRT": 4.9945492186509455e-11
+          },
+          "spndl_vap": {
+            "points": 1,
+            "max_abs_KT_over_rhoRT": 6.934431702465549e-09
+          }
+        }
+      },
+      "figures": [
+        {
+          "png": "development/example_audit/results/metastable_followup/supersaturation_along_isobar/initial/audit_figure_01.png",
+          "axes": [
+            {
+              "line_artists": 8,
+              "finite_plotted_pairs": 605
+            },
+            {
+              "line_artists": 5,
+              "finite_plotted_pairs": 204
+            }
+          ]
+        },
+        {
+          "png": "development/example_audit/results/metastable_followup/supersaturation_along_isobar/initial/audit_figure_02.png",
+          "axes": [
+            {
+              "line_artists": 9,
+              "finite_plotted_pairs": 551
+            },
+            {
+              "line_artists": 5,
+              "finite_plotted_pairs": 150
+            }
+          ]
+        }
+      ],
+      "log": "development/example_audit/results/metastable_followup/supersaturation_along_isobar/initial/run.log"
+    },
+    {
+      "example": "examples/props_supersaturation/supersaturation_along_isentrope.py",
+      "source_sha256": "b99c5a682ce3db72bdbdea7b00bf7119eef5c6ee68a43d073db2c7885625984d",
+      "executed_source_sha256": "53ba7eebf727a7151b22181d9c511ff164db0aae637669754ca396b491cdee5b",
+      "post_execution_formatting": {
+        "executed_sha256": "53ba7eebf727a7151b22181d9c511ff164db0aae637669754ca396b491cdee5b",
+        "current_sha256": "b99c5a682ce3db72bdbdea7b00bf7119eef5c6ee68a43d073db2c7885625984d",
+        "complete_ast_identical": true,
+        "scope": "Black removed two blank lines; scientific code, docstrings and numerical expressions are identical."
+      },
+      "package_sha256_at_execution": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+      "outcome": "completed_default_with_checks",
+      "checks": {
+        "core_states_checked": 30138,
+        "inverse_count": 600,
+        "max_inverse_p_relative_error": 1.323925376404077e-07,
+        "max_inverse_s_relative_error": 3.005389953673543e-08,
+        "spinodals": {}
+      },
+      "figures": [
+        {
+          "png": "development/example_audit/results/metastable_followup/supersaturation_along_isentrope/presentation_fix/audit_figure_01.png",
+          "axes": [
+            {
+              "line_artists": 5,
+              "finite_plotted_pairs": 407
+            },
+            {
+              "line_artists": 3,
+              "finite_plotted_pairs": 300
+            },
+            {
+              "line_artists": 3,
+              "finite_plotted_pairs": 300
+            }
+          ]
+        },
+        {
+          "png": "development/example_audit/results/metastable_followup/supersaturation_along_isentrope/presentation_fix/audit_figure_02.png",
+          "axes": [
+            {
+              "line_artists": 5,
+              "finite_plotted_pairs": 407
+            },
+            {
+              "line_artists": 3,
+              "finite_plotted_pairs": 300
+            },
+            {
+              "line_artists": 3,
+              "finite_plotted_pairs": 300
+            }
+          ]
+        }
+      ],
+      "log": "development/example_audit/results/metastable_followup/supersaturation_along_isentrope/presentation_fix/run.log"
+    },
+    {
+      "example": "examples/props_supersaturation/supersaturation_along_spinodal.py",
+      "source_sha256": "b91c90cbaed389ae4a018ef34480e5c9bd825ea9abbb8f47b6a513f2553eec9b",
+      "executed_source_sha256": "b91c90cbaed389ae4a018ef34480e5c9bd825ea9abbb8f47b6a513f2553eec9b",
+      "post_execution_formatting": null,
+      "package_sha256_at_execution": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+      "outcome": "completed_default_with_checks",
+      "checks": {
+        "core_states_checked": 29431,
+        "inverse_count": 0,
+        "spinodals": {
+          "spinodal_liq": {
+            "points": 100,
+            "max_abs_KT_over_rhoRT": 9.266840850230551e-09
+          },
+          "spinodal_vap": {
+            "points": 100,
+            "max_abs_KT_over_rhoRT": 3.1513784221059993e-09
+          }
+        }
+      },
+      "figures": [
+        {
+          "png": "development/example_audit/results/metastable_followup/supersaturation_along_spinodal/initial/audit_figure_01.png",
+          "axes": [
+            {
+              "line_artists": 6,
+              "finite_plotted_pairs": 577
+            },
+            {
+              "line_artists": 3,
+              "finite_plotted_pairs": 176
+            }
+          ]
+        },
+        {
+          "png": "development/example_audit/results/metastable_followup/supersaturation_along_spinodal/initial/audit_figure_02.png",
+          "axes": [
+            {
+              "line_artists": 6,
+              "finite_plotted_pairs": 603
+            },
+            {
+              "line_artists": 3,
+              "finite_plotted_pairs": 202
+            }
+          ]
+        }
+      ],
+      "log": "development/example_audit/results/metastable_followup/supersaturation_along_spinodal/initial/run.log"
+    },
+    {
+      "example": "examples/spinodal_lines/spinodal_lines.py",
+      "source_sha256": "4c54b57962fe5282ad3f31a71259031cadca3f790c81461e82056e6205ad850a",
+      "package_sha256_at_execution": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+      "outcome": "completed_default_with_checks",
+      "checks": {
+        "homogeneous_grid": {
+          "shape": [
+            6,
+            500
+          ],
+          "states": 3000,
+          "all_status_success": true,
+          "finite_core": true
+        },
+        "liquid_spinodal": {
+          "points": 6,
+          "max_abs_bulk_modulus_over_critical_pressure": 1.3364741387295884e-09
+        },
+        "vapor_spinodal": {
+          "points": 6,
+          "max_abs_bulk_modulus_over_critical_pressure": 1.438159427314174e-10
+        }
+      },
+      "figures": [
+        "development/example_audit/results/metastable_followup/spinodal_lines/figure_1.png",
+        "development/example_audit/results/metastable_followup/spinodal_lines/figure_2.png"
+      ],
+      "log": "development/example_audit/results/metastable_followup/spinodal_lines/stdout.log"
+    },
+    {
+      "example": "examples/spinodal_lines/spinodal_lines_PT.py",
+      "source_sha256": "434178273853425fe4b64a77bb6b0ff12174e30ec4f64f2010b10f6db1a7ebb1",
+      "package_sha256_at_execution": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+      "outcome": "completed_default_with_checks",
+      "checks": {
+        "spinodal_curves": {
+          "liquid_points": 50,
+          "vapor_points": 50,
+          "shared_temperatures": 49,
+          "liquid_density_above_vapor": true
+        }
+      },
+      "figures": [
+        "development/example_audit/results/metastable_followup/spinodal_lines_PT/figure_1.png",
+        "development/example_audit/results/metastable_followup/spinodal_lines_PT/figure_2.png"
+      ],
+      "log": "development/example_audit/results/metastable_followup/spinodal_lines_PT/stdout.log"
+    },
+    {
+      "example": "examples/two_phase_derivatives/gibbs_saturation.py",
+      "source_sha256": "eb4ec97b72ecaa7f2882879964f750166fb677057b5d87c781cb277f624f10b7",
+      "package_sha256_at_execution": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+      "outcome": "completed_default_with_checks",
+      "checks": {
+        "relative_saturation_pressure_error": 1.1305632138649868e-11
+      },
+      "figures": [],
+      "log": "development/example_audit/results/metastable_followup/gibbs_saturation/stdout.log"
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_midpoints_metastable_comparison.py",
+      "source_sha256": "33bc59f7cec3a576a4587ff6a8ae96f3f197d2761634570bf368e614a2f16f9d",
+      "package_sha256_at_execution": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+      "outcome": "completed_default",
+      "details": "development/example_audit/metastable_bicubic_followup.json",
+      "scientific_settings_changed": false,
+      "whole_table_caloric_stability_not_certified": true,
+      "caloric_domain_note": "Original rectangle contains nonpositive Cv; Gamma has a pole. The 100x100 full-grid Gamma comparison is inaccurate across that pole; a successful selected point does not certify the 165x165 table globally."
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_interpolation_midpoints_metastable.py",
+      "source_sha256": "794c250be6ef094069282445e387e04c31c6dd19520b47cefa7795ca2e555999",
+      "package_sha256_at_execution": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+      "outcome": "failed_default",
+      "details": "development/example_audit/metastable_bicubic_followup.json",
+      "scientific_settings_changed": false
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_metastable_calculations.py",
+      "source_sha256": "1acf562fada672c2a8a7c40aa455dcaa6dbb25a34130411f92e6b43dd4b13950",
+      "package_sha256_at_execution": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+      "outcome": "failed_default",
+      "details": "development/example_audit/metastable_bicubic_followup.json",
+      "scientific_settings_changed": false
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_metastable_single_point_comparison.py",
+      "source_sha256": "5f6fb42f680a9af762c8a17aaaa6ac79996740c363a78e9b6838f68d9be4650a",
+      "package_sha256_at_execution": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+      "outcome": "completed_default",
+      "details": "development/example_audit/metastable_bicubic_followup.json",
+      "scientific_settings_changed": false,
+      "whole_table_caloric_stability_not_certified": true,
+      "caloric_domain_note": "Original rectangle contains nonpositive Cv; Gamma has a pole. The 100x100 full-grid Gamma comparison is inaccurate across that pole; a successful selected point does not certify the 165x165 table globally."
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_saturation_midpoints.py",
+      "source_sha256": "f10de1ab79428a23b65537120c0ca4f3a5b7678c2291db9cfe9b79a77bf307e6",
+      "package_sha256_at_execution": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+      "outcome": "completed_default",
+      "details": "development/example_audit/metastable_bicubic_followup.json",
+      "scientific_settings_changed": false
+    },
+    {
+      "example": "examples/bicubic_interpolation/demo_table_interpolation_with_saturation.py",
+      "source_sha256": "4ad40e6e85c0a37e983ac86489363ccc36416ba3f9620fac95f229fb08e44061",
+      "package_sha256_at_execution": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+      "outcome": "completed_default",
+      "details": "development/example_audit/metastable_bicubic_followup.json",
+      "scientific_settings_changed": false
+    },
+    {
+      "example": "examples/bicubic_interpolation/plot_metastable_point.py",
+      "source_sha256": "f9abe1a55d67fb5ec8711d5de3ec0207227153084764deb3f527dabbd43b4b7d",
+      "outcome": "external_input_required",
+      "reason": "Hardcoded water_meta_liquid_20x20.pkl is not supplied in isolated output. No user/source cache was substituted or overwritten.",
+      "executed": false
+    }
+  ],
+  "limitations": [
+    "Inactive low-level blending alternatives and external input schemas were not executed.",
+    "No physical-domain bounds, sampling resolutions or solver tolerances were relaxed to obtain completion.",
+    "The Phase 10 timing record refers to its exact 9e30 source; the additional fix changes construction only, with runtime evaluator AST identity proved separately."
+  ],
+  "final_checks": {
+    "python_formatting_files_checked": 61,
+    "python_formatting": "passed",
+    "git_diff_check": "passed",
+    "current_package_source_unchanged_after_full_verification": true,
+    "all_reported_example_hashes_match_current_files": true,
+    "complete_ast_proof_outside_generation": true
+  }
+}

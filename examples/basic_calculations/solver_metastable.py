@@ -1,6 +1,6 @@
 """
 This demo illustrates how to do thermodynamic state calculations using both
-CoolProp flash calculations and with the barotropy.fluid.get_state_metastable()
+CoolProp flash calculations and with the configured JaxProp get_state_metastable()
 method using different types of input pairs.
 
 The computed properties are illustrated in a T-s diagram and also printed to show
@@ -8,6 +8,7 @@ that the results of the different methods are consistent.
 """
 
 import os
+import numpy as np
 import matplotlib.pyplot as plt
 
 import jaxprop.coolprop as jxp
@@ -80,6 +81,7 @@ state_hs = fluid.get_state_metastable(
     print_convergence=False,
 )
 ax.plot(state_hs[prop_x], state_hs[prop_y], "+", label="HEOS h-s call")
+ax.legend()
 fig.tight_layout(pad=1)
 
 # Compare different function calls
@@ -87,6 +89,30 @@ print(
     f"{'Property':>15} {'CoolProp':>15} {'rho-T call':>15} {'p-T call':>15} {'h-s call':>15}"
 )
 props = ["p", "T", "rho", "h", "s", "cp", "speed_sound"]
+# The chosen reference is a single-phase state, so these caloric/acoustic
+# responses are defined. A pure-fluid two-phase interior does not have a finite
+# equilibrium cp and must be handled through its declared property availability.
+# Verify complete core recovery and these defined responses at the original
+# default solver settings, instead of treating a printed table as acceptance.
+checked_properties = (
+    "pressure",
+    "temperature",
+    "density",
+    "enthalpy",
+    "entropy",
+    "internal_energy",
+    "isobaric_heat_capacity",
+    "speed_of_sound",
+)
+for recovered in (state_rhoT, state_pT, state_hs):
+    assert recovered.valid
+    for name in checked_properties:
+        np.testing.assert_allclose(
+            recovered.raw_property(name),
+            state.raw_property(name),
+            rtol=1e-5,
+            atol=1e-7,
+        )
 for prop in props:
     print(
         f"{prop:>15} {state[prop]:15.04e} {state_rhoT[prop]:15.04e} {state_pT[prop]:15.04e} {state_hs[prop]:15.04e}"

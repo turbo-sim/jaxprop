@@ -181,7 +181,7 @@ def test_default_constructor_resolves_heos_and_preserves_empty_identifier():
     assert jxp.Fluid("CO2").identifier is None
 
 
-def test_future_binary_route_is_validated_without_faking_the_model():
+def test_binary_route_requires_the_configured_component_interface():
     component = SimpleNamespace(get_state=lambda *args: None)
     with pytest.raises(jxp.InvalidConfigurationError) as captured:
         jxp.Fluid(
@@ -194,8 +194,8 @@ def test_future_binary_route_is_validated_without_faking_the_model():
         )
     assert captured.value.provider == "native"
     assert captured.value.model == "binary_mixture"
-    assert captured.value.request == "model"
-    assert "consolidation" in captured.value.reason
+    assert captured.value.request == "components"
+    assert "interface" in captured.value.reason
 
 
 def test_subclassing_the_dispatch_constructor_has_an_explicit_boundary():

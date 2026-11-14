@@ -232,8 +232,12 @@ class ReferencePoint:
         if not self.available:
             raise UnavailableReferencePointError(
                 fluid_name=self.source_fluid,
-                provider="coolprop",
-                model="real_fluid",
+                provider="native" if self.classification == "composite" else "coolprop",
+                model=(
+                    "binary_mixture"
+                    if self.classification == "composite"
+                    else "real_fluid"
+                ),
                 request=self.name,
                 reason=self.reason or "The source reference is unavailable.",
             )
@@ -590,14 +594,41 @@ def initialize_source_references(name, backend="HEOS", *, state=None):
     )
 
 
-def composite_source_references(name, backend, component_references, mixture_ratio):
+def _binary_model_reference_id(component_reference_ids, mass_fractions):
+    """One physical-model identity shared by native and tabulated binaries."""
+    return (
+        "binary_mixture",
+        tuple(component_reference_ids),
+        ("mass_fractions", tuple(float(w) for w in mass_fractions)),
+        "common_pT_no_mass_exchange",
+        "pressure_temperature_equilibrium_acoustics",
+    )
+
+
+def composite_source_references(
+    name,
+    backend,
+    component_references,
+    mixture_ratio=None,
+    *,
+    mass_fractions=None,
+    component_reference_ids=None,
+):
     """Record that a component mixing model has no assumed unique phase points."""
     components = tuple(component_references)
-    reference_id = (
-        "binary_mixture",
-        tuple(component.reference_id for component in components),
-        ("mass_ratio", float(mixture_ratio)),
-    )
+    if mass_fractions is None:
+        reference_id = (
+            "binary_mixture",
+            tuple(component.reference_id for component in components),
+            ("mass_ratio", float(mixture_ratio)),
+        )
+    else:
+        # Component model identities distinguish calibrated PG models from
+        # source-equivalent evaluators without inventing an aggregate phase EOS.
+        reference_id = _binary_model_reference_id(
+            component_reference_ids or (c.reference_id for c in components),
+            mass_fractions,
+        )
     source = FrozenMapping(
         {
             "fluid_names": (name,),

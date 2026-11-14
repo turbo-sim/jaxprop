@@ -1,0 +1,2059 @@
+{
+  "date_utc": "2026-11-14T09:56:03.409540+00:00",
+  "scope": "Six actual default bicubic metastable programs; isolated CWDs, unchanged resolution/domains/branches/tolerances, headless Agg drawing/saving only.",
+  "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+  "outcomes": [
+    {
+      "source": "examples/bicubic_interpolation/demo_midpoints_metastable_comparison.py",
+      "source_sha256": "33bc59f7cec3a576a4587ff6a8ae96f3f197d2761634570bf368e614a2f16f9d",
+      "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+      "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_midpoints_metastable_comparison",
+      "backend": "Agg",
+      "scientific_settings_changed": false,
+      "figure_checks": [
+        {
+          "file": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/figure_01.png",
+          "axes": 5,
+          "finite_limits": true,
+          "drawn": true
+        }
+      ],
+      "source_reference_residual_checks": [
+        {
+          "index": [
+            0,
+            0
+          ],
+          "target_pressure_Pa": 31112.77776424551,
+          "target_enthalpy_J_per_kg": -143622.44897959183,
+          "actual_pressure_Pa": 31112.777764187762,
+          "actual_enthalpy_J_per_kg": -143622.4489795916,
+          "normalized_residual": 1.85612728061005e-12,
+          "within_declared_solver_limit": true
+        },
+        {
+          "index": [
+            24,
+            24
+          ],
+          "target_pressure_Pa": 173315.96934228175,
+          "target_enthalpy_J_per_kg": -77500.0,
+          "actual_pressure_Pa": 173315.96934431797,
+          "actual_enthalpy_J_per_kg": -77499.99999999788,
+          "normalized_residual": 1.1748602288653417e-11,
+          "within_declared_solver_limit": true
+        },
+        {
+          "index": [
+            48,
+            48
+          ],
+          "target_pressure_Pa": 965469.089795467,
+          "target_enthalpy_J_per_kg": -11377.551020408166,
+          "actual_pressure_Pa": 965469.0897957381,
+          "actual_enthalpy_J_per_kg": -11377.551020410165,
+          "normalized_residual": 2.808285499770582e-13,
+          "within_declared_solver_limit": true
+        }
+      ],
+      "outcome": "completed_default",
+      "seconds": 12.257177099992987,
+      "default_settings": {
+        "fluid_name": "nitrogen",
+        "h_min": -145000.0,
+        "h_max": -10000.0,
+        "p_min": 30000.0,
+        "p_max": 1000000.0,
+        "N_h": 100,
+        "N_p": 100,
+        "metastable_phase": "liquid"
+      },
+      "printed_property_errors": [
+        {
+          "property": "temperature",
+          "abs_min": 1.6087113863250124e-09,
+          "abs_max": 1.2718495270291896e-06,
+          "rel_min": 2.4163349876038225e-09,
+          "rel_max": 1.111074743681305e-06,
+          "rel_mean": 1.9078968068098956e-07
+        },
+        {
+          "property": "density",
+          "abs_min": 2.6692532628658228e-09,
+          "abs_max": 2.8473786755967012e-05,
+          "rel_min": 3.7620663563356766e-10,
+          "rel_max": 5.207324429479753e-06,
+          "rel_mean": 4.3026296817704954e-07
+        },
+        {
+          "property": "entropy",
+          "abs_min": 1.02836565929465e-08,
+          "abs_max": 7.103963525878498e-06,
+          "rel_min": 2.611683462826234e-10,
+          "rel_max": 2.5409440330742844e-07,
+          "rel_mean": 9.238049543165382e-08
+        },
+        {
+          "property": "gruneisen",
+          "abs_min": 3.3031355428647657e-12,
+          "abs_max": 7985.050725171984,
+          "rel_min": 1.6379299177532837e-10,
+          "rel_max": 21750.060230682313,
+          "rel_mean": 10.59914367746241
+        }
+      ],
+      "comparison_coverage": {
+        "temperature": {
+          "paired_finite": 2401,
+          "total": 2401,
+          "interpolation_unavailable": 0,
+          "reference_unavailable": 0
+        },
+        "density": {
+          "paired_finite": 2401,
+          "total": 2401,
+          "interpolation_unavailable": 0,
+          "reference_unavailable": 0
+        },
+        "entropy": {
+          "paired_finite": 2401,
+          "total": 2401,
+          "interpolation_unavailable": 0,
+          "reference_unavailable": 0
+        },
+        "gruneisen": {
+          "paired_finite": 2401,
+          "total": 2401,
+          "interpolation_unavailable": 0,
+          "reference_unavailable": 0
+        }
+      },
+      "numerical_validation": {
+        "status": "completed; numerical errors reported",
+        "original_interpolation_accuracy_budget": null,
+        "note": "The original default programs print diagnostic interpolation errors without an acceptance assertion; completion does not establish an unprovided accuracy budget.",
+        "important_issue": "The unchanged broad Nitrogen domain crosses a caloric instability (cv=0). Gamma has a pole and the polynomial interpolant is not accurate there: maximum reported absolute error about7985 and relative error about21750%, despite excellent T/rho/s agreement. A scientific domain or singular-property availability redesign is required; completion is not an accuracy pass."
+      },
+      "package_unchanged": true,
+      "wall_seconds": 15.689923699974315,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "-u",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_midpoints_metastable_comparison.py",
+        "C:\\Users\\roagr\\git_projects\\jaxprop"
+      ],
+      "log": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/run.log",
+      "prior_attempt": {
+        "source": "examples/bicubic_interpolation/demo_midpoints_metastable_comparison.py",
+        "source_sha256": "4450a85948871ae205899a7217b66bd04f1844028f8477fea294a609e83550a8",
+        "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+        "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_midpoints_metastable_comparison",
+        "backend": "Agg",
+        "scientific_settings_changed": false,
+        "figure_checks": [
+          {
+            "file": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/figure_01.png",
+            "axes": 5,
+            "finite_limits": true,
+            "drawn": true
+          }
+        ],
+        "source_reference_residual_checks": [
+          {
+            "index": [
+              0,
+              0
+            ],
+            "target_pressure_Pa": 31112.77776424551,
+            "target_enthalpy_J_per_kg": -143622.44897959183,
+            "actual_pressure_Pa": 31112.777764187762,
+            "actual_enthalpy_J_per_kg": -143622.4489795916,
+            "normalized_residual": 1.85612728061005e-12,
+            "within_declared_solver_limit": true
+          },
+          {
+            "index": [
+              24,
+              24
+            ],
+            "target_pressure_Pa": 173315.96934228175,
+            "target_enthalpy_J_per_kg": -77500.0,
+            "actual_pressure_Pa": 173315.96934431797,
+            "actual_enthalpy_J_per_kg": -77499.99999999788,
+            "normalized_residual": 1.1748602288653417e-11,
+            "within_declared_solver_limit": true
+          },
+          {
+            "index": [
+              48,
+              48
+            ],
+            "target_pressure_Pa": 965469.089795467,
+            "target_enthalpy_J_per_kg": -11377.551020408166,
+            "actual_pressure_Pa": 965469.0897957381,
+            "actual_enthalpy_J_per_kg": -11377.551020410165,
+            "normalized_residual": 2.808285499770582e-13,
+            "within_declared_solver_limit": true
+          }
+        ],
+        "outcome": "completed_default",
+        "seconds": 11.28442240000004,
+        "default_settings": {
+          "fluid_name": "nitrogen",
+          "h_min": -145000.0,
+          "h_max": -10000.0,
+          "p_min": 30000.0,
+          "p_max": 1000000.0,
+          "N_h": 100,
+          "N_p": 100,
+          "metastable_phase": "liquid"
+        },
+        "printed_property_errors": [
+          {
+            "property": "temperature",
+            "abs_min": 1.6087113863250124e-09,
+            "abs_max": 1.2718495270291896e-06,
+            "rel_min": 2.4163349876038225e-09,
+            "rel_max": 1.111074743681305e-06,
+            "rel_mean": 1.9078968068098956e-07
+          },
+          {
+            "property": "density",
+            "abs_min": 2.6692532628658228e-09,
+            "abs_max": 2.8473786755967012e-05,
+            "rel_min": 3.7620663563356766e-10,
+            "rel_max": 5.207324429479753e-06,
+            "rel_mean": 4.3026296817704954e-07
+          },
+          {
+            "property": "entropy",
+            "abs_min": 1.02836565929465e-08,
+            "abs_max": 7.103963525878498e-06,
+            "rel_min": 2.611683462826234e-10,
+            "rel_max": 2.5409440330742844e-07,
+            "rel_mean": 9.238049543165382e-08
+          },
+          {
+            "property": "gruneisen",
+            "abs_min": 3.3031355428647657e-12,
+            "abs_max": 7985.050725171984,
+            "rel_min": 1.6379299177532837e-10,
+            "rel_max": 21750.060230682313,
+            "rel_mean": 10.59914367746241
+          }
+        ],
+        "comparison_coverage": {
+          "temperature": {
+            "paired_finite": 2401,
+            "total": 2401,
+            "interpolation_unavailable": 0,
+            "reference_unavailable": 0
+          },
+          "density": {
+            "paired_finite": 2401,
+            "total": 2401,
+            "interpolation_unavailable": 0,
+            "reference_unavailable": 0
+          },
+          "entropy": {
+            "paired_finite": 2401,
+            "total": 2401,
+            "interpolation_unavailable": 0,
+            "reference_unavailable": 0
+          },
+          "gruneisen": {
+            "paired_finite": 2401,
+            "total": 2401,
+            "interpolation_unavailable": 0,
+            "reference_unavailable": 0
+          }
+        },
+        "numerical_validation": {
+          "status": "completed; numerical errors reported",
+          "original_interpolation_accuracy_budget": null,
+          "note": "The original default programs print diagnostic interpolation errors without an acceptance assertion; completion does not establish an unprovided accuracy budget.",
+          "important_issue": "The unchanged broad Nitrogen domain crosses a caloric instability (cv=0). Gamma has a pole and the polynomial interpolant is not accurate there: maximum reported absolute error about7985 and relative error about21750%, despite excellent T/rho/s agreement. A scientific domain or singular-property availability redesign is required; completion is not an accuracy pass."
+        },
+        "package_unchanged": true,
+        "wall_seconds": 14.480893700005254,
+        "command": [
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+          "-u",
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_midpoints_metastable_comparison.py",
+          "C:\\Users\\roagr\\git_projects\\jaxprop"
+        ],
+        "log": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/attempt_completed_default_1794650087.log",
+        "prior_attempt": {
+          "source": "examples/bicubic_interpolation/demo_midpoints_metastable_comparison.py",
+          "source_sha256": "4450a85948871ae205899a7217b66bd04f1844028f8477fea294a609e83550a8",
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_midpoints_metastable_comparison",
+          "backend": "Agg",
+          "scientific_settings_changed": false,
+          "figure_checks": [
+            {
+              "file": "figure_01.png",
+              "axes": 5,
+              "finite_limits": true,
+              "drawn": true
+            }
+          ],
+          "source_reference_residual_checks": [
+            {
+              "index": [
+                0,
+                0
+              ],
+              "target_pressure_Pa": 31112.77776424551,
+              "target_enthalpy_J_per_kg": -143622.44897959183,
+              "actual_pressure_Pa": 31112.777764187762,
+              "actual_enthalpy_J_per_kg": -143622.4489795916,
+              "normalized_residual": 1.85612728061005e-12,
+              "within_declared_solver_limit": true
+            },
+            {
+              "index": [
+                24,
+                24
+              ],
+              "target_pressure_Pa": 173315.96934228175,
+              "target_enthalpy_J_per_kg": -77500.0,
+              "actual_pressure_Pa": 173315.96934431797,
+              "actual_enthalpy_J_per_kg": -77499.99999999788,
+              "normalized_residual": 1.1748602288653417e-11,
+              "within_declared_solver_limit": true
+            },
+            {
+              "index": [
+                48,
+                48
+              ],
+              "target_pressure_Pa": 965469.089795467,
+              "target_enthalpy_J_per_kg": -11377.551020408166,
+              "actual_pressure_Pa": 965469.0897957381,
+              "actual_enthalpy_J_per_kg": -11377.551020410165,
+              "normalized_residual": 2.808285499770582e-13,
+              "within_declared_solver_limit": true
+            }
+          ],
+          "outcome": "completed_default",
+          "seconds": 245.23927200000617,
+          "default_settings": {
+            "fluid_name": "nitrogen",
+            "h_min": -145000.0,
+            "h_max": -10000.0,
+            "p_min": 30000.0,
+            "p_max": 1000000.0,
+            "N_h": 100,
+            "N_p": 100,
+            "metastable_phase": "liquid"
+          },
+          "printed_property_errors": [
+            {
+              "property": "temperature",
+              "abs_min": 1.6087113863250124e-09,
+              "abs_max": 1.2718495270291896e-06,
+              "rel_min": 2.4163349876038225e-09,
+              "rel_max": 1.111074743681305e-06,
+              "rel_mean": 1.9078968068098956e-07
+            },
+            {
+              "property": "density",
+              "abs_min": 2.6692532628658228e-09,
+              "abs_max": 2.8473786755967012e-05,
+              "rel_min": 3.7620663563356766e-10,
+              "rel_max": 5.207324429479753e-06,
+              "rel_mean": 4.3026296817704954e-07
+            },
+            {
+              "property": "entropy",
+              "abs_min": 1.02836565929465e-08,
+              "abs_max": 7.103963525878498e-06,
+              "rel_min": 2.611683462826234e-10,
+              "rel_max": 2.5409440330742844e-07,
+              "rel_mean": 9.238049543165382e-08
+            },
+            {
+              "property": "gruneisen",
+              "abs_min": 3.3031355428647657e-12,
+              "abs_max": 7985.050725171984,
+              "rel_min": 1.6379299177532837e-10,
+              "rel_max": 21750.060230682313,
+              "rel_mean": 10.59914367746241
+            }
+          ],
+          "package_unchanged": true,
+          "wall_seconds": 249.16177659999812,
+          "command": [
+            "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+            "-u",
+            "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+            "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_midpoints_metastable_comparison.py",
+            "C:\\Users\\roagr\\git_projects\\jaxprop"
+          ],
+          "log": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/attempt_completed_default_1794649810.log",
+          "prior_attempt": {
+            "source": "examples/bicubic_interpolation/demo_midpoints_metastable_comparison.py",
+            "outcome": "timed_out_default",
+            "timeout_seconds": 180,
+            "wall_seconds": 180.05390009999974,
+            "source_sha256": "4450a85948871ae205899a7217b66bd04f1844028f8477fea294a609e83550a8",
+            "command": [
+              "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+              "-u",
+              "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+              "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_midpoints_metastable_comparison.py",
+              "C:\\Users\\roagr\\git_projects\\jaxprop"
+            ],
+            "log": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/attempt_timed_out_default_1794649197.log",
+            "package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e"
+          }
+        },
+        "cwd_relative": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison",
+        "table_domain_review": {
+          "table": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/demo_metastable_table_generation/nitrogen_metastable_liquid_100x100_36a6299141d6577dae56.pkl",
+          "total_nodes": 10000,
+          "cv_min_J_per_kgK": -7326.630193287273,
+          "cv_max_J_per_kgK": 1161.7246120866196,
+          "cv_nonpositive_nodes": 1061,
+          "cv_sign_change_cells": 105,
+          "isothermal_bulk_modulus_nonpositive_nodes": 0,
+          "interpretation": "Positive mechanical stiffness alone does not establish caloric stability. Negative cv and cv=0 crossings can produce physical-model Gamma poles; this is not an accepted interpolation-accuracy result."
+        },
+        "independent_Gamma_probe": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/gamma_probe.json"
+      },
+      "cwd_relative": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison",
+      "table_domain_review": {
+        "table": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/demo_metastable_table_generation/nitrogen_metastable_liquid_100x100_36a6299141d6577dae56.pkl",
+        "total_nodes": 10000,
+        "cv_min_J_per_kgK": -7326.630193287273,
+        "cv_max_J_per_kgK": 1161.7246120866196,
+        "cv_nonpositive_nodes": 1061,
+        "cv_sign_change_cells": 105,
+        "isothermal_bulk_modulus_nonpositive_nodes": 0,
+        "interpretation": "Positive mechanical stiffness alone does not establish caloric stability. Negative cv and cv=0 crossings can produce physical-model Gamma poles; this is not an accepted interpolation-accuracy result."
+      },
+      "independent_Gamma_probe": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/gamma_probe.json",
+      "node_caloric_stability_is_not_a_whole_table_accuracy_acceptance": true,
+      "attempt_history_oldest_first": [
+        {
+          "outcome": "timed_out_default",
+          "wall_seconds": 180.05390009999974,
+          "timeout_seconds": 180,
+          "package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+          "source_sha256": "4450a85948871ae205899a7217b66bd04f1844028f8477fea294a609e83550a8",
+          "log": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/attempt_timed_out_default_1794649197.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": []
+        },
+        {
+          "outcome": "completed_default",
+          "seconds": 245.23927200000617,
+          "wall_seconds": 249.16177659999812,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "4450a85948871ae205899a7217b66bd04f1844028f8477fea294a609e83550a8",
+          "log": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/attempt_completed_default_1794649810.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": [
+            229.75
+          ]
+        },
+        {
+          "outcome": "completed_default",
+          "seconds": 11.28442240000004,
+          "wall_seconds": 14.480893700005254,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "4450a85948871ae205899a7217b66bd04f1844028f8477fea294a609e83550a8",
+          "log": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/attempt_completed_default_1794650087.log",
+          "table_loaded_from_cache": true,
+          "fresh_table_generation_started": false,
+          "reported_table_generation_seconds": []
+        },
+        {
+          "outcome": "completed_default",
+          "seconds": 12.257177099992987,
+          "wall_seconds": 15.689923699974315,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "33bc59f7cec3a576a4587ff6a8ae96f3f197d2761634570bf368e614a2f16f9d",
+          "log": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/run.log",
+          "table_loaded_from_cache": true,
+          "fresh_table_generation_started": false,
+          "reported_table_generation_seconds": []
+        }
+      ],
+      "latest_confirmation_used_full_cached_table": true,
+      "completed_fresh_default_attempts": [
+        {
+          "outcome": "completed_default",
+          "seconds": 245.23927200000617,
+          "wall_seconds": 249.16177659999812,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "4450a85948871ae205899a7217b66bd04f1844028f8477fea294a609e83550a8",
+          "log": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/attempt_completed_default_1794649810.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": [
+            229.75
+          ]
+        }
+      ]
+    },
+    {
+      "source": "examples/bicubic_interpolation/demo_interpolation_midpoints_metastable.py",
+      "source_sha256": "794c250be6ef094069282445e387e04c31c6dd19520b47cefa7795ca2e555999",
+      "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+      "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_interpolation_midpoints_metastable",
+      "backend": "Agg",
+      "scientific_settings_changed": false,
+      "figure_checks": [],
+      "outcome": "failed_default",
+      "error_type": "CalculationError",
+      "error": "CalculationError (fluid=nitrogen, provider=bicubic, model=real_fluid): table_generation: The metastable continuation routine stopped inside the requested grid; refusing to cache copied or extrapolated nodes.; index=(39, 39)",
+      "exception_chain": [
+        {
+          "type": "CalculationError",
+          "reason": "The metastable continuation routine stopped inside the requested grid; refusing to cache copied or extrapolated nodes.",
+          "request": "table_generation",
+          "index": [
+            39,
+            39
+          ]
+        }
+      ],
+      "failure_sites": [
+        {
+          "function": "__init__",
+          "coordinates": {}
+        },
+        {
+          "function": "_load_or_generate_table",
+          "coordinates": {}
+        },
+        {
+          "function": "_generate_metastable_liquid_property_table",
+          "coordinates": {
+            "h": 10000.0,
+            "p": 3000000.0000000023,
+            "i": 39.0,
+            "j": 39.0,
+            "eps_h": 1.3,
+            "eps_p": 30.000000000000025,
+            "rho_guess": 369.978866277332,
+            "T_guess": 124.01757586460391
+          }
+        }
+      ],
+      "seconds": 0.7544793999986723,
+      "default_settings": {
+        "fluid_name": "nitrogen",
+        "h_min": -120000.0,
+        "h_max": 10000.0,
+        "p_min": 100000.0,
+        "p_max": 3000000.0,
+        "N_h": 40,
+        "N_p": 40,
+        "metastable_phase": "liquid"
+      },
+      "package_unchanged": true,
+      "wall_seconds": 4.111598599993158,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "-u",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_interpolation_midpoints_metastable.py",
+        "C:\\Users\\roagr\\git_projects\\jaxprop"
+      ],
+      "log": "development/example_audit/results/metastable_followup/demo_interpolation_midpoints_metastable/run.log",
+      "prior_attempt": {
+        "source": "examples/bicubic_interpolation/demo_interpolation_midpoints_metastable.py",
+        "source_sha256": "794c250be6ef094069282445e387e04c31c6dd19520b47cefa7795ca2e555999",
+        "package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+        "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_interpolation_midpoints_metastable",
+        "backend": "Agg",
+        "scientific_settings_changed": false,
+        "figure_checks": [],
+        "outcome": "failed_default",
+        "error_type": "CalculationError",
+        "error": "CalculationError (fluid=nitrogen, provider=bicubic, model=real_fluid): table_generation: The metastable continuation routine stopped inside the requested grid; refusing to cache copied or extrapolated nodes.; index=(39, 39)",
+        "seconds": 1.8384318000171334,
+        "default_settings": {
+          "fluid_name": "nitrogen",
+          "h_min": -120000.0,
+          "h_max": 10000.0,
+          "p_min": 100000.0,
+          "p_max": 3000000.0,
+          "N_h": 40,
+          "N_p": 40,
+          "metastable_phase": "liquid"
+        },
+        "package_unchanged": true,
+        "wall_seconds": 6.3181321999873035,
+        "command": [
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+          "-u",
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_interpolation_midpoints_metastable.py",
+          "C:\\Users\\roagr\\git_projects\\jaxprop"
+        ],
+        "log": "development/example_audit/results/metastable_followup/demo_interpolation_midpoints_metastable/attempt_failed_default_1794648808.log"
+      },
+      "cwd_relative": "development/example_audit/results/metastable_followup/demo_interpolation_midpoints_metastable",
+      "numerical_validation": {
+        "status": "default scientific calculation failed before plotting/comparison",
+        "original_interpolation_accuracy_budget": null
+      },
+      "independent_branch_limit_proof": "development/example_audit/results/metastable_followup/branch_probe.json",
+      "attempt_history_oldest_first": [
+        {
+          "outcome": "failed_default",
+          "seconds": 1.8384318000171334,
+          "wall_seconds": 6.3181321999873035,
+          "package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+          "source_sha256": "794c250be6ef094069282445e387e04c31c6dd19520b47cefa7795ca2e555999",
+          "log": "development/example_audit/results/metastable_followup/demo_interpolation_midpoints_metastable/attempt_failed_default_1794648808.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": []
+        },
+        {
+          "outcome": "failed_default",
+          "seconds": 0.7544793999986723,
+          "wall_seconds": 4.111598599993158,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "794c250be6ef094069282445e387e04c31c6dd19520b47cefa7795ca2e555999",
+          "log": "development/example_audit/results/metastable_followup/demo_interpolation_midpoints_metastable/run.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": []
+        }
+      ],
+      "latest_confirmation_used_full_cached_table": false,
+      "completed_fresh_default_attempts": []
+    },
+    {
+      "source": "examples/bicubic_interpolation/demo_metastable_calculations.py",
+      "source_sha256": "1acf562fada672c2a8a7c40aa455dcaa6dbb25a34130411f92e6b43dd4b13950",
+      "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+      "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_metastable_calculations",
+      "backend": "Agg",
+      "scientific_settings_changed": false,
+      "figure_checks": [],
+      "outcome": "failed_default",
+      "error_type": "CalculationError",
+      "error": "CalculationError (fluid=water, provider=bicubic, model=real_fluid): table_generation: The metastable continuation routine stopped inside the requested grid; refusing to cache copied or extrapolated nodes.; index=(112, 119)",
+      "exception_chain": [
+        {
+          "type": "CalculationError",
+          "reason": "The metastable continuation routine stopped inside the requested grid; refusing to cache copied or extrapolated nodes.",
+          "request": "table_generation",
+          "index": [
+            112,
+            119
+          ]
+        }
+      ],
+      "failure_sites": [
+        {
+          "function": "__init__",
+          "coordinates": {}
+        },
+        {
+          "function": "_load_or_generate_table",
+          "coordinates": {}
+        },
+        {
+          "function": "_generate_metastable_liquid_property_table",
+          "coordinates": {
+            "h": 1711764.705882353,
+            "p": 12999999.999999989,
+            "i": 112.0,
+            "j": 119.0,
+            "eps_h": 15.000000000000002,
+            "eps_p": 129.9999999999999,
+            "rho_guess": 510.1435547824361,
+            "T_guess": 621.0593902711107
+          }
+        }
+      ],
+      "seconds": 2.128933200001484,
+      "default_settings": {
+        "fluid_name": "water",
+        "h_min": 300000.0,
+        "h_max": 1800000.0,
+        "p_min": 100000.0,
+        "p_max": 13000000.0,
+        "N_h": 120,
+        "N_p": 120,
+        "metastable_phase": "liquid"
+      },
+      "package_unchanged": true,
+      "wall_seconds": 5.3129110999871045,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "-u",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_metastable_calculations.py",
+        "C:\\Users\\roagr\\git_projects\\jaxprop"
+      ],
+      "log": "development/example_audit/results/metastable_followup/demo_metastable_calculations/run.log",
+      "prior_attempt": {
+        "source": "examples/bicubic_interpolation/demo_metastable_calculations.py",
+        "source_sha256": "1acf562fada672c2a8a7c40aa455dcaa6dbb25a34130411f92e6b43dd4b13950",
+        "package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+        "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_metastable_calculations",
+        "backend": "Agg",
+        "scientific_settings_changed": false,
+        "figure_checks": [],
+        "outcome": "failed_default",
+        "error_type": "CalculationError",
+        "error": "CalculationError (fluid=water, provider=bicubic, model=real_fluid): table_generation: The metastable continuation routine stopped inside the requested grid; refusing to cache copied or extrapolated nodes.; index=(112, 119)",
+        "seconds": 3.5926672000205144,
+        "default_settings": {
+          "fluid_name": "water",
+          "h_min": 300000.0,
+          "h_max": 1800000.0,
+          "p_min": 100000.0,
+          "p_max": 13000000.0,
+          "N_h": 120,
+          "N_p": 120,
+          "metastable_phase": "liquid"
+        },
+        "package_unchanged": true,
+        "wall_seconds": 7.706476299994392,
+        "command": [
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+          "-u",
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_metastable_calculations.py",
+          "C:\\Users\\roagr\\git_projects\\jaxprop"
+        ],
+        "log": "development/example_audit/results/metastable_followup/demo_metastable_calculations/attempt_failed_default_1794648812.log"
+      },
+      "cwd_relative": "development/example_audit/results/metastable_followup/demo_metastable_calculations",
+      "numerical_validation": {
+        "status": "default scientific calculation failed before plotting/comparison",
+        "original_interpolation_accuracy_budget": null
+      },
+      "independent_branch_limit_proof": "development/example_audit/results/metastable_followup/branch_probe.json",
+      "attempt_history_oldest_first": [
+        {
+          "outcome": "failed_default",
+          "seconds": 3.5926672000205144,
+          "wall_seconds": 7.706476299994392,
+          "package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+          "source_sha256": "1acf562fada672c2a8a7c40aa455dcaa6dbb25a34130411f92e6b43dd4b13950",
+          "log": "development/example_audit/results/metastable_followup/demo_metastable_calculations/attempt_failed_default_1794648812.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": []
+        },
+        {
+          "outcome": "failed_default",
+          "seconds": 2.128933200001484,
+          "wall_seconds": 5.3129110999871045,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "1acf562fada672c2a8a7c40aa455dcaa6dbb25a34130411f92e6b43dd4b13950",
+          "log": "development/example_audit/results/metastable_followup/demo_metastable_calculations/run.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": []
+        }
+      ],
+      "latest_confirmation_used_full_cached_table": false,
+      "completed_fresh_default_attempts": []
+    },
+    {
+      "source": "examples/bicubic_interpolation/demo_metastable_single_point_comparison.py",
+      "source_sha256": "5f6fb42f680a9af762c8a17aaaa6ac79996740c363a78e9b6838f68d9be4650a",
+      "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+      "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_metastable_single_point_comparison",
+      "backend": "Agg",
+      "scientific_settings_changed": false,
+      "figure_checks": [],
+      "point_full_property_errors": {
+        "compressibility_factor": {
+          "interpolated": 0.025076912302997408,
+          "reference": 0.025076912269312374,
+          "absolute_error": 3.368503392886524e-11,
+          "relative_error_percent": 1.3432688030769628e-07
+        },
+        "conductivity": {
+          "interpolated": 0.11076962554634023,
+          "reference": 0.11076962550246869,
+          "absolute_error": 4.387154528551207e-11,
+          "relative_error_percent": 3.960611502160791e-08
+        },
+        "density": {
+          "interpolated": 720.5532584087293,
+          "reference": 720.5532587576706,
+          "absolute_error": 3.489412847557105e-07,
+          "relative_error_percent": 4.842685540793079e-08
+        },
+        "enthalpy": {
+          "interpolated": -85528.8,
+          "reference": -85528.80000000025,
+          "absolute_error": 2.473825588822365e-10,
+          "relative_error_percent": 2.892388983386131e-13
+        },
+        "entropy": {
+          "interpolated": 3253.38662821145,
+          "reference": 3253.386629519304,
+          "absolute_error": 1.3078538358968217e-06,
+          "relative_error_percent": 4.019976673015529e-08
+        },
+        "gruneisen": {
+          "interpolated": 1.6047007612673376,
+          "reference": 1.6047007622317948,
+          "absolute_error": 9.644571807854163e-10,
+          "relative_error_percent": 6.010199555486364e-08
+        },
+        "heat_capacity_ratio": {
+          "interpolated": 2.203490990029448,
+          "reference": 2.2034909834334604,
+          "absolute_error": 6.5959877559862434e-09,
+          "relative_error_percent": 2.9934262520595535e-07
+        },
+        "internal_energy": {
+          "interpolated": -86232.68967682046,
+          "reference": -86232.68967621132,
+          "absolute_error": 6.091431714594364e-07,
+          "relative_error_percent": 7.063947254187045e-10
+        },
+        "is_two_phase": {
+          "interpolated": 0.0,
+          "reference": 0.0,
+          "absolute_error": 0.0,
+          "relative_error_percent": null
+        },
+        "isentropic_bulk_modulus": {
+          "interpolated": 321638416.99464697,
+          "reference": 321638415.58380955,
+          "absolute_error": 1.4108374118804932,
+          "relative_error_percent": 4.386408288076118e-07
+        },
+        "isentropic_compressibility": {
+          "interpolated": 3.109081400464042e-09,
+          "reference": 3.1090813520670054e-09,
+          "absolute_error": 4.8397036485374103e-17,
+          "relative_error_percent": 1.556634613410755e-06
+        },
+        "isobaric_expansion_coefficient": {
+          "interpolated": 0.007930267710755052,
+          "reference": 0.007930267631821187,
+          "absolute_error": 7.893386465285257e-11,
+          "relative_error_percent": 9.95349316284366e-07
+        },
+        "isobaric_heat_capacity": {
+          "interpolated": 2205.949744615082,
+          "reference": 2205.94973697018,
+          "absolute_error": 7.64490232540993e-06,
+          "relative_error_percent": 3.465583189538137e-07
+        },
+        "isochoric_heat_capacity": {
+          "interpolated": 1001.1158455685343,
+          "reference": 1001.1158446098509,
+          "absolute_error": 9.586833584762644e-07,
+          "relative_error_percent": 9.576148091531574e-08
+        },
+        "isothermal_bulk_modulus": {
+          "interpolated": 145967658.01479584,
+          "reference": 145967656.77826163,
+          "absolute_error": 1.236534208059311,
+          "relative_error_percent": 8.471289019441619e-07
+        },
+        "isothermal_compressibility": {
+          "interpolated": 6.850832890088754e-09,
+          "reference": 6.850832726040759e-09,
+          "absolute_error": 1.6404799515591396e-16,
+          "relative_error_percent": 2.3945701452080376e-06
+        },
+        "isothermal_joule_thomson": {
+          "interpolated": 0.00034698551397617186,
+          "reference": 0.00034698552991796304,
+          "absolute_error": 1.5941791181410536e-11,
+          "relative_error_percent": 4.594367720515497e-06
+        },
+        "joule_thomson": {
+          "interpolated": -1.572952956754528e-07,
+          "reference": -1.5729530192947166e-07,
+          "absolute_error": 6.254018849899423e-15,
+          "relative_error_percent": 3.97597307305695e-06
+        },
+        "pressure": {
+          "interpolated": 507190.0,
+          "reference": 507189.9999997602,
+          "absolute_error": 2.398155629634857e-07,
+          "relative_error_percent": 4.7283180457737554e-11
+        },
+        "quality_mass": {
+          "interpolated": 9.986381417701399e-05,
+          "reference": 9.986360665099737e-05,
+          "absolute_error": 2.0752601662132625e-10,
+          "relative_error_percent": 0.00020780945489640355
+        },
+        "quality_volume": {
+          "interpolated": null,
+          "reference": null,
+          "absolute_error": null,
+          "relative_error_percent": null
+        },
+        "speed_of_sound": {
+          "interpolated": 668.1145247663935,
+          "reference": 668.1145252675361,
+          "absolute_error": 5.011426083001425e-07,
+          "relative_error_percent": 7.500848871673125e-08
+        },
+        "surface_tension": {
+          "interpolated": null,
+          "reference": null,
+          "absolute_error": null,
+          "relative_error_percent": null
+        },
+        "temperature": {
+          "interpolated": 94.57164375154949,
+          "reference": 94.57164379503065,
+          "absolute_error": 4.34811653349243e-08,
+          "relative_error_percent": 4.597695840960845e-08
+        },
+        "viscosity": {
+          "interpolated": 8.912450629262929e-05,
+          "reference": 8.912450564060322e-05,
+          "absolute_error": 6.520260676864953e-13,
+          "relative_error_percent": 7.315901086911008e-07
+        }
+      },
+      "point_independent_homogeneous_source_core": {
+        "pressure": {
+          "computed": 507189.9999997602,
+          "source": 507189.9999997608,
+          "absolute_error": 6.402842700481415e-10
+        },
+        "temperature": {
+          "computed": 94.57164379503065,
+          "source": 94.57164379503065,
+          "absolute_error": 0.0
+        },
+        "density": {
+          "computed": 720.5532587576706,
+          "source": 720.5532587576706,
+          "absolute_error": 0.0
+        },
+        "enthalpy": {
+          "computed": -85528.80000000025,
+          "source": -85528.80000000024,
+          "absolute_error": 1.4551915228366852e-11
+        },
+        "entropy": {
+          "computed": 3253.386629519304,
+          "source": 3253.3866295193034,
+          "absolute_error": 4.547473508864641e-13
+        },
+        "internal_energy": {
+          "computed": -86232.68967621132,
+          "source": -86232.68967621132,
+          "absolute_error": 0.0
+        }
+      },
+      "outcome": "completed_default",
+      "seconds": 1.38219589999062,
+      "default_settings": {
+        "fluid_name": "nitrogen",
+        "h_min": -110000.0,
+        "h_max": -10000.0,
+        "p_min": 30000.0,
+        "p_max": 1000000.0,
+        "N_h": 165,
+        "N_p": 165,
+        "metastable_phase": "liquid"
+      },
+      "numerical_validation": {
+        "status": "completed; numerical errors reported",
+        "original_interpolation_accuracy_budget": null,
+        "note": "The original default programs print diagnostic interpolation errors without an acceptance assertion; completion does not establish an unprovided accuracy budget.",
+        "whole_table_limitation": "The selected HP/PT/saturation point completes, but the full rectangular table includes nonpositive-cv nodes. Point agreement does not validate every property across that domain."
+      },
+      "HP_PT_round_trip_enthalpy_error_J_per_kg": 1.4551915228366852e-11,
+      "package_unchanged": true,
+      "wall_seconds": 4.902151000016602,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "-u",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_metastable_single_point_comparison.py",
+        "C:\\Users\\roagr\\git_projects\\jaxprop"
+      ],
+      "log": "development/example_audit/results/metastable_followup/demo_metastable_single_point_comparison/run.log",
+      "prior_attempt": {
+        "source": "examples/bicubic_interpolation/demo_metastable_single_point_comparison.py",
+        "source_sha256": "9b0e784710b97c647ffa2c45ce19fc30e8c9d6a70ea80062e88357f672941105",
+        "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+        "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_metastable_single_point_comparison",
+        "backend": "Agg",
+        "scientific_settings_changed": false,
+        "figure_checks": [],
+        "point_full_property_errors": {
+          "compressibility_factor": {
+            "interpolated": 0.025076912302997408,
+            "reference": 0.025076912269312374,
+            "absolute_error": 3.368503392886524e-11,
+            "relative_error_percent": 1.3432688030769628e-07
+          },
+          "conductivity": {
+            "interpolated": 0.11076962554634023,
+            "reference": 0.11076962550246869,
+            "absolute_error": 4.387154528551207e-11,
+            "relative_error_percent": 3.960611502160791e-08
+          },
+          "density": {
+            "interpolated": 720.5532584087293,
+            "reference": 720.5532587576706,
+            "absolute_error": 3.489412847557105e-07,
+            "relative_error_percent": 4.842685540793079e-08
+          },
+          "enthalpy": {
+            "interpolated": -85528.8,
+            "reference": -85528.80000000025,
+            "absolute_error": 2.473825588822365e-10,
+            "relative_error_percent": 2.892388983386131e-13
+          },
+          "entropy": {
+            "interpolated": 3253.38662821145,
+            "reference": 3253.386629519304,
+            "absolute_error": 1.3078538358968217e-06,
+            "relative_error_percent": 4.019976673015529e-08
+          },
+          "gruneisen": {
+            "interpolated": 1.6047007612673376,
+            "reference": 1.6047007622317948,
+            "absolute_error": 9.644571807854163e-10,
+            "relative_error_percent": 6.010199555486364e-08
+          },
+          "heat_capacity_ratio": {
+            "interpolated": 2.203490990029448,
+            "reference": 2.2034909834334604,
+            "absolute_error": 6.5959877559862434e-09,
+            "relative_error_percent": 2.9934262520595535e-07
+          },
+          "internal_energy": {
+            "interpolated": -86232.68967682046,
+            "reference": -86232.68967621132,
+            "absolute_error": 6.091431714594364e-07,
+            "relative_error_percent": 7.063947254187045e-10
+          },
+          "is_two_phase": {
+            "interpolated": 0.0,
+            "reference": 0.0,
+            "absolute_error": 0.0,
+            "relative_error_percent": null
+          },
+          "isentropic_bulk_modulus": {
+            "interpolated": 321638416.99464697,
+            "reference": 321638415.58380955,
+            "absolute_error": 1.4108374118804932,
+            "relative_error_percent": 4.386408288076118e-07
+          },
+          "isentropic_compressibility": {
+            "interpolated": 3.109081400464042e-09,
+            "reference": 3.1090813520670054e-09,
+            "absolute_error": 4.8397036485374103e-17,
+            "relative_error_percent": 1.556634613410755e-06
+          },
+          "isobaric_expansion_coefficient": {
+            "interpolated": 0.007930267710755052,
+            "reference": 0.007930267631821187,
+            "absolute_error": 7.893386465285257e-11,
+            "relative_error_percent": 9.95349316284366e-07
+          },
+          "isobaric_heat_capacity": {
+            "interpolated": 2205.949744615082,
+            "reference": 2205.94973697018,
+            "absolute_error": 7.64490232540993e-06,
+            "relative_error_percent": 3.465583189538137e-07
+          },
+          "isochoric_heat_capacity": {
+            "interpolated": 1001.1158455685343,
+            "reference": 1001.1158446098509,
+            "absolute_error": 9.586833584762644e-07,
+            "relative_error_percent": 9.576148091531574e-08
+          },
+          "isothermal_bulk_modulus": {
+            "interpolated": 145967658.01479584,
+            "reference": 145967656.77826163,
+            "absolute_error": 1.236534208059311,
+            "relative_error_percent": 8.471289019441619e-07
+          },
+          "isothermal_compressibility": {
+            "interpolated": 6.850832890088754e-09,
+            "reference": 6.850832726040759e-09,
+            "absolute_error": 1.6404799515591396e-16,
+            "relative_error_percent": 2.3945701452080376e-06
+          },
+          "isothermal_joule_thomson": {
+            "interpolated": 0.00034698551397617186,
+            "reference": 0.00034698552991796304,
+            "absolute_error": 1.5941791181410536e-11,
+            "relative_error_percent": 4.594367720515497e-06
+          },
+          "joule_thomson": {
+            "interpolated": -1.572952956754528e-07,
+            "reference": -1.5729530192947166e-07,
+            "absolute_error": 6.254018849899423e-15,
+            "relative_error_percent": 3.97597307305695e-06
+          },
+          "pressure": {
+            "interpolated": 507190.0,
+            "reference": 507189.9999997602,
+            "absolute_error": 2.398155629634857e-07,
+            "relative_error_percent": 4.7283180457737554e-11
+          },
+          "quality_mass": {
+            "interpolated": 9.986381417701399e-05,
+            "reference": 9.986360665099737e-05,
+            "absolute_error": 2.0752601662132625e-10,
+            "relative_error_percent": 0.00020780945489640355
+          },
+          "quality_volume": {
+            "interpolated": null,
+            "reference": null,
+            "absolute_error": null,
+            "relative_error_percent": null
+          },
+          "speed_of_sound": {
+            "interpolated": 668.1145247663935,
+            "reference": 668.1145252675361,
+            "absolute_error": 5.011426083001425e-07,
+            "relative_error_percent": 7.500848871673125e-08
+          },
+          "surface_tension": {
+            "interpolated": null,
+            "reference": null,
+            "absolute_error": null,
+            "relative_error_percent": null
+          },
+          "temperature": {
+            "interpolated": 94.57164375154949,
+            "reference": 94.57164379503065,
+            "absolute_error": 4.34811653349243e-08,
+            "relative_error_percent": 4.597695840960845e-08
+          },
+          "viscosity": {
+            "interpolated": 8.912450629262929e-05,
+            "reference": 8.912450564060322e-05,
+            "absolute_error": 6.520260676864953e-13,
+            "relative_error_percent": 7.315901086911008e-07
+          }
+        },
+        "point_independent_homogeneous_source_core": {
+          "pressure": {
+            "computed": 507189.9999997602,
+            "source": 507189.9999997608,
+            "absolute_error": 6.402842700481415e-10
+          },
+          "temperature": {
+            "computed": 94.57164379503065,
+            "source": 94.57164379503065,
+            "absolute_error": 0.0
+          },
+          "density": {
+            "computed": 720.5532587576706,
+            "source": 720.5532587576706,
+            "absolute_error": 0.0
+          },
+          "enthalpy": {
+            "computed": -85528.80000000025,
+            "source": -85528.80000000024,
+            "absolute_error": 1.4551915228366852e-11
+          },
+          "entropy": {
+            "computed": 3253.386629519304,
+            "source": 3253.3866295193034,
+            "absolute_error": 4.547473508864641e-13
+          },
+          "internal_energy": {
+            "computed": -86232.68967621132,
+            "source": -86232.68967621132,
+            "absolute_error": 0.0
+          }
+        },
+        "outcome": "completed_default",
+        "seconds": 1.2606097999960184,
+        "default_settings": {
+          "fluid_name": "nitrogen",
+          "h_min": -110000.0,
+          "h_max": -10000.0,
+          "p_min": 30000.0,
+          "p_max": 1000000.0,
+          "N_h": 165,
+          "N_p": 165,
+          "metastable_phase": "liquid"
+        },
+        "numerical_validation": {
+          "status": "completed; numerical errors reported",
+          "original_interpolation_accuracy_budget": null,
+          "note": "The original default programs print diagnostic interpolation errors without an acceptance assertion; completion does not establish an unprovided accuracy budget.",
+          "whole_table_limitation": "The selected HP/PT/saturation point completes, but the full rectangular table includes nonpositive-cv nodes. Point agreement does not validate every property across that domain."
+        },
+        "HP_PT_round_trip_enthalpy_error_J_per_kg": 1.4551915228366852e-11,
+        "package_unchanged": true,
+        "wall_seconds": 5.232725499983644,
+        "command": [
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+          "-u",
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_metastable_single_point_comparison.py",
+          "C:\\Users\\roagr\\git_projects\\jaxprop"
+        ],
+        "log": "development/example_audit/results/metastable_followup/demo_metastable_single_point_comparison/attempt_completed_default_1794650082.log",
+        "prior_attempt": {
+          "source": "examples/bicubic_interpolation/demo_metastable_single_point_comparison.py",
+          "source_sha256": "9b0e784710b97c647ffa2c45ce19fc30e8c9d6a70ea80062e88357f672941105",
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_metastable_single_point_comparison",
+          "backend": "Agg",
+          "scientific_settings_changed": false,
+          "figure_checks": [],
+          "outcome": "completed_default",
+          "seconds": 537.6969753000012,
+          "default_settings": {
+            "fluid_name": "nitrogen",
+            "h_min": -110000.0,
+            "h_max": -10000.0,
+            "p_min": 30000.0,
+            "p_max": 1000000.0,
+            "N_h": 165,
+            "N_p": 165,
+            "metastable_phase": "liquid"
+          },
+          "HP_PT_round_trip_enthalpy_error_J_per_kg": 1.4551915228366852e-11,
+          "package_unchanged": true,
+          "wall_seconds": 541.567111100012,
+          "command": [
+            "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+            "-u",
+            "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+            "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_metastable_single_point_comparison.py",
+            "C:\\Users\\roagr\\git_projects\\jaxprop"
+          ],
+          "log": "development/example_audit/results/metastable_followup/demo_metastable_single_point_comparison/attempt_completed_default_1794649805.log",
+          "prior_attempt": {
+            "source": "examples/bicubic_interpolation/demo_metastable_single_point_comparison.py",
+            "outcome": "timed_out_default",
+            "timeout_seconds": 180,
+            "wall_seconds": 180.05212960002245,
+            "source_sha256": "9b0e784710b97c647ffa2c45ce19fc30e8c9d6a70ea80062e88357f672941105",
+            "command": [
+              "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+              "-u",
+              "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+              "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_metastable_single_point_comparison.py",
+              "C:\\Users\\roagr\\git_projects\\jaxprop"
+            ],
+            "log": "development/example_audit/results/metastable_followup/demo_metastable_single_point_comparison/attempt_timed_out_default_1794649197.log",
+            "package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e"
+          }
+        },
+        "cwd_relative": "development/example_audit/results/metastable_followup/demo_metastable_single_point_comparison",
+        "table_domain_review": {
+          "table": "development/example_audit/results/metastable_followup/demo_metastable_single_point_comparison/demo_metastable_table_generation/nitrogen_metastable_liquid_165x165_c9a13315902ee326df66.pkl",
+          "total_nodes": 27225,
+          "cv_min_J_per_kgK": -7326.630193287436,
+          "cv_max_J_per_kgK": 1055.4298556738638,
+          "cv_nonpositive_nodes": 3803,
+          "cv_sign_change_cells": 177,
+          "isothermal_bulk_modulus_nonpositive_nodes": 0,
+          "interpretation": "Positive mechanical stiffness alone does not establish caloric stability. Negative cv and cv=0 crossings can produce physical-model Gamma poles; this is not an accepted interpolation-accuracy result."
+        }
+      },
+      "cwd_relative": "development/example_audit/results/metastable_followup/demo_metastable_single_point_comparison",
+      "table_domain_review": {
+        "table": "development/example_audit/results/metastable_followup/demo_metastable_single_point_comparison/demo_metastable_table_generation/nitrogen_metastable_liquid_165x165_c9a13315902ee326df66.pkl",
+        "total_nodes": 27225,
+        "cv_min_J_per_kgK": -7326.630193287436,
+        "cv_max_J_per_kgK": 1055.4298556738638,
+        "cv_nonpositive_nodes": 3803,
+        "cv_sign_change_cells": 177,
+        "isothermal_bulk_modulus_nonpositive_nodes": 0,
+        "interpretation": "Positive mechanical stiffness alone does not establish caloric stability. Negative cv and cv=0 crossings can produce physical-model Gamma poles; this is not an accepted interpolation-accuracy result."
+      },
+      "node_caloric_stability_is_not_a_whole_table_accuracy_acceptance": true,
+      "attempt_history_oldest_first": [
+        {
+          "outcome": "timed_out_default",
+          "wall_seconds": 180.05212960002245,
+          "timeout_seconds": 180,
+          "package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+          "source_sha256": "9b0e784710b97c647ffa2c45ce19fc30e8c9d6a70ea80062e88357f672941105",
+          "log": "development/example_audit/results/metastable_followup/demo_metastable_single_point_comparison/attempt_timed_out_default_1794649197.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": []
+        },
+        {
+          "outcome": "completed_default",
+          "seconds": 537.6969753000012,
+          "wall_seconds": 541.567111100012,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "9b0e784710b97c647ffa2c45ce19fc30e8c9d6a70ea80062e88357f672941105",
+          "log": "development/example_audit/results/metastable_followup/demo_metastable_single_point_comparison/attempt_completed_default_1794649805.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": [
+            536.18
+          ]
+        },
+        {
+          "outcome": "completed_default",
+          "seconds": 1.2606097999960184,
+          "wall_seconds": 5.232725499983644,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "9b0e784710b97c647ffa2c45ce19fc30e8c9d6a70ea80062e88357f672941105",
+          "log": "development/example_audit/results/metastable_followup/demo_metastable_single_point_comparison/attempt_completed_default_1794650082.log",
+          "table_loaded_from_cache": true,
+          "fresh_table_generation_started": false,
+          "reported_table_generation_seconds": []
+        },
+        {
+          "outcome": "completed_default",
+          "seconds": 1.38219589999062,
+          "wall_seconds": 4.902151000016602,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "5f6fb42f680a9af762c8a17aaaa6ac79996740c363a78e9b6838f68d9be4650a",
+          "log": "development/example_audit/results/metastable_followup/demo_metastable_single_point_comparison/run.log",
+          "table_loaded_from_cache": true,
+          "fresh_table_generation_started": false,
+          "reported_table_generation_seconds": []
+        }
+      ],
+      "latest_confirmation_used_full_cached_table": true,
+      "completed_fresh_default_attempts": [
+        {
+          "outcome": "completed_default",
+          "seconds": 537.6969753000012,
+          "wall_seconds": 541.567111100012,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "9b0e784710b97c647ffa2c45ce19fc30e8c9d6a70ea80062e88357f672941105",
+          "log": "development/example_audit/results/metastable_followup/demo_metastable_single_point_comparison/attempt_completed_default_1794649805.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": [
+            536.18
+          ]
+        }
+      ]
+    },
+    {
+      "source": "examples/bicubic_interpolation/demo_saturation_midpoints.py",
+      "source_sha256": "f10de1ab79428a23b65537120c0ca4f3a5b7678c2291db9cfe9b79a77bf307e6",
+      "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+      "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_saturation_midpoints",
+      "backend": "Agg",
+      "scientific_settings_changed": false,
+      "figure_checks": [
+        {
+          "file": "development/example_audit/results/metastable_followup/demo_saturation_midpoints/figure_01.png",
+          "axes": 4,
+          "finite_limits": true,
+          "drawn": true
+        },
+        {
+          "file": "development/example_audit/results/metastable_followup/demo_saturation_midpoints/figure_02.png",
+          "axes": 4,
+          "finite_limits": true,
+          "drawn": true
+        }
+      ],
+      "outcome": "completed_default",
+      "seconds": 2.4547473000129685,
+      "default_settings": {
+        "fluid_name": "nitrogen",
+        "h_min": -100000.0,
+        "h_max": -10000.0,
+        "p_min": 200000.0,
+        "p_max": 10000000.0,
+        "N_h": 21,
+        "N_p": 21,
+        "metastable_phase": "liquid"
+      },
+      "saturation_errors": {
+        "temperature": {
+          "finite": 59,
+          "total": 83,
+          "max_percent": 2.350165369527648e-05,
+          "within_table_paired_finite": 59,
+          "within_table_total": 59,
+          "max_absolute_error_within_table": 2.9441772326777027e-05
+        },
+        "density": {
+          "finite": 59,
+          "total": 83,
+          "max_percent": 0.1118106889798785,
+          "within_table_paired_finite": 59,
+          "within_table_total": 59,
+          "max_absolute_error_within_table": 0.4648637377193836
+        },
+        "enthalpy": {
+          "finite": 59,
+          "total": 83,
+          "max_percent": 1.0043333122123055,
+          "within_table_paired_finite": 59,
+          "within_table_total": 59,
+          "max_absolute_error_within_table": 86.7903006527049,
+          "max_RT_scaled_error_percent_within_table": 0.23341892691468913,
+          "energy_scale": "actual source specific_R * temperature (reference invariant)"
+        },
+        "gruneisen": {
+          "finite": 59,
+          "total": 83,
+          "max_percent": 0.12649569197470778,
+          "within_table_paired_finite": 59,
+          "within_table_total": 59,
+          "max_absolute_error_within_table": 0.0005663724068096232
+        }
+      },
+      "numerical_validation": {
+        "status": "completed; numerical errors reported",
+        "original_interpolation_accuracy_budget": null,
+        "note": "The original default programs print diagnostic interpolation errors without an acceptance assertion; completion does not establish an unprovided accuracy budget."
+      },
+      "package_unchanged": true,
+      "wall_seconds": 6.0838087000011,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "-u",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_saturation_midpoints.py",
+        "C:\\Users\\roagr\\git_projects\\jaxprop"
+      ],
+      "log": "development/example_audit/results/metastable_followup/demo_saturation_midpoints/run.log",
+      "prior_attempt": {
+        "source": "examples/bicubic_interpolation/demo_saturation_midpoints.py",
+        "source_sha256": "f10de1ab79428a23b65537120c0ca4f3a5b7678c2291db9cfe9b79a77bf307e6",
+        "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+        "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_saturation_midpoints",
+        "backend": "Agg",
+        "scientific_settings_changed": false,
+        "figure_checks": [
+          {
+            "file": "figure_01.png",
+            "axes": 4,
+            "finite_limits": true,
+            "drawn": true
+          },
+          {
+            "file": "figure_02.png",
+            "axes": 4,
+            "finite_limits": true,
+            "drawn": true
+          }
+        ],
+        "outcome": "completed_default",
+        "seconds": 13.241093899996486,
+        "default_settings": {
+          "fluid_name": "nitrogen",
+          "h_min": -100000.0,
+          "h_max": -10000.0,
+          "p_min": 200000.0,
+          "p_max": 10000000.0,
+          "N_h": 21,
+          "N_p": 21,
+          "metastable_phase": "liquid"
+        },
+        "saturation_errors": {
+          "temperature": {
+            "finite": 59,
+            "total": 83,
+            "max_percent": 2.350165369527648e-05
+          },
+          "density": {
+            "finite": 59,
+            "total": 83,
+            "max_percent": 0.1118106889798785
+          },
+          "enthalpy": {
+            "finite": 59,
+            "total": 83,
+            "max_percent": 1.0043333122123055
+          },
+          "gruneisen": {
+            "finite": 59,
+            "total": 83,
+            "max_percent": 0.12649569197470778
+          }
+        },
+        "package_unchanged": true,
+        "wall_seconds": 16.900423199986108,
+        "command": [
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+          "-u",
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_saturation_midpoints.py",
+          "C:\\Users\\roagr\\git_projects\\jaxprop"
+        ],
+        "log": "development/example_audit/results/metastable_followup/demo_saturation_midpoints/attempt_completed_default_1794649794.log",
+        "prior_attempt": {
+          "source": "examples/bicubic_interpolation/demo_saturation_midpoints.py",
+          "source_sha256": "f10de1ab79428a23b65537120c0ca4f3a5b7678c2291db9cfe9b79a77bf307e6",
+          "package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+          "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_saturation_midpoints",
+          "backend": "Agg",
+          "scientific_settings_changed": false,
+          "figure_checks": [],
+          "outcome": "failed_default",
+          "error_type": "CalculationError",
+          "error": "CalculationError (fluid=nitrogen, provider=bicubic, model=real_fluid): table_generation: Source evaluation failed at pressure 200000.00000000006: ConvergenceError (fluid=nitrogen, provider=coolprop, model=real_fluid): metastable: Property calculation did not converge for calculation_ty...",
+          "seconds": 15.001203199994052,
+          "default_settings": {
+            "fluid_name": "nitrogen",
+            "h_min": -100000.0,
+            "h_max": -10000.0,
+            "p_min": 200000.0,
+            "p_max": 10000000.0,
+            "N_h": 21,
+            "N_p": 21,
+            "metastable_phase": "liquid"
+          },
+          "package_unchanged": true,
+          "wall_seconds": 19.374772000010125,
+          "command": [
+            "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+            "-u",
+            "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+            "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_saturation_midpoints.py",
+            "C:\\Users\\roagr\\git_projects\\jaxprop"
+          ],
+          "log": "development/example_audit/results/metastable_followup/demo_saturation_midpoints/attempt_failed_default_1794648818.log"
+        }
+      },
+      "cwd_relative": "development/example_audit/results/metastable_followup/demo_saturation_midpoints",
+      "table_domain_review": {
+        "table": "development/example_audit/results/metastable_followup/demo_saturation_midpoints/demo_metastable_table_generation/nitrogen_metastable_liquid_21x21_098692e9c780d1942f22.pkl",
+        "total_nodes": 441,
+        "cv_min_J_per_kgK": -6705.011687200879,
+        "cv_max_J_per_kgK": 1100.697364151046,
+        "cv_nonpositive_nodes": 32,
+        "cv_sign_change_cells": 14,
+        "isothermal_bulk_modulus_nonpositive_nodes": 0,
+        "interpretation": "Positive mechanical stiffness alone does not establish caloric stability. Negative cv and cv=0 crossings can produce physical-model Gamma poles; this is not an accepted interpolation-accuracy result."
+      },
+      "node_caloric_stability_is_not_a_whole_table_accuracy_acceptance": true,
+      "attempt_history_oldest_first": [
+        {
+          "outcome": "failed_default",
+          "seconds": 15.001203199994052,
+          "wall_seconds": 19.374772000010125,
+          "package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+          "source_sha256": "f10de1ab79428a23b65537120c0ca4f3a5b7678c2291db9cfe9b79a77bf307e6",
+          "log": "development/example_audit/results/metastable_followup/demo_saturation_midpoints/attempt_failed_default_1794648818.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": []
+        },
+        {
+          "outcome": "completed_default",
+          "seconds": 13.241093899996486,
+          "wall_seconds": 16.900423199986108,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "f10de1ab79428a23b65537120c0ca4f3a5b7678c2291db9cfe9b79a77bf307e6",
+          "log": "development/example_audit/results/metastable_followup/demo_saturation_midpoints/attempt_completed_default_1794649794.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": [
+            10.25
+          ]
+        },
+        {
+          "outcome": "completed_default",
+          "seconds": 2.4547473000129685,
+          "wall_seconds": 6.0838087000011,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "f10de1ab79428a23b65537120c0ca4f3a5b7678c2291db9cfe9b79a77bf307e6",
+          "log": "development/example_audit/results/metastable_followup/demo_saturation_midpoints/run.log",
+          "table_loaded_from_cache": true,
+          "fresh_table_generation_started": false,
+          "reported_table_generation_seconds": []
+        }
+      ],
+      "latest_confirmation_used_full_cached_table": true,
+      "completed_fresh_default_attempts": [
+        {
+          "outcome": "completed_default",
+          "seconds": 13.241093899996486,
+          "wall_seconds": 16.900423199986108,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "f10de1ab79428a23b65537120c0ca4f3a5b7678c2291db9cfe9b79a77bf307e6",
+          "log": "development/example_audit/results/metastable_followup/demo_saturation_midpoints/attempt_completed_default_1794649794.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": [
+            10.25
+          ]
+        }
+      ]
+    },
+    {
+      "source": "examples/bicubic_interpolation/demo_table_interpolation_with_saturation.py",
+      "source_sha256": "4ad40e6e85c0a37e983ac86489363ccc36416ba3f9620fac95f229fb08e44061",
+      "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+      "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_table_interpolation_with_saturation",
+      "backend": "Agg",
+      "scientific_settings_changed": false,
+      "figure_checks": [
+        {
+          "file": "development/example_audit/results/metastable_followup/demo_table_interpolation_with_saturation/figure_01.png",
+          "axes": 1,
+          "finite_limits": true,
+          "drawn": true
+        },
+        {
+          "file": "development/example_audit/results/metastable_followup/demo_table_interpolation_with_saturation/figure_02.png",
+          "axes": 1,
+          "finite_limits": true,
+          "drawn": true
+        }
+      ],
+      "point_full_property_errors": {
+        "compressibility_factor": {
+          "interpolated": 0.024623287962732048,
+          "reference": 0.024623288276779152,
+          "absolute_error": 3.1404710429394633e-10,
+          "relative_error_percent": 1.2754068456003361e-06
+        },
+        "conductivity": {
+          "interpolated": 0.08777438445955646,
+          "reference": 0.08777438464407798,
+          "absolute_error": 1.84521523061143e-10,
+          "relative_error_percent": 2.102225197127513e-07
+        },
+        "density": {
+          "interpolated": 648.9588573517522,
+          "reference": 648.9588552973931,
+          "absolute_error": 2.054359015346563e-06,
+          "relative_error_percent": 3.1656229028651257e-07
+        },
+        "enthalpy": {
+          "interpolated": -60000.0,
+          "reference": -59999.99999999944,
+          "absolute_error": 5.602487362921238e-10,
+          "relative_error_percent": 9.33747893820215e-13
+        },
+        "entropy": {
+          "interpolated": 3508.690126953788,
+          "reference": 3508.690127132729,
+          "absolute_error": 1.789408088370692e-07,
+          "relative_error_percent": 5.09993195048256e-09
+        },
+        "gruneisen": {
+          "interpolated": 1.2848638985844507,
+          "reference": 1.28486388358472,
+          "absolute_error": 1.4999730790776766e-08,
+          "relative_error_percent": 1.1674178862377316e-06
+        },
+        "heat_capacity_ratio": {
+          "interpolated": 2.6456202149196697,
+          "reference": 2.6456205546024743,
+          "absolute_error": 3.396828045509892e-07,
+          "relative_error_percent": 1.2839437762911895e-05
+        },
+        "internal_energy": {
+          "interpolated": -60770.464861121836,
+          "reference": -60770.46486987386,
+          "absolute_error": 8.752023859415203e-06,
+          "relative_error_percent": 1.4401772107808741e-08
+        },
+        "is_two_phase": {
+          "interpolated": 0.0,
+          "reference": 0.0,
+          "absolute_error": 0.0,
+          "relative_error_percent": null
+        },
+        "isentropic_bulk_modulus": {
+          "interpolated": 176553708.19921735,
+          "reference": 176553708.32974842,
+          "absolute_error": 0.13053107261657715,
+          "relative_error_percent": 7.393278444924247e-08
+        },
+        "isentropic_compressibility": {
+          "interpolated": 5.6639967403786595e-09,
+          "reference": 5.663998844659243e-09,
+          "absolute_error": 2.1042805834115846e-15,
+          "relative_error_percent": 3.715185403676017e-05
+        },
+        "isobaric_expansion_coefficient": {
+          "interpolated": 0.012148850968296545,
+          "reference": 0.012148856072672546,
+          "absolute_error": 5.104376001735522e-09,
+          "relative_error_percent": 4.201528087255251e-05
+        },
+        "isobaric_heat_capacity": {
+          "interpolated": 2572.3963013463645,
+          "reference": 2572.3967152159858,
+          "absolute_error": 0.0004138696212976356,
+          "relative_error_percent": 1.60888722509073e-05
+        },
+        "isochoric_heat_capacity": {
+          "interpolated": 972.3226059095682,
+          "reference": 972.322622282661,
+          "absolute_error": 1.6373092762478336e-05,
+          "relative_error_percent": 1.6839156456156756e-06
+        },
+        "isothermal_bulk_modulus": {
+          "interpolated": 66734327.16836363,
+          "reference": 66734327.42371364,
+          "absolute_error": 0.2553500086069107,
+          "relative_error_percent": 3.826366706082568e-07
+        },
+        "isothermal_compressibility": {
+          "interpolated": 1.4984777506713234e-08,
+          "reference": 1.4984791764675164e-08,
+          "absolute_error": 1.4257961929785404e-14,
+          "relative_error_percent": 9.514954998171431e-05
+        },
+        "isothermal_joule_thomson": {
+          "interpolated": -0.0004326521901544758,
+          "reference": -0.0004326533652984967,
+          "absolute_error": 1.1751440209383651e-09,
+          "relative_error_percent": 0.00027161328564441153
+        },
+        "joule_thomson": {
+          "interpolated": 1.6819062311504712e-07,
+          "reference": 1.6819076262199703e-07,
+          "absolute_error": 1.3950694990844178e-13,
+          "relative_error_percent": 8.294566701143919e-05
+        },
+        "pressure": {
+          "interpolated": 500000.0,
+          "reference": 500000.00000055827,
+          "absolute_error": 5.582696758210659e-07,
+          "relative_error_percent": 1.1165393516408853e-10
+        },
+        "quality_mass": {
+          "interpolated": 0.007873066821033314,
+          "reference": 0.007873076025931444,
+          "absolute_error": 9.204898130180106e-09,
+          "relative_error_percent": 0.00011691615957806145
+        },
+        "quality_volume": {
+          "interpolated": null,
+          "reference": null,
+          "absolute_error": null,
+          "relative_error_percent": null
+        },
+        "speed_of_sound": {
+          "interpolated": 521.5907065038572,
+          "reference": 521.5907014393066,
+          "absolute_error": 5.064550578026683e-06,
+          "relative_error_percent": 9.709817609959837e-07
+        },
+        "surface_tension": {
+          "interpolated": null,
+          "reference": null,
+          "absolute_error": null,
+          "relative_error_percent": null
+        },
+        "temperature": {
+          "interpolated": 105.42344300275806,
+          "reference": 105.42344275241119,
+          "absolute_error": 2.5034687212155404e-07,
+          "relative_error_percent": 2.3746793463148238e-07
+        },
+        "viscosity": {
+          "interpolated": 6.291361138727545e-05,
+          "reference": 6.291361155488221e-05,
+          "absolute_error": 1.676067596344255e-13,
+          "relative_error_percent": 2.6640778599749435e-07
+        }
+      },
+      "point_independent_homogeneous_source_core": {
+        "pressure": {
+          "computed": 500000.00000055827,
+          "source": 500000.0000005588,
+          "absolute_error": 5.238689482212067e-10
+        },
+        "temperature": {
+          "computed": 105.42344275241119,
+          "source": 105.42344275241119,
+          "absolute_error": 0.0
+        },
+        "density": {
+          "computed": 648.9588552973931,
+          "source": 648.9588552973931,
+          "absolute_error": 0.0
+        },
+        "enthalpy": {
+          "computed": -59999.99999999944,
+          "source": -59999.99999999943,
+          "absolute_error": 7.275957614183426e-12
+        },
+        "entropy": {
+          "computed": 3508.690127132729,
+          "source": 3508.690127132729,
+          "absolute_error": 0.0
+        },
+        "internal_energy": {
+          "computed": -60770.46486987386,
+          "source": -60770.46486987386,
+          "absolute_error": 0.0
+        }
+      },
+      "outcome": "completed_default",
+      "seconds": 1.1223488000105135,
+      "default_settings": {
+        "fluid_name": "nitrogen",
+        "h_min": -120000.0,
+        "h_max": 1.0,
+        "p_min": 100000.0,
+        "p_max": 1000000.0,
+        "N_h": 60,
+        "N_p": 60,
+        "metastable_phase": null
+      },
+      "numerical_validation": {
+        "status": "completed; numerical errors reported",
+        "original_interpolation_accuracy_budget": null,
+        "note": "The original default programs print diagnostic interpolation errors without an acceptance assertion; completion does not establish an unprovided accuracy budget."
+      },
+      "package_unchanged": true,
+      "wall_seconds": 5.215636799985077,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+        "-u",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+        "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_table_interpolation_with_saturation.py",
+        "C:\\Users\\roagr\\git_projects\\jaxprop"
+      ],
+      "log": "development/example_audit/results/metastable_followup/demo_table_interpolation_with_saturation/run.log",
+      "prior_attempt": {
+        "source": "examples/bicubic_interpolation/demo_table_interpolation_with_saturation.py",
+        "source_sha256": "cff4d6c605707058a29bcd948e1ba0df15119a535983909ec83267b292ecab7f",
+        "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+        "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_table_interpolation_with_saturation",
+        "backend": "Agg",
+        "scientific_settings_changed": false,
+        "figure_checks": [
+          {
+            "file": "figure_01.png",
+            "axes": 1,
+            "finite_limits": true,
+            "drawn": true
+          },
+          {
+            "file": "figure_02.png",
+            "axes": 1,
+            "finite_limits": true,
+            "drawn": true
+          }
+        ],
+        "outcome": "completed_default",
+        "seconds": 82.36984329999541,
+        "default_settings": {
+          "fluid_name": "nitrogen",
+          "h_min": -120000.0,
+          "h_max": 1.0,
+          "p_min": 100000.0,
+          "p_max": 1000000.0,
+          "N_h": 60,
+          "N_p": 60,
+          "metastable_phase": null
+        },
+        "package_unchanged": true,
+        "wall_seconds": 85.82835769999656,
+        "command": [
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+          "-u",
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+          "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_table_interpolation_with_saturation.py",
+          "C:\\Users\\roagr\\git_projects\\jaxprop"
+        ],
+        "log": "development/example_audit/results/metastable_followup/demo_table_interpolation_with_saturation/attempt_completed_default_1794649800.log",
+        "prior_attempt": {
+          "source": "examples/bicubic_interpolation/demo_table_interpolation_with_saturation.py",
+          "source_sha256": "cff4d6c605707058a29bcd948e1ba0df15119a535983909ec83267b292ecab7f",
+          "package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+          "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\demo_table_interpolation_with_saturation",
+          "backend": "Agg",
+          "scientific_settings_changed": false,
+          "figure_checks": [],
+          "outcome": "failed_default",
+          "error_type": "CalculationError",
+          "error": "CalculationError (fluid=nitrogen, provider=bicubic, model=real_fluid): table_generation: The metastable continuation routine stopped inside the requested grid; refusing to cache copied or extrapolated nodes.; index=(0, 2)",
+          "seconds": 78.86149609999848,
+          "default_settings": {
+            "fluid_name": "nitrogen",
+            "h_min": -120000.0,
+            "h_max": 1.0,
+            "p_min": 100000.0,
+            "p_max": 1000000.0,
+            "N_h": 60,
+            "N_p": 60,
+            "metastable_phase": null
+          },
+          "package_unchanged": true,
+          "wall_seconds": 83.2320461999916,
+          "command": [
+            "C:\\Users\\roagr\\git_projects\\jaxprop\\.venv\\Scripts\\python.exe",
+            "-u",
+            "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\metastable_followup\\bicubic_runner.py",
+            "C:\\Users\\roagr\\git_projects\\jaxprop\\examples\\bicubic_interpolation\\demo_table_interpolation_with_saturation.py",
+            "C:\\Users\\roagr\\git_projects\\jaxprop"
+          ],
+          "log": "development/example_audit/results/metastable_followup/demo_table_interpolation_with_saturation/attempt_failed_default_1794648835.log"
+        }
+      },
+      "cwd_relative": "development/example_audit/results/metastable_followup/demo_table_interpolation_with_saturation",
+      "table_domain_review": {
+        "table": "development/example_audit/results/metastable_followup/demo_table_interpolation_with_saturation/demo_metastable_table_generation/nitrogen_metastable_liquid_60x60_e47977480e207da1a274.pkl",
+        "total_nodes": 3600,
+        "cv_min_J_per_kgK": -14564.8875592725,
+        "cv_max_J_per_kgK": 1082.3928242009436,
+        "cv_nonpositive_nodes": 705,
+        "cv_sign_change_cells": 63,
+        "isothermal_bulk_modulus_nonpositive_nodes": 0,
+        "interpretation": "Positive mechanical stiffness alone does not establish caloric stability. Negative cv and cv=0 crossings can produce physical-model Gamma poles; this is not an accepted interpolation-accuracy result."
+      },
+      "node_caloric_stability_is_not_a_whole_table_accuracy_acceptance": true,
+      "attempt_history_oldest_first": [
+        {
+          "outcome": "failed_default",
+          "seconds": 78.86149609999848,
+          "wall_seconds": 83.2320461999916,
+          "package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+          "source_sha256": "cff4d6c605707058a29bcd948e1ba0df15119a535983909ec83267b292ecab7f",
+          "log": "development/example_audit/results/metastable_followup/demo_table_interpolation_with_saturation/attempt_failed_default_1794648835.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": []
+        },
+        {
+          "outcome": "completed_default",
+          "seconds": 82.36984329999541,
+          "wall_seconds": 85.82835769999656,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "cff4d6c605707058a29bcd948e1ba0df15119a535983909ec83267b292ecab7f",
+          "log": "development/example_audit/results/metastable_followup/demo_table_interpolation_with_saturation/attempt_completed_default_1794649800.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": [
+            80.9
+          ]
+        },
+        {
+          "outcome": "completed_default",
+          "seconds": 1.1223488000105135,
+          "wall_seconds": 5.215636799985077,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "4ad40e6e85c0a37e983ac86489363ccc36416ba3f9620fac95f229fb08e44061",
+          "log": "development/example_audit/results/metastable_followup/demo_table_interpolation_with_saturation/run.log",
+          "table_loaded_from_cache": true,
+          "fresh_table_generation_started": false,
+          "reported_table_generation_seconds": []
+        }
+      ],
+      "latest_confirmation_used_full_cached_table": true,
+      "completed_fresh_default_attempts": [
+        {
+          "outcome": "completed_default",
+          "seconds": 82.36984329999541,
+          "wall_seconds": 85.82835769999656,
+          "package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+          "source_sha256": "cff4d6c605707058a29bcd948e1ba0df15119a535983909ec83267b292ecab7f",
+          "log": "development/example_audit/results/metastable_followup/demo_table_interpolation_with_saturation/attempt_completed_default_1794649800.log",
+          "table_loaded_from_cache": false,
+          "fresh_table_generation_started": true,
+          "reported_table_generation_seconds": [
+            80.9
+          ]
+        }
+      ]
+    }
+  ],
+  "additional_inventory": [
+    {
+      "source": "examples/bicubic_interpolation/plot_metastable_point.py",
+      "outcome": "external_input_required",
+      "reason": "Hardcoded water_meta_liquid_20x20.pkl is not supplied in isolated output. No user/source cache was substituted or overwritten.",
+      "source_sha256": "f9abe1a55d67fb5ec8711d5de3ec0207227153084764deb3f527dabbd43b4b7d",
+      "checked_paths": [
+        {
+          "path": "demo_metastable_table_generation/water_meta_liquid_20x20.pkl",
+          "exists": false
+        },
+        {
+          "path": "examples/bicubic_interpolation/demo_metastable_table_generation/water_meta_liquid_20x20.pkl",
+          "exists": false
+        }
+      ],
+      "larger_changes_deferred": "This external-table plotting study also assumes an old filename and masks no data. It requires an explicit input/schema/physical-domain review; no fixture substituted for a default pass."
+    }
+  ],
+  "historical_package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+  "execution_budget_extension": {
+    "timeout_seconds": 1200,
+    "jobs": 2,
+    "scope": "The two independent fresh 100x100 and165x165 default retries ran concurrently after the other example workers finished; this was correctness execution, not a performance benchmark.",
+    "reason": "Steady progress exceeded the initial180-second audit budget; no numerical profile was reduced."
+  },
+  "outcome_counts": {
+    "completed_default": 4,
+    "failed_default": 2
+  },
+  "source_files_changed": [
+    "examples/bicubic_interpolation/demo_interpolation_midpoints_metastable.py",
+    "examples/bicubic_interpolation/demo_metastable_single_point_comparison.py",
+    "examples/bicubic_interpolation/demo_midpoints_metastable_comparison.py",
+    "examples/bicubic_interpolation/demo_saturation_midpoints.py",
+    "examples/bicubic_interpolation/demo_table_interpolation_with_saturation.py"
+  ],
+  "changes": [
+    "Use enabled properties and raw_property when collecting optional values.",
+    "Compare configured homogeneous metastable CoolProp states at the same HP points instead of equilibrium mixtures; reuse interpolation rho/T as the branch guess.",
+    "Use the same generalized quality convention for the full point comparison; physical grid/branch/solver budgets unchanged.",
+    "Report finite reference coverage instead of silently presenting missing optional comparisons as complete.",
+    "Print explicit nonpositive-cv/domain notices in the 100x100 and 165x165 studies; annotate the Gamma error figure without masking any point/error."
+  ],
+  "package_followup": {
+    "measured_Phase10_hash": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+    "generation_fix_hash": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89",
+    "scope": "Construction-only phase-aware initial guesses and validated homogeneous column anchors; no ordinary/native evaluation math changed.",
+    "targeted_tests": "4 new actual liquid/vapor regressions; affected HEOS/REFPROP generation/cache/gauge subset120passed."
+  },
+  "scientific_defaults_preserved": true,
+  "fixture_profiles_used": false,
+  "acceptance_scope": "Four original default programs complete; their numerical errors and caloric-domain limitations are reported, not presented as blanket accuracy acceptance. Two unchanged domains exceed the connected liquid spinodal. One additional plotting program requires its external table. Initial180s timeouts are retained and superseded by full100x100 and165x165 generation with1200s budgets; no grid reduction.",
+  "independent_proofs": [
+    "development/example_audit/results/metastable_followup/branch_probe.json",
+    "development/example_audit/results/metastable_followup/branch_probe_endpoint.json"
+  ],
+  "visual_inspections": [
+    {
+      "file": "development/example_audit/results/metastable_followup/demo_saturation_midpoints/figure_02.png",
+      "outcome": "Readable four-panel source/interpolation comparison; expected explicit endpoint clipping extends beyond the physical saturation reference."
+    },
+    {
+      "file": "development/example_audit/results/metastable_followup/demo_midpoints_metastable_comparison/figure_01.png",
+      "outcome": "Core-error panels readable; Gamma has a large visible error band from the caloric pole, explicitly annotated as requiring scientific domain review."
+    },
+    {
+      "file": "development/example_audit/results/metastable_followup/demo_table_interpolation_with_saturation/figure_01.png",
+      "outcome": "Readable log-pressure phase diagram; matched homogeneous source and interpolated HP points overlap inside the unchanged table domain."
+    }
+  ],
+  "additional_inventory_counts": {
+    "external_input_required": 1
+  },
+  "final_confirmation_complete": true,
+  "cached_confirmation_execution": {
+    "jobs": 1,
+    "scope": "Latest complete default-script confirmations reused the full fresh tables; their elapsed seconds are recorded separately from completed fresh-default attempts."
+  },
+  "figures_rendered": 5,
+  "representative_figures_visually_inspected": 3,
+  "formatting": {
+    "tool": "black --check",
+    "files_checked": 6,
+    "result": "passed"
+  }
+}

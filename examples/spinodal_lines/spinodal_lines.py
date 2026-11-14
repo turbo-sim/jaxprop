@@ -63,20 +63,34 @@ for fluid_name in names:
     )
 
     # Create entropy range
-    rho_1 = 1.00*fluid.triple_point_vapor.rho
-    rho_2 = 0.80*fluid.triple_point_liquid.rho
+    rho_1 = 1.00 * fluid.triple_point_vapor.rho
+    rho_2 = 0.80 * fluid.triple_point_liquid.rho
     rho_array = np.linspace(rho_1, rho_2, 500)
 
     # Plot metastable states
     T_array = fluid.critical_point.T - np.asarray([5, 10, 15, 20, 25, 30])
     states_meta = jxp.compute_property_grid_rhoT(fluid, rho_array, T_array)
+    # The common grid state uses (temperature, density) axes. Formal unstable
+    # states can have negative pressure or bulk modulus, but their core fields
+    # must still be finite and their numerical evaluations must succeed.
+    assert states_meta.shape == (len(T_array), len(rho_array))
+    assert np.all(states_meta.status == 0)
+    for name in (
+        "pressure",
+        "temperature",
+        "density",
+        "enthalpy",
+        "entropy",
+        "internal_energy",
+    ):
+        assert np.all(np.isfinite(states_meta.raw_property(name))), name
     colormap = cm.magma(np.linspace(0.7, 0.1, len(T_array)))
     for i, T in enumerate(T_array):
         ax1.plot(
             states_meta[prop_x][i, :],
             states_meta[prop_y][i, :],
             color=colormap[i],
-            label=f"$\\Delta T_{{crit}}={fluid.critical_point.T - T:0.0f}$ K"
+            label=f"$\\Delta T_{{crit}}={fluid.critical_point.T - T:0.0f}$ K",
         )
         ax2.plot(
             states_meta["density"][i, :],
@@ -157,7 +171,7 @@ for fluid_name in names:
     prop_x = "entropy"
     prop_y = "temperature"
     fig, ax3 = plt.subplots(figsize=(6, 5))
-    ax3.set_xlabel("Entropy (J/kg/K))")
+    ax3.set_xlabel("Entropy (J/kg/K)")
     ax3.set_ylabel("Temperature (K)")
     ax3.set_xlim(
         sorted([fluid.triple_point_liquid[prop_x], fluid.triple_point_vapor[prop_x]])

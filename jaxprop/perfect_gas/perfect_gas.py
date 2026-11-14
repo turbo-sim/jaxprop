@@ -277,9 +277,32 @@ def entropy_from_rhoP(rho, p, constants):
 # ----------------------------------------------------------------------------- #
 
 
+@jax.custom_jvp
+def _density_from_PT(p, T, R):
+    """Preserve the ideal-gas primal while using stable analytic derivatives.
+
+    The request policy already supplies admissible coordinates. No additional
+    validation is introduced here. Differentiating p/(R*T) mechanically can
+    form p*d(R*T), overflowing even when the final derivative is finite.
+    """
+    return p / (R * T)
+
+
+@_density_from_PT.defjvp
+def _density_from_PT_jvp(primals, tangents):
+    p, T, R = primals
+    dp, dT, dR = tangents
+    rho = _density_from_PT(p, T, R)
+    # d(rho) = dp/(R*T) - rho*dT/T - rho*dR/R. Form the relative
+    # directions first: tiny partials must not underflow before multiplication
+    # by a large model direction, and large p need not appear in a product.
+    tangent = dp / (R * T) - rho * (dT / T) - rho * (dR / R)
+    return rho, tangent
+
+
 def calculate_properties_PT(p, T, constants):
     R = constants.R
-    rho = p / (R * T)
+    rho = _density_from_PT(p, T, R)
     cp, _ = specific_heat(constants)
     h = constants.h_ref + cp * (T - constants.T_ref)
     s = entropy_from_PT(p, T, constants)
@@ -294,14 +317,14 @@ def calculate_properties_hs(h, s, constants):
     P_ref = constants.P_ref
     s_ref = constants.s_ref
     P = jnp.exp(jnp.log(P_ref) + (cp * (jnp.log(T) - jnp.log(T_ref)) - (s - s_ref)) / R)
-    rho = P / (R * T)
+    rho = _density_from_PT(P, T, R)
     return assemble_properties(T, P, rho, h, s, constants)
 
 
 def calculate_properties_hP(h, p, constants):
     T = temperature_from_h(h, constants)
     R = constants.R
-    rho = p / (R * T)
+    rho = _density_from_PT(p, T, R)
     s = entropy_from_PT(p, T, constants)
     return assemble_properties(T, p, rho, h, s, constants)
 
@@ -309,7 +332,7 @@ def calculate_properties_hP(h, p, constants):
 def calculate_properties_Ps(p, s, constants):
     T = temperature_from_Ps(p, s, constants)
     R = constants.R
-    rho = p / (R * T)
+    rho = _density_from_PT(p, T, R)
     cp, _ = specific_heat(constants)
     h = constants.h_ref + cp * (T - constants.T_ref)
     return assemble_properties(T, p, rho, h, s, constants)

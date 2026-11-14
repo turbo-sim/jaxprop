@@ -334,7 +334,9 @@ class FluidJAX(SourceReferencesMixin, eqx.Module):
             input_pairs=source_capabilities.input_pairs,
             properties=source_capabilities.properties,
             options=source_capabilities.options,
-            phase_operations=source_capabilities.phase_operations,
+            # The wrapped source also offers eager legacy phase solvers;
+            # this callback exposes only its implemented uniform operation.
+            phase_operations=source_capabilities.phase_operations & {"saturation"},
             error_modes=frozenset({"raise", "mask"}),
             jax_modes=frozenset({"eager", "jit", "vmap", "jvp", "grad"}),
             derivative_order=1,

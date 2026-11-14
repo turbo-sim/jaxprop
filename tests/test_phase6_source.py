@@ -375,7 +375,7 @@ def test_heos_pseudo_pure_qt_endpoint_restriction_is_not_applied_to_pq(name):
 
 
 @pytest.mark.parametrize("name", ["Air", "R410A"])
-def test_heos_pseudo_pure_pq_recovers_backend_mass_quality(name, request):
+def test_heos_pseudo_pure_pq_recovers_backend_mass_quality(name):
     backend = CP.AbstractState("HEOS", name)
     backend.update(CP.PQ_INPUTS, 1e6, 0.3)
     expected_quality = backend.Q()
@@ -384,13 +384,4 @@ def test_heos_pseudo_pure_pq_recovers_backend_mass_quality(name, request):
     state = source.get_state(jxp.PQ_INPUTS, 1e6, 0.3)
     assert_success(state, source, ())
     assert state.status == 0
-    # Only the known quality-recovery assertion is expected to fail. Invalid
-    # core states, backend errors and unrelated regressions above still fail.
-    request.node.add_marker(
-        pytest.mark.xfail(
-            strict=True,
-            raises=AssertionError,
-            reason="phase10: pseudo-pure PQ quality uses QT endpoints at a gliding saturation temperature",
-        )
-    )
     np.testing.assert_allclose(float(state.quality_mass), expected_quality, rtol=1e-10)

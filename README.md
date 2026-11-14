@@ -14,7 +14,7 @@ JAX-compatible Python package for real-fluid thermodynamic properties, phase equ
 - Perform flash calculations for any input pair with a custom solver and user-defined initial guesses.
 - Work with structured property dictionaries and immutable `FluidState` objects.
 - Evaluate properties over arrays of input conditions for efficient parametric studies and plotting.
-- Full JAX compatibility: supports `jit`, `grad`, `vmap`, and parallel evaluation.
+- Use JAX-enabled evaluators with `jit`, `grad` and `vmap`, according to each model's declared capabilities.
 
 ## Installation
 
@@ -85,6 +85,46 @@ remain failed elements. Inverse budgets are configured once with the
 `inverse_max_steps` and `inverse_tolerance` table options. Inspect capabilities
 and the [public contract](z_PUBLIC_FLUID_CONTRACT.md) or
 [implementation checklist](z_IMPLEMENTATION_PLAN.md) for current support.
+
+### Binary mixtures
+
+Configure fixed mass fractions once, then use the same three-argument state call:
+
+```python
+nitrogen = jxp.Fluid("Nitrogen", method="perfect_gas")
+oxygen = jxp.Fluid("Oxygen", method="perfect_gas")
+mixture = jxp.Fluid(
+    "working_mix",
+    method="binary_mixture",
+    model_options={
+        "components": (nitrogen, oxygen),
+        "mass_fractions": (0.4, 0.6),
+    },
+)
+state = mixture.get_state(jxp.PT_INPUTS, 1e6, 500.0)
+```
+
+The model supports `PT`, `HmassP` and `PSmass`, returning 27 fields. It represents
+constituent parcels at common pressure and temperature without mass exchange or
+molecular mixing entropy. Heat capacities and compressibilities follow that
+model's thermodynamic identities. `speed_of_sound` and `speed_of_sound_pT` are
+the pressure/temperature equilibrium speed; `speed_of_sound_p` is the distinct
+thermally frozen Wood speed. Composition is not vapor quality; composite quality
+and saturation requests are explicitly unsupported.
+
+Active perfect-gas/bicubic components use native JAX with explicit mask/clip
+inside transformations. All-active `FluidJAX` components use one whole-mixture
+callback with mask mode and first-order state-input derivatives. Direct-source
+and source/native/callback hybrids use eager raise/mask; compiled hybrid support
+remains deferred. Host configurations are fixed component snapshots; native
+component numerical parameters remain dynamic. Inspect `mixture.capabilities`.
+
+`FluidMix` translates the legacy name/mass-ratio constructor once and returns
+the same `FluidBinaryMixture` class; `FluidTwoComponent` is an alias of that class.
+Optional inverse controls belong in `model_options`. See the [binary contract](z_PUBLIC_FLUID_CONTRACT.md#fixed-composition-binary-model)
+and the [water/nitrogen example](examples/two_component/water_nitrogen_example.py).
+See the [verified Phase 9 checklist](z_IMPLEMENTATION_PLAN.md#phase-9-consolidate-the-two-component-mixture-implementations)
+and [full-state timing report](development/performance/README.md#phase-9-consolidated-binary-model).
 
 <!-- research-software-metadata:start -->
 ## Development and citation

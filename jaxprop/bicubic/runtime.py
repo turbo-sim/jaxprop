@@ -79,7 +79,12 @@ def prepare_runtime(table, properties, table_mode, critical_pressure=None):
             numerical[name]["value"] = entry["value"]
 
     shape = np.asarray(table["temperature"]["coeffs"]).shape[:2]
-    valid_cells = np.ones(shape, dtype=bool)
+    # Public cache validation requires the persisted source-envelope mask.
+    # The fallback supports deliberately minimal private polynomial fixtures;
+    # it never permits an old/incomplete persisted cache to pass validation.
+    valid_cells = np.asarray(
+        table.get("phase_cell_validity", np.ones(shape, dtype=bool))
+    ).copy()
     if table_mode == "equilibrium":
         phase = np.asarray(table["is_two_phase"]["value"])
         corners = np.stack(
@@ -107,6 +112,9 @@ def inspection_view(fluid):
     original = fluid._inspection.table
     result = {"metadata": fluid.metadata}
     for name, entry in original.items():
+        if name == "phase_cell_validity":
+            result[name] = entry
+            continue
         if name == "saturation_props":
             result[name] = {key: dict(value) for key, value in entry.items()}
             continue
