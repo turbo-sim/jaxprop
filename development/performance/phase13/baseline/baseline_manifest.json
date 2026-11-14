@@ -1,0 +1,30 @@
+{
+  "resolved_at_utc": "2026-11-14T12:55:25.738762+00:00",
+  "source": "https://pypi.org/pypi/jaxprop/json",
+  "pypi_project_url": "https://pypi.org/project/jaxprop/",
+  "api_current_version": "0.5.8",
+  "latest_non_yanked_stable": "0.5.8",
+  "wheel_filename": "jaxprop-0.5.8-py3-none-any.whl",
+  "wheel_url": "https://files.pythonhosted.org/packages/5b/21/62a2e3f7f6719b1870fbb66f4bd99dccdeec3e82854cf74dd74b45bcd9e8/jaxprop-0.5.8-py3-none-any.whl",
+  "wheel_sha256": "3b6db9bfa5bd9ee37a4c3441f92f86b772e0c88ce8609bf76d32c322fbc795a3",
+  "wheel_bytes": 68539,
+  "uploaded_utc": "2026-10-28T11:23:58.378231Z",
+  "requires_python": "<3.14,>=3.11",
+  "requires_dist": [
+    "CoolProp (>=7.0.0,<8.0.0)",
+    "diffrax (>=0.7.0,<0.8.0)",
+    "equinox (>=0.12.0,<0.13.0)",
+    "jax (>=0.6.0,<0.7.0)",
+    "jaxlib (>=0.6.0,<0.7.0)",
+    "matplotlib (>=3.10.6,<4.0.0)",
+    "numpy (>=2.3.0,<3.0.0)",
+    "optimistix (>=0.0.10,<0.0.11)",
+    "pysolver_view (>=0.7.1,<1.0.0)",
+    "scipy (>=1.16.1,<2.0.0)",
+    "tqdm (>=4.67.1,<5.0.0)"
+  ],
+  "pypi_metadata_sha256": "49194dca0942e93907e8b2e0f0ca26bf366ae4f9664b095f4909b4375b062dfb",
+  "installed": true,
+  "isolated_source_directory": "development/performance/results/phase13/published",
+  "install_command": "python -m pip install --no-deps --no-compile --no-index --target development/performance/results/phase13/published development/performance/phase13/baseline/jaxprop-0.5.8-py3-none-any.whl"
+}

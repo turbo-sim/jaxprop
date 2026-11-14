@@ -1,0 +1,64 @@
+{
+  "date": "2026-11-14",
+  "scope": "Public FluidState raw-property binding and complete-state indexing; retained numerical and error semantics.",
+  "final_package_sha256": "9fc27b79041931d98cbcb8349cdab7d81fe31000a49cd3fe14dc7cd85ebe3651",
+  "final_state_file_sha256": "a838da472cee1e2140c9a67d1ffdc4edd2ddc46e5646c33bd2eb7332da38cc08",
+  "pre_optimization_archive": "development/performance/phase13/pre_optimization_source.zip",
+  "pre_optimization_state_file_sha256": "1586fb84463c2e509da012c4b19435206272cdc8cb906eb77a603880e7a54d17",
+  "diagnosis": {
+    "raw_property": "Equinox created a new callable Module and copied method-wrapper metadata for each public method lookup. The 20-dictionary profile contained 260 BoundMethod constructions; alias/schema lookup itself was inexpensive.",
+    "at_index": "Eager per-leaf JAX gathers and PyTree reconstruction added overhead while returning the new complete numerical schema. Indexing must continue returning all fields, status and optional clipping flags.",
+    "retained_fixes": [
+      "A lightweight frozen and weak-referenceable callable PyTree binds raw_property and at_index. Function identity is static; the owning state's numerical leaves remain dynamic when the method is passed through JAX/Equinox transformations.",
+      "Class-level calls, __self__/__func__/__wrapped__, signatures, function metadata, pickle and tree reconstruction are preserved without using private Equinox implementation classes.",
+      "One JAX gather handles every standard state's numerical property, status and optional clipping leaf. Public index type, static-tracer and bounds checks remain outside the kernel; its internal index is dynamic.",
+      "Ordinary NumPy indexing retains read-only views and storage. Validated metadata remains outside the gather kernel; subclass indexing retains its general PyTree path."
+    ],
+    "native_assembly": "The unused experimental batch_fast_path option was removed. The original native assembly behavior, including its existing size-64 branch, is retained."
+  },
+  "focused_verification": {
+    "command": "python -m pytest tests/test_phase13_state_helpers.py tests/test_fluid_state.py tests/test_native_state_factory.py tests/test_evaluator_state_metadata.py -c tests/pytest.ini -q --tb=short --disable-warnings",
+    "new_parameterized_cases": 18,
+    "passed": 83,
+    "failed": 0,
+    "exit_code": 0,
+    "final_run_seconds": 8.6,
+    "checks": [
+      "Dynamic method-as-argument JIT/filter-JIT calls observe changed state arrays without retracing.",
+      "Direct bound-method JIT, gradients, vmap, tree updates, introspection, immutable bindings and pickle/tree round trips.",
+      "Alias/schema errors, guarded unavailable properties and raw unavailable numerical values.",
+      "Complete indexed values, metadata, status, availability and clipping; scalar identity, static bounds, float0 tangent bookkeeping, gradients and NumPy/JAX storage.",
+      "Existing small/large native masking paths at sizes 16 and 128 preserve failed rows, clipping and gradients."
+    ],
+    "black_check": "Passed for jaxprop/fluid_state.py and tests/test_phase13_state_helpers.py with --check --workers 1.",
+    "git_diff_check": "Passed."
+  },
+  "provisional_diagnostics": {
+    "acceptance_benchmark": false,
+    "profile": "Prepared Air perfect-gas states, CPU/x64; direct public helpers, not thermodynamic state evaluation.",
+    "measurement": "Minimum of three short timeit repeats; 200 raw dictionaries or 30 synchronized complete-state index calls per repeat. The after-index kernel was warmed once.",
+    "common13_raw_dictionary_microseconds": {
+      "before": 494.963,
+      "after": 14.3705
+    },
+    "complete_state_index_batch16_microseconds": {
+      "before": 794.7267,
+      "after": 92.4633
+    },
+    "after_probe_state_file_sha256": "b0611798a3fe423324efda48c77dcafb08989f58b9dff189243aae63f2d963dc",
+    "limitations": [
+      "These short process-local diagnostics established the overhead and supported the fix; they are not isolated multiworker PyPI acceptance measurements.",
+      "The raw dictionary diagnostic calls the public getter directly; the maintained gate also includes its benchmark API and complete synchronization overhead.",
+      "The after probe preceded removal of an unused native-factory prototype option. Its default preserved the existing path and the retained getter/index algorithms are unchanged; final acceptance must use the final frozen source hash.",
+      "No universal backend, device, shape or first-compilation speedup is inferred. Cold gather compilation and final warmed timings are assessed separately by the maintained Phase 13 gate."
+    ]
+  },
+  "documentation": {
+    "package_sha256": "9fc27b79041931d98cbcb8349cdab7d81fe31000a49cd3fe14dc7cd85ebe3651",
+    "command": "python -m sphinx -E -b html docs development/performance/results/phase13/docs_final/html -d development/performance/results/phase13/docs_final/doctrees --keep-going -W -w development/performance/results/phase13/docs_final/warnings.log",
+    "source_pages": 28,
+    "warnings": 0,
+    "exit_code": 0,
+    "published": false
+  }
+}

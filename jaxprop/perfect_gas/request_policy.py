@@ -206,16 +206,25 @@ def resolve_pair(input_type, first, second, constants, *, errors, return_success
             jnp.maximum(MIN_PRESSURE, MIN_DENSITY * (1 + 8 * numerical.eps) * RT),
         )
         clipped = outside | resolved_invalid | invalid
+        # Build status selections directly in the public int32 dtype. Bare
+        # IntEnum/Python integers otherwise create int64 intermediates when
+        # the consuming application enables JAX double precision.
         status = jnp.where(
-            calculation_failed, StatusCode.PROVIDER_FAILURE, StatusCode.SUCCESS
+            calculation_failed,
+            np.int32(StatusCode.PROVIDER_FAILURE),
+            np.int32(StatusCode.SUCCESS),
         )
-        status = jnp.where(nonfinite, StatusCode.INVALID_INPUT, status)
+        status = jnp.where(nonfinite, np.int32(StatusCode.INVALID_INPUT), status)
         successful = ~(nonfinite | calculation_failed)
     else:
-        status = jnp.where(outside, StatusCode.OUT_OF_DOMAIN, StatusCode.SUCCESS)
-        status = jnp.where(resolved_invalid, StatusCode.INVALID_INPUT, status)
-        status = jnp.where(calculation_failed, StatusCode.PROVIDER_FAILURE, status)
-        status = jnp.where(invalid, StatusCode.INVALID_INPUT, status)
+        status = jnp.where(
+            outside, np.int32(StatusCode.OUT_OF_DOMAIN), np.int32(StatusCode.SUCCESS)
+        )
+        status = jnp.where(resolved_invalid, np.int32(StatusCode.INVALID_INPUT), status)
+        status = jnp.where(
+            calculation_failed, np.int32(StatusCode.PROVIDER_FAILURE), status
+        )
+        status = jnp.where(invalid, np.int32(StatusCode.INVALID_INPUT), status)
         successful = ~(invalid | outside | resolved_invalid | calculation_failed)
     result = temperature, pressure, status.astype(jnp.int32), clipped
     return (*result, successful) if return_success else result

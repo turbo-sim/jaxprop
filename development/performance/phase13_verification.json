@@ -1,0 +1,65 @@
+{
+  "date_utc": "2026-11-14T15:17:25.455936+00:00",
+  "phase12_commit": "f1198fd",
+  "phase13_status": "measurement_checkpoint_complete_followup_planned",
+  "current_source_sha256": "9fc27b79041931d98cbcb8349cdab7d81fe31000a49cd3fe14dc7cd85ebe3651",
+  "baseline_source_sha256": "858de0f7945b8fcb21e6af9c146b0c150e7101e2e722c4328511a3b3d2a88da0",
+  "baseline_version": "0.5.8",
+  "baseline_wheel_sha256": "3b6db9bfa5bd9ee37a4c3441f92f86b772e0c88ce8609bf76d32c322fbc795a3",
+  "harness_sha256": "2e63d9dd71985ad692bfdd0b2605a742be4301943ff9cb5a4c97825077cd5e86",
+  "suite": {
+    "passed": 2970,
+    "failed": 0,
+    "skipped": 0,
+    "xfailed": 0,
+    "source_unchanged": true,
+    "evidence": "development/test_audit/results/phase13/full_20261114_153004/summary.json",
+    "comparisons": 54272,
+    "finite": 47867,
+    "paired_unavailable": 6405
+  },
+  "new_state_helper_cases": 18,
+  "focused_state_cases_passed": 83,
+  "focused_pg_cases_passed": 214,
+  "documentation": {
+    "pages": 28,
+    "warnings": 0,
+    "evidence": "development/performance/phase13/state_helper_investigation.json"
+  },
+  "formatting": {
+    "tool": "black --check --workers1",
+    "files": 8,
+    "passed": true
+  },
+  "git_diff_check": "passed",
+  "reports_and_archives_validated": true,
+  "workloads": {
+    "comparable_warmed": 111,
+    "within_budget": 105,
+    "above_budget": 6,
+    "new_only": 4,
+    "setup_comparisons": 22,
+    "setup_above_budget": 0,
+    "cold_compilation_profiles": 4,
+    "cold_above_budget": 1
+  },
+  "remaining_warm": [
+    "pg_matched_dynamic_model_HP_batch1024",
+    "bicubic_CO2_compiled_HP_broadcast8x16",
+    "pg_matched_compiled_compressor",
+    "pg_matched_compiled_expander",
+    "pg_matched_compiled_heat_exchanger_128cells",
+    "bicubic_CO2_compiled_heat_exchanger_128cells"
+  ],
+  "remaining_cold": [
+    "pg_matched_compiled_HP_batch1024"
+  ],
+  "all_numerical_checks_pass": true,
+  "all_performance_budgets_met": false,
+  "user_acceptance_of_remaining_costs": "not_accepted_assessment_deferred_to_phase14",
+  "performance_followup_phase": 14,
+  "final_thermopt_phase": 15,
+  "followup_analysis": "development/performance/phase13/FOLLOWUP_ANALYSIS.md",
+  "user_direction": "Continue analysis and include the performance shortcomings in the implementation plan for assessment in a new phase; no regression acceptance or budget change.",
+  "no_thermopt_or_publishing_performed": true
+}

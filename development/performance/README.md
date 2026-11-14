@@ -1,5 +1,17 @@
 # Native JAX performance checkpoint
 
+The current [Phase 13 published-release report](phase13/REPORT.md) compares the
+frozen implementation against the freshly pinned PyPI 0.5.8 wheel. All 2,970
+tests and numerical comparisons pass, and state-helper regressions are repaired.
+Six warmed workloads and one cold first call remain above their original
+budgets. Phase 13 measurements are complete; at the user's request the
+[new Phase 14](../../z_IMPLEMENTATION_PLAN.md#phase-14-assess-and-reduce-remaining-native-jax-performance-costs)
+owns assessment and resolution, with [continued analysis](phase13/FOLLOWUP_ANALYSIS.md).
+These costs have not been accepted. ThermOpt remains last, now Phase 15.
+Full, sustained-repeat and setup
+results remain separately visible in the [portable record](phase13_validation.json).
+The earlier checkpoints below retain their original scope and source versions.
+
 The latest [perfect-gas repair report](pg_hotpath/README.md) supersedes the older PG timing conclusions below for the current 22-property model. Eager full-state calls are faster than PyPI 0.5.8, while compiled full batches remain 31–38% slower. The user accepted this tradeoff on 13 November 2026, completing Phase 7 acceptance and allowing Phase 8 to proceed. Broader Phase 13 comparisons remain pending. Historical checkpoints are retained as measurements of their own source versions.
 
 Measured on 13 November 2026 against the unchanged published JaxProp 0.5.8 wheel, before Phase 4. This compact checkpoint retains that result; disposable intermediate workers, extracted packages, profiles, lowered compiler output, and exploratory scripts have been removed. The complete release performance gate remains Phase 13 of the [implementation plan](../../z_IMPLEMENTATION_PLAN.md).

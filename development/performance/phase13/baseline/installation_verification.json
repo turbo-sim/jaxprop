@@ -1,0 +1,36 @@
+{
+  "same_numerical_environment": true,
+  "all_published_dependency_constraints_satisfied": true,
+  "dependencies": {
+    "CoolProp": "7.2.0",
+    "diffrax": "0.7.1",
+    "equinox": "0.12.2",
+    "jax": "0.6.2",
+    "jaxlib": "0.6.2",
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.4",
+    "optimistix": "0.0.10",
+    "pysolver_view": "0.7.1",
+    "scipy": "1.17.1",
+    "tqdm": "4.67.3"
+  },
+  "imports": {
+    "baseline": {
+      "imported_package": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\performance\\results\\phase13\\published\\jaxprop\\__init__.py",
+      "version": "0.5.8",
+      "source_sha256": "858de0f7945b8fcb21e6af9c146b0c150e7101e2e722c4328511a3b3d2a88da0",
+      "x64": true,
+      "device": "TFRT_CPU_0",
+      "python": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]"
+    },
+    "current": {
+      "imported_package": "C:\\Users\\roagr\\git_projects\\jaxprop\\jaxprop\\__init__.py",
+      "version": "0.5.8",
+      "source_sha256": "21202218d43f9c44a6639e325ae2a5d2a721c0443f7865f4c0fbe9d7979699c0",
+      "x64": true,
+      "device": "TFRT_CPU_0",
+      "python": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]"
+    }
+  },
+  "installation": "Unmodified SHA256-verified wheel installed with --no-deps --target; independent processes share compatible dependency environment."
+}

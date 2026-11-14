@@ -1,6 +1,9 @@
 """Immutable, JAX-compatible fluid values with explicit property availability."""
 
 import operator
+from dataclasses import dataclass
+from functools import update_wrapper
+from inspect import signature
 
 import equinox as eqx
 import jax
@@ -16,6 +19,80 @@ from .errors import (
 )
 from .property_schema import ALIAS_TO_CANONICAL, PROPERTY_ALIASES, PROPERTIES_CANONICAL
 from .fluid_api import StatusCode
+
+
+@jax.tree_util.register_pytree_node_class
+@dataclass(frozen=True, eq=False, slots=True, weakref_slot=True)
+class _BoundStateMethod:
+    """A cheap immutable method binding whose state remains a dynamic PyTree.
+
+    Equinox normally constructs a new Module and copies wrapper metadata for
+    every method lookup. That work dominates tiny state getters. This local
+    callable retains the same function/static and self/dynamic distinction,
+    without depending on Equinox's private bound-method implementation.
+    """
+
+    __func__: object
+    __self__: object
+
+    def __call__(self, *args, **kwargs):
+        return self.__func__(self.__self__, *args, **kwargs)
+
+    def __getattribute__(self, name):
+        # Introspection metadata is shared with the function, rather than copied
+        # into every binding. Normal numerical calls read only the two slots.
+        if name in (
+            "__name__",
+            "__qualname__",
+            "__doc__",
+            "__module__",
+            "__annotations__",
+        ):
+            return getattr(object.__getattribute__(self, "__func__"), name)
+        return object.__getattribute__(self, name)
+
+    @property
+    def __wrapped__(self):
+        return self.__func__.__get__(self.__self__, type(self.__self__))
+
+    @property
+    def __signature__(self):
+        return signature(self.__wrapped__)
+
+    def tree_flatten(self):
+        return (self.__self__,), self.__func__
+
+    @classmethod
+    def tree_unflatten(cls, function, children):
+        return cls(function, children[0])
+
+    def __reduce__(self):
+        return type(self), (self.__func__, self.__self__)
+
+
+class _StateMethod:
+    """Bind a small public state method without Equinox's Module construction."""
+
+    def __init__(self, function):
+        self.function = function
+        update_wrapper(self, function)
+
+    def __get__(self, instance, owner):
+        return (
+            self.function
+            if instance is None
+            else _BoundStateMethod(self.function, instance)
+        )
+
+
+@jax.jit
+def _jax_at_index(properties, status, clipped, index):
+    """Gather every numerical state leaf together, with a dynamic valid index."""
+    return (
+        {name: value[index] for name, value in properties.items()},
+        status[index],
+        None if clipped is None else clipped[index],
+    )
 
 
 @jax.jit
@@ -355,7 +432,9 @@ class FluidState(eqx.Module):
             )
         return canonical
 
+    @_StateMethod
     def raw_property(self, name):
+        """Read an enabled canonical/alias field without availability guards."""
         return self._data[FluidState._canonical(self, name)]
 
     def property_valid(self, name):
@@ -485,7 +564,9 @@ class FluidState(eqx.Module):
         # turn exported read-only numerical arrays into writable state storage.
         return type(self).from_data, (self.to_data(),)
 
+    @_StateMethod
     def at_index(self, index):
+        """Extract a statically bounds-checked row, preserving all state leaves."""
         if isinstance(index, jax.core.Tracer):
             raise UnsupportedExecutionModeError(
                 fluid_name=self.fluid_name,
@@ -504,7 +585,26 @@ class FluidState(eqx.Module):
             )
         if not self.shape:
             return self
-        return jax.tree_util.tree_map(lambda value: value[index], self)
+        if type(self) is not FluidState:
+            # Preserve any additional numerical fields a subclass may introduce.
+            return jax.tree_util.tree_map(lambda value: value[index], self)
+        if isinstance(self.status, (jax.Array, jax.core.Tracer)) or any(
+            isinstance(value, (jax.Array, jax.core.Tracer))
+            for value in self._data.values()
+        ):
+            properties, status, clipped = _jax_at_index(
+                self._data, self.status, self._clipped, index
+            )
+        else:
+            properties = {name: value[index] for name, value in self._data.items()}
+            status = self.status[index]
+            clipped = None if self._clipped is None else self._clipped[index]
+        # NumPy slices retain their read-only owners; JAX gathers are immutable.
+        # Metadata is already validated and must not enter a numerical kernel's
+        # cache key. The internal index is dynamic, avoiding per-index compiles.
+        return FluidState._from_validated(
+            FluidState._metadata(self), properties, status, clipped
+        )
 
     def flipped(self):
         if not self.shape:
