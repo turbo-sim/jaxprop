@@ -1,9 +1,16 @@
-"""Availability checks for explicitly requested external test backends."""
+"""The double-precision scientific test profile and optional source backends.
+
+Precision belongs to the consuming application, including this test process.
+Float32/import-policy checks use explicit model dtypes or isolated subprocesses.
+"""
 
 from functools import cache
 
 import CoolProp.CoolProp as CP
+import jax
 import pytest
+
+jax.config.update("jax_enable_x64", True)
 
 
 @cache

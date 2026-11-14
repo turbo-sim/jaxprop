@@ -11,9 +11,10 @@ import numpy as np
 
 from ..property_schema import PROPERTIES_CANONICAL
 from .cache_metadata import metadata_fingerprint
+from .thermal_stability import metastable_table_error
 
 CACHE_FORMAT_VERSION = 2
-GENERATOR_REVISION = 2
+GENERATOR_REVISION = 3
 TABLE_ARRAYS = (
     "value",
     "grad_h",
@@ -154,6 +155,8 @@ def table_validation_error(table, metadata):
                 or np.any(sat_p > source_domain["p_max"] * (1 + boundary_precision))
             ):
                 return "saturation nodes exceed the declared source EOS domain"
+    if metadata["table_mode"] in ("metastable_liquid", "metastable_vapor"):
+        return metastable_table_error(table, metadata)
     return None
 
 

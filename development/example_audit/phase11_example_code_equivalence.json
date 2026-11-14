@@ -1,0 +1,25 @@
+{
+  "example_execution_package_sha256": "f99fee27567184e3cd815c8b547d47ff455d8183e999510623c4bd8e3d0d7af7",
+  "final_package_sha256": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+  "modified_package_files": [
+    "jaxprop/binary_mixture/fluid.py",
+    "jaxprop/coolprop/fluid_properties.py",
+    "jaxprop/coolprop/jax_wrapper.py"
+  ],
+  "changed_executable_function_bodies": {
+    "jaxprop/coolprop/jax_wrapper.py": [
+      "_callback_state_jvp"
+    ],
+    "jaxprop/binary_mixture/fluid.py": [
+      "_callback_jvp"
+    ],
+    "jaxprop/coolprop/fluid_properties.py": [
+      "__getstate__"
+    ]
+  },
+  "all_other_package_ast_identical_excluding_docstrings": true,
+  "all_example_evaluated_direct_source_and_table_paths_unchanged": true,
+  "example_execution_source_archive": "development/example_audit/phase11_examples_source.zip",
+  "archive_sha256": "6686f7ea2d7a824647fbcb2dd9ec94abd9b9efb002b9a3001f407486d6b2d0e9",
+  "note": "Large Nitrogen programs executed the exact earlier frozen package. Later fixes affect callback AD and source serialization only; these examples use direct-source/table evaluation and no pickle of configured models."
+}

@@ -1,0 +1,153 @@
+{
+  "date_utc": "2026-11-14T10:47:22.424941+00:00",
+  "scope": "Four original default active basic/blending examples, isolated headless execution with original numerical/physical settings and script assertions.",
+  "package_sha256": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+  "environment": {
+    "JAX_ENABLE_X64": "true",
+    "JAX_PLATFORM_NAME": "cpu",
+    "MPLBACKEND": "Agg"
+  },
+  "outcomes": {
+    "completed": 4,
+    "failed": 0
+  },
+  "timings_are_benchmarks": false,
+  "figures_drawn": 3,
+  "comparison_to_prior_verified_examples": {
+    "package_sha256": "9e30ce5a70f9b519c4bd8e85b17a80ecf5dd7f3767021216c22085e2d42cba2e",
+    "core_scalar_values": 3636,
+    "all_within_tolerance": true,
+    "bitwise_identical": true,
+    "rtol": 1e-12,
+    "atol": 1e-07
+  },
+  "limitations": [
+    "Only default high-level blending routes executed.",
+    "Execution completion and numerical checks do not certify every physical domain or dormant example branch.",
+    "Concurrent full-suite execution makes elapsed times unsuitable for performance claims."
+  ],
+  "cases": [
+    {
+      "example": "basic_calculations/solver_equilibrium.py",
+      "example_sha256": "d1c2bb0088882b2c6293f18b7ffedb8ec04f281fb4b8ab6cd833eb424071fb86",
+      "package_sha256": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+      "outcome": "completed_default_with_numerical_checks",
+      "numerical_checks": {
+        "core_states": 4,
+        "inverse_states": 3,
+        "eos_identity_states": 4,
+        "blend_convexity_fields": 0,
+        "maximum_relative_inverse_error": 1.3395909399668758e-10
+      },
+      "package_unchanged": true,
+      "exit_code": 0,
+      "original_settings_unchanged": true,
+      "log": "development/example_audit/results/phase11_direct/solver_equilibrium/stdout.log",
+      "raw_result": "development/example_audit/results/phase11_direct/solver_equilibrium/result.json",
+      "figures": [],
+      "core_values_compared": 18,
+      "bitwise_same_core_values": true,
+      "complete_inverse_roundtrips": 3
+    },
+    {
+      "example": "basic_calculations/solver_metastable.py",
+      "example_sha256": "c01b4decb9e02bcc3271663c9fc0ffb9720057d303e88a2f2111a80c54a097e3",
+      "package_sha256": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+      "outcome": "completed_default_with_numerical_checks",
+      "numerical_checks": {
+        "core_states": 204,
+        "inverse_states": 3,
+        "eos_identity_states": 204,
+        "blend_convexity_fields": 0,
+        "maximum_relative_inverse_error": 5.472577028322042e-13
+      },
+      "package_unchanged": true,
+      "exit_code": 0,
+      "original_settings_unchanged": true,
+      "log": "development/example_audit/results/phase11_direct/solver_metastable/stdout.log",
+      "raw_result": "development/example_audit/results/phase11_direct/solver_metastable/result.json",
+      "figures": [
+        {
+          "file": "development/example_audit/results/phase11_direct/solver_metastable/figure_001.png",
+          "axes": 1,
+          "pixels": [
+            600,
+            500
+          ],
+          "inspected": true
+        }
+      ],
+      "core_values_compared": 18,
+      "bitwise_same_core_values": true,
+      "complete_inverse_roundtrips": 3
+    },
+    {
+      "example": "blending_calculations/blending_flashing.py",
+      "example_sha256": "92d35098c844434bc813bce9670d147adf0b830dfe9d0af68fcdc71fb878b3ab",
+      "package_sha256": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+      "outcome": "completed_default_with_numerical_checks",
+      "numerical_checks": {
+        "core_states": 1502,
+        "inverse_states": 300,
+        "eos_identity_states": 1402,
+        "blend_convexity_fields": 600,
+        "maximum_relative_inverse_error": 2.198656774537905e-11
+      },
+      "package_unchanged": true,
+      "exit_code": 0,
+      "original_settings_unchanged": true,
+      "log": "development/example_audit/results/phase11_direct/blending_flashing/stdout.log",
+      "raw_result": "development/example_audit/results/phase11_direct/blending_flashing/result.json",
+      "figures": [
+        {
+          "file": "development/example_audit/results/phase11_direct/blending_flashing/figure_001.png",
+          "axes": 3,
+          "pixels": [
+            1400,
+            400
+          ],
+          "inspected": true
+        }
+      ],
+      "core_values_compared": 1800,
+      "bitwise_same_core_values": true,
+      "sweep_points": 100,
+      "property_api": "high_level"
+    },
+    {
+      "example": "blending_calculations/blending_condensing.py",
+      "example_sha256": "4a3280ba9dfe7581aaa355477bab72e9c7adea93eacedb9e0aee0ea9b260d5ac",
+      "package_sha256": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+      "outcome": "completed_default_with_numerical_checks",
+      "numerical_checks": {
+        "core_states": 1502,
+        "inverse_states": 300,
+        "eos_identity_states": 1402,
+        "blend_convexity_fields": 600,
+        "maximum_relative_inverse_error": 3.1047823825073246e-12
+      },
+      "package_unchanged": true,
+      "exit_code": 0,
+      "original_settings_unchanged": true,
+      "log": "development/example_audit/results/phase11_direct/blending_condensing/stdout.log",
+      "raw_result": "development/example_audit/results/phase11_direct/blending_condensing/result.json",
+      "figures": [
+        {
+          "file": "development/example_audit/results/phase11_direct/blending_condensing/figure_001.png",
+          "axes": 3,
+          "pixels": [
+            1400,
+            400
+          ],
+          "inspected": true
+        }
+      ],
+      "core_values_compared": 1800,
+      "bitwise_same_core_values": true,
+      "sweep_points": 100,
+      "property_api": "high_level"
+    }
+  ],
+  "figures_inspected": 3,
+  "visual_review": "All three rendered figures inspected: labels and units legible, branch/transition curves and legends present, no rendering errors."
+}

@@ -44,18 +44,23 @@ def _names(supersaturation):
     return _EXTENDED_PROPERTY_NAMES if supersaturation else _BASE_PROPERTY_NAMES
 
 
-def _make_template(shape, supersaturation=False):
+def _make_template(shape, supersaturation=False, dtype=None):
+    dtype = jax.dtypes.canonicalize_dtype(np.float64) if dtype is None else dtype
     return (
-        {
-            name: jax.ShapeDtypeStruct(shape, jnp.float64)
-            for name in _names(supersaturation)
-        },
+        {name: jax.ShapeDtypeStruct(shape, dtype) for name in _names(supersaturation)},
         jax.ShapeDtypeStruct(shape, jnp.int32),
     )
 
 
 def _get_props_python(
-    input_type, x, y, fluid, generalize_quality=False, supersaturation=False
+    input_type,
+    x,
+    y,
+    fluid,
+    generalize_quality=False,
+    supersaturation=False,
+    *,
+    dtype=np.float64
 ):
     """Return masked host data; static validation precedes this path."""
     x, y = np.broadcast_arrays(np.asarray(x), np.asarray(y))
@@ -69,7 +74,7 @@ def _get_props_python(
     )
     return (
         {
-            name: np.asarray(properties[name], dtype=np.float64)
+            name: np.asarray(properties[name], dtype=dtype)
             for name in _names(supersaturation)
         },
         np.asarray(status, dtype=np.int32),
@@ -77,8 +82,12 @@ def _get_props_python(
 
 
 def _host_callback(input_pair, x, y, fluid, generalize_quality, supersaturation):
+    # CoolProp computes in double precision; the callback boundary must still
+    # honor an application's explicit JAX precision choice. Capture the dtype
+    # while tracing, so host callbacks and their declared templates agree.
+    dtype = jax.dtypes.canonicalize_dtype(np.float64)
     template = _make_template(
-        np.broadcast_shapes(jnp.shape(x), jnp.shape(y)), supersaturation
+        np.broadcast_shapes(jnp.shape(x), jnp.shape(y)), supersaturation, dtype
     )
     evaluate = partial(
         _get_props_python,
@@ -86,6 +95,7 @@ def _host_callback(input_pair, x, y, fluid, generalize_quality, supersaturation)
         fluid=fluid,
         generalize_quality=generalize_quality,
         supersaturation=supersaturation,
+        dtype=dtype,
     )
     return jax.pure_callback(evaluate, template, x, y, vmap_method="broadcast_all")
 
@@ -117,7 +127,14 @@ def _callback_state(input_pair, x, y, fluid, generalize_quality, supersaturation
 def _callback_state_jvp(
     input_pair, fluid, generalize_quality, supersaturation, primals, tangents
 ):
-    """Forward differences with no work for symbolic-zero inputs."""
+    """Forward differences, with zero contributions from failed primal rows.
+
+    Mask derivative coefficients before multiplying tangents: selecting the
+    final tangent alone leaves ``0 * NaN`` in reverse-mode transposition.
+    Undefined primal properties likewise contribute zero. A successful primal
+    whose forward stencil fails has an unavailable (NaN) derivative, rather
+    than an invented zero slope at the source/domain boundary.
+    """
     x, y = primals
     x_dot, y_dot = tangents
     evaluate = partial(
@@ -128,6 +145,7 @@ def _callback_state_jvp(
         supersaturation=supersaturation,
     )
     properties, status = evaluate(x, y)
+    primal_valid = status == 0
     contributions = []
     for axis, (value, tangent) in enumerate(((x, x_dot), (y, y_dot))):
         if (
@@ -135,11 +153,26 @@ def _callback_state_jvp(
             or getattr(tangent, "dtype", None) == jax.dtypes.float0
         ):
             continue
-        step = 1e-6 * (jnp.abs(value) + 1.0)
-        perturbed, _ = evaluate(x + step, y) if axis == 0 else evaluate(x, y + step)
+        # Keep the established double-precision stencil; float32 outputs need
+        # a larger step so subtracting rounded callback values remains useful.
+        output_dtype = jax.dtypes.canonicalize_dtype(np.float64)
+        step_scale = max(1e-6, np.sqrt(np.finfo(output_dtype).eps))
+        step = step_scale * (jnp.abs(value) + 1.0)
+        perturbed, perturbed_status = (
+            evaluate(x + step, y) if axis == 0 else evaluate(x, y + step)
+        )
         contributions.append(
             {
-                name: (perturbed[name] - properties[name]) / step * tangent
+                name: jnp.where(
+                    primal_valid & jnp.isfinite(properties[name]),
+                    jnp.where(
+                        perturbed_status == 0,
+                        (perturbed[name] - properties[name]) / step,
+                        jnp.nan,
+                    ),
+                    0.0,
+                )
+                * tangent
                 for name in properties
             }
         )
@@ -368,7 +401,10 @@ class FluidJAX(SourceReferencesMixin, eqx.Module):
         """Evaluate eagerly with typed errors, or use explicit mask mode in JAX.
 
         Derivatives are first-order forward finite differences over successful
-        source states, away from phase/domain boundaries.
+        source states, away from phase/domain boundaries. Failed primal rows
+        and unavailable primal properties have zero tangent contributions. If
+        a valid state's forward stencil fails, its derivative is unavailable
+        (NaN); zero is not a physical derivative claim at that boundary.
         """
         if errors != "mask":
             raise UnsupportedExecutionModeError(

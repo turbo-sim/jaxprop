@@ -30,6 +30,10 @@ from ..source_references import (
 )
 from .cache_metadata import metadata_fingerprint, source_signature
 from .phase_envelope import PHASE_ENVELOPE_SETTINGS, source_phase_cell_validity
+from .thermal_stability import (
+    METASTABLE_STABILITY_SETTINGS,
+    prepare_metastable_stability,
+)
 from .runtime import (
     InspectionPayload,
     inspection_view,
@@ -86,6 +90,14 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         Positive tolerance for the nonlinear solver and its independent scaled
         residual check (default: 1e-10). These inverse controls do not change
         table generation or the persisted cache identity.
+    metastable_domain : {'physical', 'formal'}, optional
+        Physical metastable tables require positive constant-volume heat
+        capacity and isothermal bulk modulus at source samples. Formal mode
+        explicitly permits calorically unstable homogeneous EOS states for
+        research. Cells that may cross a heat-capacity pole do not expose the
+        affected response properties. Both modes retain mechanical guards.
+        Stability is prepared during construction, with no added EOS queries
+        in interpolation. The default is 'physical'.
     table_name : str, optional
         File stem. The default includes a digest of the complete generation
         identity so different configurations can coexist in one cache directory.
@@ -135,6 +147,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
     table_mode: str = eqx.field(static=True)
     mixture_ratio: float = eqx.field(static=True)
     metastable_phase: str = eqx.field(static=True)
+    metastable_domain: str = eqx.field(static=True)
     _references: object = eqx.field(static=True)
     _configuration: object = eqx.field(static=True, default=None)
     _capabilities: object = eqx.field(static=True, default=None)
@@ -161,6 +174,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         name: str = None,
         inverse_max_steps: int = 64,
         inverse_tolerance: float = 1e-10,
+        metastable_domain: str = "physical",
     ):
         if name is not None:
             if fluid_name is not None and fluid_name != name:
@@ -241,6 +255,13 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             )
         if metastable_phase not in (None, "liquid", "vapor"):
             invalid("metastable_phase", "Choose None, 'liquid', or 'vapor'.")
+        if metastable_domain not in ("physical", "formal"):
+            invalid("metastable_domain", "Choose 'physical' or 'formal'.")
+        if metastable_phase is None and metastable_domain != "physical":
+            invalid(
+                "metastable_domain",
+                "Formal homogeneous EOS domains require metastable_phase='liquid' or 'vapor'.",
+            )
         is_mixture = fluid_name.lower().endswith("_mixture")
         context["model"] = "binary_mixture" if is_mixture else "real_fluid"
         if is_mixture != (mixture_ratio is not None):
@@ -302,6 +323,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         self.provider = "bicubic"
         self.model = "binary_mixture" if mixture_ratio is not None else "real_fluid"
         self.metastable_phase = metastable_phase
+        self.metastable_domain = metastable_domain
         self.N_p_sat = N_p_sat
         self.table_mode = (
             "mixture"
@@ -339,6 +361,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 table_dir=table_dir,
                 mixture_ratio=mixture_ratio,
                 metastable_phase=metastable_phase,
+                metastable_domain=metastable_domain,
             ),
         )
         self._capabilities = FluidCapabilities(
@@ -428,6 +451,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             Path(__file__).with_name("cache_metadata.py"),
             Path(__file__).with_name("table_cache.py"),
             Path(__file__).with_name("phase_envelope.py"),
+            Path(__file__).with_name("thermal_stability.py"),
             Path(__file__).parents[1] / "coolprop" / "core_calculations.py",
             Path(__file__).parents[1] / "coolprop" / "source_context.py",
             Path(__file__).parents[1] / "coolprop" / "fluid_properties.py",
@@ -464,6 +488,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             table_mode=self.table_mode,
             mixture_ratio=self.mixture_ratio,
             metastable_phase=self.metastable_phase,
+            metastable_domain=self.metastable_domain,
             gradient_method=self.grad_method,
             N_p_sat=int(self.N_p_sat),
             h_min=float(self.h_min),
@@ -490,6 +515,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 metastable_enthalpy_residual_scale="cp_times_temperature_and_step",
                 metastable_step_rounding_fraction=1e-3,
                 phase_envelope=copy.deepcopy(PHASE_ENVELOPE_SETTINGS),
+                metastable_stability=copy.deepcopy(METASTABLE_STABILITY_SETTINGS),
                 grid_axes=["enthalpy", "log_pressure"],
                 saturation_critical_pressure_fraction=0.98,
                 metastable_solver_defaults={
@@ -664,6 +690,12 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             table = generators[self.table_mode]()
             if isinstance(table, dict):
                 table["phase_cell_validity"] = self._source_phase_cell_validity()
+                if self.metastable_phase is not None:
+                    table["phase_cell_validity"] &= prepare_metastable_stability(
+                        table,
+                        self.metastable_domain,
+                        self.metadata["generation_settings"]["metastable_stability"],
+                    )
             table = normalize_generated_arrays(table, self.metadata)
             reason = table_validation_error(table, self.metadata)
         except CalculationError:
@@ -1076,7 +1108,14 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                     try:
                         if self.grad_method == "forward":
                             grads = self._gradients_metastable_forward(
-                                fluid, h, p, eps_h, eps_p, rho_guess, T_guess
+                                fluid,
+                                h,
+                                p,
+                                eps_h,
+                                eps_p,
+                                rho_guess,
+                                T_guess,
+                                metastable_domain=self.metastable_domain,
                             )
                             # print("grads:",grads.items())
                             # print("\n")
@@ -1147,34 +1186,18 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 rho_guess = table["density"]["value"][0, j]
                 T_guess = table["temperature"]["value"][0, j]
 
-                # compute coefficients after full table computed
-                for k in jxp.PROPERTIES_CANONICAL:
-                    table[k]["coeffs"] = compute_bicubic_coefficients(
-                        table[k]["value"],
-                        table[k]["grad_h"],
-                        table[k]["grad_logP"],
-                        table[k]["grad_hlogP"],
-                        self.delta_h,
-                        self.delta_logP,
-                    )
-
-                # compute enthalpy/pressure coeffs too (they were created earlier)
-                table["enthalpy"]["coeffs"] = compute_bicubic_coefficients(
-                    table["enthalpy"]["value"],
-                    table["enthalpy"]["grad_h"],
-                    table["enthalpy"]["grad_logP"],
-                    table["enthalpy"]["grad_hlogP"],
-                    self.delta_h,
-                    self.delta_logP,
-                )
-                table["pressure"]["coeffs"] = compute_bicubic_coefficients(
-                    table["pressure"]["value"],
-                    table["pressure"]["grad_h"],
-                    table["pressure"]["grad_logP"],
-                    table["pressure"]["grad_hlogP"],
-                    self.delta_h,
-                    self.delta_logP,
-                )
+        # Assemble the complete grid once. Intermediate pressure columns were
+        # never published, so rebuilding every whole-grid polynomial after
+        # each column only repeated work (and enthalpy/pressure were duplicated).
+        for k in jxp.PROPERTIES_CANONICAL:
+            table[k]["coeffs"] = compute_bicubic_coefficients(
+                table[k]["value"],
+                table[k]["grad_h"],
+                table[k]["grad_logP"],
+                table[k]["grad_hlogP"],
+                self.delta_h,
+                self.delta_logP,
+            )
 
         # report
         frac_success = success_count / total_points * 100.0
@@ -1299,7 +1322,14 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                     try:
                         if self.grad_method == "forward":
                             grads = self._gradients_metastable_forward(
-                                fluid, h, p, eps_h, eps_p, rho_guess, T_guess
+                                fluid,
+                                h,
+                                p,
+                                eps_h,
+                                eps_p,
+                                rho_guess,
+                                T_guess,
+                                metastable_domain=self.metastable_domain,
                             )
                             # print("grads:",grads.items())
                             # print("\n")
@@ -1368,34 +1398,18 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 rho_guess = table["density"]["value"][-1, j]
                 T_guess = table["temperature"]["value"][-1, j]
 
-                # compute coefficients after full table computed
-                for k in jxp.PROPERTIES_CANONICAL:
-                    table[k]["coeffs"] = compute_bicubic_coefficients(
-                        table[k]["value"],
-                        table[k]["grad_h"],
-                        table[k]["grad_logP"],
-                        table[k]["grad_hlogP"],
-                        self.delta_h,
-                        self.delta_logP,
-                    )
-
-                # compute enthalpy/pressure coeffs too (they were created earlier)
-                table["enthalpy"]["coeffs"] = compute_bicubic_coefficients(
-                    table["enthalpy"]["value"],
-                    table["enthalpy"]["grad_h"],
-                    table["enthalpy"]["grad_logP"],
-                    table["enthalpy"]["grad_hlogP"],
-                    self.delta_h,
-                    self.delta_logP,
-                )
-                table["pressure"]["coeffs"] = compute_bicubic_coefficients(
-                    table["pressure"]["value"],
-                    table["pressure"]["grad_h"],
-                    table["pressure"]["grad_logP"],
-                    table["pressure"]["grad_hlogP"],
-                    self.delta_h,
-                    self.delta_logP,
-                )
+        # Assemble the complete grid once. Intermediate pressure columns were
+        # never published, so rebuilding every whole-grid polynomial after
+        # each column only repeated work (and enthalpy/pressure were duplicated).
+        for k in jxp.PROPERTIES_CANONICAL:
+            table[k]["coeffs"] = compute_bicubic_coefficients(
+                table[k]["value"],
+                table[k]["grad_h"],
+                table[k]["grad_logP"],
+                table[k]["grad_hlogP"],
+                self.delta_h,
+                self.delta_logP,
+            )
 
         # report
         frac_success = success_count / total_points * 100.0
@@ -1551,7 +1565,9 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         return grads
 
     @staticmethod
-    def _gradients_metastable_forward(fluid, h, p, eps_h, eps_p, rho_guess, T_guess):
+    def _gradients_metastable_forward(
+        fluid, h, p, eps_h, eps_p, rho_guess, T_guess, *, metastable_domain="physical"
+    ):
         """Sample the homogeneous branch with residuals below the FD budget."""
         for name, coordinate, step in (
             ("enthalpy", h, eps_h),
@@ -1581,7 +1597,13 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 )
         rhoT_guess = np.array([rho_guess, T_guess])
         sample = lambda enthalpy, pressure: FluidBicubic._metastable_generation_sample(
-            fluid, enthalpy, pressure, eps_h, eps_p, rhoT_guess
+            fluid,
+            enthalpy,
+            pressure,
+            eps_h,
+            eps_p,
+            rhoT_guess,
+            metastable_domain=metastable_domain,
         )
         f0 = sample(h, p)
         fh = sample(h + eps_h, p)
@@ -1614,7 +1636,9 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         return grads
 
     @staticmethod
-    def _metastable_generation_sample(fluid, h, p, eps_h, eps_p, rhoT_guess):
+    def _metastable_generation_sample(
+        fluid, h, p, eps_h, eps_p, rhoT_guess, *, metastable_domain="physical"
+    ):
         """Validate domain and solve accuracy only during table generation."""
         properties = fluid.get_state_metastable(
             prop_1="p",
@@ -1627,6 +1651,29 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         temperature = float(properties["temperature"])
         pressure = float(properties["pressure"])
         density = float(properties["density"])
+        cv = float(properties.get("isochoric_heat_capacity", np.nan))
+        bulk_modulus = float(properties.get("isothermal_bulk_modulus", np.nan))
+        mechanical_failure = not np.isfinite(bulk_modulus) or bulk_modulus <= 0
+        if mechanical_failure or (
+            metastable_domain == "physical" and (not np.isfinite(cv) or cv <= 0)
+        ):
+            raise CalculationError(
+                fluid_name=fluid.name,
+                provider="bicubic",
+                model="real_fluid",
+                request="table_generation",
+                reason=(
+                    "Mechanical instability: both metastable domains require "
+                    f"positive K_T; got {bulk_modulus!r} Pa at h={h!r} J/kg, p={p!r} Pa. "
+                    "Choose a domain before the spinodal."
+                    if mechanical_failure
+                    else (
+                        f"Physical metastable tables require positive cv; got {cv!r} J/(kg K). "
+                        "Narrow the domain, or use metastable_domain='formal' only for EOS research. "
+                        f"Sample h={h!r} J/kg, p={p!r} Pa, K_T={bulk_modulus!r} Pa."
+                    )
+                ),
+            )
         boundary_precision = 1e-9
         if (
             not np.isfinite(temperature)

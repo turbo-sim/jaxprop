@@ -58,6 +58,15 @@ class SourceEvaluationContext:
                 reason="The source convention changed while preparing its helper state.",
             )
         self.auxiliary_state = auxiliary
+        # A native handle cannot be serialized directly. Capture its complete
+        # construction provenance now, before later application changes to
+        # global reference settings or backend files can replace its identity.
+        # This setup-only probe is never repeated during property evaluation.
+        from .source_lifecycle import source_serialization_identity
+
+        self.serialization_identity, self.serialization_reason = (
+            source_serialization_identity(name, backend, references.reference_id)
+        )
 
 
 def helper_state(abstract_state, source_context=None):

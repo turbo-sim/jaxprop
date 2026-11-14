@@ -1,24 +1,23 @@
-# Highlight exception messages
-# https://stackoverflow.com/questions/25109105/how-to-colorize-the-output-of-python-errors-in-the-gnome-terminal/52797444#52797444
-try:
-    import IPython.core.ultratb
-except ImportError:
-    # No IPython. Use default exception printing.
-    pass
-else:
-    import sys
+"""Thermodynamic models with consumer-controlled JAX execution settings.
 
-    sys.excepthook = IPython.core.ultratb.FormattedTB(call_pdb=False)
+When JaxProp imports JAX first, double precision remains the default for
+scientific calculations. An explicit ``JAX_ENABLE_X64`` environment setting,
+or an application that imports/configures JAX before JaxProp, takes priority.
+Choose devices through JAX's own configuration before constructing models;
+importing this package does not select a platform or install an exception hook.
+"""
 
+import os as _os
+import sys as _sys
 
-# print("I am fixing the error")
-
-import os
-
-os.environ["JAX_PLATFORM_NAME"] = "cpu"
+_configure_default_precision = (
+    "jax" not in _sys.modules and "JAX_ENABLE_X64" not in _os.environ
+)
 import jax
 
-jax.config.update("jax_enable_x64", True)
+if _configure_default_precision:
+    jax.config.update("jax_enable_x64", True)
+del _configure_default_precision
 
 from .graphics import *
 from .utils import *
@@ -42,6 +41,7 @@ from .bicubic import FluidBicubic
 from .binary_mixture import FluidBinaryMixture, FluidMix, FluidTwoComponent
 from .fluid import Fluid
 from .property_derivatives import PropertyDerivatives
+from .plotting import plot_phase_diagram
 
 # Virtual registration leaves concrete evaluator inheritance and numerical
 # PyTrees unchanged, while exposing one runtime type for consuming packages.

@@ -26,6 +26,9 @@ fluid_bicubic = jxp.FluidBicubic(
     N_p=N_p,
     table_dir=outdir,
     metastable_phase=metastable_phase,
+    # Preserve the original research rectangle explicitly. The physical mode
+    # rejects its nonpositive-cv nodes; formal mode masks possible response poles.
+    metastable_domain="formal",
     gradient_method="forward",
 )
 

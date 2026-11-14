@@ -289,6 +289,29 @@ class HostEvaluator:
 
     names = _NAMES
 
+    def __getstate__(self):
+        """Save configured components, not borrowed native handles or locks.
+
+        Each component's verified reconstruction owns its source convention.
+        Prepared entries and lock ordering depend on the restored objects and
+        must be regenerated rather than pointing to obsolete native cursors.
+        """
+        return dict(
+            components=self.components,
+            mass_fractions=self.mass_fractions,
+            inverse_max_steps=self.inverse_max_steps,
+            inverse_tolerance=self.inverse_tolerance,
+            name=getattr(self, "name", None),
+        )
+
+    def __setstate__(self, state):
+        """Prepare accessors/locks from independently restored components."""
+        state = state.copy()
+        name = state.pop("name")
+        self.__init__(**state)
+        if name is not None:
+            self.name = name
+
     def __init__(
         self,
         components,
@@ -486,8 +509,13 @@ class HostEvaluator:
                     status[index], causes[index] = int(_status_from_error(error)), error
         return values, status, causes
 
-    def callback(self, pair, first, second):
+    def callback(self, pair, first, second, *, dtype=None):
+        """Return host values in the trace's declared callback output precision."""
         values, status, _ = self.evaluate(pair, first, second)
+        if dtype is not None and np.dtype(dtype) != np.dtype(np.float64):
+            values = {
+                name: np.asarray(value, dtype=dtype) for name, value in values.items()
+            }
         return values, status
 
 

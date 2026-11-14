@@ -121,7 +121,7 @@ and the timing claims are unchanged.
 
 This CPU/x64 guard does not establish all devices, phase envelopes, example
 studies or ThermOpt application performance. The full published-release gate
-remains Phase 13, and example execution acceptance remains Phase 14.
+remains Phase 13, and example execution acceptance remains Phase 12.
 Temporary timing workers, extracted source copies, tables and helper scripts
 were removed after preserving these compact records and the full test run.
 
@@ -394,6 +394,92 @@ strings, and the two metastable generation methods use corrected seeds.
 No repeated state-evaluation checks or arithmetic were added by this repair.
 Example execution times under concurrent correctness workloads are not used
 as a new timing comparison.
+
+## Phase 11 lifecycle, consumers and table stability
+
+The required Phase 11 scope passes **2,852 HEOS/REFPROP tests**, with no failures,
+skips or remaining expected failures. All **54,272 numerical comparisons** remain:
+47,867 finite values and 6,405 paired unavailable values, with zero failures.
+The frozen package hash `cb75ac4…` matches the complete suite and every current
+timing worker. [Verification](phase11_verification.json),
+[full run](../test_audit/results/phase11/full_20261114_114730/summary.json).
+
+The guard compares accepted commit `632b7fd` (package hash `851d8c9…`) with the
+current implementation, using four independent serial workers per version in
+ABBAABBA order, nine synchronized samples and four times the base call count.
+Both use CPU, double precision, matched dependencies and independent table
+caches. Each complete return is synchronized. Object setup, fresh generation,
+cached loading and first-call compilation are recorded separately from warmed
+calls. This checkpoint is against the preceding accepted implementation; the
+latest-PyPI comparison remains Phase 13.
+
+All **26 comparable warmed cases meet the 10% budget**. New/old median ratios
+range from **0.868 to 1.027**. All **98,688 sampled cross-version comparisons**
+pass. Every worker also matches all **640 numerical table-array digests**
+bitwise with paired NaNs: 280 ordinary CO2 arrays and 360 metastable Nitrogen
+node/derivative/coefficient/saturation arrays. Generation manifests intentionally
+differ and are not treated as numerical arrays. [Complete timings/raw samples](phase11_validation.json),
+[retained runner](phase11_benchmark.py), [exact baseline source](phase11_baseline.zip).
+
+Representative complete-state medians are:
+
+| Workload | Previous | Phase 11 | Change |
+| --- | ---: | ---: | ---: |
+| PG eager scalar HP | 46.38 us | 45.82 us | -1.2% |
+| PG eager HP batch 1,024 | 130.08 us | 114.05 us | -12.3% |
+| PG compiled scalar HP | 48.32 us | 44.27 us | -8.4% |
+| PG compiled HP batch 1,024 | 123.01 us | 107.21 us | -12.8% |
+| Bicubic eager scalar HP | 88.41 us | 82.59 us | -6.6% |
+| Bicubic eager HP batch 1,024 | 826.13 us | 779.07 us | -5.7% |
+| Bicubic compiled scalar HP | 86.96 us | 87.81 us | +1.0% |
+| Bicubic compiled HP batch 1,024 | 795.24 us | 767.89 us | -3.4% |
+| Source callback full state + dh/dT, scalar | 955.92 us | 943.97 us | -1.3% |
+| Source callback full state + dh/dT, batch 16 | 2,819.91 us | 2,590.67 us | -8.1% |
+| Binary callback full state + dh/dT, scalar | 1,271.09 us | 1,167.13 us | -8.2% |
+| Binary callback full state + dh/dT, batch 16 | 6,922.17 us | 6,493.01 us | -6.2% |
+| Metastable Water direct rho/T | 393.41 us | 403.93 us | +2.7% |
+| Metastable Water PH inverse | 2,066.69 us | 2,057.84 us | -0.4% |
+
+The twelve compiled control programs (including native AD/consumers and primal
+callbacks) are identical across all eight workers. Their apparent gains reflect
+host variability rather than demonstrated arithmetic changes. Only the four
+corrected callback derivative programs differ: failed-primal/unavailable-property
+coefficients are zeroed before tangent multiplication to prevent reverse-mode
+NaN contamination. Their sampled valid-state values and derivatives are retained.
+
+Initial setup observations show a real separate cost:
+
+| Initial setup, median of four workers | Previous | Phase 11 |
+| --- | ---: | ---: |
+| Direct source construction | 2.74 ms | 7.03 ms |
+| Callback construction | 3.17 ms | 7.00 ms |
+| Ordinary cached loading | 93.64 ms | 92.00 ms |
+| Metastable liquid fresh 16-by-16 generation | 4.21 s | 4.08 s |
+
+Source construction adds approximately **4 ms** for the verified serialization
+provenance snapshot. No identity probes enter repeated state calls. Setup has
+only four initial observations per version, not a dedicated repeated warmed
+setup benchmark; ranges remain in the portable record. The generation ranges
+overlap (previous 3.89-5.62 s, current 3.89-5.45 s), so the coefficient-loop repair
+removes redundant work without a claimed measured generation speedup. Cached
+loading remains comparable. Reusing prepared immutable setup information safely
+is an explicitly deferred profiling opportunity.
+
+Physical/formal metastable stability and optional pole masks are prepared during
+construction and reuse the existing native masks. The four direct default
+solver/blending examples retain all 3,636 compared core values bitwise. Both
+large Nitrogen studies execute their original full resolutions under explicit
+formal mode; finite response coverage and the remaining large near-pole errors
+remain visible. Their exact earlier frozen execution source and unchanged
+numerical-path proof are retained separately; they are not relabeled as timing
+runs or as whole-domain accuracy acceptance. [Example audit](../../z_EXAMPLES_AUDIT.md#phase-11-lifecycle-and-formal-table-follow-up),
+[lifecycle guide](../../docs/fluid_lifecycle.md).
+
+Reproduce the guard with:
+
+```powershell
+python development/performance/phase11_benchmark.py --baseline-source development/performance/phase11_baseline.zip --output-directory development/performance/results/phase11/repeated_guard --calls-scale 4
+```
 
 ## Method and scope of the original PyPI checkpoint
 

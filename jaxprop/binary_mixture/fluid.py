@@ -257,12 +257,13 @@ def _native_state(fluid, input_type, first, second, errors):
 
 def _callback_impl(evaluator, input_type, first, second):
     shape = jnp.broadcast_shapes(jnp.shape(first), jnp.shape(second))
+    dtype = jax.dtypes.canonicalize_dtype(np.float64)
     template = (
-        {name: jax.ShapeDtypeStruct(shape, jnp.float64) for name in _PROPERTIES},
+        {name: jax.ShapeDtypeStruct(shape, dtype) for name in _PROPERTIES},
         jax.ShapeDtypeStruct(shape, jnp.int32),
     )
     return jax.pure_callback(
-        partial(evaluator.callback, input_type),
+        partial(evaluator.callback, input_type, dtype=dtype),
         template,
         first,
         second,
@@ -293,32 +294,48 @@ def _reject_higher(evaluator, input_type, primals, tangents):
 
 
 def _callback_jvp(evaluator, input_type, primals, tangents):
-    """Finite differences of a whole host transaction, skipping inactive inputs."""
+    """Finite differences of a whole transaction, skipping inactive inputs.
+
+    Failed primal rows and unavailable fields have zero derivative coefficients
+    before multiplying tangents, avoiding reverse-mode ``0 * NaN``. A valid
+    row with a failed forward sample instead has an unavailable NaN derivative.
+    """
     first, second = primals
     da, db = tangents
     data, status = _first_order_samples(evaluator, input_type, first, second)
-    step_a, step_b = 1e-6 * (jnp.abs(first) + 1), 1e-6 * (jnp.abs(second) + 1)
+    output_dtype = jax.dtypes.canonicalize_dtype(np.float64)
+    step_scale = max(1e-6, np.sqrt(np.finfo(output_dtype).eps))
+    step_a, step_b = step_scale * (jnp.abs(first) + 1), step_scale * (
+        jnp.abs(second) + 1
+    )
     derivative = {name: jnp.zeros_like(value) for name, value in data.items()}
-    valid = status == 0
+    primal_valid = status == 0
     if not isinstance(da, SymbolicZero):
         left, code = _first_order_samples(evaluator, input_type, first + step_a, second)
-        valid = valid & (code == 0)
         derivative = {
-            name: derivative[name] + (left[name] - value) / step_a * da
+            name: derivative[name]
+            + jnp.where(
+                primal_valid & jnp.isfinite(value),
+                jnp.where(code == 0, (left[name] - value) / step_a, jnp.nan),
+                0.0,
+            )
+            * da
             for name, value in data.items()
         }
     if not isinstance(db, SymbolicZero):
         right, code = _first_order_samples(
             evaluator, input_type, first, second + step_b
         )
-        valid = valid & (code == 0)
         derivative = {
-            name: derivative[name] + (right[name] - value) / step_b * db
+            name: derivative[name]
+            + jnp.where(
+                primal_valid & jnp.isfinite(value),
+                jnp.where(code == 0, (right[name] - value) / step_b, jnp.nan),
+                0.0,
+            )
+            * db
             for name, value in data.items()
         }
-    derivative = {
-        name: jnp.where(valid, value, jnp.nan) for name, value in derivative.items()
-    }
     return (data, status), (
         derivative,
         jnp.zeros(status.shape, dtype=jax.dtypes.float0),

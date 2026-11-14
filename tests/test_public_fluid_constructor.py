@@ -291,21 +291,11 @@ def test_native_evaluator_round_trip_preserves_execution(method, configured_mode
 
 
 @pytest.mark.parametrize("method", ("coolprop", "coolprop_jax"))
-@pytest.mark.xfail(
-    strict=True,
-    raises=TypeError,
-    reason="phase11: the source abstract_state alias still retains an unpickleable CoolProp handle",
-)
 def test_source_round_trip_requires_reconstructible_native_handles(
     method, configured_models
 ):
     fluid = configured_models[method][0]
-    try:
-        payload = pickle.dumps(fluid)
-    except TypeError as error:
-        # Only the known native-handle failure may satisfy this marker.
-        assert "__cinit__" in str(error) or "__reduce__" in str(error)
-        raise
+    payload = pickle.dumps(fluid)
     restored = pickle.loads(payload)
     assert_same_numerical_state(
         restored.get_state(jxp.HmassP_INPUTS, 700e3, 8e6),

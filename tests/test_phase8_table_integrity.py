@@ -46,6 +46,7 @@ class PolynomialSource:
             entropy=2000.0,
             internal_energy=100.0,
             isobaric_heat_capacity=1000.0,
+            isochoric_heat_capacity=800.0,
             isothermal_bulk_modulus=1e6,
             isentropic_bulk_modulus=1.2e6,
         )

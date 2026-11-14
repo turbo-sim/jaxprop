@@ -1,0 +1,655 @@
+{
+  "date_utc": "2026-11-14T10:46:20.769681+00:00",
+  "package_sha256": "f99fee27567184e3cd815c8b547d47ff455d8183e999510623c4bd8e3d0d7af7",
+  "scope": "Two original full default Nitrogen rectangles after explicit formal-EOS and response-pole policy migration; previous 17-example audit remains historical.",
+  "execution": "Isolated headless subprocesses with fresh caches, concurrent with correctness jobs. Elapsed times are not benchmark measurements. The 165x165 program is verified by a matching-cache rerun against its exact frozen source after the working repository changed during initial generation.",
+  "scientific_domains_resolutions_and_solver_tolerances_unchanged": true,
+  "policy_change": "Explicit metastable_domain='formal' preserves the research rectangle; possible cp/cv response-pole cells become unavailable. Default physical tables reject nonpositive-cv nodes.",
+  "frozen_source_archive": "development/example_audit/phase11_examples_source.zip",
+  "frozen_source_archive_sha256": "6686f7ea2d7a824647fbcb2dd9ec94abd9b9efb002b9a3001f407486d6b2d0e9",
+  "outcomes": [
+    {
+      "source": "examples/bicubic_interpolation/demo_midpoints_metastable_comparison.py",
+      "source_sha256": "515258ba9b37ac452779b8fdf37e12ddfd07fa2095f88a039ac18bb94f85a7ee",
+      "package_sha256": "f99fee27567184e3cd815c8b547d47ff455d8183e999510623c4bd8e3d0d7af7",
+      "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase11\\demo_midpoints_metastable_comparison",
+      "backend": "Agg",
+      "scientific_settings_changed": false,
+      "figure_checks": [
+        {
+          "file": "development/example_audit/results/phase11/demo_midpoints_metastable_comparison/figure_01.png",
+          "axes": 5,
+          "finite_limits": true,
+          "drawn": true
+        }
+      ],
+      "source_reference_residual_checks": [
+        {
+          "index": [
+            0,
+            0
+          ],
+          "target_pressure_Pa": 31112.77776424551,
+          "target_enthalpy_J_per_kg": -143622.44897959183,
+          "actual_pressure_Pa": 31112.777764187762,
+          "actual_enthalpy_J_per_kg": -143622.4489795916,
+          "normalized_residual": 1.85612728061005e-12,
+          "within_declared_solver_limit": true
+        },
+        {
+          "index": [
+            24,
+            24
+          ],
+          "target_pressure_Pa": 173315.96934228175,
+          "target_enthalpy_J_per_kg": -77500.0,
+          "actual_pressure_Pa": 173315.96934431797,
+          "actual_enthalpy_J_per_kg": -77499.99999999788,
+          "normalized_residual": 1.1748602288653417e-11,
+          "within_declared_solver_limit": true
+        },
+        {
+          "index": [
+            48,
+            48
+          ],
+          "target_pressure_Pa": 965469.089795467,
+          "target_enthalpy_J_per_kg": -11377.551020408166,
+          "actual_pressure_Pa": 965469.0897957381,
+          "actual_enthalpy_J_per_kg": -11377.551020410165,
+          "normalized_residual": 2.808285499770582e-13,
+          "within_declared_solver_limit": true
+        }
+      ],
+      "outcome": "completed_default",
+      "seconds": 203.36483999999473,
+      "default_settings": {
+        "fluid_name": "nitrogen",
+        "h_min": -145000.0,
+        "h_max": -10000.0,
+        "p_min": 30000.0,
+        "p_max": 1000000.0,
+        "N_h": 100,
+        "N_p": 100,
+        "metastable_phase": "liquid"
+      },
+      "printed_property_errors": [
+        {
+          "property": "temperature",
+          "finite_comparisons": 2401,
+          "requested_points": 2401,
+          "abs_min": 1.6087113863250124e-09,
+          "abs_max": 1.2718495270291896e-06,
+          "rel_min": 2.4163349876038225e-09,
+          "rel_max": 1.111074743681305e-06,
+          "rel_mean": 1.9078968068098956e-07
+        },
+        {
+          "property": "density",
+          "finite_comparisons": 2401,
+          "requested_points": 2401,
+          "abs_min": 2.6692532628658228e-09,
+          "abs_max": 2.8473786755967012e-05,
+          "rel_min": 3.7620663563356766e-10,
+          "rel_max": 5.207324429479753e-06,
+          "rel_mean": 4.3026296817704954e-07
+        },
+        {
+          "property": "entropy",
+          "finite_comparisons": 2401,
+          "requested_points": 2401,
+          "abs_min": 1.02836565929465e-08,
+          "abs_max": 7.103963525878498e-06,
+          "rel_min": 2.611683462826234e-10,
+          "rel_max": 2.5409440330742844e-07,
+          "rel_mean": 9.238049543165382e-08
+        },
+        {
+          "property": "gruneisen",
+          "finite_comparisons": 2368,
+          "requested_points": 2401,
+          "abs_min": 3.3031355428647657e-12,
+          "abs_max": 178.72545351298064,
+          "rel_min": 1.6379299177532837e-10,
+          "rel_max": 750.237446011024,
+          "rel_mean": 0.5422849082755934
+        }
+      ],
+      "comparison_coverage": {
+        "temperature": {
+          "paired_finite": 2401,
+          "total": 2401,
+          "interpolation_unavailable": 0,
+          "reference_unavailable": 0
+        },
+        "density": {
+          "paired_finite": 2401,
+          "total": 2401,
+          "interpolation_unavailable": 0,
+          "reference_unavailable": 0
+        },
+        "entropy": {
+          "paired_finite": 2401,
+          "total": 2401,
+          "interpolation_unavailable": 0,
+          "reference_unavailable": 0
+        },
+        "gruneisen": {
+          "paired_finite": 2368,
+          "total": 2401,
+          "interpolation_unavailable": 33,
+          "reference_unavailable": 0
+        }
+      },
+      "numerical_validation": {
+        "status": "completed; numerical errors reported",
+        "original_interpolation_accuracy_budget": null,
+        "note": "The original default programs print diagnostic interpolation errors without an acceptance assertion; completion does not establish an unprovided accuracy budget."
+      },
+      "package_unchanged": true,
+      "stability_policy": {
+        "metastable_domain": "formal",
+        "source_nodes": 10000,
+        "nonpositive_cv_nodes": 1061,
+        "phase_cells": 9801,
+        "phase_valid_cells": 9801,
+        "optional_coefficient_coverage": {
+          "isochoric_heat_capacity": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "isobaric_heat_capacity": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "temperature": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "joule_thomson": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "pressure": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "is_two_phase": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "quality_mass": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "isentropic_bulk_modulus": {
+            "finite_cells": 9696,
+            "total_cells": 9801
+          },
+          "internal_energy": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "density": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "isothermal_bulk_modulus": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "gruneisen": {
+            "finite_cells": 9696,
+            "total_cells": 9801
+          },
+          "conductivity": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "surface_tension": {
+            "finite_cells": 0,
+            "total_cells": 9801
+          },
+          "entropy": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "heat_capacity_ratio": {
+            "finite_cells": 9696,
+            "total_cells": 9801
+          },
+          "quality_volume": {
+            "finite_cells": 0,
+            "total_cells": 9801
+          },
+          "isothermal_compressibility": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "speed_of_sound": {
+            "finite_cells": 8738,
+            "total_cells": 9801
+          },
+          "isothermal_joule_thomson": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "isentropic_compressibility": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "isobaric_expansion_coefficient": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "viscosity": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "compressibility_factor": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          },
+          "enthalpy": {
+            "finite_cells": 9801,
+            "total_cells": 9801
+          }
+        },
+        "source_free_guard_recheck": {
+          "unverified_cells_exposed": 0,
+          "finite_coefficients_in_pole_cells": {
+            "heat_capacity_ratio": 0,
+            "gruneisen": 0,
+            "isentropic_bulk_modulus": 0,
+            "speed_of_sound": 0,
+            "joule_thomson": 0,
+            "isentropic_compressibility": 0
+          }
+        }
+      },
+      "log": "development/example_audit/results/phase11/demo_midpoints_metastable_comparison/run.log",
+      "execution_mode": "fresh generation and complete default study with unchanged source",
+      "figure_visually_inspected": true,
+      "historical_prior_record": "development/example_audit/metastable_bicubic_followup.json",
+      "historical_prior_package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89"
+    },
+    {
+      "source": "examples/bicubic_interpolation/demo_metastable_single_point_comparison.py",
+      "source_sha256": "281fb95aceb644601c6fa4e90d09fdda6f99284174b3f63128769852a39782be",
+      "package_sha256": "f99fee27567184e3cd815c8b547d47ff455d8183e999510623c4bd8e3d0d7af7",
+      "cwd": "C:\\Users\\roagr\\git_projects\\jaxprop\\development\\example_audit\\results\\phase11\\demo_metastable_single_point_comparison",
+      "backend": "Agg",
+      "scientific_settings_changed": false,
+      "figure_checks": [],
+      "point_full_property_errors": {
+        "compressibility_factor": {
+          "interpolated": 0.025076912302997408,
+          "reference": 0.025076912269312374,
+          "absolute_error": 3.368503392886524e-11,
+          "relative_error_percent": 1.3432688030769628e-07
+        },
+        "conductivity": {
+          "interpolated": 0.11076962554634023,
+          "reference": 0.11076962550246869,
+          "absolute_error": 4.387154528551207e-11,
+          "relative_error_percent": 3.960611502160791e-08
+        },
+        "density": {
+          "interpolated": 720.5532584087293,
+          "reference": 720.5532587576706,
+          "absolute_error": 3.489412847557105e-07,
+          "relative_error_percent": 4.842685540793079e-08
+        },
+        "enthalpy": {
+          "interpolated": -85528.8,
+          "reference": -85528.80000000025,
+          "absolute_error": 2.473825588822365e-10,
+          "relative_error_percent": 2.892388983386131e-13
+        },
+        "entropy": {
+          "interpolated": 3253.38662821145,
+          "reference": 3253.386629519304,
+          "absolute_error": 1.3078538358968217e-06,
+          "relative_error_percent": 4.019976673015529e-08
+        },
+        "gruneisen": {
+          "interpolated": 1.6047007612673376,
+          "reference": 1.6047007622317948,
+          "absolute_error": 9.644571807854163e-10,
+          "relative_error_percent": 6.010199555486364e-08
+        },
+        "heat_capacity_ratio": {
+          "interpolated": 2.203490990029448,
+          "reference": 2.2034909834334604,
+          "absolute_error": 6.5959877559862434e-09,
+          "relative_error_percent": 2.9934262520595535e-07
+        },
+        "internal_energy": {
+          "interpolated": -86232.68967682046,
+          "reference": -86232.68967621132,
+          "absolute_error": 6.091431714594364e-07,
+          "relative_error_percent": 7.063947254187045e-10
+        },
+        "is_two_phase": {
+          "interpolated": 0.0,
+          "reference": 0.0,
+          "absolute_error": 0.0,
+          "relative_error_percent": null
+        },
+        "isentropic_bulk_modulus": {
+          "interpolated": 321638416.99464697,
+          "reference": 321638415.58380955,
+          "absolute_error": 1.4108374118804932,
+          "relative_error_percent": 4.386408288076118e-07
+        },
+        "isentropic_compressibility": {
+          "interpolated": 3.109081400464042e-09,
+          "reference": 3.1090813520670054e-09,
+          "absolute_error": 4.8397036485374103e-17,
+          "relative_error_percent": 1.556634613410755e-06
+        },
+        "isobaric_expansion_coefficient": {
+          "interpolated": 0.007930267710755052,
+          "reference": 0.007930267631821187,
+          "absolute_error": 7.893386465285257e-11,
+          "relative_error_percent": 9.95349316284366e-07
+        },
+        "isobaric_heat_capacity": {
+          "interpolated": 2205.949744615082,
+          "reference": 2205.94973697018,
+          "absolute_error": 7.64490232540993e-06,
+          "relative_error_percent": 3.465583189538137e-07
+        },
+        "isochoric_heat_capacity": {
+          "interpolated": 1001.1158455685343,
+          "reference": 1001.1158446098509,
+          "absolute_error": 9.586833584762644e-07,
+          "relative_error_percent": 9.576148091531574e-08
+        },
+        "isothermal_bulk_modulus": {
+          "interpolated": 145967658.01479584,
+          "reference": 145967656.77826163,
+          "absolute_error": 1.236534208059311,
+          "relative_error_percent": 8.471289019441619e-07
+        },
+        "isothermal_compressibility": {
+          "interpolated": 6.850832890088754e-09,
+          "reference": 6.850832726040759e-09,
+          "absolute_error": 1.6404799515591396e-16,
+          "relative_error_percent": 2.3945701452080376e-06
+        },
+        "isothermal_joule_thomson": {
+          "interpolated": 0.00034698551397617186,
+          "reference": 0.00034698552991796304,
+          "absolute_error": 1.5941791181410536e-11,
+          "relative_error_percent": 4.594367720515497e-06
+        },
+        "joule_thomson": {
+          "interpolated": -1.572952956754528e-07,
+          "reference": -1.5729530192947166e-07,
+          "absolute_error": 6.254018849899423e-15,
+          "relative_error_percent": 3.97597307305695e-06
+        },
+        "pressure": {
+          "interpolated": 507190.0,
+          "reference": 507189.9999997602,
+          "absolute_error": 2.398155629634857e-07,
+          "relative_error_percent": 4.7283180457737554e-11
+        },
+        "quality_mass": {
+          "interpolated": 9.986381417701399e-05,
+          "reference": 9.986360665099737e-05,
+          "absolute_error": 2.0752601662132625e-10,
+          "relative_error_percent": 0.00020780945489640355
+        },
+        "quality_volume": {
+          "interpolated": null,
+          "reference": null,
+          "absolute_error": null,
+          "relative_error_percent": null
+        },
+        "speed_of_sound": {
+          "interpolated": 668.1145247663935,
+          "reference": 668.1145252675361,
+          "absolute_error": 5.011426083001425e-07,
+          "relative_error_percent": 7.500848871673125e-08
+        },
+        "surface_tension": {
+          "interpolated": null,
+          "reference": null,
+          "absolute_error": null,
+          "relative_error_percent": null
+        },
+        "temperature": {
+          "interpolated": 94.57164375154949,
+          "reference": 94.57164379503065,
+          "absolute_error": 4.34811653349243e-08,
+          "relative_error_percent": 4.597695840960845e-08
+        },
+        "viscosity": {
+          "interpolated": 8.912450629262929e-05,
+          "reference": 8.912450564060322e-05,
+          "absolute_error": 6.520260676864953e-13,
+          "relative_error_percent": 7.315901086911008e-07
+        }
+      },
+      "point_independent_homogeneous_source_core": {
+        "pressure": {
+          "computed": 507189.9999997602,
+          "source": 507189.9999997608,
+          "absolute_error": 6.402842700481415e-10
+        },
+        "temperature": {
+          "computed": 94.57164379503065,
+          "source": 94.57164379503065,
+          "absolute_error": 0.0
+        },
+        "density": {
+          "computed": 720.5532587576706,
+          "source": 720.5532587576706,
+          "absolute_error": 0.0
+        },
+        "enthalpy": {
+          "computed": -85528.80000000025,
+          "source": -85528.80000000024,
+          "absolute_error": 1.4551915228366852e-11
+        },
+        "entropy": {
+          "computed": 3253.386629519304,
+          "source": 3253.3866295193034,
+          "absolute_error": 4.547473508864641e-13
+        },
+        "internal_energy": {
+          "computed": -86232.68967621132,
+          "source": -86232.68967621132,
+          "absolute_error": 0.0
+        }
+      },
+      "outcome": "completed_default",
+      "seconds": 1.7351552000036463,
+      "default_settings": {
+        "fluid_name": "nitrogen",
+        "h_min": -110000.0,
+        "h_max": -10000.0,
+        "p_min": 30000.0,
+        "p_max": 1000000.0,
+        "N_h": 165,
+        "N_p": 165,
+        "metastable_phase": "liquid"
+      },
+      "numerical_validation": {
+        "status": "completed; numerical errors reported",
+        "original_interpolation_accuracy_budget": null,
+        "note": "The original default programs print diagnostic interpolation errors without an acceptance assertion; completion does not establish an unprovided accuracy budget."
+      },
+      "HP_PT_round_trip_enthalpy_error_J_per_kg": 1.4551915228366852e-11,
+      "package_unchanged": true,
+      "stability_policy": {
+        "metastable_domain": "formal",
+        "source_nodes": 27225,
+        "nonpositive_cv_nodes": 3803,
+        "phase_cells": 26896,
+        "phase_valid_cells": 26896,
+        "optional_coefficient_coverage": {
+          "viscosity": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "isothermal_bulk_modulus": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "temperature": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "isentropic_bulk_modulus": {
+            "finite_cells": 26719,
+            "total_cells": 26896
+          },
+          "gruneisen": {
+            "finite_cells": 26719,
+            "total_cells": 26896
+          },
+          "surface_tension": {
+            "finite_cells": 0,
+            "total_cells": 26896
+          },
+          "is_two_phase": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "quality_volume": {
+            "finite_cells": 0,
+            "total_cells": 26896
+          },
+          "conductivity": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "density": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "joule_thomson": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "isobaric_expansion_coefficient": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "pressure": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "compressibility_factor": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "isobaric_heat_capacity": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "isothermal_compressibility": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "isochoric_heat_capacity": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "isothermal_joule_thomson": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "internal_energy": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "enthalpy": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "quality_mass": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "entropy": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          },
+          "heat_capacity_ratio": {
+            "finite_cells": 26719,
+            "total_cells": 26896
+          },
+          "speed_of_sound": {
+            "finite_cells": 23079,
+            "total_cells": 26896
+          },
+          "isentropic_compressibility": {
+            "finite_cells": 26896,
+            "total_cells": 26896
+          }
+        },
+        "source_free_guard_recheck": {
+          "unverified_cells_exposed": 0,
+          "finite_coefficients_in_pole_cells": {
+            "heat_capacity_ratio": 0,
+            "gruneisen": 0,
+            "isentropic_bulk_modulus": 0,
+            "speed_of_sound": 0,
+            "joule_thomson": 0,
+            "isentropic_compressibility": 0
+          }
+        }
+      },
+      "log": "development/example_audit/results/phase11/demo_metastable_single_point_comparison/cached_rerun_f99.log",
+      "fresh_generation_log": "development/example_audit/results/phase11/demo_metastable_single_point_comparison/fresh_generation_f99.log",
+      "execution_mode": "complete default verification on exact frozen source, loading the matching cache freshly generated by the prior execution",
+      "fresh_generation_attempt": {
+        "source_loaded_sha256": "f99fee27567184e3cd815c8b547d47ff455d8183e999510623c4bd8e3d0d7af7",
+        "all_27225_nodes_generated": true,
+        "all_scientific_program_outputs_reached": true,
+        "runner_final_guard": "failed because repository source changed after this process imported it; not reported as an unchanged-source verification pass"
+      },
+      "verified_import_source": "development/example_audit/results/phase11/f99_package/jaxprop",
+      "selected_point_changes_vs_previous": {
+        "compressibility_factor": 0.0,
+        "conductivity": 0.0,
+        "density": 0.0,
+        "enthalpy": 0.0,
+        "entropy": 0.0,
+        "gruneisen": 0.0,
+        "heat_capacity_ratio": 0.0,
+        "internal_energy": 0.0,
+        "is_two_phase": 0.0,
+        "isentropic_bulk_modulus": 0.0,
+        "isentropic_compressibility": 0.0,
+        "isobaric_expansion_coefficient": 0.0,
+        "isobaric_heat_capacity": 0.0,
+        "isochoric_heat_capacity": 0.0,
+        "isothermal_bulk_modulus": 0.0,
+        "isothermal_compressibility": 0.0,
+        "isothermal_joule_thomson": 0.0,
+        "joule_thomson": 0.0,
+        "pressure": 0.0,
+        "quality_mass": 0.0,
+        "quality_volume": null,
+        "speed_of_sound": 0.0,
+        "surface_tension": null,
+        "temperature": 0.0,
+        "viscosity": 0.0
+      },
+      "historical_prior_record": "development/example_audit/metastable_bicubic_followup.json",
+      "historical_prior_package_sha256": "851d8c9440d412e472186b5b54e585e7e24f41334a8706cf44f8ad707cbf4a89"
+    }
+  ],
+  "limitations": [
+    "Completion does not certify whole-domain formal-EOS accuracy.",
+    "100x100 Gamma retains large local errors near the excluded pole region; visible finite-comparison coverage is not an accuracy acceptance gate.",
+    "Execution uses the exact f99 source; final-package equivalence of directly executed numerical paths is established separately by the root source review."
+  ],
+  "final_package_sha256": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+  "final_package_code_equivalence": "development/example_audit/phase11_example_code_equivalence.json"
+}

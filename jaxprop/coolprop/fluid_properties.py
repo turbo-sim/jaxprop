@@ -168,16 +168,76 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
     """
 
     def __getstate__(self):
-        """Drop transient fields; complete provider serialization is pending."""
-        state = self.__dict__.copy()
-        state["_AS"] = None  # Drop the unpickleable CoolProp object
-        state["_state_lock"] = None
+        """Serialize configured physics, excluding mutable native/UI cursors.
+
+        Both native state handles and the transaction lock are reconstructed
+        after verifying the original source convention. Numerical curve caches
+        remain reusable; Matplotlib artists belong to their original axes and
+        are deliberately not part of a thermodynamic model snapshot.
+        """
+        with self._state_lock:
+            identity = self._source_context.serialization_identity
+            if identity is None:
+                raise InvalidConfigurationError(
+                    fluid_name=self.name,
+                    provider=self.provider,
+                    model=self.model,
+                    request="serialization",
+                    reason=(
+                        "Lossless native-source serialization is unavailable: "
+                        + self._source_context.serialization_reason
+                    ),
+                )
+            state = self.__dict__.copy()
+            for name in ("_AS", "abstract_state", "_state_lock", "_source_context"):
+                state.pop(name, None)
+            for name in tuple(state):
+                if name.startswith("_graphic"):
+                    state.pop(name)
+            state["_serialized_source_identity"] = identity
+            state["graphic_elements"] = {}
         return state
 
     def __setstate__(self, state):
-        """Restore Fluid without AbstractState (can be rebuilt later)."""
+        """Restore fresh native handles only under the same source convention.
+
+        Never change process-global CoolProp references to make a pickle load.
+        A mismatch reports the problem before an evaluator with stale identity
+        can be used. The current native flash cursor is transient; all public
+        evaluations provide their complete input pair explicitly.
+        """
+        from .source_context import SourceEvaluationContext
+
+        state = state.copy()
+        expected = state.pop("_serialized_source_identity", None)
+        if expected is None:
+            raise InvalidConfigurationError(
+                fluid_name=state.get("name"),
+                provider=state.get("provider", "coolprop"),
+                model=state.get("model", "real_fluid"),
+                request="serialization",
+                reason="The serialized model has no verifiable native-source identity.",
+            )
+        primary = try_initialize_fluid(state["name"], state["backend"])
+        context = SourceEvaluationContext(
+            primary, state["_references"], name=state["name"], backend=state["backend"]
+        )
+        if context.serialization_identity != expected:
+            raise InvalidConfigurationError(
+                fluid_name=state["name"],
+                provider=state["provider"],
+                model=state["model"],
+                request="serialization",
+                reason=(
+                    "The current source configuration, native definitions or files "
+                    "differ from the serialized model. Restore the matching source "
+                    "environment explicitly before loading it."
+                ),
+            )
         self.__dict__.update(state)
-        self._AS = None  # Leave it unset or rebuild later
+        self._AS = primary
+        self.abstract_state = primary
+        self._source_context = context
         self._state_lock = RLock()
 
     def __init__(
@@ -957,21 +1017,69 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
         y_scale="linear",
         dT_crit=1.00,
     ):
+        """Draw or update source-EOS phase curves on the selected axes.
 
-        if axes is None:
-            # axes = plt.gca()
-            fig, axes = plt.subplots(figsize=(6, 5))
-            axes.set_xlabel(LABEL_MAPPING.get(x_prop, x_prop))
-            axes.set_ylabel(LABEL_MAPPING.get(y_prop, y_prop))
-            axes.set_xscale(x_scale)
-            axes.set_yscale(y_scale)
+        Numerical curve caches include their sampling/solver options. Artists
+        belong to each fluid and axes pair: repeated calls update existing
+        lines, and disabling an option hides/removes only that fluid's artists.
+        Plotting is an eager Matplotlib operation, outside state evaluation.
+        """
+        for name, value in (("x_prop", x_prop), ("y_prop", y_prop)):
+            canonical = (
+                ALIAS_TO_CANONICAL.get(value) if isinstance(value, str) else None
+            )
+            if canonical not in self.capabilities.properties:
+                raise UnsupportedPropertyError(
+                    fluid_name=self.name,
+                    provider=self.provider,
+                    model=self.model,
+                    request=str(value),
+                    reason=f"Unsupported phase-diagram {name} property.",
+                    supported=tuple(sorted(self.capabilities.properties)),
+                )
+        if not hasattr(self, "_phase_curve_settings"):
+            self._phase_curve_settings = {}
+        settings = self._phase_curve_settings
+        if any(
+            (
+                plot_saturation_line,
+                plot_spinodal_line,
+                plot_quality_isolines,
+                plot_two_phase_patch,
+                plot_pseudocritical_line,
+            )
+        ):
+            N = _grid_count(N, "N", minimum=2)
 
-        # Saturation line
-        if plot_saturation_line:
-            if self.sat_liq is None or self.sat_vap is None:
+        # A two-phase patch needs the saturation boundary even if its outline
+        # is hidden. Keep the numerical cache independent of artist visibility.
+        if plot_saturation_line or plot_two_phase_patch:
+            key = (N, float(dT_crit))
+            if (
+                self.sat_liq is None
+                or self.sat_vap is None
+                or settings.get("saturation_line") != key
+            ):
                 self.sat_liq, self.sat_vap = compute_saturation_line(
                     self, N, dT_crit=dT_crit
                 )
+                settings["saturation_line"] = key
+
+        if axes is None:
+            _, axes = plt.subplots(figsize=(6, 5))
+        labels = getattr(axes, "_jaxprop_phase_axis_labels", {})
+        for coordinate, prop in (("x", x_prop), ("y", y_prop)):
+            current = getattr(axes, f"get_{coordinate}label")()
+            if not current or current == labels.get(coordinate):
+                label = LABEL_MAPPING.get(prop, prop)
+                getattr(axes, f"set_{coordinate}label")(label)
+                labels[coordinate] = label
+        axes._jaxprop_phase_axis_labels = labels
+        axes.set_xscale(x_scale)
+        axes.set_yscale(y_scale)
+
+        # Saturation line
+        if plot_saturation_line:
             x = jnp.concatenate([jnp.flip(self.sat_liq[x_prop]), self.sat_vap[x_prop]])
             y = jnp.concatenate([jnp.flip(self.sat_liq[y_prop]), self.sat_vap[y_prop]])
             label = self._get_label("Saturation line", show_in_legend)
@@ -988,7 +1096,17 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
 
         # Spinodal line
         if plot_spinodal_line:
-            if self.spdl_liq is None or self.spdl_vap is None:
+            key = (
+                N,
+                float(dT_crit),
+                spinodal_line_method,
+                bool(spinodal_line_use_previous),
+            )
+            if (
+                self.spdl_liq is None
+                or self.spdl_vap is None
+                or settings.get("spinodal_line") != key
+            ):
                 self.spdl_liq, self.spdl_vap = compute_spinodal_line(
                     self,
                     N=N,
@@ -997,6 +1115,7 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
                     supersaturation=False,
                     dT_crit=dT_crit,
                 )
+                settings["spinodal_line"] = key
             x = jnp.concatenate(
                 [jnp.flip(self.spdl_liq[x_prop]), self.spdl_vap[x_prop]]
             )
@@ -1021,8 +1140,14 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
 
         # Plot pseudocritical line
         if plot_pseudocritical_line:
-            if self.pseudo_critical_line is None:
-                self.pseudo_critical_line = compute_pseudocritical_line(self)
+            if (
+                self.pseudo_critical_line is None
+                or settings.get("pseudocritical_line") != N
+            ):
+                self.pseudo_critical_line = compute_pseudocritical_line(
+                    self, N_points=N
+                )
+                settings["pseudocritical_line"] = N
             x = self.pseudo_critical_line[x_prop]
             y = self.pseudo_critical_line[y_prop]
             label = self._get_label("Pseudocritical line", show_in_legend)
@@ -1044,21 +1169,38 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
 
         # Plot quality isolines
         if plot_quality_isolines:
-            if self.q_mesh is None:
-                self.q_mesh = compute_quality_grid(
-                    self, N, quality_levels, dT_crit=dT_crit
+            levels = np.asarray(quality_levels)
+            if (
+                levels.ndim != 1
+                or not levels.size
+                or levels.dtype.kind not in "fiu"
+                or not np.all(np.isfinite(levels))
+                or np.any((levels < 0) | (levels > 1))
+                or np.any(np.diff(levels) <= 0)
+            ):
+                raise InvalidConfigurationError(
+                    request="quality_levels",
+                    reason="Expected distinct, increasing finite qualities in [0, 1].",
                 )
+            # Matplotlib needs a two-row mesh even for one requested isoline.
+            mesh_levels = levels if levels.size > 1 else np.unique([0.0, *levels, 1.0])
+            key = (N, float(dT_crit), tuple(mesh_levels))
+            if self.q_mesh is None or settings.get("quality_isolines") != key:
+                self.q_mesh = compute_quality_grid(
+                    self, N, mesh_levels, dT_crit=dT_crit
+                )
+                settings["quality_isolines"] = key
             x = self.q_mesh[x_prop]
             y = self.q_mesh[y_prop]
             _, m = np.shape(x)
-            z = np.tile(quality_levels, (m, 1)).T
+            z = np.tile(mesh_levels, (m, 1)).T
             params = {"colors": "black", "linestyles": ":", "linewidths": 0.75}
             self._graphics_q_lines = self._plot_or_update_contours(
                 axes,
                 x,
                 y,
                 z,
-                quality_levels,
+                levels,
                 "quality_isolines",
                 **params,
             )
@@ -1098,7 +1240,12 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
         if plot_triple_point_liquid:
             x = self.triple_point_liquid[x_prop]
             y = self.triple_point_liquid[y_prop]
-            label = self._get_label("Triple point liquid", show_in_legend)
+            description = (
+                "Triple point liquid"
+                if self.references.triple_liquid.interpretation == "triple_point"
+                else "Lower saturation endpoint (liquid)"
+            )
+            label = self._get_label(description, show_in_legend)
             self._graphic_triple_point_liquid = self._plot_or_update_line(
                 axes,
                 x,
@@ -1114,7 +1261,12 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
         if plot_triple_point_vapor:
             x = self.triple_point_vapor[x_prop]
             y = self.triple_point_vapor[y_prop]
-            label = self._get_label("Triple point vapor", show_in_legend)
+            description = (
+                "Triple point vapor"
+                if self.references.triple_vapor.interpretation == "triple_point"
+                else "Lower saturation endpoint (vapor)"
+            )
+            label = self._get_label(description, show_in_legend)
             self._graphic_triple_point_vapor = self._plot_or_update_line(
                 axes,
                 x,
@@ -1127,15 +1279,18 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
             self._set_visibility(axes, "triple_point_vapor", False)
 
         if plot_two_phase_patch:
-            axes.fill_betweenx(
-                y=np.concatenate([self.sat_liq[y_prop][::-1], self.sat_vap[y_prop]]),
-                x1=np.concatenate([self.sat_liq[x_prop][::-1], self.sat_vap[x_prop]]),
-                x2=np.concatenate([self.sat_vap[x_prop][::-1], self.sat_liq[x_prop]]),
-                facecolor="white",
-                edgecolor="none",
-                # zorder=10
+            self._graphic_two_phase_patch = self._plot_or_update_patch(
+                axes,
+                np.concatenate([self.sat_liq[x_prop][::-1], self.sat_vap[x_prop]]),
+                np.concatenate([self.sat_liq[y_prop][::-1], self.sat_vap[y_prop]]),
             )
+        else:
+            self._set_visibility(axes, "two_phase_patch", False)
 
+        # set_data() does not refresh limits. Respect explicit user limits,
+        # which Matplotlib records by disabling the corresponding autoscale.
+        axes.relim(visible_only=True)
+        axes.autoscale_view()
         return axes.figure, axes
 
     def _get_label(self, label, show_in_legend):
@@ -1156,14 +1311,28 @@ class FluidCoolProp(SourceReferencesMixin, ReadonlyConfigurationMixin):
             line = self.graphic_elements[axes][line_name]
             line.set_data(x_data, y_data)
             # Update line properties
-            for param, value in plot_params.items():
-                setattr(line, param, value)
+            line.set(**plot_params)
             line.set_visible(True)
         else:
             # Create a new line with the provided plot parameters
             (line,) = axes.plot(x_data, y_data, **plot_params)
             self.graphic_elements[axes][line_name] = line
         return line
+
+    def _plot_or_update_patch(self, axes, x_data, y_data):
+        """Reuse the saturation-boundary polygon instead of stacking patches."""
+        elements = self.graphic_elements.setdefault(axes, {})
+        coordinates = np.column_stack((x_data, y_data))
+        if "two_phase_patch" in elements:
+            patch = elements["two_phase_patch"]
+            patch.set_xy(coordinates)
+            patch.set_visible(True)
+        else:
+            (patch,) = axes.fill(
+                x_data, y_data, facecolor="white", edgecolor="none", zorder=1
+            )
+            elements["two_phase_patch"] = patch
+        return patch
 
     def _plot_or_update_contours(
         self, axes, x_data, y_data, z_data, contour_levels, line_name, **contour_params

@@ -126,6 +126,11 @@ and the [water/nitrogen example](examples/two_component/water_nitrogen_example.p
 See the [verified Phase 9 checklist](z_IMPLEMENTATION_PLAN.md#phase-9-consolidate-the-two-component-mixture-implementations)
 and [full-state timing report](development/performance/README.md#phase-9-consolidated-binary-model).
 
+For application-owned JAX settings, complete compiled consumers, worker
+serialization, source-EOS plotting and physical/formal metastable tables, see
+the [fluid lifecycle guide](docs/fluid_lifecycle.md). Configuration snapshots
+are inspection records; verified evaluator snapshots preserve the full model.
+
 <!-- research-software-metadata:start -->
 ## Development and citation
 

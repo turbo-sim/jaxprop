@@ -24,6 +24,8 @@ _TABLE_ALLOWED = _TABLE_REQUIRED | {
     "gradient_method",
     "table_dir",
     "table_name",
+    "metastable_phase",
+    "metastable_domain",
 }
 
 
@@ -215,6 +217,15 @@ def create_fluid(
             not isinstance(table["table_name"], str) or not table["table_name"]
         ):
             invalid("table_name", "Provide a nonempty table name or None.")
+        if table.get("metastable_phase") not in (None, "liquid", "vapor"):
+            invalid("metastable_phase", "Choose None, 'liquid', or 'vapor'.")
+        metastable_domain = table.get("metastable_domain", "physical")
+        if metastable_domain not in ("physical", "formal"):
+            invalid("metastable_domain", "Choose 'physical' or 'formal'.")
+        if table.get("metastable_phase") is None and metastable_domain == "formal":
+            invalid(
+                "metastable_domain", "Formal EOS domains require a metastable phase."
+            )
 
     build_configuration(
         name,

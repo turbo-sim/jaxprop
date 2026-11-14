@@ -1,5 +1,6 @@
 import jax.numpy as jnp
 
+
 def smooth_maximum(x1, x2, method="boltzmann", alpha=10):
     r"""
     Element-wise smoooth maximum approximation of array elements. Smoothed version of numpy.maximum().
@@ -66,7 +67,7 @@ def smooth_maximum(x1, x2, method="boltzmann", alpha=10):
     """
     # Ensure x1 and x2 have the same shape by broadcasting
     x1, x2 = jnp.broadcast_arrays(x1, x2)
-    
+
     # Stack the input arrays along a new axis to treat them as a single array
     x = jnp.stack([x1, x2], axis=0)
 
@@ -130,7 +131,7 @@ def smooth_minimum(x1, x2, method="boltzmann", alpha=10):
     """
     # Ensure x1 and x2 have the same shape by broadcasting
     x1, x2 = jnp.broadcast_arrays(x1, x2)
-    
+
     # Stack the input arrays along a new axis to treat them as a single array
     x = jnp.stack([x1, x2], axis=0)
 
@@ -154,10 +155,14 @@ def _smooth_max_logsumexp(x, alpha, axis=None, keepdims=False):
     """Smooth approximation to the maximum of an array using the log-sum-exp method"""
 
     # Determine the shift for numerical stability
-    shift_value = jnp.sign(alpha) * jnp.max(jnp.sign(alpha) * x, axis=axis, keepdims=True)
+    shift_value = jnp.sign(alpha) * jnp.max(
+        jnp.sign(alpha) * x, axis=axis, keepdims=True
+    )
 
     # Compute log-sum-exp with the shift and scale by alpha
-    log_sum = jnp.log(jnp.sum(jnp.exp(alpha * (x - shift_value)), axis=axis, keepdims=True))
+    log_sum = jnp.log(
+        jnp.sum(jnp.exp(alpha * (x - shift_value)), axis=axis, keepdims=True)
+    )
 
     # Normalize the result by alpha and correct for the shift
     smooth_max = (log_sum + alpha * shift_value) / alpha
@@ -255,7 +260,7 @@ def smooth_abs(x, method="quadratic", epsilon=1e-5):
         return _smooth_abs_quadratic(x, epsilon)
     elif method == "hyperbolic":
         return _smooth_abs_tanh(x, epsilon)
-    elif method == "logarithmic":
+    elif method in ("logarithmic", "logcosh"):
         return _smooth_abs_logcosh(x, epsilon)
 
     else:
@@ -278,8 +283,13 @@ def _smooth_abs_tanh(x, epsilon):
 
 
 def _smooth_abs_logcosh(x, epsilon):
-    """Log-cosh approximation of the absolute value function."""
-    return epsilon * jnp.log(jnp.cosh(x / epsilon))
+    """Log-cosh approximation without overflowing the intermediate cosh.
+
+    log(cosh(z)) = logaddexp(z, -z) - log(2). The direct expression overflowed
+    for ordinary inputs when the smoothing width was small.
+    """
+    scaled = x / epsilon
+    return epsilon * (jnp.logaddexp(scaled, -scaled) - jnp.log(2.0))
 
 
 def sind(x):

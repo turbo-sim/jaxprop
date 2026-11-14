@@ -45,11 +45,15 @@ fluid_bicubic = jxp.FluidBicubic(
     N_p=N_p,
     table_dir=outdir,
     metastable_phase=metastable_phase,
+    # This original broad rectangle deliberately includes formal EOS states
+    # with cv <= 0. Physical tables reject them; pole-crossing responses below
+    # are explicitly unavailable rather than interpolated across a singularity.
+    metastable_domain="formal",
     gradient_method="forward",
 )
 
 # Mechanical continuation alone does not establish caloric stability. Keep
-# every requested point visible, but report where this broad domain includes
+# every requested coordinate visible, but report where this broad domain includes
 # nonpositive cv: Gamma can have a pole at cv=0 and interpolation across it is
 # not an accepted physical accuracy result.
 cv_nodes = np.asarray(fluid_bicubic.table["isochoric_heat_capacity"]["value"])
@@ -59,7 +63,7 @@ if calorically_unstable_nodes:
         "Caloric-domain notice: "
         f"{calorically_unstable_nodes}/{cv_nodes.size} nodes have cv <= 0. "
         "Gamma has a pole at cv=0; the physical domain/model needs review. "
-        "No points or errors are masked by this notice."
+        "Pole-crossing response cells are unavailable; finite comparison coverage is reported below."
     )
 
 # ---------------------------
@@ -170,6 +174,8 @@ for prop in properties:
     error_summary.append(
         {
             "property": prop,
+            "finite_comparisons": int(np.count_nonzero(np.isfinite(abs_err))),
+            "requested_points": int(abs_err.size),
             "abs_min": np.nanmin(abs_err),
             "abs_max": np.nanmax(abs_err),
             "rel_min": np.nanmin(rel_err),
@@ -190,6 +196,10 @@ print(
 )
 print("-" * 80)
 for e in error_summary:
+    print(
+        f"{e['property']} finite comparison coverage: "
+        f"{e['finite_comparisons']}/{e['requested_points']}"
+    )
     print(
         f"{e['property']:<25} | {e['abs_min']:>12.3e} {e['abs_max']:>12.3e} "
         f"{e['rel_min']:>12.3e} {e['rel_max']:>12.3e} {e['rel_mean']:>12.3e}"

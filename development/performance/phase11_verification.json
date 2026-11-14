@@ -1,0 +1,57 @@
+{
+  "date_utc": "2026-11-14T11:07:04.812347+00:00",
+  "source_sha256": "cb75ac46e3ac4a79bce48e812b1899233a624ab961838f4f924db17f8f5a7438",
+  "test_backends": [
+    "HEOS",
+    "REFPROP"
+  ],
+  "environment": {
+    "JAX_ENABLE_X64": "true",
+    "JAX_PLATFORM_NAME": "cpu"
+  },
+  "counts": {
+    "passed": 2852,
+    "xfailed": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "property_comparisons": 54272,
+  "finite_values_compared": 47867,
+  "unavailable_values_checked": 6405,
+  "failed_comparisons": 0,
+  "source_unchanged_during_run": true,
+  "seconds": 732.8811541000032,
+  "full_run": "development/test_audit/results/phase11/full_20261114_114730",
+  "additional_phase11_test_files": {
+    "test_phase11_callback_failures": 12,
+    "test_phase11_consumers": 7,
+    "test_phase11_helpers": 19,
+    "test_phase11_import": 7,
+    "test_phase11_lifecycle": 20,
+    "test_phase11_plotting": 25,
+    "test_phase11_stability": 21
+  },
+  "new_phase11_cases": 111,
+  "additional_factory_cases": 2,
+  "resolved_expected_failures": 2,
+  "source_matches_benchmark": true,
+  "matched_warmed_timing_cases": 26,
+  "all_warmed_cases_within_10_percent_budget": true,
+  "performance_record": "development/performance/phase11_validation.json",
+  "examples_ast_parsed": 65,
+  "direct_default_examples": "development/example_audit/phase11_direct_examples.json",
+  "formal_metastable_examples": "development/example_audit/phase11_metastable_examples.json",
+  "formal_example_execution_source_equivalence": "development/example_audit/phase11_example_code_equivalence.json",
+  "python_formatting": {
+    "tool": "black --check",
+    "files_checked": 27,
+    "result": "passed"
+  },
+  "git_diff_check": "passed",
+  "limitations": [
+    "This is a CPU checkpoint against accepted commit 632b7fd, not the formal latest-PyPI comparison assigned to Phase 13.",
+    "Source/callback initial construction adds about 4 ms for verified native/reference provenance; no identity probes enter state calls.",
+    "Formal Nitrogen response accuracy remains limited near caloric poles; successful execution is not full-domain accuracy acceptance.",
+    "Optional optimization/model-extension studies are explicitly deferred to Phases 12-14 in the checklist."
+  ]
+}
