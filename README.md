@@ -24,9 +24,9 @@ pip install jaxprop
 
 ## Uniform fluid constructor (0.6.0)
 
-This checkout prepares version **0.6.0**. Publication is pending downstream
-verification in ThermOpt and Barotropy; `pip install jaxprop` may still install
-the earlier interface. See the [0.6.0 release notes](docs/release_notes.md) and
+Version **0.6.0** is published on PyPI. The release passed hosted Linux and
+Windows HEOS tests and downstream Barotropy verification. See the
+[0.6.0 release notes](docs/release_notes.md) and
 [migration guide](docs/migration.md) before upgrading.
 
 ```python

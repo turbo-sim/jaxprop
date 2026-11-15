@@ -1,5 +1,7 @@
 # JaxProp uniform fluid interface implementation plan
 
+**Publication update, 15 November 2026:** JaxProp 0.6.0 is tagged and published on PyPI following the user's explicit release instruction. Hosted Linux and Windows HEOS release gates passed. Barotropy verification completed with 271 passing tests against the published wheel; its dependency floor is now 0.6.0. ThermOpt work in Phase 15 remains separately open. Earlier preparation and measurement checkpoints below retain their historical scope.
+
 Uniform, consistent behavior across fluid objects is the primary goal. Backward compatibility is secondary. The implementation should protect valid physical calculations while establishing consistent construction, property calls, identity, array shapes, reference metadata, capabilities, and errors.
 
 This checklist starts from the local 0.5.8 source at commit `ed66d108555e71d0d8543a1b670d05237a834221`, reviewed on 12 November 2026. The [interface audit](z_FLUID_INTERFACE_AUDIT.md) supplies the source findings and design requirements. The [test audit](z_PRE_REFACTOR_TEST_AUDIT.md) supplies the coverage gaps, runtime evidence, and proposed tests.
@@ -684,7 +686,7 @@ Completion requires retained changes to pass numerical/interface/derivative test
 
 ## Version 0.6.0 distribution preparation
 
-**Prepared locally on 15 November 2026; unpublished and untagged.** The [preparation record](development/releases/0.6.0.md) and [validation manifest](development/releases/0.6.0_validation.json) identify the exact artifacts and checked scope.
+**Prepared and released on 15 November 2026.** The [preparation record](development/releases/0.6.0.md) and [validation manifest](development/releases/0.6.0_validation.json) identify the pre-release artifacts and checked scope. Publication followed explicit user authorization and successful hosted release gates.
 
 - [x] Set package, runtime, Sphinx, citation and bump-version metadata to 0.6.0; include citation metadata in future version bumps.
 - [x] Prepare release/migration notes with intentional interface/model changes and accepted timing limitations; replace the stale installation placeholder with JaxProp instructions. Publication remains explicitly pending.
@@ -692,7 +694,8 @@ Completion requires retained changes to pass numerical/interface/derivative test
 - [x] Install the wheel with declared dependencies in a fresh environment and confirm isolated imports, dependency consistency, complete states, supported JIT/AD, clipping/masking, real table generation/cache reuse, binary conservation and serialization.
 - [x] Prove the only package-source change from numerical checkpoint `d512428` is its version constant; preserve all 43 source files' numerical code and 272 docstrings. Retain the earlier complete test suite as preceding evidence, rather than claiming a new full run.
 - [x] Build 29 documentation pages with warnings treated as errors; zero warnings.
-- [ ] Complete downstream Phase 15 and confirm hosted Windows/Linux CI before publication. No release tag or PyPI upload is authorized by this preparation.
+- [x] Confirm hosted Windows/Linux HEOS tests and Barotropy downstream verification before publishing 0.6.0 on explicit user authorization.
+- [ ] Complete the remaining ThermOpt portion of Phase 15 as a separate follow-up.
 
 ## Phase 15 Final ThermOpt and Barotropy integration and verification
 
@@ -707,8 +710,8 @@ This is the final verification phase, after Phase 12 examples/documentation, Pha
 - [ ] Add an applicable phase-changing integration case and a perfect-gas integration case with expectations for its physical model.
 
 - [ ] Complete the application performance comparison against the pinned Phase 13 PyPI baseline: compressor, expander, discretized heat exchanger, repeated cycle evaluations and recuperated sCO2 optimization, plus applicable perfect-gas/phase-changing cases. Record full-state/property-call counts, optimizer iterations, synchronized timings and numerical agreement separately.
-- [ ] Inventory Barotropy's JaxProp call sites and adapt construction, state/derivative access and failure policies to the common API. Preserve its physical models, solver acceptance and useful documentation.
-- [ ] Run representative Barotropy equilibrium/metastable workflows and table/export consumers where applicable; compare physical outputs, convergence, derivatives and synchronized application timings against the pinned baseline or independently validated references. Record missing inputs and genuinely unsupported old routes explicitly.
+- [x] Inventory Barotropy's JaxProp call sites and adapt construction, state/derivative access and failure policies to the common API. Preserve its physical models, solver acceptance and useful documentation.
+- [x] Run representative Barotropy equilibrium/metastable workflows and table/export consumers where applicable; compare physical outputs, convergence, derivatives and synchronized application timings against the pinned baseline or independently validated references. Record missing inputs and genuinely unsupported old routes explicitly.
 - [ ] If either application exposes a library defect, fix it in JaxProp and rerun the affected correctness, example, packaging and standalone performance checks before accepting the final application results.
 
 Acceptance requires the intended consumer workflows to pass through the common API, with every claimed capability covered and correctness/performance evidence recorded. Confirm that the tested package matches the accepted library checkpoint and review the prepared release documentation after Phases 12-15 pass. ThermOpt and Barotropy verification is the final implementation-plan phase. Publication remains a subsequent explicit action.
