@@ -64,6 +64,10 @@ The HTML generator defaults to the saved Phase 14 data. Its `--data`,
 that schema. Raw timing-run summaries and the portable report input have
 different schemas.
 
+For an explicitly retained source checkpoint, the main and paired runners accept
+`--frozen-source PATH --frozen-sha256 SHA256`. The paired runner also accepts
+`--cpu-affinity MASK` and records the verified process mask with its results.
+
 ## Compare with a future PyPI release
 
 Resolve each new baseline into a fresh directory to record its wheel and SHA256.

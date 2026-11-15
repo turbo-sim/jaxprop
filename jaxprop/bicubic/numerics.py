@@ -76,11 +76,16 @@ def interpolate_properties(fluid, h, p, names=None, *, cell_basis=None):
                 coefficients = jnp.where(jnp.isfinite(coefficients), coefficients, 0)
             else:
                 available = True
-            value = (
-                jnp.dot(coefficients, basis)
-                if basis.ndim == 1
-                else jnp.einsum("...k,...k->...", coefficients, basis)
-            )
+            # Small dot products are efficient for scalar/small requests.
+            # On larger batches, reductions fuse gathers and polynomial
+            # products and avoid a separate batched-dot dispatch per field.
+            # The selector uses static shapes, with no numerical runtime test.
+            if basis.ndim == 1:
+                value = jnp.dot(coefficients, basis)
+            elif i.size < 64:
+                value = jnp.einsum("...k,...k->...", coefficients, basis)
+            else:
+                value = jnp.sum(coefficients * basis, axis=-1)
             values[name] = jnp.where(available & jnp.isfinite(value), value, jnp.nan)
     return values
 

@@ -267,6 +267,7 @@ def main():
         default=list(benchmark.VERSIONS),
     )
     parser.add_argument("--samples", type=int, default=30)
+    parser.add_argument("--cpu-affinity", type=lambda value: int(value, 0))
     parser.add_argument(
         "--packed-statuses",
         action="store_true",
@@ -309,6 +310,7 @@ def main():
         if "published" in sources
         else benchmark.phase13.read(args.baseline_manifest)
     )
+    affinity = benchmark.worker_cpu_affinity(args.cpu_affinity)
     area = args.output_directory.resolve()
     area.mkdir(parents=True, exist_ok=True)
     assert not (
@@ -327,6 +329,7 @@ def main():
             harness_sha256=harness,
             versions=args.versions,
             samples=args.samples,
+            cpu_affinity=affinity,
             models=args.models,
             packed_statuses=args.packed_statuses,
             scalar_calls=args.scalar_calls,
@@ -585,8 +588,13 @@ def main():
         for name in ("jax", "jaxlib", "equinox", "numpy", "CoolProp")
     }
     environment.update(
-        python=sys.version, device=str(jax.devices()[0]), x64=jax.config.x64_enabled
+        python=sys.version,
+        device=str(jax.devices()[0]),
+        x64=jax.config.x64_enabled,
+        cpu_affinity=affinity,
     )
+    if args.cpu_affinity is not None:
+        assert benchmark.worker_cpu_affinity()["actual_mask"] == affinity["actual_mask"]
     benchmark.phase13.save(
         area / "summary.json",
         dict(

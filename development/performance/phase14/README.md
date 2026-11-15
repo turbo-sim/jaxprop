@@ -15,7 +15,14 @@ comparable timing ratio, setup/first-call costs and searchable measurements.
 Its figures and case data are embedded for offline viewing. Regenerate it with
 `python benchmarks/phase14_report.py` from the project environment.
 
-The latest [follow-up report](followup_20261115.md) covers source `6f93cb82…`:
+The latest [native reduction follow-up](reduction_followup.md) covers source
+`d0fa73ec…`. Large bicubic batches use fused polynomial reductions, scalar/small
+requests keep their dot kernels, and redundant PG predicates are removed.
+The 61-case native comparison retains two PG scalar consumer flags. Its
+[measurements](reduction_validation.json) and
+[full verification](reduction_verification.json) record the scoped results.
+
+The earlier [follow-up report](followup_20261115.md) covers source `6f93cb82…`:
 shared PG property tracing, passing original cold gates, and a matched-placement
 matrix with five of 119 warmed cases still above budget. The
 [attribution report](mixed_attribution_20261115.md) explains the observed core

@@ -630,8 +630,8 @@ def controller(args):
     )
     frozen = {version: phase13.source_hash(path) for version, path in sources.items()}
     assert (
-        frozen["frozen"] == FROZEN_HASH
-    ), "Frozen comparison must be the verified Phase 13 package"
+        frozen["frozen"] == args.frozen_sha256
+    ), "Frozen comparison source differs from its declared SHA256"
     area = args.output_directory.resolve()
     area.mkdir(parents=True, exist_ok=True)
     assert not (
@@ -659,6 +659,7 @@ def controller(args):
         baseline=baseline,
         sources={key: str(value) for key, value in sources.items()},
         source_hashes=frozen,
+        frozen_reference_sha256=args.frozen_sha256,
         harness_sha256=harness,
         suite=args.suite,
         case_filters=args.case,
@@ -847,6 +848,11 @@ def main():
         default=ROOT / "benchmarks/results/frozen",
     )
     parser.add_argument("--current-source", type=Path, default=ROOT)
+    parser.add_argument(
+        "--frozen-sha256",
+        default=FROZEN_HASH,
+        help="Expected frozen package hash; select a retained checkpoint explicitly",
+    )
     parser.add_argument(
         "--baseline-manifest",
         type=Path,

@@ -202,10 +202,15 @@ def resolve_pair(
 
     # This condition proves finite density without computing it for projections.
     upper_pressure = maximum * jnp.minimum(1.0, RT)
-    pressure_failed = ~jnp.isfinite(pressure) | (pressure > upper_pressure)
+    pressure_failed = pressure > upper_pressure
+    if input_type in (pairs.HmassSmass_INPUTS, pairs.DmassHmass_INPUTS):
+        # Generated pressures require a finiteness check. Direct-pressure
+        # pairs already replaced nonfinite inputs with the finite floor.
+        pressure_failed = ~jnp.isfinite(pressure) | pressure_failed
     calculation_failed = calculation_failed | pressure_failed
     pressure = jnp.where(pressure_failed, MIN_PRESSURE, pressure)
-    outside = outside | (pressure < MIN_PRESSURE * (1 - _BOUNDARY_RTOL))
+    if input_type in (pairs.HmassSmass_INPUTS, pairs.DmassHmass_INPUTS):
+        outside = outside | (pressure < MIN_PRESSURE * (1 - _BOUNDARY_RTOL))
     outside = outside | (pressure < MIN_DENSITY * (1 - _BOUNDARY_RTOL) * RT)
 
     clipped = None
@@ -234,7 +239,9 @@ def resolve_pair(
             calculation_failed, np.int32(StatusCode.PROVIDER_FAILURE), status
         )
         status = jnp.where(invalid, np.int32(StatusCode.INVALID_INPUT), status)
-        successful = ~(invalid | outside | resolved_invalid | calculation_failed)
+        # Every resolved-invalid temperature/pressure also lies below its
+        # positive domain floor, already included in outside.
+        successful = ~(invalid | outside | calculation_failed)
     result = temperature, pressure, status.astype(jnp.int32), clipped
     return (*result, successful) if return_success else result
 
