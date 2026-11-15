@@ -1,7 +1,9 @@
 # JaxProp 0.6.0
 
-**Prepared on 15 November 2026; not yet published.** ThermOpt and Barotropy
-integration checks remain before publication. This minor version contains
+**Released on 15 November 2026.** Hosted Linux and Windows HEOS tests passed,
+and downstream Barotropy verification passed 271 tests against the published
+package. ThermOpt integration remains a separately tracked follow-up; this
+release does not claim its completion. This minor version contains
 intentional interface and physical-model changes relative to 0.5.8; consult
 the [migration guide](migration.md) before upgrading.
 

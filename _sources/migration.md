@@ -1,8 +1,7 @@
 # Migrating to the consistent fluid interface
 
 This guide describes the 0.6.0 fluid-interface refactor relative to 0.5.8.
-Version 0.6.0 is prepared locally; publication awaits ThermOpt and Barotropy
-verification. The common initializer returns an
+Version 0.6.0 was published on 15 November 2026. The common initializer returns an
 actual evaluator object, and ordinary calculations use the same `get_state`
 call across the supported models. Numerical providers are interchangeable over
 their declared domains when their physical model and source/reference convention
