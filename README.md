@@ -22,10 +22,12 @@ JAX-compatible Python package for real-fluid thermodynamic properties, phase equ
 pip install jaxprop
 ```
 
-## Development constructor
+## Uniform fluid constructor (0.6.0)
 
-The following API is available in this development checkout. The published
-0.5.8 release uses the earlier construction interface.
+This checkout prepares version **0.6.0**. Publication is pending downstream
+verification in ThermOpt and Barotropy; `pip install jaxprop` may still install
+the earlier interface. See the [0.6.0 release notes](docs/release_notes.md) and
+[migration guide](docs/migration.md) before upgrading.
 
 ```python
 import jaxprop as jxp

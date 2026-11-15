@@ -3,7 +3,7 @@
 The Phase 13 checkpoint was committed as `b282ff0`. This phase investigates its
 remaining costs without changing public state contents, failure policies,
 derivatives or the original [acceptance limits](../phase13/acceptance.json).
-ThermOpt remains final Phase 15.
+On 15 November 2026 the user explicitly closed Phase 14 and authorized 0.6.0 preparation, accepting the documented residual costs and measurement limits. Original budgets and all historical observations remain unchanged. The last-source 119-case repeat was not performed. ThermOpt and Barotropy verification follows in final Phase 15 before publication.
 
 Reusable runners, workload modules, baseline preparation and run instructions
 are now in [benchmarks](../../../benchmarks/README.md). Run

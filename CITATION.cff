@@ -15,6 +15,6 @@ authors:
   given-names: Alberto
 - family-names: Cioffi
   given-names: Andrea
-version: 0.5.8
+version: 0.6.0
 repository-code: https://github.com/turbo-sim/jaxprop
 url: https://github.com/turbo-sim/jaxprop

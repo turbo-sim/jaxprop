@@ -1,5 +1,7 @@
 # Native interpolation and consumer follow-up
 
+**Closure decision, 15 November 2026:** After reviewing this report, the user instructed closing Phase 14 and preparing 0.6.0. The residual PG scalar costs and workload-context uncertainty are accepted as documented; original timing flags remain flags. The final 119-case repeat on this source was deferred rather than passed. This decision supersedes the pending-acceptance wording below without changing the measurement record. ThermOpt and Barotropy integration follows before publication.
+
 The retained source is
 `d0fa73ec6953546cabc5402c62bd0a3462ef0c3596d8ec798fa36c8fbe0e8676`.
 The immediate reference is commit `d875252`'s numerical package

@@ -29,6 +29,7 @@ Use the panel to the left or the table of contents below to navigate the documen
    :caption: Contents:
 
    source/installation
+   release_notes
    migration
    fluid_lifecycle
    source/bibliography

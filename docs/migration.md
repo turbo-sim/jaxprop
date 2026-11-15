@@ -1,7 +1,8 @@
 # Migrating to the consistent fluid interface
 
-This guide describes the development checkout after the fluid-interface refactor.
-The published package can have an older API. The common initializer returns an
+This guide describes the 0.6.0 fluid-interface refactor relative to 0.5.8.
+Version 0.6.0 is prepared locally; publication awaits ThermOpt and Barotropy
+verification. The common initializer returns an
 actual evaluator object, and ordinary calculations use the same `get_state`
 call across the supported models. Numerical providers are interchangeable over
 their declared domains when their physical model and source/reference convention

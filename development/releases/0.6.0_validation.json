@@ -1,0 +1,114 @@
+{
+  "prepared_at_utc": "2026-11-15T11:36:00.035637+00:00",
+  "version": "0.6.0",
+  "status": "prepared locally; unpublished and untagged; downstream verification pending",
+  "phase14": {
+    "closed_by": "explicit user instruction on 15 November 2026",
+    "exceptions": "Two PG scalar native consumer flags (29-33%, about 3 us); historical workload-context uncertainty and other scoped costs retained.",
+    "final_full_119_case_repeat": "not performed; deferred by closure decision",
+    "original_budgets_and_measurements_unchanged": true
+  },
+  "source": {
+    "sha256": "83c12d474450a0b26d12f2ebe1545fd86d01be3749b017958b612f268840d9c4",
+    "preceding_numerical_commit": "d512428",
+    "preceding_verified_sha256": "d0fa73ec6953546cabc5402c62bd0a3462ef0c3596d8ec798fa36c8fbe0e8676",
+    "files_checked": 43,
+    "only_package_change": "__version__: 0.5.8 -> 0.6.0",
+    "numerical_ast_and_all_other_source_preserved": true,
+    "docstrings_preserved": 272
+  },
+  "preceding_full_suite": {
+    "tests_passed": 3029,
+    "property_comparisons": 54272,
+    "record": "development/performance/phase14/reduction_verification.json",
+    "repeated_for_version_only_change": false
+  },
+  "artifacts": {
+    "jaxprop-0.6.0-py3-none-any.whl": {
+      "path": "dist/jaxprop-0.6.0-py3-none-any.whl",
+      "bytes": 187432,
+      "sha256": "5031e6bd7e00dc745fd5998e836e55666d0e243d2cfe8dc228b84a278dd374f0"
+    },
+    "jaxprop-0.6.0.tar.gz": {
+      "path": "dist/jaxprop-0.6.0.tar.gz",
+      "bytes": 171997,
+      "sha256": "cc7d802a05dda5e9a053190b9dc8a28a2a4ae3cbfc297c1477329767df19465e"
+    }
+  },
+  "packaging": {
+    "wheel_built_from_sdist": true,
+    "backend": "poetry-core 2.5.0",
+    "build_tool": "build 1.6.1",
+    "build_environment": "isolated packaging-tool venv; build --no-isolation",
+    "twine": "twine 7.0.0 check --strict: both artifacts passed",
+    "pip_check": "No broken requirements found",
+    "source_files_match_wheel_and_sdist": true,
+    "sdist_contains_migration_release_notes_and_citation": true,
+    "no_test_benchmark_or_environment_payload_in_wheel": true,
+    "metadata_versions_consistent": true,
+    "requires_python": ">=3.11,<3.14",
+    "requires_dist": [
+      "CoolProp (>=7.0.0,<8.0.0)",
+      "diffrax (>=0.7.0,<0.8.0)",
+      "equinox (>=0.12.0,<0.13.0)",
+      "jax (>=0.6.0,<0.7.0)",
+      "jaxlib (>=0.6.0,<0.7.0)",
+      "matplotlib (>=3.10.6,<4.0.0)",
+      "numpy (>=2.3.0,<3.0.0)",
+      "optimistix (>=0.0.10,<0.0.11)",
+      "pysolver_view (>=0.7.1,<1.0.0)",
+      "scipy (>=1.16.1,<2.0.0)",
+      "tqdm (>=4.67.1,<5.0.0)"
+    ]
+  },
+  "documentation": {
+    "pages": 29,
+    "warnings": 0,
+    "command": "python -m sphinx -q -b html -W --keep-going docs docs/_build/html"
+  },
+  "installed_wheel_smoke": {
+    "version": "0.6.0",
+    "package_path": "REPOSITORY_ROOT\\development\\releases\\results\\0.6.0\\wheel-env\\Lib\\site-packages\\jaxprop\\__init__.py",
+    "isolated_import": true,
+    "python": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]",
+    "device": "TFRT_CPU_0",
+    "x64": true,
+    "checks": [
+      "HEOS full-state source and HP recovery",
+      "compiled callback complete state and first derivative",
+      "perfect gas six pairs, 22-field batch, AD, clipping and masking",
+      "bicubic generation, guarded cache reuse, full 64-state JIT and AD",
+      "binary complete 27-field state, conservation and native JIT",
+      "installed evaluator serialization"
+    ],
+    "passed": true,
+    "dependencies": {
+      "numpy": "2.4.4",
+      "scipy": "1.17.1",
+      "jax": "0.6.2",
+      "jaxlib": "0.6.2",
+      "equinox": "0.12.2",
+      "diffrax": "0.7.1",
+      "optimistix": "0.0.10",
+      "CoolProp": "7.2.0",
+      "matplotlib": "3.10.8",
+      "pysolver_view": "0.7.1",
+      "tqdm": "4.67.3",
+      "lineax": "0.1.0",
+      "jaxtyping": "0.3.11"
+    }
+  },
+  "smoke_development_notes": [
+    "Initial standalone checks used stricter-than-established source inverse tolerances and mismatched literal/recovered HP pressure. The harness was corrected to use identical inputs and existing source inverse precision, with direct CoolProp AbstractState comparison retained at rtol=1e-12. No library equation or existing test tolerance changed.",
+    "One new installation-guide heading underline was corrected before the zero-warning documentation build."
+  ],
+  "not_verified_here": [
+    "ThermOpt",
+    "Barotropy",
+    "hosted Windows/Linux CI",
+    "GPU",
+    "fresh clean installations on Python 3.11/3.12"
+  ],
+  "published": false,
+  "release_tag_created": false
+}
