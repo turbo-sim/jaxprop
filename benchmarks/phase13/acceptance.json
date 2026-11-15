@@ -1,0 +1,34 @@
+{
+  "declared_before_acceptance_timings": true,
+  "baseline": "Latest stable non-yanked official PyPI release resolved at phase start; pinned wheel and SHA256 in baseline_manifest.json.",
+  "primary_output": "Complete actual public FluidState return, all numerical leaves synchronized; no lazy/export-only substitute for full-state timing.",
+  "warmup_calls": 8,
+  "maximum_target_sample_microseconds": 20000,
+  "repetition_calibration": "Before acceptance, cap requested repetitions using eight untimed warmups to target20ms for slow workloads; never belowone call. Fastnative calls retain requested repetitions. Record perworker effectivecalls, normalizepercall,alternatevariantsacrosssamples,keep9samples/4workers andallaccuracy/budgetrequirements.",
+  "samples_per_worker": 9,
+  "independent_workers_per_version": 4,
+  "order": ["baseline", "current", "current", "baseline", "baseline", "current", "current", "baseline"],
+  "budgets": {
+    "warmed_evaluation_ratio": 1.1,
+    "accepted_phase7_pg_compiled_batch_ratio": 1.4,
+    "accepted_phase7_scope": "Only explicitly identified closed-model PG compiled 1024-state complete returns (PT/HP/PS and scalar/array pressure variants), within the user's previously accepted 31-38% complete-batch tradeoff. This scope is declared before acceptance timing. Strict 10% flags remain visible. No dynamic-model/consumer/projection exceptions are inferred.",
+    "construction": {"ratio": 1.25, "additional_microseconds": 10000, "reason": "Required verified source/reference/native identity and calibration prepared at setup; approximately 4 ms source provenance cost recorded in Phase11."},
+    "cached_loading": {"ratio": 1.25, "additional_microseconds": 100000, "reason": "Full manifest, source/native/reference and numerical payload validation retained; accepted Phase11 loading is approximately92 ms versus original approximately23 ms. No validation disabled."},
+    "fresh_generation": {"ratio": 1.25, "additional_microseconds": 100000, "reason": "Additional construction-time source-domain/envelope validation; equal physical domain/resolution/gradient settings required."},
+    "first_public_call": {"ratio": 1.5, "additional_microseconds": 100000, "reason": "Separate cold compilation/binding cost, including complete states/status and additional materialized properties."},
+    "state_inspection": {"ratio": 1.1, "additional_microseconds": 25, "reason": "Diagnostic property/metadata access now enforces supported/available fields; not a thermodynamic evaluation substitute."},
+    "state_construction": {"ratio": 1.1, "additional_microseconds": 1000, "batch_additional_microseconds": 2000, "reason": "Public user-created states now validate canonical schema, availability, shape, status and immutable metadata. Evaluator trusted assembly remains included in full-state timings."}
+  },
+  "correctness": {
+    "default_rtol": 1e-7,
+    "field_atol": {"pressure": 0.001, "temperature": 1e-6, "density": 1e-6, "enthalpy": 1e-5, "internal_energy": 1e-5, "entropy": 1e-6, "viscosity": 1e-13, "conductivity": 1e-10, "quality_mass": 1e-9, "quality_volume": 1e-9},
+    "unavailable": "NaNs only match when both outcomes are declared unavailable. Intentional changed optional-property definitions are excluded by explicit per-case field lists and recorded as semantic differences.",
+    "shape": "Keep actual returned shapes and dtypes in timing records. Compare complete arrays and unavailable masks, not sampled values. Only declared old PG broadcast/scalar-pressure cases may expand their genuine scalar/partial-axis constant coordinates to the common physical shape outside timing. Arbitrary unequal lengths cannot pass.",
+    "status": "Validate all current primal statuses; legacy has no status and receives no fabricated status success output.",
+    "pg": "Matched public-model constants/reference/transport parameters allow common13 equality; as-shipped calibration differences receive independent per-model identities and explicit comparison exclusions.",
+    "tables": "Identical declared domains/resolutions/gradient settings and independent source checks at1e-3 relative interpolation accuracy plus AD-vs-finite-difference1e-5; cross-version field tolerances remain tighter. No demand for bitwise identical old coefficient arrays after intentional source repairs.",
+    "homogeneous_water_model_correction": "Only explicitly named Water homogeneous/metastable cases allow cross-version rtol3e-5 for the repaired universal-vs-source gas-constant bias (old liquid pressure error about1.064e-5 relative). The two vapor_HP_inverse cases alone use5e-5 because the same known physical-model bias shifts their inverse density/temperature roots by up to3.6888e-5. Current states must still pass strict independent raw-source checks; old p/h/u/s must match the independently reconstructed published gas-constant formula. Solver tolerances remain matched; these are documented physical-model corrections, not arbitrary root-error allowances."
+  },
+  "unique_python_numbers": "Use never-before-seen timed Python floats, not previously warmed validation inputs; record compiler events and including-compilation time separately from warmed JAX-array calls.",
+  "scope_limits": ["CPU/x64 device profile; no inferred GPU performance.", "Optional REFPROP is run when installed, with absence explicit.", "New-only functionality has independent checks and no invented published-version speedup.", "Standalone JaxProp consumers only; ThermOpt remains final Phase14."]
+}

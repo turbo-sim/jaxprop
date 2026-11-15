@@ -26,25 +26,38 @@ def _cell_basis(fluid, h, p):
     i = jnp.clip(jnp.floor(ii).astype(jnp.int32), 0, fluid.N_h - 2)
     j = jnp.clip(jnp.floor(jj).astype(jnp.int32), 0, fluid.N_p - 2)
     x, y = ii - i, jj - j
-    xm = jnp.stack((jnp.ones_like(x), x, x * x, x * x * x))
-    ym = jnp.stack((jnp.ones_like(y), y, y * y, y * y * y))
+    # The trailing axis is the four polynomial powers, leaving all leading
+    # thermodynamic batch axes intact. Scalar residual callers retain (4,).
+    xm = jnp.stack((jnp.ones_like(x), x, x * x, x * x * x), axis=-1)
+    ym = jnp.stack((jnp.ones_like(y), y, y * y, y * y * y), axis=-1)
     return i, j, xm, ym
 
 
-def interpolate_properties(fluid, h, p, names=None):
-    """Evaluate canonical scalar properties without state assembly/checks.
+def interpolate_properties(fluid, h, p, names=None, *, cell_basis=None):
+    """Evaluate canonical properties without state assembly/checks.
 
     Bounds and cell validity are checked by the caller. A prepared native table
     stores finite coefficient arrays and separate cell availability masks, so
     unavailable optional data cannot poison otherwise zero cotangents.
+
+    Natural-coordinate batches use leading batch axes and a trailing 16-term
+    polynomial axis. The request layer may share its already protected cell
+    coordinates/basis, so validation and interpolation locate each cell once.
+    The caller supplies h and p already broadcast to the same batch shape;
+    ``cell_basis``, when supplied, belongs to those same coordinates.
     """
     if names is None:
         enabled = fluid.capabilities.properties
         names = tuple(name for name in PROPERTIES_CANONICAL if name in enabled)
     else:
         names = tuple(ALIAS_TO_CANONICAL[name] for name in names)
-    i, j, xm, ym = _cell_basis(fluid, h, p)
-    basis = jnp.kron(ym, xm)
+    i, j, xm, ym = _cell_basis(fluid, h, p) if cell_basis is None else cell_basis
+    if xm.ndim == 1:
+        basis = jnp.kron(ym, xm)
+    else:
+        # kron is a tensor product of complete arrays, not a pointwise batch
+        # operation. Keep its scalar coefficient ordering within each row.
+        basis = (ym[..., :, None] * xm[..., None, :]).reshape((*i.shape, 16))
     masks = getattr(fluid, "_coefficient_validity", {})
     values = {}
     for name in names:
@@ -59,11 +72,15 @@ def interpolate_properties(fluid, h, p, names=None):
             elif name not in _CORE:
                 # Compatibility for standalone raw-table callers. Configured
                 # native evaluators prepare this mask once during setup.
-                available = jnp.all(jnp.isfinite(coefficients))
+                available = jnp.all(jnp.isfinite(coefficients), axis=-1)
                 coefficients = jnp.where(jnp.isfinite(coefficients), coefficients, 0)
             else:
                 available = True
-            value = jnp.dot(coefficients, basis)
+            value = (
+                jnp.dot(coefficients, basis)
+                if basis.ndim == 1
+                else jnp.einsum("...k,...k->...", coefficients, basis)
+            )
             values[name] = jnp.where(available & jnp.isfinite(value), value, jnp.nan)
     return values
 

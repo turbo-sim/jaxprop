@@ -56,7 +56,16 @@ def _temperature_limit(constants, cp, cv, numerical):
     return (maximum * fraction) * (1 - 64 * numerical.eps)
 
 
-def resolve_pair(input_type, first, second, constants, *, errors, return_success=False):
+def resolve_pair(
+    input_type,
+    first,
+    second,
+    constants,
+    *,
+    errors,
+    return_success=False,
+    heat_capacities=None,
+):
     """Resolve one input pair to safe canonical T/p and numerical status.
 
     Only the selected pair's domain/arithmetic guards are staged. In particular,
@@ -84,7 +93,7 @@ def resolve_pair(input_type, first, second, constants, *, errors, return_success
         jnp.result_type(first, second, constants.R, constants.h_ref, constants.T_ref)
     )
     maximum, tiny = numerical.max, numerical.tiny
-    cp, cv = specific_heat(constants)
+    cp, cv = specific_heat(constants) if heat_capacities is None else heat_capacities
     upper_T = _temperature_limit(constants, cp, cv, numerical)
     finite_first, finite_second = jnp.isfinite(first), jnp.isfinite(second)
     nonfinite = ~finite_first | ~finite_second
@@ -230,37 +239,73 @@ def resolve_pair(input_type, first, second, constants, *, errors, return_success
     return (*result, successful) if return_success else result
 
 
-def evaluate_state(fluid, input_type, first, second, *, errors):
-    """Resolve once, apply policy, then assemble one trusted native state."""
+@partial(jax.jit, static_argnames=("input_type", "errors"))
+def _resolved_properties(
+    input_type, first, second, constants, temperature, pressure, cp, *, errors
+):
+    """Stage complete property arithmetic once for the batch policy branches.
+
+    The successful and failed batch arms use the same numerical function. A
+    shared JAX call avoids tracing all property equations twice, while leaving
+    policy staging and state assembly in their existing conditional arms.
+    Model coefficients and coordinates remain dynamic, including derivatives
+    with respect to a model's calibration and reference values.
+    """
     from .perfect_gas import calculate_properties_PT
 
+    properties = calculate_properties_PT(pressure, temperature, constants, cp=cp)
+    if errors != "clip":
+        # Preserve independent coordinates in successful non-clipping requests.
+        # Overwriting before JAX lowering prunes the redundant forward h/s
+        # equations, including log(exp(...)) work in HS/PS evaluations.
+        for name, value in zip(INPUT_NAMES[input_type], (first, second)):
+            if name == "enthalpy":
+                properties["enthalpy"] = jnp.broadcast_to(
+                    jnp.asarray(value, dtype=temperature.dtype), temperature.shape
+                )
+                properties["internal_energy"] = (
+                    properties["enthalpy"] - constants.R * temperature
+                )
+            elif name == "entropy":
+                properties["entropy"] = jnp.broadcast_to(
+                    jnp.asarray(value, dtype=temperature.dtype), temperature.shape
+                )
+            elif name == "density":
+                properties["density"] = jnp.broadcast_to(
+                    jnp.asarray(value, dtype=temperature.dtype), temperature.shape
+                )
+    return properties
+
+
+def evaluate_state(fluid, input_type, first, second, *, errors):
+    """Resolve once, apply policy, then assemble one trusted native state."""
+    from .perfect_gas import specific_heat
+
+    # Share model-derived scalars across policy and conditional property arms.
+    # These remain ordinary JAX values, so parameter updates and model AD use
+    # the current constants rather than a construction-time cached snapshot.
+    heat_capacities = specific_heat(fluid.constants)
     temperature, pressure, status, clipped, successful = resolve_pair(
-        input_type, first, second, fluid.constants, errors=errors, return_success=True
+        input_type,
+        first,
+        second,
+        fluid.constants,
+        errors=errors,
+        return_success=True,
+        heat_capacities=heat_capacities,
     )
 
     def properties_for_state():
-        properties = calculate_properties_PT(pressure, temperature, fluid.constants)
-        if errors != "clip":
-            # Preserve independent coordinates in successful non-clipping requests.
-            # Overwriting before JAX lowering prunes the redundant forward h/s
-            # equations, including log(exp(...)) work in HS/PS evaluations.
-            for name, value in zip(INPUT_NAMES[input_type], (first, second)):
-                if name == "enthalpy":
-                    properties["enthalpy"] = jnp.broadcast_to(
-                        jnp.asarray(value, dtype=temperature.dtype), status.shape
-                    )
-                    properties["internal_energy"] = (
-                        properties["enthalpy"] - fluid.constants.R * temperature
-                    )
-                elif name == "entropy":
-                    properties["entropy"] = jnp.broadcast_to(
-                        jnp.asarray(value, dtype=temperature.dtype), status.shape
-                    )
-                elif name == "density":
-                    properties["density"] = jnp.broadcast_to(
-                        jnp.asarray(value, dtype=temperature.dtype), status.shape
-                    )
-        return properties
+        return _resolved_properties(
+            input_type,
+            first,
+            second,
+            fluid.constants,
+            temperature,
+            pressure,
+            heat_capacities[0],
+            errors=errors,
+        )
 
     metadata = dict(
         fluid_name=fluid.name,
@@ -283,6 +328,17 @@ def evaluate_state(fluid, input_type, first, second, *, errors):
             success_mask=successful,
         )
 
+    def masked_batch_state(_):
+        # The outer branch already established that this batch contains a
+        # failure. Apply the common row mask directly instead of tracing the
+        # native factory's second all-success reduction and conditional.
+        properties = {
+            name: jnp.where(successful, value, np.nan)
+            for name, value in properties_for_state().items()
+        }
+        adjusted = None if clipped is None else clipped & successful
+        return FluidState._from_validated(metadata, properties, status, adjusted)
+
     if errors != "raise" and status.size >= 64:
         # Stage numerical policy before property assembly. On a fully valid
         # batch this shares the resolved coordinates once, and prevents XLA
@@ -292,7 +348,7 @@ def evaluate_state(fluid, input_type, first, second, *, errors):
             lambda _: FluidState._from_validated(
                 metadata, properties_for_state(), status, clipped
             ),
-            native_state,
+            masked_batch_state,
             operand=None,
         )
     return native_state(None)
@@ -326,7 +382,7 @@ class _PerfectGasStateCall:
         generalize_quality=False,
         supersaturation=False,
         errors="raise",
-        **options
+        **options,
     ):
         first, second = validate_request(
             fluid,

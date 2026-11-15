@@ -1,0 +1,22 @@
+{
+  "purpose": "Diagnose mixed-workload timing context without changing original acceptance gates.",
+  "diagnostic_only": true,
+  "default_workers_per_version": 2,
+  "default_samples": 12,
+  "sample_requirement": "At least12, divisible by6: balances forward/reverse order and all three source input variants.",
+  "preparation": "--prepare-full executes original validation-only Context across the full native/source/state-helper mix and retains its compiled functions and complete snapshots, then times only declared cases. Minimal mode prepares the selected cases and scalar PG control, and filters unselected validators too because original validators invoke/compile their own public functions.",
+  "provider_history": "--prime-predecessor optionally replays each selected case's original full-mix predecessor outside the clock, respecting forward/reverse order. Otherwise only selected timing cases establish the recorded provider history. Source state changes are retained; no global source reset is applied.",
+  "snapshot_storage": "Both memory/disk arms serialize identical validation vectors to a sidecar before timing. Memory keeps them live; disk releases only common/complete snapshot dictionaries during timing and restores verified vectors afterward for numerical comparison. Models, inputs, compiled functions, setup/oracle summaries and property metadata remain. GC interventions are orthogonal and explicit. Sidecar I/O is outside timed calls.",
+  "controls": "A version-independent1024-element JAX arithmetic control and the registered scalar PG compressor run before/after each sample block. The PG return contract differs for published; frozen/current scalar programs are unchanged. Controls are reported, never divided out of results.",
+  "gc_modes": {
+    "default": "Preserve normal cyclic GC behavior without forced collection.",
+    "collected": "Collect once after preparation and retain enabled GC.",
+    "disabled": "Collect once after preparation, disable cyclic GC during the timing blocks, restore original setting afterward. Compare collected vs disabled to isolate GC disabling."
+  },
+  "fixed_calls_per_sample": {"scalar":48,"batch":16,"host":1,"control":48},
+  "metrics": "Standard-library Windows process/system CPU, working/private memory and page faults; current logical processor/affinity; monotonic GC intervals and counters; exact numerical variant indices and preceding timed/REFPROP cases. Observations occur outside call timers except GC callbacks themselves.",
+  "limitations": "Instrumentation and extra controls change the workload context. These diagnostics cannot replace original timing gates. Windows process CPU accounting can be too coarse for a single short case; retain raw sample/block counters. No process affinity or machine power setting is changed.",
+  "validation": "All original selected full-state/source checks run outside timers. Frozen/current complete fields/status/clipping/shapes/availability are compared. A published arm uses its unchanged API and is not assigned fabricated statuses.",
+  "invalid_runs": ["Source/harness changes", "Wrong imported package", "Numerical environment mismatch", "Failed numerical/parity checks", "Worker failure"],
+  "sample_policy": "Balanced independent processes and fixed calls; retain every sample, including spikes. No corrected or normalized acceptance ratios."
+}

@@ -490,7 +490,7 @@ runs or as whole-domain accuracy acceptance. [Example audit](../../z_EXAMPLES_AU
 Reproduce the guard with:
 
 ```powershell
-python development/performance/phase11_benchmark.py --baseline-source development/performance/phase11_baseline.zip --output-directory development/performance/results/phase11/repeated_guard --calls-scale 4
+python benchmarks/phase11_benchmark.py --baseline-source development/performance/phase11_baseline.zip --output-directory development/performance/results/phase11/repeated_guard --calls-scale 4
 ```
 
 ## Phase 12 examples and source-inverse checkpoint
@@ -554,7 +554,7 @@ separate. Examples' concurrent wall times are not benchmark measurements.
 Reproduce the guard with:
 
 ```powershell
-python development/performance/phase11_benchmark.py --baseline-source development/performance/phase12_baseline.zip --output-directory development/performance/results/phase12/repeated_guard --calls-scale 4
+python benchmarks/phase11_benchmark.py --baseline-source development/performance/phase12_baseline.zip --output-directory development/performance/results/phase12/repeated_guard --calls-scale 4
 ```
 
 Phase 13 must still resolve and pin the latest published release and run the

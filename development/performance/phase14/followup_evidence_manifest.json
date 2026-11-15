@@ -1,0 +1,1983 @@
+{
+    "date_utc":  "2026-11-15T00:33:45.868007+00:00",
+    "archive":  "followup_evidence.zip",
+    "archive_sha256":  "250394f657546a2a410348cea7215ddc01dddf9d8df52900a8a69bd163a50c62",
+    "archive_bytes":  90206350,
+    "files":  394,
+    "uncompressed_bytes":  587266749,
+    "scope":  "All recorded timing samples and actual worker record outputs for selected follow-up experiments, independent comparison reports, representative optimized HLO, diagnostic scripts, topology observations and final full-test evidence. Compilation caches, generated table files and duplicated full-preparation sidecars are omitted; their identities remain in worker records.",
+    "entries":  [
+                    {
+                        "path":  "development/performance/phase14/attribution_protocol.json",
+                        "bytes":  3370,
+                        "sha256":  "0fd4de91e2413aad1f9c0bfede06823865bd23747b5fdd99244d4aa6d54e8fc0"
+                    },
+                    {
+                        "path":  "development/performance/phase14/followup_protocol.json",
+                        "bytes":  3848,
+                        "sha256":  "39321c5c5c3a41e1b2ff2cd639030f037a6d0aa861e12688eeac21deeef9393d"
+                    },
+                    {
+                        "path":  "development/performance/phase14/followup_validation.json",
+                        "bytes":  1240260,
+                        "sha256":  "29854758ea3c6aa7c871eb51b5bae86d7eae8b90cd75098dda6ab3c09efb9096"
+                    },
+                    {
+                        "path":  "development/performance/phase14/followup_verification.json",
+                        "bytes":  17142,
+                        "sha256":  "7ac97d7318fb9dac7d5d9816025e429d5fbeef6b01af1882fbb47211f93358b8"
+                    },
+                    {
+                        "path":  "development/performance/phase14_attribution.py",
+                        "bytes":  28176,
+                        "sha256":  "fc180624ba80ca6c1da4c967cfd0e7db6675e2fdbf739a2d2a11e598b7af207c"
+                    },
+                    {
+                        "path":  "development/performance/phase14_benchmark.py",
+                        "bytes":  36607,
+                        "sha256":  "f353afa4d9a0adca96e7c1d9ad7e54f7c01c5c4ce8a2992b26d12634d2cd29c4"
+                    },
+                    {
+                        "path":  "development/performance/phase14_cold.py",
+                        "bytes":  19076,
+                        "sha256":  "0448a8a74ad97fe9b3b87a00cdc178b85d84d7fdb87b8334d0b5103b74dda889"
+                    },
+                    {
+                        "path":  "development/performance/phase14_paired.py",
+                        "bytes":  25273,
+                        "sha256":  "3dce18a3fafb3f25b7acadb2572c16858063da7a12db20be58933489be127180"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_disk/correctness.json",
+                        "bytes":  3927,
+                        "sha256":  "ce1f0e6aa14e9ad2b072e336d2dad35ad225eea4f609dbf0664e24089314d793"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_disk/experiment_manifest.json",
+                        "bytes":  4751,
+                        "sha256":  "a0d2d5a3be65b14cc54d684522c8a195f44605127acd71a3f5f74cc6ffbf18c4"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_disk/summary.json",
+                        "bytes":  8181,
+                        "sha256":  "a9baa249d745eb92f7df34e888e6a9e93ec70b69fc686967e68b9ea02a120af4"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_disk/w/current1/record.json",
+                        "bytes":  3717247,
+                        "sha256":  "9ce117a0b2a76292133fb3e4b645c59f966f4131e6bb02c085fbc3eec1cc0675"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_disk/w/current1/worker.log",
+                        "bytes":  12594,
+                        "sha256":  "66651a132ef150419f34edbb19135bcb2f446a39e738b66c3a93de6ab8f26119"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_disk/w/current2/record.json",
+                        "bytes":  3717282,
+                        "sha256":  "071c46b9534a7fa810a2f2d04cab3ec821808bbe58f5bdbc3936f01784d65b9a"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_disk/w/current2/worker.log",
+                        "bytes":  12270,
+                        "sha256":  "a2fd2b88fef6ff8d077decf58151192100f00d5528abc3fa007a55925b44556f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_disk/w/frozen1/record.json",
+                        "bytes":  3717817,
+                        "sha256":  "fe01dc87604c55d5467ee17a62c58280711bba6b1052e71cc9f8739677e819f8"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_disk/w/frozen1/worker.log",
+                        "bytes":  12494,
+                        "sha256":  "5b3e54789a10d3c6072bf7e96f231d461dc3346a82f2b01644ba9c9a7d7ea993"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_disk/w/frozen2/record.json",
+                        "bytes":  3717944,
+                        "sha256":  "05e898925e4c3ef89cd8f9dd9963bc6427b744c87e223f591102d56390899861"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_disk/w/frozen2/worker.log",
+                        "bytes":  12413,
+                        "sha256":  "68db7b687e572995cb513fd5a3bbcf0418efbce41474901129ab1f122015fc1e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_mem/correctness.json",
+                        "bytes":  3927,
+                        "sha256":  "ce1f0e6aa14e9ad2b072e336d2dad35ad225eea4f609dbf0664e24089314d793"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_mem/experiment_manifest.json",
+                        "bytes":  4753,
+                        "sha256":  "343a2fc5faadbe7a6bf880a02773b9bd5b730debc5178a7db8696f87c9b92fa2"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_mem/summary.json",
+                        "bytes":  8100,
+                        "sha256":  "ef0f0b5d1fb84a643ba296b5c2565b0e679f719911c94606882fcc4f2aa1435b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_mem/w/current1/record.json",
+                        "bytes":  3717287,
+                        "sha256":  "08f97c16bdd198efdb4bd03145f15c592906609bd95a2ec871cd4244dbd2ca47"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_mem/w/current1/worker.log",
+                        "bytes":  11846,
+                        "sha256":  "3df2521dfd8885ff0c40d0064c32be558264a0926a7959c92ef22ed8e1d565cb"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_mem/w/current2/record.json",
+                        "bytes":  3717632,
+                        "sha256":  "40c6990a5e239cfb875a9c986835972120fe9a07fa24496578cfd930275422ee"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_mem/w/current2/worker.log",
+                        "bytes":  11846,
+                        "sha256":  "1572f2b67912fc89b3205b82b4665cc014edb10c1ea90fedc39ec9ce744efe9a"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_mem/w/frozen1/record.json",
+                        "bytes":  3717405,
+                        "sha256":  "56200563482399493a41283a6d7959887ba4f7f945dbf19a7f8ec7cef567f9e7"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_mem/w/frozen1/worker.log",
+                        "bytes":  11827,
+                        "sha256":  "aba4751119b8b89166989c980530a274ddd8ab2592bec48373a5f11ea8d04b0a"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_mem/w/frozen2/record.json",
+                        "bytes":  3717549,
+                        "sha256":  "1facb236490c0357133c1b0a3b01c5d9374b929021c3075fd322a9ed1bd7bad7"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/a_mem/w/frozen2/worker.log",
+                        "bytes":  12070,
+                        "sha256":  "f0ae345163c7c230b4a264b56db1316fa0de039ef2925ceddecf4bc40f8b19c6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/aff_cross/current_compressor_with_actual_status.hlo.txt",
+                        "bytes":  132126,
+                        "sha256":  "a4db4b2a4727713742c6fa0c44535b85953c49d6df619d49465d09d153900a37"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/aff_cross/current_full_HP_batch1024.hlo.txt",
+                        "bytes":  140569,
+                        "sha256":  "4dcada90e7ff06d1a38d0406465eb953f05d1dd823d7c00dac4a120764b41173"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/aff_cross/experiment_manifest.json",
+                        "bytes":  3706,
+                        "sha256":  "8d53b18e9b42f600e9628312016a31bfebddf59980d55416dfb7fee82e55809e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/aff_cross/frozen_compressor_with_actual_status.hlo.txt",
+                        "bytes":  151908,
+                        "sha256":  "80bff85b201e2795c54c4bbc08bad588de4408a5e781795e16091de2990fcf05"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/aff_cross/frozen_full_HP_batch1024.hlo.txt",
+                        "bytes":  172273,
+                        "sha256":  "5ed953e9832221e9bcfd1b6c03bf7e352511af6495151d6a9097a1e5659b7ee1"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/aff_cross/raw_timing_rows.json",
+                        "bytes":  1300499,
+                        "sha256":  "a32b93d79361c5af4979aa4bd7dfcb3c8d52d48dce91b4a458c601490a9542ee"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/aff_cross/record.json",
+                        "bytes":  1320027,
+                        "sha256":  "db5622e1124cceb30e6bc31a6d6a464e4a8a597d9c900197185f2bfa3ff5aa6e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/aff_cross/unchanged_runtime_control_array1024.hlo.txt",
+                        "bytes":  1726,
+                        "sha256":  "8b6ee3b4eab7ff4d5c4ffa4dbcdcf9e23035ec6b628709c9ebb453c81aae7fc3"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/aff_cross/verification_snapshots.json",
+                        "bytes":  3204933,
+                        "sha256":  "edbe344bdd4d03e6453f56e4848d2e87663d988f8aa65136ca099ab3669803a0"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/affinity_crossover_worker.py",
+                        "bytes":  17570,
+                        "sha256":  "280826f9a79b82297580ef9a84a3856b7b2e45b6d967720c1c4e21136244cf25"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/correctness.json",
+                        "bytes":  13389,
+                        "sha256":  "e4794a3db100dd853a246b1b4fc21b868f5ca806f65a8e1191b28f1ca15e9ed7"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/experiment_manifest.json",
+                        "bytes":  2883,
+                        "sha256":  "bc3680e450bd37b07c8bb2cfc14eb50662d27b2adb5869a61f5d104e577e5372"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/summary.json",
+                        "bytes":  25082237,
+                        "sha256":  "95b59767440bb57d1e57eacd2136896b66920d2c352a56775a1efee48028924d"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_0_current/record.json",
+                        "bytes":  1111991,
+                        "sha256":  "75e4be85daec475b20f9f2c0b75f0e86dfc157289d976fd5ebdc41d922a42f66"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_0_current/worker.log",
+                        "bytes":  7901,
+                        "sha256":  "ff5aae136ecb8d3f27040fee64181c8c5a0476bbdc7e5c04b04d3e204960d572"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_0_frozen/record.json",
+                        "bytes":  1112045,
+                        "sha256":  "b2b8629568e2710fcce998ebccb10403a75d71d28b545aa09dd14e33bf32147a"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_0_frozen/worker.log",
+                        "bytes":  7883,
+                        "sha256":  "0cb7568a94851c35704e712a1a5714f16a13dc129506fa745f6280ec4616c902"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_0_published/record.json",
+                        "bytes":  413396,
+                        "sha256":  "d198fcdce7f04ad871446962759bcb998ed9da3321d5bb6f5ca379cedcb5d0a8"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_0_published/worker.log",
+                        "bytes":  8896,
+                        "sha256":  "7f155eed5672152aa81fdcbf2c9e82a0d6d83db1f805990dabc5bf8d667d8ea9"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_1_current/record.json",
+                        "bytes":  1111991,
+                        "sha256":  "d3d1ad7df15b3b92366c13a90b21692170fad598d2363385bdc5eebfdc812468"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_1_current/worker.log",
+                        "bytes":  7982,
+                        "sha256":  "bfff028a2c65edde0777d44a6241c510cdfc0b877b98f10900d80c0de28e14f0"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_1_frozen/record.json",
+                        "bytes":  1112050,
+                        "sha256":  "3d729be38f530d77d84800759229578382a9980ac2ee435da070275ca64d0df7"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_1_frozen/worker.log",
+                        "bytes":  7235,
+                        "sha256":  "d5566ca4ecc3e834f1d4a15db747c351cb3aced1300cdcc87c6fc9241cb08908"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_1_published/record.json",
+                        "bytes":  413388,
+                        "sha256":  "c1a47bf70ae4f3c8c6c34b284aeba895e8b8928ae0b321d455abfda118c9e7f4"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_1_published/worker.log",
+                        "bytes":  8329,
+                        "sha256":  "b4a3b44e4bd510d0f9296fe47e4248021e88c62efdc147b93008986548815ab6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_2_current/record.json",
+                        "bytes":  1111991,
+                        "sha256":  "1f3e27c8622b2409252af236f9856982a9eac43a1e23b726840efb53ec44f056"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_2_current/worker.log",
+                        "bytes":  6524,
+                        "sha256":  "7b1fe55f20468c25538b58d35e511c77ad933a70abbbf7759effff9cff92ee2b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_2_frozen/record.json",
+                        "bytes":  1112047,
+                        "sha256":  "3786d1615dd2d5bf41f60649352c9c9c0956b9ecba2675c7c3e765fe337587d9"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_2_frozen/worker.log",
+                        "bytes":  6587,
+                        "sha256":  "337134c467d8a925bf8dfedcdd6c8d5ab706398158a2fdc90fbcfc73847d83a0"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_2_published/record.json",
+                        "bytes":  413376,
+                        "sha256":  "cb8ba8342185e06bca396a31416264a31cf40da35ec259526b16b81d94f56b11"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_2_published/worker.log",
+                        "bytes":  7600,
+                        "sha256":  "90c9398fd23047b904cb9fb034761bdd669e9f04036d478bb27cdede60b71c13"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_3_current/record.json",
+                        "bytes":  1111992,
+                        "sha256":  "5cc6de8d79acb197e7afac1da8176e5136b144111d4ad4ae5239573272ab4498"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_3_current/worker.log",
+                        "bytes":  6524,
+                        "sha256":  "14063443ddf0d947d65962cc41f537552b91717fd8a1d2c5d5f01e19af578c45"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_3_frozen/record.json",
+                        "bytes":  1112043,
+                        "sha256":  "6314a94186a2b71f06ac31b54b2c0ca92f105e50c76246c0b4410a8540de7878"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_3_frozen/worker.log",
+                        "bytes":  6506,
+                        "sha256":  "8b014ff167ae18f955a41f473471f95e19e129ca692857ff8b02c9bd63c7279e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_3_published/record.json",
+                        "bytes":  413375,
+                        "sha256":  "a9075b0a3524f44fae4df2bbe141f7b7f1d36c9292e86808cdd2e03b4ce662dc"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/0_0_3_published/worker.log",
+                        "bytes":  6952,
+                        "sha256":  "306cfc23a364dc981e0557648e51de4fdcd3c84eb45e6094455da7f03060bfb6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_0_current/record.json",
+                        "bytes":  1199575,
+                        "sha256":  "56c7e48aa897e59e42dfe0374501b168842fe1f8d48830cae95d2eff6e09d950"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_0_current/worker.log",
+                        "bytes":  6605,
+                        "sha256":  "6295bbf15830994ab8e46934ca9c5d38ad21a3da9c716befb4a940fb74af82e7"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_0_frozen/record.json",
+                        "bytes":  1199633,
+                        "sha256":  "9174fc1ed57482e097b96f5fca805f748e21963e6b1c3a1edf9ce368a23f8f6f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_0_frozen/worker.log",
+                        "bytes":  6506,
+                        "sha256":  "ee4b93eb43abb6480d6f0551cad5fb62fe930a29d951ddc54b3b3bda51ec4d2d"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_0_published/record.json",
+                        "bytes":  394287,
+                        "sha256":  "a98696ac076a51573dbda5b8158e63914f38533c92d353fd20d1088cc3d37a37"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_0_published/worker.log",
+                        "bytes":  6952,
+                        "sha256":  "2bd45b0d6d762270edb783306cc755c2bb00435e4b159f90dcede2688bb0ca93"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_1_current/record.json",
+                        "bytes":  1199580,
+                        "sha256":  "b70eed8ac62485606ae6fa0c847cfe3f4ec239b83993a2e13568d05eb7f1d9b9"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_1_current/worker.log",
+                        "bytes":  6605,
+                        "sha256":  "e141b97c19f979e08182a6246856ef48080c211d92aa979ee9349886bf3bf3cc"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_1_frozen/record.json",
+                        "bytes":  1199632,
+                        "sha256":  "d3ab8835702cbaa80bc3dcd0c3faaf6d3b0af7eec40567ccb33af266a7fb81a9"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_1_frozen/worker.log",
+                        "bytes":  6506,
+                        "sha256":  "c57e9c9b28c60d1906a5256750d4a3319cb46fa760d9171e6a79bdb31f27a262"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_1_published/record.json",
+                        "bytes":  394288,
+                        "sha256":  "76f1aa7b0df6c7cc086f8fb54cef658fe83d1ac3c1658f418d0c4b07a1485430"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_1_published/worker.log",
+                        "bytes":  6871,
+                        "sha256":  "7445907e47d24289c33adb53f8b0662822e0d285497074434117b96650576060"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_2_current/record.json",
+                        "bytes":  1199578,
+                        "sha256":  "430cce95d14d105afd445f926926a083c2a289e1c55bc1dfe15bb54872cdf323"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_2_current/worker.log",
+                        "bytes":  6605,
+                        "sha256":  "23406cb559386128920f4f5760086c0765c5f0c430dbfb3ddae65aef9b12f056"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_2_frozen/record.json",
+                        "bytes":  1199625,
+                        "sha256":  "c6705cf6677608433a92cfd2f33d7b1beec77c2476f528c069a189ee0950abf0"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_2_frozen/worker.log",
+                        "bytes":  6668,
+                        "sha256":  "b6193fb6fcb0459244b905e474ad5cf9798ba7a20bd7c5c3923d28f07299cfea"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_2_published/record.json",
+                        "bytes":  394295,
+                        "sha256":  "14f948531dec1aac338e3008f4a3bcc26095bfe5388c73db695ed63762bffd69"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_2_published/worker.log",
+                        "bytes":  6952,
+                        "sha256":  "d04b8176dec06b66f5a3c3a46a53f4caf3be69b2aba477d2f8a9e797740f6a81"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_3_current/record.json",
+                        "bytes":  1199580,
+                        "sha256":  "c90a013fd3eaf3e9888df6fd89e465d6b45514963e9a00248844a08cdbd5efea"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_3_current/worker.log",
+                        "bytes":  6524,
+                        "sha256":  "50a028745c33db98886ef7ae1f7c16d9e2f9193473b70d2d8dde6569bb492030"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_3_frozen/record.json",
+                        "bytes":  1199631,
+                        "sha256":  "6b023917fbbaf1c05d224603a661ad34d906adfa5a639023211c8beb6978e50d"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_3_frozen/worker.log",
+                        "bytes":  6506,
+                        "sha256":  "1ff19c5fe153f7322f8289f0de643b6991a2b892c8dff1525a96a664d38ed079"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_3_published/record.json",
+                        "bytes":  394283,
+                        "sha256":  "131e28e8d9a5a5ad1c390d67552c58e0b01ee7ff7f67e4dbcdb4a4364d3c69ce"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/1_0_3_published/worker.log",
+                        "bytes":  6952,
+                        "sha256":  "61a33b072903f310aca2effc0d9e56ff11cb1699a843d42a70ea864f1a968387"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_0_current/record.json",
+                        "bytes":  19662,
+                        "sha256":  "1e56397f338a8fffe264add41bee39149daec02d948d9c30336c070c84be7e07"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_0_current/worker.log",
+                        "bytes":  6605,
+                        "sha256":  "91c4e4a868939b517dbc869cb1a7e862977f0ee33cf5426d891a5f89f3587156"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_0_frozen/record.json",
+                        "bytes":  19711,
+                        "sha256":  "f279a8b58aa3fca40076d19d4a28192bd0fc22986617e06ffaac71ddd7dcbadc"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_0_frozen/worker.log",
+                        "bytes":  6587,
+                        "sha256":  "19ea9b007b48845cc7914c0d5aced7884eef3947b67b45ed4370c91e5270e71d"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_0_published/record.json",
+                        "bytes":  8640,
+                        "sha256":  "83934b8b1208ba4db740a39114d7f8c25537339d2bd463872f13caf6de5d5075"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_0_published/worker.log",
+                        "bytes":  6952,
+                        "sha256":  "cbdc4cb202548133da10d3b78b2a89157466ead74b72fe52ad004527a9715f90"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_1_current/record.json",
+                        "bytes":  19659,
+                        "sha256":  "3e8804ed28705175a8bc6e18a7ea65cf6aa22e8d0b01384e756030c8b8ff21b8"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_1_current/worker.log",
+                        "bytes":  6605,
+                        "sha256":  "dda5579739cd713affa77474bbe8ad0220f2ab4808fee703e73740ced075583d"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_1_frozen/record.json",
+                        "bytes":  19711,
+                        "sha256":  "7275c59d3ad646426093de1e725e7d9217de4f8cd6a29c180cf8c1156b414a3a"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_1_frozen/worker.log",
+                        "bytes":  6668,
+                        "sha256":  "26ffe7a9513d0aae24850a82b16ed3698497da6767f67ab89ef26a32005b38ea"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_1_published/record.json",
+                        "bytes":  8638,
+                        "sha256":  "869ab3106d1c24cd3f1110119fc04540124b6b0daa775e603b5bc0616c2c4016"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_1_published/worker.log",
+                        "bytes":  7114,
+                        "sha256":  "e8574eba2ad8032cd494e9fe27ba27af9991c888fa18e6b81af71e5a8d2a2ca7"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_2_current/record.json",
+                        "bytes":  19657,
+                        "sha256":  "0b2d53447b920c3969392dfdcd9a441ee5002315b4233924e1e2188fcc57881e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_2_current/worker.log",
+                        "bytes":  6605,
+                        "sha256":  "4ec9440286246e27eca6f8ac980b83855f5d0ee0cc1211e3e12ad685b39cf394"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_2_frozen/record.json",
+                        "bytes":  19706,
+                        "sha256":  "1cdb96b10f425e2687af01e8b37abd4e6316b146119e7cb8aa04eaf36443cd67"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_2_frozen/worker.log",
+                        "bytes":  6749,
+                        "sha256":  "402f7feddc39033d9d84c25af6f9c978332701eb98ac083924147a91cac8745b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_2_published/record.json",
+                        "bytes":  8634,
+                        "sha256":  "18f78b340d4c99457445942c2d2821d5edc6e20c6b6feb0ec4d9908580ca2ed0"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_2_published/worker.log",
+                        "bytes":  7033,
+                        "sha256":  "ed04ba2a7705149c29137f993e4facbb8715d687749c9f5419fbbdd5611ce4bc"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_3_current/record.json",
+                        "bytes":  19658,
+                        "sha256":  "4ddd2a99bca1a21a46615c9defee1834e991fb848105261719ff12683d14e518"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_3_current/worker.log",
+                        "bytes":  6848,
+                        "sha256":  "575ca093753bbc2aa3117330f4fe17a70693b195892b6ce6726f86fc1810a9ef"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_3_frozen/record.json",
+                        "bytes":  19708,
+                        "sha256":  "7df259f59dea3533be80bce1823bdf97bb0dcaac42a1f9f624885def4da161bd"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_3_frozen/worker.log",
+                        "bytes":  6668,
+                        "sha256":  "777b49976ca253b337075843b2961a68e6acfe82c97e2311cd8b6d60457ac1af"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_3_published/record.json",
+                        "bytes":  8641,
+                        "sha256":  "5e1cf9dff66b4211ce18d949fa348ad6326dc05ca5d4bf50a264a5405de81356"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/2_0_3_published/worker.log",
+                        "bytes":  7195,
+                        "sha256":  "4a137b100c64fbd156032fcb9b0ee8dcd45ca5d0ad81ff1e73602a4a7d4330c0"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_0_current/record.json",
+                        "bytes":  6235,
+                        "sha256":  "749cba51c4d5066aa6ed858667127da97fdc6fb1aed2814567506e7149e19151"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_0_current/worker.log",
+                        "bytes":  6767,
+                        "sha256":  "7b9ef8fa406e40d4dc8b4d871cfd8b63a3205f93b6736aa909e17dd6f76f5f65"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_0_frozen/record.json",
+                        "bytes":  6281,
+                        "sha256":  "94fc4481a426b4e19a8ec8d9ed88031fcdc4512484e789c927d432c65d29c30e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_0_frozen/worker.log",
+                        "bytes":  6911,
+                        "sha256":  "4baa258bd1a844803b9e1c1b2f3977a729b20ef0503126a695a11117e4f551e1"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_0_published/record.json",
+                        "bytes":  3976,
+                        "sha256":  "c9071a373c565efd807ddc3fa862439dc67fa787b90d81a7ab683eb956ddfa27"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_0_published/worker.log",
+                        "bytes":  7357,
+                        "sha256":  "88d4d842227befc593b2aeaac6c4120151483852e798a8b24b376247c08d50cb"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_1_current/record.json",
+                        "bytes":  6229,
+                        "sha256":  "82b5c5888358b277db0e89030ffe202da34777dab19ffd058d23b69bb21cddb7"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_1_current/worker.log",
+                        "bytes":  6605,
+                        "sha256":  "47be267e8d6ea7594a425696acea10c000de768d0333c4bc8726dc6f23deb49c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_1_frozen/record.json",
+                        "bytes":  6292,
+                        "sha256":  "d5f2af611c01ae03a4e2bc5f71c65f685abdd4c842518818039f2109845e1e2e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_1_frozen/worker.log",
+                        "bytes":  6830,
+                        "sha256":  "124e462bbd34ff5a04eaec82651a39dc31fc43dd5004fb96110f261f1dc7192f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_1_published/record.json",
+                        "bytes":  3976,
+                        "sha256":  "9e7727d8045e45035d9f9b24973dff972a0efd1ee9feff8eb01d7a25d75cdbd3"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_1_published/worker.log",
+                        "bytes":  7357,
+                        "sha256":  "6519a01a134f87036adec7f1c3e21b7646ced0f3434e237e56ee883ed9b16e07"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_2_current/record.json",
+                        "bytes":  6234,
+                        "sha256":  "78d65b67a168b6666363a39bc397f744285835cb07856336bf4767b3b49d2cf9"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_2_current/worker.log",
+                        "bytes":  6686,
+                        "sha256":  "7207f96b58b0dd62fe2765fbdfccd73eb0d03819bd847c253545801a068dc9df"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_2_frozen/record.json",
+                        "bytes":  6283,
+                        "sha256":  "cb5d94c274d75ae4478bc4ae46cf9cd2c94244d513ee86d51ec4155b07726ffc"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_2_frozen/worker.log",
+                        "bytes":  6668,
+                        "sha256":  "1e0441097602645e075d1eb542c4654248d872fe751008dc14b5989060f641f0"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_2_published/record.json",
+                        "bytes":  3973,
+                        "sha256":  "ee0d2ff5c160682e9e79df32c74bdb785f941847026d3eff592eca1b1b0ffa70"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_2_published/worker.log",
+                        "bytes":  7195,
+                        "sha256":  "80282414777823981e54e0826858bd9f6615e61e3ad56f07d0eb13e7da1959b2"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_3_current/record.json",
+                        "bytes":  6225,
+                        "sha256":  "a203727093caf28a99e0b2b3a16cacb1542e637ee6f08015a88ca6cb34624581"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_3_current/worker.log",
+                        "bytes":  6767,
+                        "sha256":  "e87725f27748f2c421870905af16b0b7510cebc49b6edb678121ae166f687e70"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_3_frozen/record.json",
+                        "bytes":  6276,
+                        "sha256":  "0c88e9f297b4bfc95351b96c68023354fa05da1fff9534725a16b73148e9324b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_3_frozen/worker.log",
+                        "bytes":  6830,
+                        "sha256":  "474488b0652dd862c7038ad4d90a4b9eab26cf9398ad449a4a4f18922983c66f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_3_published/record.json",
+                        "bytes":  3967,
+                        "sha256":  "e80f8f00804b2b8510008019cda39a1fcb44e04478d0bf0351383ff4e34e8957"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/cold_confirm/w/3_0_3_published/worker.log",
+                        "bytes":  7357,
+                        "sha256":  "13d7c60a96f523193f62b1bc97f4969270f3f339c476e1aa75e14180ffff4119"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/docstring_preservation.json",
+                        "bytes":  205,
+                        "sha256":  "698de099c3cb69a454204a1131ddaa52339ab443aad94c932fdd7606e11fe158"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/correctness.json",
+                        "bytes":  3405,
+                        "sha256":  "fdc5597c7703d1879999b877c15f4c32737b0c7f72262fad7a48f472979516b5"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/experiment_manifest.json",
+                        "bytes":  2764,
+                        "sha256":  "ed668ca9a360a4a42e9e032c93be43efb55b1ad651a9a9ba96dd22f21252744e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/summary.json",
+                        "bytes":  12059665,
+                        "sha256":  "1fd4d76cab665b63cd809b9bc7fda970b6218eeb29dc77692206856af9ebeb8f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_0_0_current/record.json",
+                        "bytes":  1111992,
+                        "sha256":  "ccabe5ab7f120db3aac4b49620909ba82828b7adc75d377ad10338aa809867de"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_0_0_current/worker.log",
+                        "bytes":  6668,
+                        "sha256":  "5926fa40215a0a5ed148330c72d0b0d223e8c3c2349a7e4a3f6c0f96787282b7"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_0_0_frozen/record.json",
+                        "bytes":  1112061,
+                        "sha256":  "5f538da910ff2b5bd9dd20286f175909f84cfdced3c82644d5da0ec39cb6bb70"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_0_0_frozen/worker.log",
+                        "bytes":  6812,
+                        "sha256":  "016213522e1ea107f860bbc7e13b53990422640ceb7df75ae47e5922978a3564"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_0_0_published/record.json",
+                        "bytes":  413387,
+                        "sha256":  "202079e28ce08fb76e357fc604a24e06ac0c6374ba81137c2fc4d14b61a087ca"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_0_0_published/worker.log",
+                        "bytes":  7177,
+                        "sha256":  "dff4d1d296940efa49496fa0dd7d3b74927b14e4c7484cedb401dde1955f2df9"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_0_1_current/record.json",
+                        "bytes":  1111989,
+                        "sha256":  "5bb148f0fe1cd838fd83d21fdaeec183f55b33334c3aa4ec59817c32533d260c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_0_1_current/worker.log",
+                        "bytes":  6668,
+                        "sha256":  "0a5088e5023eba9c832fb814e7c861fe01d360b8d431365d78bf2f8e9b572862"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_0_1_frozen/record.json",
+                        "bytes":  1112065,
+                        "sha256":  "cf280e9ddd2afa68696e8d5ae5d78a8ca96e0e713c74db23d7658d55898fcaa8"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_0_1_frozen/worker.log",
+                        "bytes":  6569,
+                        "sha256":  "2e16ad04242520bf588750e40c9abada531ed40f9d7fbb972abc5ee43a7773ad"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_0_1_published/record.json",
+                        "bytes":  413392,
+                        "sha256":  "e68e98dde81f4ecffb8f8b4d0afdceba391211ce719ae5ddc7478b5a4805735c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_0_1_published/worker.log",
+                        "bytes":  7258,
+                        "sha256":  "233416b0aed92e56fb8d2ea1387f4c65e4d4cfb0727c44af4045fa5af4526f94"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_1_0_current/record.json",
+                        "bytes":  1112859,
+                        "sha256":  "eee791f16a19eef6821bff9140ba9b7a1a71232ce6feff176f6a5dd94e775124"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_1_0_current/worker.log",
+                        "bytes":  6587,
+                        "sha256":  "ed1b194679cf86fdc3d1c425e4d672e42320dd12c17c7ec7c5ba7e18c6b75bb6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_1_0_frozen/record.json",
+                        "bytes":  1112913,
+                        "sha256":  "93f37826a0f4219762d8c9e6e9e0014958363e961219616328d1b55ac2b977f6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_1_0_frozen/worker.log",
+                        "bytes":  6488,
+                        "sha256":  "139dc571fc84c23825d4003ca5846a7c17d3db6a2a57c63f7aeae6ae88edcfe3"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_1_0_published/record.json",
+                        "bytes":  414392,
+                        "sha256":  "0a08942a408933993dc94954f5f1227bb6c867230a901ad7246dad7f55bb4267"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_1_0_published/worker.log",
+                        "bytes":  6934,
+                        "sha256":  "fb2ce3074520185360d18b7f149f047f8fe56bbec4665f5de361d721d3879102"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_1_1_current/record.json",
+                        "bytes":  1112856,
+                        "sha256":  "9dd40858f3e7cd4eacb07b2605d1ff20941b95903717608d7c771165f56cedb3"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_1_1_current/worker.log",
+                        "bytes":  6506,
+                        "sha256":  "d6da97a7ec17bd8f3180153c11eb75d880280db21665cbdcf376c2e49441bd74"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_1_1_frozen/record.json",
+                        "bytes":  1112924,
+                        "sha256":  "42d22791fd7a457db937e4b57564ed8cbc9444c32e7b7a90b4acc3a7eed6acdd"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_1_1_frozen/worker.log",
+                        "bytes":  6488,
+                        "sha256":  "0d231205f88876d21fe2d20ce5c82daab24ed5c2f3d8916e4ac1573c0a0a790b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_1_1_published/record.json",
+                        "bytes":  414396,
+                        "sha256":  "9fcb025d3380046f41e6c2838f719b88a37e18cef86faaa04b1487a9de2ad4ab"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_cold/w/0_1_1_published/worker.log",
+                        "bytes":  6934,
+                        "sha256":  "63d5d986309d7eb8f951afcfcde295ba4f6afc6b5364ef58e4253b633be1e3a3"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/correctness.json",
+                        "bytes":  8580,
+                        "sha256":  "d577e91dfac86784c9ecc0d6938eccb258299cef5d977b21e9fa900f87d4050f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/current/compressor_with_actual_status.hlo.txt",
+                        "bytes":  127654,
+                        "sha256":  "3b1525427c51f50444bbbb0ffc80171475365df8dd81cbb1ef0ac912a18c3276"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/current/compressor_with_actual_status_diagnostic_numerical_only.hlo.txt",
+                        "bytes":  55135,
+                        "sha256":  "e8afe8e0f1221bdabcff48919edc1d274192ff886cda4c619f550532c861f381"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/current/compressor_with_actual_status_diagnostic_status_only.hlo.txt",
+                        "bytes":  105255,
+                        "sha256":  "8833463257ba26e37d8407c56947c72259dbf3aa9141954f9ee6692081c12827"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/current/dynamic_HP_batch1024.hlo.txt",
+                        "bytes":  147057,
+                        "sha256":  "dc33475fbd9b3aeb4c775a4b8b6a6878ecb65c6cf1320720a408da9fe31a0568"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/current/expander_with_actual_status.hlo.txt",
+                        "bytes":  194658,
+                        "sha256":  "0125ad81c36e19bf80bb99df1d4be9e1cca5bd432b2ee07002287ab76efb0f4e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/current/expander_with_actual_status_diagnostic_numerical_only.hlo.txt",
+                        "bytes":  130543,
+                        "sha256":  "e7aa24bb10e855ff77a9e1bf1e9cf60702c1686993ba0179f9b5ad2b0b624ee2"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/current/expander_with_actual_status_diagnostic_status_only.hlo.txt",
+                        "bytes":  105265,
+                        "sha256":  "e81d4051c5ecb224c732a4d45978194da7c5214a56f6c9ecb19ecefc5ced57a1"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/current/full_HP_batch1024.hlo.txt",
+                        "bytes":  134589,
+                        "sha256":  "4e63690b42b50d9e875899fa99f1ed3b1423d75136f4d311ede2d4ca256913d4"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/current/heat_exchanger128_with_actual_status.hlo.txt",
+                        "bytes":  106183,
+                        "sha256":  "dba5a272ba7120566af7ba0a72c6e56d07d5c7f18d6223dd75dc8f2249099e34"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/current/heat_exchanger128_with_actual_status_diagnostic_numerical_only.hlo.txt",
+                        "bytes":  73255,
+                        "sha256":  "66ee45de851bafec51db0877586498b5d64ac3152323f0f5f6b7ad8740cd7416"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/current/heat_exchanger128_with_actual_status_diagnostic_status_only.hlo.txt",
+                        "bytes":  41682,
+                        "sha256":  "a087d90b3e43a7bbb58af867bb803200d0d7c3ecf98fd17b7903b617560ac035"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/experiment_manifest.json",
+                        "bytes":  2811,
+                        "sha256":  "07c8c1420b9bbf6606113a3bbb2c93eac0843d62e2e215ee9098324119f8130c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/frozen/compressor_with_actual_status.hlo.txt",
+                        "bytes":  159134,
+                        "sha256":  "660d37bcdab761f38337eec67b687d2eaa716fb286a04e812bff67abe220e1b9"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/frozen/compressor_with_actual_status_diagnostic_numerical_only.hlo.txt",
+                        "bytes":  67853,
+                        "sha256":  "cd0a36925469f1023b4018149e9b6a2c6395ce24bc7792fbd047fc99c633c03e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/frozen/compressor_with_actual_status_diagnostic_status_only.hlo.txt",
+                        "bytes":  130238,
+                        "sha256":  "acf83c7b882ead00fccecf27f8701b8040ed0a9a611c31d64b3aa25ae4262723"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/frozen/dynamic_HP_batch1024.hlo.txt",
+                        "bytes":  172220,
+                        "sha256":  "2f72ce299532239c523a464630b5ecf4fd7db0f505d82d1a41e9d053d7be00d2"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/frozen/expander_with_actual_status.hlo.txt",
+                        "bytes":  243571,
+                        "sha256":  "c89cace96334fe101d5fd2626233a498f2ebbc6e07db0f9502df1c7bb70259b9"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/frozen/expander_with_actual_status_diagnostic_numerical_only.hlo.txt",
+                        "bytes":  161393,
+                        "sha256":  "6181cb65d5cb1bb29ffaf0039e5e115cfbb759ccb6da2d2e87eec5ebaa84ca53"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/frozen/expander_with_actual_status_diagnostic_status_only.hlo.txt",
+                        "bytes":  130248,
+                        "sha256":  "715aeab37a2d04edb285718ea8c4a994769a3c8515a8be18c024dda2899b8c7c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/frozen/full_HP_batch1024.hlo.txt",
+                        "bytes":  157927,
+                        "sha256":  "29be29578e0a638ce23c44a7167846bf5b5a00959b07bea6792763a1886ad163"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/frozen/heat_exchanger128_with_actual_status.hlo.txt",
+                        "bytes":  126342,
+                        "sha256":  "bf133bc6901f67564492e1ce44a8af34682db302a86da99e6c18977d60bc80a2"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/frozen/heat_exchanger128_with_actual_status_diagnostic_numerical_only.hlo.txt",
+                        "bytes":  85248,
+                        "sha256":  "d87956038a28ee7af762fb4c0ce2a823a243dd350b6ee271bb7054b1f1d47255"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/frozen/heat_exchanger128_with_actual_status_diagnostic_status_only.hlo.txt",
+                        "bytes":  49856,
+                        "sha256":  "332d6e0045167490b3db1b0c7a1662a449c580058935d54b88678b954052e29c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/published/compressor_with_actual_status.hlo.txt",
+                        "bytes":  10418,
+                        "sha256":  "9bb9def9e697b5f0e2095fd5bccf5b576eba75c8b5e62b3dabd654081aeeac65"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/published/compressor_with_actual_status_diagnostic_numerical_only.hlo.txt",
+                        "bytes":  10906,
+                        "sha256":  "6ddd9af03b5648fca2b48990a24f71720372d5786a8f04b8fac0e9505e4ec858"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/published/dynamic_HP_batch1024.hlo.txt",
+                        "bytes":  27837,
+                        "sha256":  "f24b21b0ef825869cee0c4d588ffa100e56404d2e778d6d7656967eaba88e0b8"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/published/expander_with_actual_status.hlo.txt",
+                        "bytes":  12502,
+                        "sha256":  "13a745a33892df663df8a23c1e59b43c88aef692d7837fa877d06894f30baca8"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/published/expander_with_actual_status_diagnostic_numerical_only.hlo.txt",
+                        "bytes":  13088,
+                        "sha256":  "f744ca33d3688e5550defbdbed8f67ecad57fec4f18ed7c4351cde54a38b40e8"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/published/full_HP_batch1024.hlo.txt",
+                        "bytes":  29232,
+                        "sha256":  "b94daf283e52e30b267364ae46e66a217364c11b4cde3601d49a5bd60c2b3fff"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/published/heat_exchanger128_with_actual_status.hlo.txt",
+                        "bytes":  14661,
+                        "sha256":  "26171e65c5132d5af63e2f80b30abb6c74becf1b4981d6901e7bb4cd54da51a4"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/published/heat_exchanger128_with_actual_status_diagnostic_numerical_only.hlo.txt",
+                        "bytes":  15412,
+                        "sha256":  "f15cfcec79f3ddded676d5461eb2ec69a36c8942e09673a6e829fc9001dedf47"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/helper_paired/summary.json",
+                        "bytes":  52572,
+                        "sha256":  "7f3ef0504968d23bd1147eb1c8b7a868846fbc8b45915a21fe7b6ac304db7079"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/pg_focused.log",
+                        "bytes":  1124,
+                        "sha256":  "3a9a9d38083a2dbc629dd52ac262b863a22f275b3947d3b0bb8edb857a846773"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/pg_focused.xml",
+                        "bytes":  45493,
+                        "sha256":  "8f1b864e8399353efacaa1d10580f79c109a20e10ee8c9c5510be240c0f7b1aa"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/verification_runner.py",
+                        "bytes":  9144,
+                        "sha256":  "37ac4a3a40df140f761638d3064890f4b0f5c265a010bfcd44fc5b2f8e7c230d"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/windows_cpu_topology.json",
+                        "bytes":  12694,
+                        "sha256":  "b7e09cf66523741b628820fb7f3a38580c3de529b6bebceac8214f040f526bf7"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/windows_cpu_topology_correlation.json",
+                        "bytes":  4598,
+                        "sha256":  "13c215dab767d085d3d00a01ff3b6578588b0ae5e2559b7897d0bf7d698d92a1"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/followup_20261115/windows_power_context.json",
+                        "bytes":  867,
+                        "sha256":  "505ec198643aa378d2e5b65a8a953f3a3bccde45c20de5010441f88cf2fcd571"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/correctness.json",
+                        "bytes":  440013,
+                        "sha256":  "197ed548080ff769898789fddd711882af881cfdfb359a736c28169dcd13c355"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/experiment_manifest.json",
+                        "bytes":  12772,
+                        "sha256":  "f47df3588b08537a4abed38b6d0afdc17e9ecbebc1589139483567aa46945644"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/summary.json",
+                        "bytes":  1689409,
+                        "sha256":  "c17894d57019b798a3864a948fd1f45b88ab385a72d84ac28ad2a45969e5efdd"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_compiled_compressor.hlo.txt",
+                        "bytes":  618607,
+                        "sha256":  "1a3497f63fc8bf932de2181c489f357fe9157567f4ef6d3349848829ef30bdba"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_compiled_expander.hlo.txt",
+                        "bytes":  828234,
+                        "sha256":  "f566867d6bdbbcbfed00945c5ae5f9e56617eaf3aabdeca61b85ded601e92483"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_compiled_fullstate_and_dTdh.hlo.txt",
+                        "bytes":  254790,
+                        "sha256":  "7d9c69a3cdd3fa25c1219f12af2ca0013c118e4c992bbbf512f04026e5d518bd"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_compiled_heat_exchanger_128cells.hlo.txt",
+                        "bytes":  124055,
+                        "sha256":  "54f942c1b1e0ee92bfb2380f429f2d996e559953b88a78f87fa2dd0278289f09"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_compiled_HP_batch1.hlo.txt",
+                        "bytes":  231346,
+                        "sha256":  "46a133dcca850f71679dd7f5380a30a923aaba04fd04ef700744732ce245af53"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_compiled_HP_batch1024.hlo.txt",
+                        "bytes":  130763,
+                        "sha256":  "2cd58d8d83b9b627b6ef47eb70f1eeabf47fddb3e88e5d810afe574b0846172c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_compiled_HP_batch16.hlo.txt",
+                        "bytes":  129295,
+                        "sha256":  "7705c19ebbbd6c0f928df3e120fcc85e18682d603dca28732b161b95a444f75b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_compiled_HP_broadcast8x16.hlo.txt",
+                        "bytes":  142327,
+                        "sha256":  "8e3d38cd0bc88cece90e05f40aed110c09471c3eea90f604067672adef056b4b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_compiled_HP_scalar.hlo.txt",
+                        "bytes":  218688,
+                        "sha256":  "02b89e9c937717cf48043ce7efd43f9ec32ef4e651dabc24fd1d4d39dac653bb"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_compiled_PS_batch1024.hlo.txt",
+                        "bytes":  588376,
+                        "sha256":  "9effec38ebc7e980864b5bc2c12a21152bf031bfc33b5ab2ac9d8bbd6cf32a1f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_compiled_PS_scalar.hlo.txt",
+                        "bytes":  1191837,
+                        "sha256":  "9c2ede9c2de33a29c5c19b7394b123bbd07b4fc842d1d6fc7848fe6aa3416466"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_compiled_PT_batch1024.hlo.txt",
+                        "bytes":  591381,
+                        "sha256":  "d621c0785ea164185a892c35fe267595960656433e3dfb4d794a402209bc0687"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_compiled_PT_scalar.hlo.txt",
+                        "bytes":  1194326,
+                        "sha256":  "613eff7e78f8479183c18d76741a0705f33afc5e8285f72c0df15b1373a00c46"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_dynamic_model_HP_batch1024.hlo.txt",
+                        "bytes":  141873,
+                        "sha256":  "bcb3ce2397bd97b33c286060e9a51d476a6165e81d28b7273e59364180128250"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_dynamic_model_HP_scalar.hlo.txt",
+                        "bytes":  257500,
+                        "sha256":  "fe9d3004a292e8c939c0b4b1a1daefca2a41997a5ffdac6d3691bc37255844df"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_CO2_REFPROP_compiled_PS_scalar.hlo.txt",
+                        "bytes":  1192224,
+                        "sha256":  "8a4db00c2cc5d88019e8de0283c7420e51ab2eea12e4f3212e32dc198fb0e784"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_phase14_HP_broadcast16x8.hlo.txt",
+                        "bytes":  137301,
+                        "sha256":  "6feffefa0048796a65bba59e3c909d318dcd5e8aa6e3ec8c0a9ea50262af9b58"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_phase14_HP_broadcast8x16.hlo.txt",
+                        "bytes":  137301,
+                        "sha256":  "63bff00b8681dedce8e27b97ad9b61ce1095d3052dee236aaedee0f26d91fd0a"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_phase14_HP_broadcast_independent_axes8x16.hlo.txt",
+                        "bytes":  142287,
+                        "sha256":  "f8de8ed1dbfa5cde765309d3f1842cf5d2ea91de9328a10d38d64e63f2b4174c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_phase14_HP_flat128.hlo.txt",
+                        "bytes":  130020,
+                        "sha256":  "a07b9b62567bf579a7c9289693877825a3442b90857aa7c7bbb0dac957825c0f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/bicubic_Water_compiled_PT_scalar.hlo.txt",
+                        "bytes":  1153992,
+                        "sha256":  "525c119333d160541365e3d9bb9d3664e348a82c2c4ae3fc49878ec4fc216da4"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/binary_native_pgpg_compiled_HP.hlo.txt",
+                        "bytes":  1256384,
+                        "sha256":  "7e452666b3334ba50e7fe4d93e78be8aeb77843c79a558581b1bb340d1a89f4c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/binary_native_pgpg_compiled_PT.hlo.txt",
+                        "bytes":  856932,
+                        "sha256":  "adc79b0aec7a18351fef47dd25487a579ad8582779713b74d632e8a1fb435f1b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/callback_HEOS_co2_HP_batch16_jit.hlo.txt",
+                        "bytes":  60571,
+                        "sha256":  "c61ffa60275c4bfd93baf6d0912920e25ed9a10e76a6427ac19b1833d6c55672"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/callback_HEOS_co2_HP_scalar_full_state_and_JVP_jit.hlo.txt",
+                        "bytes":  246778,
+                        "sha256":  "d6713674ab8975ff4d398d23aed1edda66ffcb25ac7f574ea20cb3ddecea45e8"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/callback_HEOS_co2_PT_broadcast4x4_jit.hlo.txt",
+                        "bytes":  61970,
+                        "sha256":  "142727dadbffe4bbc6574b7dd32a721221bccbe2c4e4e17a840481f9d8c1e5de"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/callback_HEOS_water_PT_batch16_jit.hlo.txt",
+                        "bytes":  60571,
+                        "sha256":  "c61ffa60275c4bfd93baf6d0912920e25ed9a10e76a6427ac19b1833d6c55672"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/callback_REFPROP_co2_HP_batch16_jit.hlo.txt",
+                        "bytes":  60571,
+                        "sha256":  "c61ffa60275c4bfd93baf6d0912920e25ed9a10e76a6427ac19b1833d6c55672"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/callback_REFPROP_co2_HP_scalar_full_state_and_JVP_jit.hlo.txt",
+                        "bytes":  246778,
+                        "sha256":  "d6713674ab8975ff4d398d23aed1edda66ffcb25ac7f574ea20cb3ddecea45e8"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/callback_REFPROP_co2_PT_broadcast4x4_jit.hlo.txt",
+                        "bytes":  61970,
+                        "sha256":  "142727dadbffe4bbc6574b7dd32a721221bccbe2c4e4e17a840481f9d8c1e5de"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/callback_REFPROP_water_PT_batch16_jit.hlo.txt",
+                        "bytes":  60571,
+                        "sha256":  "c61ffa60275c4bfd93baf6d0912920e25ed9a10e76a6427ac19b1833d6c55672"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_default_compiled_HP_batch1024.hlo.txt",
+                        "bytes":  137089,
+                        "sha256":  "2c50d10245d87c010ecf8fa1a613ca24bc9d3382acc92ac232352f4e05c40452"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_common13_projection_batch1024.hlo.txt",
+                        "bytes":  96166,
+                        "sha256":  "5c9ecfc214a46b55fd0c90942da2047eca0a4212d15a376b6115dd3bccb3c22f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_compressor.hlo.txt",
+                        "bytes":  127774,
+                        "sha256":  "5d45e59201ec508ed815a3cefb92316de79c246b180aaefcf6b720720f970b62"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_expander.hlo.txt",
+                        "bytes":  194818,
+                        "sha256":  "f810eae11c0a53082d2d48669f52d1f1b991f97feb82a985780b28b43865f943"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_fullstate_and_dTdh.hlo.txt",
+                        "bytes":  281893,
+                        "sha256":  "64bcb21d028e1509af323296785e0076ab0832e0395906320cecf22c833c47ec"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_heat_exchanger_128cells.hlo.txt",
+                        "bytes":  106631,
+                        "sha256":  "b675107b1c32c6c2a7723a1bfbc7fa9a8c012a611299bce95e56a091dd41362a"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_HP_batch1024.hlo.txt",
+                        "bytes":  137088,
+                        "sha256":  "8ecc547fb4d3bf7c2dcdd4efa98af2a6fa79c99e32008ca75ff128de25925a75"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_HP_batch1024_scalar_pressure.hlo.txt",
+                        "bytes":  140310,
+                        "sha256":  "e396a11f4270634831f8d04aa9649188dbe90784fea2399369002926db772734"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_HP_batch16.hlo.txt",
+                        "bytes":  311474,
+                        "sha256":  "3e0c4e4558d3de07c3d7d0211602692525bbdd8a2b4c01e19510b5d7b002567e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_HP_broadcast8x16.hlo.txt",
+                        "bytes":  161710,
+                        "sha256":  "ff99ea2159b7a8e3d7889c3ac6869249605dc6b5c2bd705365f9cb1ff5090978"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_HP_scalar.hlo.txt",
+                        "bytes":  246900,
+                        "sha256":  "b2df64386b47eb7c8a7dee6f4c8d20a633d6b2d6303519c9da78bc11dfb98450"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_PS_batch1024.hlo.txt",
+                        "bytes":  139699,
+                        "sha256":  "e6a69fd3b9e17b24f180788894863652c17d6a6552b9cae8eafe288cc1dd299d"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_PS_scalar.hlo.txt",
+                        "bytes":  268475,
+                        "sha256":  "f0b32c285704cb42c5190c79c1822d4a534dd5fccc576d902a976db01370a88a"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_PT_batch1024.hlo.txt",
+                        "bytes":  135805,
+                        "sha256":  "81526c66981e5b375e6a83bfafd9ae7b804401f9c1d0b3e6a8eb8551a186a8ea"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_PT_broadcast8x16.hlo.txt",
+                        "bytes":  158434,
+                        "sha256":  "7252ba0544d0557c1594b7141cf55d9cdf9d0d50cb272cbbbb3e1458a60d153f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_compiled_PT_scalar.hlo.txt",
+                        "bytes":  223306,
+                        "sha256":  "618439f0d9da1549146dbb37e44e883f0b80f0db70f820e4a990f03f3ca429b2"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_dynamic_model_HP_batch1024.hlo.txt",
+                        "bytes":  150593,
+                        "sha256":  "306a52017c3c7b5bdf07861cde6fbb9c9de5a2f89c7e28e8610a95b21ebb4a43"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_matched_dynamic_model_HP_scalar.hlo.txt",
+                        "bytes":  272229,
+                        "sha256":  "262be20c9df1e3d269d1575709fcf9458d6758278a1e5f9a80547234ce4edd53"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_phase14_HP_broadcast16x8.hlo.txt",
+                        "bytes":  149963,
+                        "sha256":  "f80e4345c236e789e35bcd65958c2dd10d6acd92f88f47d11c061918f7a4cde7"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_phase14_HP_broadcast8x16.hlo.txt",
+                        "bytes":  149963,
+                        "sha256":  "d9c698b049c2aa8ec9dcf56336580ef7e85bb9ecc177e3ecc91140c42a32995c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_phase14_HP_broadcast_independent_axes8x16.hlo.txt",
+                        "bytes":  161661,
+                        "sha256":  "9b4145435cb842598abcaf25d8058939742a0713d862a65faf32db21a7842d02"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/pg_phase14_HP_flat128.hlo.txt",
+                        "bytes":  135565,
+                        "sha256":  "631348d7815c7535af6ba72d43bc327135ad1b56de9e8524b4cf92ac68acea50"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/record.json",
+                        "bytes":  46242135,
+                        "sha256":  "e2982d36c5b4a427a62ab34ade2cd5ba1986c983d1d8e1e73eacadd26e424b3e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current1/worker.log",
+                        "bytes":  12075,
+                        "sha256":  "45641aa8855081b3d1bee557673e709314371c961b22bc3f65b04897f9be27f7"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current2/record.json",
+                        "bytes":  46242145,
+                        "sha256":  "1ddba3efef74cd9ba2cb3881bd31a4bf1426f65b3fbc5f32f8cf011bc830f671"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current2/worker.log",
+                        "bytes":  11994,
+                        "sha256":  "c73eda903a59fbc5cad85eb73847dba53ba70b4c7dcc34ebb2d7da2651253cae"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current3/record.json",
+                        "bytes":  46242092,
+                        "sha256":  "a940cc4043357212f4a2b977701084202ce2281a5b5c85abeae0c02eb3730231"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current3/worker.log",
+                        "bytes":  12075,
+                        "sha256":  "8fa22c4bb937048c524710b201180d184912d99df1ad46a4220953cc14f6a76d"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current4/record.json",
+                        "bytes":  46242356,
+                        "sha256":  "a63ae0150fc7dfd1e6a015fe2f8739eca4bc1392e868d4cab8391fb6f0374ccf"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/current4/worker.log",
+                        "bytes":  12075,
+                        "sha256":  "f785dc391540de41e1aa2dc9fff35f7fe1b7e126915537dba09047c598abb4e6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_compiled_compressor.hlo.txt",
+                        "bytes":  726541,
+                        "sha256":  "2d53634c902bd5f74539d84eac6e0a67457e932d5e80f64a683bf9196e898286"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_compiled_expander.hlo.txt",
+                        "bytes":  972140,
+                        "sha256":  "7fd7713e32c60aca5f55d6f6be01ec9703beaa1911f47924a972051f984fce21"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_compiled_fullstate_and_dTdh.hlo.txt",
+                        "bytes":  299562,
+                        "sha256":  "aa963044beb536b0237029877a226f8ddea41f87bd990cf112370dfff1aa5140"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_compiled_heat_exchanger_128cells.hlo.txt",
+                        "bytes":  156988,
+                        "sha256":  "b63271b586a707b661d2b37bf9d9a9cfc5dc8a3b7079b02b8a4512808180186a"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_compiled_HP_batch1.hlo.txt",
+                        "bytes":  278467,
+                        "sha256":  "1f043f2a4c89e4b8742837a0eed81df81f2f067765861f02d26a012ce4ff5f99"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_compiled_HP_batch1024.hlo.txt",
+                        "bytes":  163227,
+                        "sha256":  "400491c8d3f3997ec2615c3eced4d1a46b4c2e1ac0560840119e46da13805917"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_compiled_HP_batch16.hlo.txt",
+                        "bytes":  161679,
+                        "sha256":  "d2f7ed7cfb9f9c44b02102effd6fd29a58a7e4c8c590e47873899a1d0191ed98"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_compiled_HP_broadcast8x16.hlo.txt",
+                        "bytes":  714800,
+                        "sha256":  "a12309392754f5a810c9e1817dccbd21a7854a656e4176e3a5217a7ddcb36d38"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_compiled_HP_scalar.hlo.txt",
+                        "bytes":  260132,
+                        "sha256":  "e0fc2c77d3c95f253e39c7292a27a535c9e93f6cfb27c91f67f9f0ca72cf117f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_compiled_PS_batch1024.hlo.txt",
+                        "bytes":  679672,
+                        "sha256":  "d8c5ae25a02b274807a66ba0ae6f05cf02ffa4df5ca900dee15a6ccba50ce63d"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_compiled_PS_scalar.hlo.txt",
+                        "bytes":  1400461,
+                        "sha256":  "19207dc919762b184b6ff71ccbbad4c1750b89b6a2ddff1be9c386c1dbc6a7e8"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_compiled_PT_batch1024.hlo.txt",
+                        "bytes":  683197,
+                        "sha256":  "c3dc8ce2a1c0c7ad464b770503ffe49b366a04474c0838e416965778d6176793"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_compiled_PT_scalar.hlo.txt",
+                        "bytes":  1403418,
+                        "sha256":  "db9a9e53b2bfdb93cd1c5ad1bcdd709f34e310168cb48905d99e3bbf6073836c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_dynamic_model_HP_batch1024.hlo.txt",
+                        "bytes":  175325,
+                        "sha256":  "09d5b3e4c713279adc5d125819b7e83b8791e6530c44ca089708fd9f3c55b8d3"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_dynamic_model_HP_scalar.hlo.txt",
+                        "bytes":  303988,
+                        "sha256":  "fc146abadc6c57de9cfcb0b2b49e929ea1b76af01cb9280fd929230f4a51ea5e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_CO2_REFPROP_compiled_PS_scalar.hlo.txt",
+                        "bytes":  1400900,
+                        "sha256":  "d47fac472355c718cba80aa854c772426168c69b3081bbc5b41b2d47e7b58788"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_phase14_HP_broadcast16x8.hlo.txt",
+                        "bytes":  681520,
+                        "sha256":  "ddc9c07250f1b74d48d56a5a4d36b18ed036cfb1a1cecb136764eb21027c661d"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_phase14_HP_broadcast8x16.hlo.txt",
+                        "bytes":  681520,
+                        "sha256":  "97d2e429be13d33a9779ef914509f539d6f59cbbbeb50fca49ec0e2e23b54cc4"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_phase14_HP_broadcast_independent_axes8x16.hlo.txt",
+                        "bytes":  714545,
+                        "sha256":  "614ec7bd35378ab700d410a9fa4c305d753db084de950fa9eb474f08e8cffb99"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_phase14_HP_flat128.hlo.txt",
+                        "bytes":  162444,
+                        "sha256":  "736dbdac3c788e2ba7d7abefca067790248ea0a1fc70aa841989db3a519f0d22"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/bicubic_Water_compiled_PT_scalar.hlo.txt",
+                        "bytes":  1355858,
+                        "sha256":  "0589a3338b2e08f090efd4e5dd59355bb6ae1dcd7818ff0f7146c8a97bda701c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/binary_native_pgpg_compiled_HP.hlo.txt",
+                        "bytes":  1502326,
+                        "sha256":  "cd476a0560358475cb20c58d1f970e6cd81b7952064c1614a6b5f6f469bf732e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/binary_native_pgpg_compiled_PT.hlo.txt",
+                        "bytes":  1020306,
+                        "sha256":  "61ae4e69c0bf30e6de2bedf7499351710ef173043f47feaa617e1abead684baf"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/callback_HEOS_co2_HP_batch16_jit.hlo.txt",
+                        "bytes":  69775,
+                        "sha256":  "a7081f8e432557615218647611656f3945acb967f504858f51b0eaf70f9139f6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/callback_HEOS_co2_HP_scalar_full_state_and_JVP_jit.hlo.txt",
+                        "bytes":  289210,
+                        "sha256":  "b15b42042ccb741c167559cf5a223faed64f4976c015d1a2da562972d43dc55b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/callback_HEOS_co2_PT_broadcast4x4_jit.hlo.txt",
+                        "bytes":  71382,
+                        "sha256":  "70117cd7723a9fd8effc208b0e6c90fb357157c25d0613dbbfb60c10f0be9bf0"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/callback_HEOS_water_PT_batch16_jit.hlo.txt",
+                        "bytes":  69775,
+                        "sha256":  "a7081f8e432557615218647611656f3945acb967f504858f51b0eaf70f9139f6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/callback_REFPROP_co2_HP_batch16_jit.hlo.txt",
+                        "bytes":  69775,
+                        "sha256":  "a7081f8e432557615218647611656f3945acb967f504858f51b0eaf70f9139f6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/callback_REFPROP_co2_HP_scalar_full_state_and_JVP_jit.hlo.txt",
+                        "bytes":  289210,
+                        "sha256":  "b15b42042ccb741c167559cf5a223faed64f4976c015d1a2da562972d43dc55b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/callback_REFPROP_co2_PT_broadcast4x4_jit.hlo.txt",
+                        "bytes":  71382,
+                        "sha256":  "70117cd7723a9fd8effc208b0e6c90fb357157c25d0613dbbfb60c10f0be9bf0"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/callback_REFPROP_water_PT_batch16_jit.hlo.txt",
+                        "bytes":  69775,
+                        "sha256":  "a7081f8e432557615218647611656f3945acb967f504858f51b0eaf70f9139f6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_default_compiled_HP_batch1024.hlo.txt",
+                        "bytes":  174965,
+                        "sha256":  "f691476714b1997b5db962395cfb3cca58dc3b069b5ccfbbafed88447bc2537b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_common13_projection_batch1024.hlo.txt",
+                        "bytes":  123107,
+                        "sha256":  "8718fe00b154933433a301a92d3e1c226ed4cf55033651347b52cf3839b40f47"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_compressor.hlo.txt",
+                        "bytes":  152028,
+                        "sha256":  "20f385e63689f3d421bb00dcf1feb14e915d51d6321db80e9c4c7d71606110e4"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_expander.hlo.txt",
+                        "bytes":  232410,
+                        "sha256":  "87825dc129eca108fb776bf20c72b43c693ecc2fa9af3770445fd3d51e3dead0"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_fullstate_and_dTdh.hlo.txt",
+                        "bytes":  333752,
+                        "sha256":  "66745c2f93359c568bfbf001b962865207a5fb829a55368a863f5f3dec9a5cb4"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_heat_exchanger_128cells.hlo.txt",
+                        "bytes":  131233,
+                        "sha256":  "d460b0a084725ac96a903237776b4e99ca1b806b4160d228a5572c2dd185698d"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_HP_batch1024.hlo.txt",
+                        "bytes":  174964,
+                        "sha256":  "70a6bb881b5e5b2b89a558723482307b89fd2ef89f3e9bfe58b6df3da6483bf5"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_HP_batch1024_scalar_pressure.hlo.txt",
+                        "bytes":  179085,
+                        "sha256":  "9b37dc74d03d9eb30b87ae2a6328b32a9f16ff421b5a89c1e0a15fd4b012afa9"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_HP_batch16.hlo.txt",
+                        "bytes":  369948,
+                        "sha256":  "630be8060b11fc679d341936757ad7813969fd08c336bf562c2fb9dcce142800"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_HP_broadcast8x16.hlo.txt",
+                        "bytes":  204002,
+                        "sha256":  "4dcd51f73d613756774c3b8b766bff101ddd2971198cd1d8f652de713d59065e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_HP_scalar.hlo.txt",
+                        "bytes":  295688,
+                        "sha256":  "18e94f6cba38613d3495ec0cdb77db56c9fa42074fc9852aa9d02ceaa434db02"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_PS_batch1024.hlo.txt",
+                        "bytes":  178269,
+                        "sha256":  "c954b7b6be4c8cceb1ded4df17528d93cb4fb123687cdb9c7a86f4a997f64480"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_PS_scalar.hlo.txt",
+                        "bytes":  321672,
+                        "sha256":  "408e85d6777d58b5d068aa5012af73bb414654bbc22cb16a5d75a99efb1c9c24"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_PT_batch1024.hlo.txt",
+                        "bytes":  173038,
+                        "sha256":  "22e36e55127d97e731b44fa1303cb9b3978db17bbbe53cbee93fb08fdb8cab51"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_PT_broadcast8x16.hlo.txt",
+                        "bytes":  199543,
+                        "sha256":  "576882d1f078cc90ea414f919c33a2483016df9e4293d6d99378f68b9f11cfc8"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_compiled_PT_scalar.hlo.txt",
+                        "bytes":  267691,
+                        "sha256":  "67f638a105765eaf4d4876dd0348ea629702ee355a088c912b77a5be23e4e838"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_dynamic_model_HP_batch1024.hlo.txt",
+                        "bytes":  190360,
+                        "sha256":  "bee5d0f7a0b567c575c8440cb654c6f0c6d52a027370521ecc65af4fe1671fda"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_matched_dynamic_model_HP_scalar.hlo.txt",
+                        "bytes":  322819,
+                        "sha256":  "68d4deb29ce88d5a6db843138277e4c4a9a657228c81b5dc8e9b844ee60e7581"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_phase14_HP_broadcast16x8.hlo.txt",
+                        "bytes":  189946,
+                        "sha256":  "c9bc597097b4611779bb00864caee780a2d8238303d28813c7873fce5f92e911"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_phase14_HP_broadcast8x16.hlo.txt",
+                        "bytes":  189946,
+                        "sha256":  "6691c2d01bc404444c2d49769f2afc942b0913460d169847424246cb098f961b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_phase14_HP_broadcast_independent_axes8x16.hlo.txt",
+                        "bytes":  203953,
+                        "sha256":  "c46b52faa7288cf3e43d9deff55c055dba2ada918519e9cb20413677eb0e0a9b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/pg_phase14_HP_flat128.hlo.txt",
+                        "bytes":  173136,
+                        "sha256":  "3a6408dcad109b072e824636626a7a749eac89b94d26c35157582e46d2a71624"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/record.json",
+                        "bytes":  46242245,
+                        "sha256":  "e6812cb434d1dbba3e798f595dc86775bed3e45ad27280de38cbe6e2c6916f39"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen1/worker.log",
+                        "bytes":  11975,
+                        "sha256":  "d190587ec6857e545c5475c3f8a888138df03f86dd5723235cef95de5f185d8f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen2/record.json",
+                        "bytes":  46242199,
+                        "sha256":  "15ff0927da211bdc4e8490d35c4630a6eed2a64d066cc5064b1a3d30c105c8d4"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen2/worker.log",
+                        "bytes":  11975,
+                        "sha256":  "f296f1741129bff7e13281964d94487446705fc49ca1313340dfc8a3444f3031"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen3/record.json",
+                        "bytes":  46242166,
+                        "sha256":  "4c57489a247665106c18a70701dd98a6291d62d0b9b92d004dc68c85232a4b9f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen3/worker.log",
+                        "bytes":  11975,
+                        "sha256":  "09e1aa947c6fff79d951d3832477f413df28cd0ef45a2574b8b0faa7a7a7717b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen4/record.json",
+                        "bytes":  46242315,
+                        "sha256":  "07e1c884f5b8472ae5c1b15ebb599400cc7e23272e79fffc2d9a82f118e535eb"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/frozen4/worker.log",
+                        "bytes":  11894,
+                        "sha256":  "59c509da5296ff94bcf944022c0920b8acdbf21d8bba1c0c66546fad71a0c994"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_compiled_compressor.hlo.txt",
+                        "bytes":  271459,
+                        "sha256":  "37cb3c2c43e94af7831d3ee7553bc80024cfc22683b395f5e8e90d0344d7e788"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_compiled_expander.hlo.txt",
+                        "bytes":  272981,
+                        "sha256":  "b46079e64155070f927e0453bb5bc1efe6ccadef389dec7b5071930cabf0c730"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_compiled_fullstate_and_dTdh.hlo.txt",
+                        "bytes":  200188,
+                        "sha256":  "9c8facfdb5bf524ebc4a61668d3514c2777aee3341e370469a85426f624ed92e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_compiled_heat_exchanger_128cells.hlo.txt",
+                        "bytes":  62757,
+                        "sha256":  "01644c711b05c536628b740ad3034a89877a5cf223e895a6028d59b115e0d15c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_compiled_HP_batch1.hlo.txt",
+                        "bytes":  169418,
+                        "sha256":  "b59e8f733a306c34dcf36e21ddda08c27b90e57e6e202f66d2d1af924f2104b3"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_compiled_HP_batch1024.hlo.txt",
+                        "bytes":  65464,
+                        "sha256":  "182d76df8f351394d37887dabacbbd75016491e5eac350a7774e935824e7fc9b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_compiled_HP_batch16.hlo.txt",
+                        "bytes":  64730,
+                        "sha256":  "c5b423362900d432bbfa13fe88802e2e40dc5af47652264961a4b4c53db7c242"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_compiled_HP_broadcast8x16.hlo.txt",
+                        "bytes":  77499,
+                        "sha256":  "aae2a5fa277fa58f853e40bcfe1398858dc40e0b64c50ec7178f25a1c616b1eb"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_compiled_HP_scalar.hlo.txt",
+                        "bytes":  179500,
+                        "sha256":  "d4d4b0427313d41a3fbb4dce96cf898b54af2819ad98e8915c69de50e19b4c68"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_compiled_PS_batch1024.hlo.txt",
+                        "bytes":  291510,
+                        "sha256":  "9b0e906eeb22b89532958a0eb0dd4a74db215cea4e5a70e0326ce2cd7289ca83"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_compiled_PS_scalar.hlo.txt",
+                        "bytes":  414213,
+                        "sha256":  "6a611c3a06d36eacff439a07e485631cdd156276e4034ea883e653d2fdc782b4"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_compiled_PT_batch1024.hlo.txt",
+                        "bytes":  180961,
+                        "sha256":  "bf4dff490018e46f1e30b6cff679ee241c5a1ea6849ca1f584394b364b7435db"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_compiled_PT_scalar.hlo.txt",
+                        "bytes":  286431,
+                        "sha256":  "ce40c7c2dc1fd23e40dbe996e7d378d67a4010b06adae00ddb7e5686247568a4"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_dynamic_model_HP_batch1024.hlo.txt",
+                        "bytes":  97048,
+                        "sha256":  "fcd1d03ceff2c498ef73165c097f687bc2c8f46c641431783dca324c19501761"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_dynamic_model_HP_scalar.hlo.txt",
+                        "bytes":  301690,
+                        "sha256":  "141f4aed1aa9e6c993d16d4e96f28b690942817c757961058ddccf6fc286ce6e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_CO2_REFPROP_compiled_PS_scalar.hlo.txt",
+                        "bytes":  412083,
+                        "sha256":  "35b69d1b675aee8524f84b5fcf2286a96e83df2ed816997d674f9ce886d25306"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_phase14_HP_broadcast16x8.hlo.txt",
+                        "bytes":  73943,
+                        "sha256":  "7a8565c832de511eed560d911bcdae365fa8357ae598537faa17fd0007abb93e"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_phase14_HP_broadcast8x16.hlo.txt",
+                        "bytes":  73943,
+                        "sha256":  "47852dbf80a923702dfddc35ba944424c0b6445d6a7e43e957466f9e2f91ac3d"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_phase14_HP_broadcast_independent_axes8x16.hlo.txt",
+                        "bytes":  77468,
+                        "sha256":  "24f3ca04e70ff61b4f68a48f95f2a40ce0c775f3797209c0ae495e18610cb18c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_phase14_HP_flat128.hlo.txt",
+                        "bytes":  65088,
+                        "sha256":  "f6f13d60fa759cf8f4f1929f6c0122f2a755d5461756c253dd45b35466234db9"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/bicubic_Water_compiled_PT_scalar.hlo.txt",
+                        "bytes":  276720,
+                        "sha256":  "e2a32eecfc560d8fc19fbe9ab1bbdaa44dbc5fa43cd4f0490a4e331cf661de91"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/callback_HEOS_co2_HP_batch16_jit.hlo.txt",
+                        "bytes":  18031,
+                        "sha256":  "9e984a976a8691d58695cdc3d561c3f4a5490d3ff22f2e7655a42deb24aaa5cb"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/callback_HEOS_co2_HP_scalar_full_state_and_JVP_jit.hlo.txt",
+                        "bytes":  231431,
+                        "sha256":  "462035e95b2aa0a5b22f9214f9057889e50cc748bc950fb159cc3b7482d89f7b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/callback_HEOS_co2_PT_broadcast4x4_jit.hlo.txt",
+                        "bytes":  18545,
+                        "sha256":  "0ab02485ba03bca77bc54f577cfd09bba35927acbd3517584fbf119e583784d6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/callback_HEOS_water_PT_batch16_jit.hlo.txt",
+                        "bytes":  18031,
+                        "sha256":  "9e984a976a8691d58695cdc3d561c3f4a5490d3ff22f2e7655a42deb24aaa5cb"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/callback_REFPROP_co2_HP_batch16_jit.hlo.txt",
+                        "bytes":  18031,
+                        "sha256":  "9e984a976a8691d58695cdc3d561c3f4a5490d3ff22f2e7655a42deb24aaa5cb"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/callback_REFPROP_co2_HP_scalar_full_state_and_JVP_jit.hlo.txt",
+                        "bytes":  231431,
+                        "sha256":  "462035e95b2aa0a5b22f9214f9057889e50cc748bc950fb159cc3b7482d89f7b"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/callback_REFPROP_co2_PT_broadcast4x4_jit.hlo.txt",
+                        "bytes":  18545,
+                        "sha256":  "0ab02485ba03bca77bc54f577cfd09bba35927acbd3517584fbf119e583784d6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/callback_REFPROP_water_PT_batch16_jit.hlo.txt",
+                        "bytes":  18031,
+                        "sha256":  "9e984a976a8691d58695cdc3d561c3f4a5490d3ff22f2e7655a42deb24aaa5cb"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_default_compiled_HP_batch1024.hlo.txt",
+                        "bytes":  29721,
+                        "sha256":  "10db58fb18a5e886e976e0fc34cc4915106c11cf9c2ceba196a4223bed88cfbd"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_common13_projection_batch1024.hlo.txt",
+                        "bytes":  27682,
+                        "sha256":  "2da2624299f03a2600a7a09b08ae2f862dda808b0c74d0ecdd3e9059cc1cf832"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_compressor.hlo.txt",
+                        "bytes":  10482,
+                        "sha256":  "f753ff9e1f4f840a1068147cb469617413a5d22ce2da91b4747086df430999f6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_expander.hlo.txt",
+                        "bytes":  12574,
+                        "sha256":  "572bef9aa2317e3d9f8236185c5ab5f41893aedb7ab701a577494274df951873"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_fullstate_and_dTdh.hlo.txt",
+                        "bytes":  26078,
+                        "sha256":  "10a7a1d48fed25f8f95f8d539271a0d209fcf96d321676c19f1fbe4e5c0ab105"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_heat_exchanger_128cells.hlo.txt",
+                        "bytes":  14955,
+                        "sha256":  "095cc8ebfaea6229a1130b9ce1caba4974a664fd245e1ebb11021c06fd51bb0f"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_HP_batch1024.hlo.txt",
+                        "bytes":  29721,
+                        "sha256":  "10db58fb18a5e886e976e0fc34cc4915106c11cf9c2ceba196a4223bed88cfbd"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_HP_batch1024_scalar_pressure.hlo.txt",
+                        "bytes":  30298,
+                        "sha256":  "c339bce93bc1ec64df6e11ddd56c2e2e25c5f5db4a986f9fe4ecd5e4f620d1e5"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_HP_batch16.hlo.txt",
+                        "bytes":  29415,
+                        "sha256":  "fb51d5072b4391f3a3ef69c083438c1f19d6d2be331b13c02d4820eefc3abdc5"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_HP_broadcast8x16.hlo.txt",
+                        "bytes":  32871,
+                        "sha256":  "72129fc986b5c477e632dcf2c0fbab7d7fb33b844a986a399cccbc9e9b43909d"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_HP_scalar.hlo.txt",
+                        "bytes":  20105,
+                        "sha256":  "579b0e4145f776b392a4aa2e838a4e4766f96313b6dfeefc85178bdf083e4e78"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_PS_batch1024.hlo.txt",
+                        "bytes":  27221,
+                        "sha256":  "d39eda6006ea3fdb6582a8bc136f667aeae172a66874127828ad641ec759eada"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_PS_scalar.hlo.txt",
+                        "bytes":  20541,
+                        "sha256":  "947af5d3b58a9efcba17d0ee862ffc1f51bad86c0f082b28eb38e79f437c05b5"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_PT_batch1024.hlo.txt",
+                        "bytes":  26681,
+                        "sha256":  "9ad39751871208ee7eb6d4bb54b0acbfe705e064fd8fead7403c762d0a3a3530"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_PT_broadcast8x16.hlo.txt",
+                        "bytes":  30215,
+                        "sha256":  "7133686cd9ef011c98356d4ee1f67a91058f78c010409702d6ff0aef13961843"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_compiled_PT_scalar.hlo.txt",
+                        "bytes":  19365,
+                        "sha256":  "80200662778be272398f569a1f6b392f30866bff475c305dff22f690a932e18c"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_dynamic_model_HP_batch1024.hlo.txt",
+                        "bytes":  28373,
+                        "sha256":  "668389ccee344e7a17801106218d6c197806c1a7cba8c54e7c7cc98bcd360083"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_matched_dynamic_model_HP_scalar.hlo.txt",
+                        "bytes":  21761,
+                        "sha256":  "af3e8444c955e40669ffe540601e17322429adc762ce9e45d7f00a68e9af13bc"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_phase14_HP_broadcast16x8.hlo.txt",
+                        "bytes":  29952,
+                        "sha256":  "86efa1ad9639982747da2abbab79dde129b7e14eeaee3e02a3dc4b883be83355"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_phase14_HP_broadcast8x16.hlo.txt",
+                        "bytes":  29952,
+                        "sha256":  "d91fe4f167e55a3e6b933e5e069b1d18e258691658bac162b23a822e2fc4c1d6"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_phase14_HP_broadcast_independent_axes8x16.hlo.txt",
+                        "bytes":  32857,
+                        "sha256":  "9722d0705588f3b7f1947319d85a4192798c50d2813d8743ccb06d8a01dd4c29"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/pg_phase14_HP_flat128.hlo.txt",
+                        "bytes":  29559,
+                        "sha256":  "2f1767d3b30628e93ff98b5717f4b8ae23f47461d6f0cb02aec2b16b3f6d5b64"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/record.json",
+                        "bytes":  15164159,
+                        "sha256":  "e7a25428be7a68c08293ac62b0006eedecf3975c4d81967c15b344a5cfc3b9a5"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published1/worker.log",
+                        "bytes":  12328,
+                        "sha256":  "c2f88724e02b5c4357d5bb3ee618fd7061e9a032ac00d7dd22f90381c0403618"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published2/record.json",
+                        "bytes":  15163914,
+                        "sha256":  "a6a272688ac8ae2243215b30929b6ab51bbc2be4adbcf858dbc5b7f77a7e4aa9"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published2/worker.log",
+                        "bytes":  12247,
+                        "sha256":  "d0e06eb4eec8d789059f0ea7f4ab69c82f44dcaa2807573667a94f8fe7786583"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published3/record.json",
+                        "bytes":  15164050,
+                        "sha256":  "c220e75fc67baf4d8ba5fdb827be6b10457c6ccbf8b20383c023b86b015dc59a"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published3/worker.log",
+                        "bytes":  12328,
+                        "sha256":  "988119b18e05afb1d22fae883b9b8d6ceb8407f1744d48cf34085d61a7cad734"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published4/record.json",
+                        "bytes":  15164308,
+                        "sha256":  "b28b1318a786e2a25f172539f2e81c8b1d50959ea5775c0bca1e6b5c89638aff"
+                    },
+                    {
+                        "path":  "development/performance/results/phase14/pc_full/workers/published4/worker.log",
+                        "bytes":  12247,
+                        "sha256":  "dab92a922230405a3642c9d7f6e7c405520b6540e78fb5fcb1fc71ba87f6515f"
+                    },
+                    {
+                        "path":  "development/test_audit/results/phase14/followup_20261115/full_20261115_011703_783191/junit.xml",
+                        "bytes":  440974,
+                        "sha256":  "569a65b00f6b2dd09d02c6decd34194d0bf36a2591e386f8321509a0538d5a24"
+                    },
+                    {
+                        "path":  "development/test_audit/results/phase14/followup_20261115/full_20261115_011703_783191/pytest.log",
+                        "bytes":  19388,
+                        "sha256":  "136b2d278a3ac1833891ec12eb2dafef8a6f2aaaa7e3f7632d4c05a105a57d2b"
+                    },
+                    {
+                        "path":  "development/test_audit/results/phase14/followup_20261115/full_20261115_011703_783191/started.json",
+                        "bytes":  1123,
+                        "sha256":  "99987b228147d8b897c384589516884f23e039c6c06e1a1f0b323b9453537e06"
+                    },
+                    {
+                        "path":  "development/test_audit/results/phase14/followup_20261115/full_20261115_011703_783191/summary.json",
+                        "bytes":  14096,
+                        "sha256":  "27ae340826eee9825e13996e377a4a07ba5e747d17abb6868ac8d127430cd6ce"
+                    }
+                ],
+    "archive_path_from_repo":  "development/performance/results/phase14/followup_20261115/followup_evidence.zip",
+    "storage_policy":  "Bulk raw numerical vectors and compiler output stay in ignored results; the portable timing/verification records and this integrity manifest are maintained."
+}

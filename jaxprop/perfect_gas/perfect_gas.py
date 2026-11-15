@@ -255,12 +255,13 @@ def speed_of_sound_from_T(T, constants):
     return jnp.where(jnp.isfinite(value), value, jnp.nan)
 
 
-def entropy_from_PT(p, T, constants):
+def entropy_from_PT(p, T, constants, *, cp=None):
     R = constants.R
     T_ref = constants.T_ref
     P_ref = constants.P_ref
     s_ref = constants.s_ref
-    cp, _ = specific_heat(constants)
+    if cp is None:
+        cp, _ = specific_heat(constants)
     return (
         s_ref + cp * (jnp.log(T) - jnp.log(T_ref)) - R * (jnp.log(p) - jnp.log(P_ref))
     )
@@ -300,13 +301,20 @@ def _density_from_PT_jvp(primals, tangents):
     return rho, tangent
 
 
-def calculate_properties_PT(p, T, constants):
+def calculate_properties_PT(p, T, constants, *, cp=None):
+    """Assemble a complete state, optionally sharing a resolved heat capacity.
+
+    Native request policies can supply the same dynamic scalar used to resolve
+    and validate coordinates. Ordinary raw callers retain the original model
+    calculation; no derived parameter is stored or frozen on the fluid.
+    """
     R = constants.R
     rho = _density_from_PT(p, T, R)
-    cp, _ = specific_heat(constants)
+    if cp is None:
+        cp, _ = specific_heat(constants)
     h = constants.h_ref + cp * (T - constants.T_ref)
-    s = entropy_from_PT(p, T, constants)
-    return assemble_properties(T, p, rho, h, s, constants)
+    s = entropy_from_PT(p, T, constants, cp=cp)
+    return assemble_properties(T, p, rho, h, s, constants, cp=cp)
 
 
 def calculate_properties_hs(h, s, constants):
@@ -354,9 +362,11 @@ def calculate_properties_rhop(rho, p, constants):
     return assemble_properties(T, p, rho, h, s, constants)
 
 
-def assemble_properties(T, p, rho, h, s, constants):
+def assemble_properties(T, p, rho, h, s, constants, *, cp=None):
     R = constants.R
     gamma = constants.gamma
+    if cp is None:
+        cp = gamma * R / (gamma - 1)
     # Broadcast the CONSTANT-valued props (gamma, cp, cv, Z, Grüneisen) to the shape
     # of the input-dependent props so EVERY FluidState field shares one shape.  Real
     # backends (FluidBicubic) return all fields at the input shape; consumers rely on
@@ -374,7 +384,7 @@ def assemble_properties(T, p, rho, h, s, constants):
         "conductivity": conductivity_from_T(T, constants),
         "speed_of_sound": speed_of_sound_from_T(T, constants),
         "heat_capacity_ratio": gamma * ones,
-        "isobaric_heat_capacity": (gamma * R / (gamma - 1)) * ones,
+        "isobaric_heat_capacity": cp * ones,
         "isochoric_heat_capacity": (R / (gamma - 1)) * ones,
         "compressibility_factor": ones,
         "gruneisen": (gamma - 1) * ones,

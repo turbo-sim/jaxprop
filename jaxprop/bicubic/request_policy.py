@@ -18,7 +18,7 @@ from ..errors import (
 )
 from ..fluid_api import PAIR_NAMES, StatusCode, validate_request
 from ..fluid_state import FluidState
-from .numerics import solve_inverse
+from .numerics import _cell_basis, interpolate_properties, solve_inverse
 
 _EAGER_TRACE_STATE = jax.core.get_opaque_trace_state()
 _BOUNDARY_RTOL = 1e-12
@@ -54,7 +54,13 @@ def _metadata(fluid, errors):
     )
 
 
-def evaluate_scalar(fluid, input_type, first, second, *, errors):
+def _evaluate_coordinates(fluid, input_type, first, second, *, errors):
+    """Apply pointwise policy to a scalar or a direct natural-coordinate batch.
+
+    Inverse solves remain scalar and are vectorized by ``evaluate_state``.
+    Direct HP batches share protected cell coordinates and assemble one state,
+    avoiding a scalar state-construction graph inside ``vmap``.
+    """
     finite_first, finite_second = jnp.isfinite(first), jnp.isfinite(second)
     nonfinite = ~finite_first | ~finite_second
     invalid = nonfinite
@@ -104,22 +110,33 @@ def evaluate_scalar(fluid, input_type, first, second, *, errors):
 
     # Interpolation indices are always protected, including failed requests.
     h, p = jnp.clip(h, fluid.h_min, fluid.h_max), jnp.clip(p, fluid.p_min, fluid.p_max)
-    i = jnp.clip(
-        jnp.floor((h - fluid.h_min) / fluid.delta_h).astype(jnp.int32), 0, fluid.N_h - 2
-    )
-    j = jnp.clip(
-        jnp.floor((jnp.log(p) - jnp.log(fluid.p_min)) / fluid.delta_logP).astype(
-            jnp.int32
-        ),
-        0,
-        fluid.N_p - 2,
-    )
+    native_batch = first.ndim != 0
+    if native_batch:
+        cell_basis = _cell_basis(fluid, h, p)
+        i, j = cell_basis[:2]
+    else:
+        i = jnp.clip(
+            jnp.floor((h - fluid.h_min) / fluid.delta_h).astype(jnp.int32),
+            0,
+            fluid.N_h - 2,
+        )
+        j = jnp.clip(
+            jnp.floor((jnp.log(p) - jnp.log(fluid.p_min)) / fluid.delta_logP).astype(
+                jnp.int32
+            ),
+            0,
+            fluid.N_p - 2,
+        )
     status = jnp.where(
         (status == StatusCode.SUCCESS) & ~fluid._cell_validity[i, j],
         StatusCode.OUT_OF_DOMAIN,
         status,
     )
-    properties = fluid._interp_h_p(h, p)
+    properties = (
+        interpolate_properties(fluid, h, p, cell_basis=cell_basis)
+        if native_batch
+        else fluid._interp_h_p(h, p)
+    )
     if input_type == pairs.PT_INPUTS and "is_two_phase" in properties:
         # At saturation T depends on p, not on quality/enthalpy. Numerical
         # derivative noise must not manufacture a unique PT inverse there.
@@ -140,13 +157,34 @@ def evaluate_scalar(fluid, input_type, first, second, *, errors):
         status,
     ).astype(jnp.int32)
     clipped = (natural_outside | projected | invalid) if errors == "clip" else None
+    metadata = _metadata(fluid, errors)
+    if native_batch:
+        # Keep natural-coordinate batches pointwise. The generic all-success
+        # batch conditional can force tuple-branch copies of every field; a
+        # per-row mask lets a compiled consumer fuse only the fields it uses.
+        # Input/domain/core checks above establish the same trusted invariants
+        # as scalar native assembly, including locally unavailable optional data.
+        successful = status == StatusCode.SUCCESS
+        if errors != "raise":
+            properties = {
+                name: jnp.where(successful, value, jnp.nan)
+                for name, value in properties.items()
+            }
+        if clipped is not None:
+            clipped = clipped & successful
+        return FluidState._from_validated(metadata, properties, status, clipped)
     return FluidState._from_native(
-        _metadata(fluid, errors),
+        metadata,
         properties,
         status,
         clipped=clipped,
         mask_failed=errors != "raise",
     )
+
+
+def evaluate_scalar(fluid, input_type, first, second, *, errors):
+    """Evaluate one scalar request through the shared coordinate policy."""
+    return _evaluate_coordinates(fluid, input_type, first, second, errors=errors)
 
 
 def evaluate_state(fluid, input_type, first, second, *, errors):
@@ -156,6 +194,8 @@ def evaluate_state(fluid, input_type, first, second, *, errors):
     )
     if first.ndim == 0:
         return fluid._get_state_scalar(input_type, first, second, errors=errors)
+    if input_type == pairs.HmassP_INPUTS:
+        return _evaluate_coordinates(fluid, input_type, first, second, errors=errors)
     result = jax.vmap(
         lambda a, b: fluid._get_state_scalar(input_type, a, b, errors=errors)
     )(first.ravel(), second.ravel())

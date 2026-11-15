@@ -25,7 +25,7 @@ import time
 import zipfile
 from uuid import uuid4
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 SUPPORT = Path(__file__).resolve().parent / "phase13"
 CORE = ("pressure", "temperature", "density", "enthalpy", "entropy", "internal_energy")
 PG_FIELDS = (
@@ -1186,7 +1186,7 @@ def main():
     parser.add_argument(
         "--baseline-source",
         type=Path,
-        default=ROOT / "development/performance/results/phase13/published",
+        default=ROOT / "benchmarks/results/published",
     )
     parser.add_argument("--current-source", type=Path, default=ROOT)
     parser.add_argument("--output-directory", type=Path)

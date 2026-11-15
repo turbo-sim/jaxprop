@@ -1,0 +1,41 @@
+{
+  "declared_on": "2026-11-15",
+  "purpose": "Measure all original workloads with identical worker processor classes after observed cross-class latency shifts in unchanged controls.",
+  "pre_affinity_harness_archive": "harness_20261115_pre_affinity.zip",
+  "pre_affinity_harness_archive_sha256": "9b34aacd5d02d5df7898f4d16d6cb23e30581356922fc0e59e128312ecf1109c",
+  "source_policy": "Unmodified pinned published wheel, exact frozen Phase 13 source and current candidate; experiment manifests record their hashes before execution.",
+  "primary_full_run": {
+    "runner": "phase14_benchmark.py",
+    "suite": "full",
+    "versions": ["published", "frozen", "current"],
+    "workers_per_version": 4,
+    "samples": 12,
+    "case_filters": null,
+    "cpu_affinity": "0xffff",
+    "processor_class": "Windows EfficiencyClass 1, observed logical processors 0 through 15",
+    "fixed_scalar_calls": 48,
+    "fixed_batch_calls": 16,
+    "fixed_host_calls": 1,
+    "diagnostic_ablations": false
+  },
+  "placement_policy": "Set only the worker process affinity before CoolProp, NumPy, Equinox or JAX imports; all threads inherit the same allowed processors. Verify readback before and after execution. The controller and unrelated processes are unchanged. No machine power policy is changed.",
+  "unrestricted_comparison": "Retain the immutable original four-worker nine-sample full matrix, the later four-worker cold measurements and observed within-worker processor-class associations. A second unrestricted full repeat is not mandatory: it repeats the uncontrolled scheduler condition without isolating a new cause. Only run an optional two-worker 12-sample unrestricted diagnostic when the controlled result leaves a specific unanswered question; declare that question and selection first. Omission of --cpu-affinity observes and preserves inherited scheduling. No historical sample is invalidated solely for processor placement.",
+  "optional_class_diagnostic": {
+    "purpose": "Quantify the observed placement association across identically constrained sources, separately from the full gate.",
+    "masks": ["0xffff", "0xfff0000"],
+    "cases": [
+      "pg_matched_compiled_compressor",
+      "pg_matched_compiled_expander",
+      "pg_matched_compiled_HP_batch1024",
+      "bicubic_CO2_compiled_HP_broadcast8x16",
+      "source/REFPROP/water_liquid_PT_scalar",
+      "source/REFPROP/co2_supercritical_HP_scalar"
+    ],
+    "interpretation": "Diagnostic only; a filtered timing selection still runs registered validators and does not reproduce the full predecessor mix. Placement can change JAX thread scheduling; it is not a package optimization. No class-normalized acceptance ratios."
+  },
+  "order_and_inputs": "Use the unchanged runner's declared version blocks and forward/reverse case blocks. Twelve samples balance both block directions and three numerical variants. Do not reset providers between thermodynamic calls or remove fluid-switching costs.",
+  "correctness": "Retain original independent checks and complete candidate/frozen fields, metadata, status, clipping, dtype and shapes, plus published common-field comparison. Keep every workload and original numerical tolerance.",
+  "acceptance": "Use the original phase13/acceptance.json category budgets without changing thresholds. Keep every timing sample, including GC, migrations and spikes. No ratios corrected by controls or processor class. Report any remaining budget failures explicitly.",
+  "gc_and_snapshots": "Use original normal GC and in-memory verification snapshots. The matched snapshot-release diagnostic showed no benefit and does not authorize a harness performance fix.",
+  "harness_policy": "Record the revised harness hash for every worker. Preserve the exact pre-affinity archive and old results; changing the harness during a running experiment is invalid."
+}

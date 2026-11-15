@@ -2,7 +2,7 @@
 
 Run from the checkout with its Python environment, for example::
 
-    python development/performance/phase11_benchmark.py \
+    python benchmarks/phase11_benchmark.py \
         --baseline-source development/performance/phase11_baseline.zip \
         --output-directory development/performance/results/phase11/guard
 
@@ -800,7 +800,7 @@ def main():
         "--baseline-label", default="632b7fd / accepted Phase 10 example follow-up"
     )
     parser.add_argument(
-        "--current-source", type=Path, default=Path(__file__).resolve().parents[2]
+        "--current-source", type=Path, default=Path(__file__).resolve().parents[1]
     )
     parser.add_argument("--output-directory", type=Path)
     parser.add_argument("--workers", type=int, default=4)

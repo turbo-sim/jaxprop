@@ -1,0 +1,425 @@
+{
+  "status": "PG investigation completed; original published-release acceptance remains open",
+  "source_hashes": {
+    "published": "858de0f7945b8fcb21e6af9c146b0c150e7101e2e722c4328511a3b3d2a88da0",
+    "frozen": "9fc27b79041931d98cbcb8349cdab7d81fe31000a49cd3fe14dc7cd85ebe3651",
+    "current": "ce94b70d2ddc89fe602a52a2fac8fb71ff5e7f095588431e7d6a5e065611cde3"
+  },
+  "warmed_diagnostic": {
+    "method": "Same-process co-loaded versions with interleaved inputs, fixed repeats and 30 samples; diagnostic only, not the independent-worker acceptance gate.",
+    "correctness_passed": true,
+    "cases": {
+      "full_HP_batch1024": {
+        "median_us": {
+          "published": 96.33125,
+          "frozen": 133.746875,
+          "current": 127.50625
+        },
+        "candidate_to_frozen_ratio": 0.9533400313091428,
+        "candidate_to_published_ratio": 1.3236229157204957,
+        "sample_range_us": {
+          "published": [
+            76.59375,
+            162.84375
+          ],
+          "frozen": [
+            119.675,
+            184.24375
+          ],
+          "current": [
+            108.96875,
+            193.04375
+          ]
+        }
+      },
+      "dynamic_HP_batch1024": {
+        "median_us": {
+          "published": 110.38749999999999,
+          "frozen": 161.075,
+          "current": 153.9875
+        },
+        "candidate_to_frozen_ratio": 0.9559987583423872,
+        "candidate_to_published_ratio": 1.394972256822557,
+        "sample_range_us": {
+          "published": [
+            100.24375,
+            136.7625
+          ],
+          "frozen": [
+            132.6375,
+            235.8125
+          ],
+          "current": [
+            140.79375,
+            246.53125
+          ]
+        }
+      },
+      "compressor_with_actual_status": {
+        "median_us": {
+          "published": 11.101041666666667,
+          "frozen": 15.501041666666666,
+          "current": 15.744791666666668
+        },
+        "candidate_to_frozen_ratio": 1.015724749680801,
+        "candidate_to_published_ratio": 1.4183165994182227,
+        "sample_range_us": {
+          "published": [
+            10.408333333333333,
+            14.03125
+          ],
+          "frozen": [
+            14.672916666666666,
+            18.95208333333333
+          ],
+          "current": [
+            15.070833333333335,
+            17.397916666666667
+          ]
+        }
+      },
+      "expander_with_actual_status": {
+        "median_us": {
+          "published": 10.837499999999999,
+          "frozen": 16.12291666666667,
+          "current": 16.16979166666667
+        },
+        "candidate_to_frozen_ratio": 1.0029073523711074,
+        "candidate_to_published_ratio": 1.492022299115725,
+        "sample_range_us": {
+          "published": [
+            10.45,
+            13.325
+          ],
+          "frozen": [
+            15.504166666666666,
+            20.87708333333333
+          ],
+          "current": [
+            15.439583333333333,
+            18.26875
+          ]
+        }
+      },
+      "heat_exchanger128_with_actual_status": {
+        "median_us": {
+          "published": 17.6875,
+          "frozen": 30.925,
+          "current": 27.853125
+        },
+        "candidate_to_frozen_ratio": 0.9006669361358124,
+        "candidate_to_published_ratio": 1.5747349823321555,
+        "sample_range_us": {
+          "published": [
+            15.9625,
+            25.9625
+          ],
+          "frozen": [
+            25.9875,
+            44.60625
+          ],
+          "current": [
+            21.5,
+            48.675
+          ]
+        }
+      }
+    },
+    "interpretation": "Matched full and dynamic states improve approximately 4-5 percent and status-preserving HX approximately 10 percent versus frozen source in this run. Scalar compressor/expander timings and executable programs are effectively unchanged. Published-release status/batch costs remain; do not claim the 10 percent gate is fixed."
+  },
+  "hlo": {
+    "counting": "Static total instruction lines across all computation definitions, including ROOT, fusion bodies and both branches; not executed operation counts or timing estimates.",
+    "graphs": {
+      "full_HP_batch1024": {
+        "frozen": {
+          "total_instructions_including_root": 820,
+          "conditionals": 2,
+          "copies": 29,
+          "reductions": 2,
+          "reduce_windows": 2
+        },
+        "current": {
+          "total_instructions_including_root": 701,
+          "conditionals": 1,
+          "copies": 9,
+          "reductions": 1,
+          "reduce_windows": 1
+        },
+        "same_after_metadata_removal_and_ssa_alpha_renaming": false,
+        "alpha_normalized_sha256": {
+          "frozen": "d636270b23b1e1899fcd839c05f8968583ae707acd3ce90f53fb196215e63cf3",
+          "current": "c7ef1a6c1acdf802aa6e77436f3874c566444d7d01a60366c307263bf6b0d52a"
+        }
+      },
+      "dynamic_HP_batch1024": {
+        "frozen": {
+          "total_instructions_including_root": 897,
+          "conditionals": 2,
+          "copies": 29,
+          "reductions": 2,
+          "reduce_windows": 2
+        },
+        "current": {
+          "total_instructions_including_root": 777,
+          "conditionals": 1,
+          "copies": 9,
+          "reductions": 1,
+          "reduce_windows": 1
+        },
+        "same_after_metadata_removal_and_ssa_alpha_renaming": false,
+        "alpha_normalized_sha256": {
+          "frozen": "055069cb098d3e6fed9b31f070e9efd3d8f0652eb0442b475198fb04c5885c75",
+          "current": "a70712f602586580776e48b079be3d61e8da7ff7f7003b9586865413766cb2c0"
+        }
+      },
+      "compressor_with_actual_status": {
+        "frozen": {
+          "total_instructions_including_root": 669,
+          "conditionals": 0,
+          "copies": 0,
+          "reductions": 0,
+          "reduce_windows": 0
+        },
+        "current": {
+          "total_instructions_including_root": 669,
+          "conditionals": 0,
+          "copies": 0,
+          "reductions": 0,
+          "reduce_windows": 0
+        },
+        "same_after_metadata_removal_and_ssa_alpha_renaming": true,
+        "alpha_normalized_sha256": {
+          "frozen": "da281f398be694063105a4afc2da6cdf694e5c6e07624b182854b3ed749e13f3",
+          "current": "da281f398be694063105a4afc2da6cdf694e5c6e07624b182854b3ed749e13f3"
+        }
+      },
+      "expander_with_actual_status": {
+        "frozen": {
+          "total_instructions_including_root": 973,
+          "conditionals": 0,
+          "copies": 0,
+          "reductions": 0,
+          "reduce_windows": 0
+        },
+        "current": {
+          "total_instructions_including_root": 973,
+          "conditionals": 0,
+          "copies": 0,
+          "reductions": 0,
+          "reduce_windows": 0
+        },
+        "same_after_metadata_removal_and_ssa_alpha_renaming": true,
+        "alpha_normalized_sha256": {
+          "frozen": "c28a90c6275eb0ec3e08455de0f018aacb1073e184d243fded950aa755891856",
+          "current": "c28a90c6275eb0ec3e08455de0f018aacb1073e184d243fded950aa755891856"
+        }
+      },
+      "heat_exchanger128_with_actual_status": {
+        "frozen": {
+          "total_instructions_including_root": 594,
+          "conditionals": 4,
+          "copies": 8,
+          "reductions": 5,
+          "reduce_windows": 5
+        },
+        "current": {
+          "total_instructions_including_root": 544,
+          "conditionals": 2,
+          "copies": 4,
+          "reductions": 3,
+          "reduce_windows": 3
+        },
+        "same_after_metadata_removal_and_ssa_alpha_renaming": false,
+        "alpha_normalized_sha256": {
+          "frozen": "eb4a21324b4f8ae49282a07b1509e5dd8007f5a5654ddcabb5af8c30e7753287",
+          "current": "157089ee7d08b719b785b9d041fd5883dc29477bf225e64312ec773c51412efc"
+        }
+      }
+    },
+    "successful_arm_control": {
+      "comparison": "Shared-context C2 paired_models current versus final paired_final current; outer successful full HP 1024 branch plus transitive fusion bodies.",
+      "old_region": "region_5.482",
+      "new_region": "region_2.400",
+      "same_normalized_subgraph": true,
+      "sha256": "7065f743593e598ac02d7f128b687110f0b4e7cea8bee4709d35cf680ea06fa4",
+      "normalization": "Remove metadata, omit computation headers, substitute recursively hashed called computations, then consistently alpha-rename local SSA values. Body types, layouts, operations, constants and operand relationships remain compared."
+    }
+  },
+  "cold_public_call": {
+    "workers_per_version": 2,
+    "scope": "Whole first synchronized public HP 1024 call in a fresh process/cache; model construction and device startup excluded.",
+    "median_us": {
+      "published": 54672.25,
+      "frozen": 203661.0,
+      "current": 200374.25
+    },
+    "raw_us": {
+      "published": [
+        57568.6,
+        51775.9
+      ],
+      "frozen": [
+        199901.3,
+        207420.7
+      ],
+      "current": [
+        213730.4,
+        187018.1
+      ]
+    },
+    "candidate_to_frozen_ratio": 0.983861662272109,
+    "original_public_gate": {
+      "limit_us": 182008.375,
+      "current_us": 200374.25,
+      "above_budget": true
+    },
+    "interpretation": "Primary frozen 203.661 ms to current 200.374 ms is a small overlapping observation, not a fixed cold budget. Current exceeds this run's 182.008 ms public allowance. Earlier Phase 13 had a 163.113 ms allowance from its own published baseline; no budget formula changed."
+  },
+  "separate_cold_stage_diagnostics": {
+    "scope": "Different fresh workers from the primary public-call observations; never sum or relabel stage medians as that whole call.",
+    "trace_and_lower": {
+      "raw_us": {
+        "published": [
+          21968.0,
+          20147.0
+        ],
+        "frozen": [
+          74084.5,
+          100145.2
+        ],
+        "current": [
+          65590.5,
+          67505.5
+        ]
+      },
+      "median_us": {
+        "published": 21057.5,
+        "frozen": 87114.85,
+        "current": 66548.0
+      }
+    },
+    "compile_lowered": {
+      "raw_us": {
+        "published": [
+          41217.7,
+          34188.4
+        ],
+        "frozen": [
+          125373.9,
+          150367.3
+        ],
+        "current": [
+          114605.9,
+          111612.6
+        ]
+      },
+      "median_us": {
+        "published": 37703.05,
+        "frozen": 137870.59999999998,
+        "current": 113109.25
+      }
+    },
+    "first_executable_dispatch": {
+      "raw_us": {
+        "published": [
+          474.5,
+          432.4
+        ],
+        "frozen": [
+          509.7,
+          639.6
+        ],
+        "current": [
+          460.6,
+          476.8
+        ]
+      },
+      "median_us": {
+        "published": 453.45,
+        "frozen": 574.65,
+        "current": 468.70000000000005
+      }
+    },
+    "interpretation": "Trace/lower 87.115 to 66.548 ms and compilation 137.871 to 113.109 ms support reduced staged work. First executable dispatch remains below 1 ms. These measurements do not establish whole-public-call acceptance."
+  },
+  "status_output_attribution": {
+    "diagnostics": {
+      "compressor_with_actual_status_diagnostic_numerical_only": {
+        "median_us": {
+          "published": 10.189583333333333,
+          "frozen": 10.402083333333334,
+          "current": 10.355208333333334
+        },
+        "candidate_to_frozen_ratio": 0.9954936911676346,
+        "candidate_to_published_ratio": 1.0162543447147823
+      },
+      "expander_with_actual_status_diagnostic_numerical_only": {
+        "median_us": {
+          "published": 10.203125,
+          "frozen": 11.163541666666667,
+          "current": 11.164583333333333
+        },
+        "candidate_to_frozen_ratio": 1.0000933096948772,
+        "candidate_to_published_ratio": 1.0942317508933128
+      },
+      "heat_exchanger128_with_actual_status_diagnostic_numerical_only": {
+        "median_us": {
+          "published": 17.428125,
+          "frozen": 25.56875,
+          "current": 25.8875
+        },
+        "candidate_to_frozen_ratio": 1.0124663896357857,
+        "candidate_to_published_ratio": 1.4853864084633315
+      },
+      "compressor_with_actual_status_diagnostic_packed_status": {
+        "median_us": {
+          "frozen": 12.557291666666668,
+          "current": 12.514583333333334
+        },
+        "candidate_to_frozen_ratio": 0.9965989216092908,
+        "candidate_to_published_ratio": null
+      },
+      "expander_with_actual_status_diagnostic_packed_status": {
+        "median_us": {
+          "frozen": 12.720833333333333,
+          "current": 12.732291666666669
+        },
+        "candidate_to_frozen_ratio": 1.0009007533573535,
+        "candidate_to_published_ratio": null
+      }
+    },
+    "interpretation": "Scalar numerical-only current/PyPI ratios 1.016 and 1.094 contrast with actual-status 1.418 and 1.492; required status retention/checking and additional device leaves account for substantial cost in this experiment. Numerical-only HX still 1.485 relative to PyPI because policy/masking work survives. Packed-status results diagnose return layout; no public output/status change was implemented.",
+    "restriction": "Projections, packing and broader-vs-matched dynamic parameter subsets remain explanatory diagnostics. Mandatory full-state and actual-status acceptance workloads are unchanged; legacy status is never fabricated."
+  },
+  "correctness": {
+    "focused_tests_passed": 244,
+    "focused_command": "pytest tests/test_phase14_perfect_gas.py tests/test_phase7_perfect_gas.py tests/test_perfect_gas_hotpath.py tests/test_phase9_model_jvp.py -c tests/pytest.ini -q --tb=short",
+    "coverage": "All 22 fields and independent HP equations; mixed/valid/all-failed cohorts; mask/clip/status/clipping; sizes 63/64/65/128/1024; failed gradients; full-field gamma/h_ref JVP/VJP; prior model/input/extreme-state oracles.",
+    "final_full_suite": "Running independently under root; this record does not claim its result or completion of the final PyPI gate."
+  },
+  "deferred_not_implemented": {
+    "temperature_limit_simplification": "DEFERRED. Removing algebraically redundant R/cv bounds needs floating-point and AD tie proof. Rounded gamma*R/(gamma-1) can move relative to R; minimum/maximum tie subgradients can change even with equal primals. Test float32/64, nextafter cp=1, gamma near 1 / large gamma,positive/zero/negative offsets, ceiling neighbors and input/model JVP/VJP before any future change. No representability bound or proof simplification was implemented."
+  },
+  "evidence": {
+    "paired_summary": "development/performance/results/phase14/paired_final/summary.json",
+    "paired_harness_sha256": "6900ee8c0f22dce55e8b5c63c9da15136d0194040ecf6c818b7b62d71d6dfe85",
+    "cold_summary": "development/performance/results/phase14/cold_pg_branch/summary.json",
+    "cold_harness_sha256": "675cca76b7fd06b6c57220aed334a54ef14ede7b7945d56216345b5ad7e6aa9d",
+    "prior_successful_arm": "development/performance/results/phase14/paired_models/current/full_HP_batch1024.hlo.txt",
+    "final_successful_arm": "development/performance/results/phase14/paired_final/current/full_HP_batch1024.hlo.txt",
+    "protocol": "development/performance/phase14/protocol.json"
+  },
+  "implemented_changes": [
+    {
+      "name": "shared dynamic heat-capacity context",
+      "scope": "Derive cp/cv once in the native evaluator and reuse cp through resolution, PT assembly, entropy and the cp field. No static cache or frozen numerical model parameter.",
+      "attribution": "Small full-state graph reduction; no independently established scalar consumer speedup."
+    },
+    {
+      "name": "direct masking in known-failed large-batch arm",
+      "scope": "The outer all-success condition already proves failure in its false arm; mask every property and clipping flag directly, then use trusted assembly instead of staging another all-success conditional.",
+      "unchanged": "Threshold 64, scalar/small/raise paths, all 22 PG fields, masks, status precedence, clipping and failure-safe input/model AD."
+    }
+  ],
+  "implementation_decision": "Retained local candidate after correctness review; formal performance acceptance remains open."
+}

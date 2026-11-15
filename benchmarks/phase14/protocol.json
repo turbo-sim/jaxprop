@@ -1,0 +1,54 @@
+{
+  "phase": 14,
+  "purpose": "Diagnose and reduce the retained Phase 13 deviations without changing their acceptance budgets.",
+  "reference_points": {
+    "published": "The unchanged official PyPI 0.5.8 wheel pinned by Phase 13.",
+    "frozen": "Phase 13 source 9fc27b79041931d98cbcb8349cdab7d81fe31000a49cd3fe14dc7cd85ebe3651.",
+    "current": "The candidate source hash captured before each experiment."
+  },
+  "default_workers_per_version": 4,
+  "default_samples": 12,
+  "long_repeat_samples": 30,
+  "warmup_calls": 8,
+  "fixed_scalar_calls_per_sample": 48,
+  "fixed_batch_calls_per_sample": 16,
+  "fixed_host_calls_per_sample": 1,
+  "two_version_order": "Frozen/current isolation uses ABBA blocks, repeated for four workers each; an explicit order offset reverses the initial block.",
+  "diagnostics": "Status projections are opt-in, so they do not change the workload mix of the primary gate.",
+  "version_blocks": [
+    ["published", "frozen", "current"],
+    ["current", "frozen", "published"],
+    ["frozen", "published", "current"],
+    ["current", "published", "frozen"]
+  ],
+  "case_order": "Balanced forward/reverse blocks; identical registered case order and repetition counts on all versions. Every numerical return is synchronized.",
+  "compiler_cache": "A new UUID directory for every worker invocation; no persisted cache reuse between runs.",
+  "primary_outputs": "Complete actual public states and the unchanged status-preserving consumers. Diagnostic projections cannot replace primary workloads or invent published status outputs.",
+  "published_correctness": "Unchanged Phase 13 common-field tolerances and declared semantic differences.",
+  "candidate_correctness": {
+    "scope": "Every actual numerical state field, returned consumer field, status and clipping leaf; exact shapes/dtypes/NaN patterns and semantic metadata.",
+    "floating_rtol": 1e-12,
+    "default_atol": 1e-12,
+    "field_atol": {
+      "pressure": 1e-7,
+      "temperature": 1e-10,
+      "density": 1e-10,
+      "enthalpy": 1e-8,
+      "internal_energy": 1e-8,
+      "entropy": 1e-10,
+      "viscosity": 1e-15,
+      "conductivity": 1e-13
+    },
+    "reference_identity": "Physical metadata is compared; reference identifier representations are retained separately because source-code cache provenance can change. No numerical identity check is moved into repeated state calls."
+  },
+  "budgets": "Original Phase 13 manifest remains authoritative. No budget is widened by this tooling; same-source controls against frozen Phase 13 are reported as additional evidence.",
+  "invalid_run_criteria": [
+    "Source or harness changes during a worker or between controller/worker capture.",
+    "An imported package is outside its declared source directory.",
+    "Published package bytes differ from the pinned wheel.",
+    "Numerical dependencies, interpreter, device, precision or thread settings differ between workers.",
+    "A public evaluation, independent oracle, complete-array comparison or expected successful status check fails."
+  ],
+  "host_observations": "Record load averages and process CPU/context information when available; retain every sample. Do not stop unrelated user processes or remove slow observations after seeing results.",
+  "cold_measurement": "The unchanged first synchronized public call remains primary. Optional lower/compile/first-executable diagnostics use separate fresh workers and are never summed and relabeled as that call."
+}

@@ -24,7 +24,7 @@ def test_varying_python_scalar_values_reuse_one_compilation(fluid, monkeypatch):
     original = pg_requests.resolve_pair
 
     def resolve_pair(
-        input_type, first, second, constants, *, errors, return_success=False
+        input_type, first, second, constants, *, errors, return_success=False, **options
     ):
         traces.append(True)
         return original(
@@ -34,6 +34,7 @@ def test_varying_python_scalar_values_reuse_one_compilation(fluid, monkeypatch):
             constants,
             errors=errors,
             return_success=return_success,
+            **options,
         )
 
     monkeypatch.setattr(pg_requests, "resolve_pair", resolve_pair)

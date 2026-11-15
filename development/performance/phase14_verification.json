@@ -1,0 +1,94 @@
+{
+  "date_utc": "2026-11-14T17:26:14.206745+00:00",
+  "status": "implementation_and_correctness_verified_performance_acceptance_open",
+  "phase13_commit": "b282ff0",
+  "current_source_sha256": "ce94b70d2ddc89fe602a52a2fac8fb71ff5e7f095588431e7d6a5e065611cde3",
+  "correctness": {
+    "status": "all_distinct_cases_verified_after_test_only_spy_repair",
+    "source_sha256": "ce94b70d2ddc89fe602a52a2fac8fb71ff5e7f095588431e7d6a5e065611cde3",
+    "full_run": "development/test_audit/results/phase14/full_20261114_180325",
+    "original_full_counts": {
+      "passed": 3026,
+      "failed": 1
+    },
+    "initial_failure": "Private resolver spy did not forward new heat_capacities keyword; no numerical or recompilation assertion was reached.",
+    "repair_module": "tests/test_perfect_gas_jax_execution.py",
+    "repair_cases": 5,
+    "repair_junit": "development/test_audit/results/phase14/scalar_reuse_repair.xml",
+    "all_original_assertions_and_other_test_ast_unchanged": true,
+    "production_source_unchanged": true,
+    "distinct_tests_verified": 3027,
+    "failed": 0,
+    "skipped": 0,
+    "property_comparisons": 54272,
+    "finite_values_compared": 47867,
+    "unavailable_values_checked": 6405,
+    "failed_comparisons": 0,
+    "scope": "Original full execution retained with3026passes+one stale-spy failure; repaired whole5-testmodule passes, proving a3027-case verified union. This is not relabeled as one all-green full execution."
+  },
+  "new_regression_cases": {
+    "perfect_gas": 30,
+    "bicubic": 27,
+    "total": 57
+  },
+  "focused_checks": {
+    "perfect_gas_passed": 244,
+    "bicubic_initial_passed": 90,
+    "bicubic_final_additional_passed": 2
+  },
+  "examples": {
+    "profile": "quick",
+    "selected_programs": 6,
+    "counts": {
+      "completed": 6,
+      "failed": 0,
+      "timeout": 0,
+      "input_required": 0,
+      "reference_only": 0
+    },
+    "scope": "Six affected PG/bicubic programs only; execution/numerical checks, not a full-resolution study or performance benchmark.",
+    "evidence": "development/example_audit/results/phase14/affected/summary.json"
+  },
+  "documentation": {
+    "build": "Sphinx html -W --keep-going",
+    "passed": true,
+    "warnings": 0,
+    "content_pages": 28,
+    "evidence": "development/test_audit/results/phase14/docs_driver.log"
+  },
+  "formatting": {
+    "tool": "black --check --workers 1",
+    "files_checked": 10,
+    "passed": true
+  },
+  "archives": {
+    "frozen_source.zip": "202f3c8dadfa920ab1876b9b4f2da97b237607d6f0a2c0ff54efff41a995b6ad",
+    "candidate_source.zip": "1d69a98fe40c545fcb6a5393ba14d214082bd4a9bece66a504d37b93b8fe624c"
+  },
+  "performance": {
+    "full_matrix_status": "complete_numerical_pass_budget_flags_retained",
+    "original_budgets_unchanged": true,
+    "remaining_costs_accepted": false,
+    "pg_first_public_call_budget_met": false,
+    "evidence": "development/performance/phase14_validation.json",
+    "all_performance_budgets_met": false,
+    "workload_counts": {
+      "original_comparable": 111,
+      "original_within_budget": 95,
+      "original_above_budget": 16,
+      "additional_shape_controls": 8,
+      "additional_above_budget": 1,
+      "total_comparable": 119,
+      "total_within_budget": 102,
+      "total_above_budget": 17,
+      "current_only": 4,
+      "setup_comparisons": 22,
+      "setup_above_budget": 1,
+      "original_cold_profiles": 4,
+      "cold_above_budget": 1
+    }
+  },
+  "final_thermopt_phase": 15,
+  "thermopt_run": false,
+  "evidence_archive_sha256": "9554c5d95b32b937555e2306241b809cbda8b7828631e7142e9b9bda39a20948"
+}

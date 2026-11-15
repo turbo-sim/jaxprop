@@ -23,10 +23,9 @@ original contents, including the then-current Phase 14 name for ThermOpt.
 Use the checkout's numerical environment for both independent processes:
 
 ```powershell
-python development/performance/phase13/resolve_baseline.py --output-dir development/performance/phase13/baseline
-python -m pip install --no-deps --no-compile --no-index --target development/performance/results/phase13/published development/performance/phase13/baseline/jaxprop-0.5.8-py3-none-any.whl
-python development/performance/phase13_benchmark.py --validate-only --output-directory development/performance/results/phase13/preflight
-python development/performance/phase13_benchmark.py --output-directory development/performance/results/phase13/acceptance
+python benchmarks/prepare.py
+python benchmarks/phase13_benchmark.py --validate-only --output-directory benchmarks/results/phase13-preflight
+python benchmarks/phase13_benchmark.py --samples 12 --output-directory benchmarks/results/phase13-comparison
 ```
 
 The public interpreter/dependency environment is shared, while imported package

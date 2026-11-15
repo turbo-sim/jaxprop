@@ -1,0 +1,593 @@
+{
+  "date_utc": "2026-11-15T00:32:55.182620+00:00",
+  "status": "correctness_verified_performance_acceptance_open",
+  "source_sha256": "6f93cb822c058f40fe1e1503f7a92dd0ee185de0eb4b84014c24e919251cec56",
+  "full_suite": {
+    "date_utc": "2026-11-15T00:17:03.787760+00:00",
+    "pid": 30704,
+    "profile_environment": {
+      "JAXPROP_TEST_BACKENDS": "HEOS,REFPROP",
+      "JAX_ENABLE_X64": "true",
+      "JAX_PLATFORM_NAME": "cpu",
+      "MPLBACKEND": "Agg",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "CC": "C:/msys64/mingw64/bin/gcc.exe",
+      "JAXPROP_TEST_CC": "C:/msys64/mingw64/bin/gcc.exe",
+      "PYTHONUTF8": "1"
+    },
+    "test_backends": [
+      "HEOS",
+      "REFPROP"
+    ],
+    "precision_environment": "true",
+    "platform_environment": "cpu",
+    "c_compiler": "C:/msys64/mingw64/bin/gcc.exe",
+    "source_sha256": "6f93cb822c058f40fe1e1503f7a92dd0ee185de0eb4b84014c24e919251cec56",
+    "expected_source_sha256": "6f93cb822c058f40fe1e1503f7a92dd0ee185de0eb4b84014c24e919251cec56",
+    "expected_property_comparisons": 54272,
+    "full_run": "development/test_audit/results/phase14/followup_20261115/full_20261115_011703_783191",
+    "command": "python verification_runner.py -> pytest tests -c tests/pytest.ini -q --tb=short --junitxml=<run>/junit.xml",
+    "collected": 3029,
+    "collected_by_file": {
+      "test_assertion_helpers.py": 37,
+      "test_bicubic_accuracy.py": 13,
+      "test_bicubic_cache.py": 62,
+      "test_bicubic_cache_integration.py": 8,
+      "test_bicubic_consistency.py": 25,
+      "test_bicubic_jax_execution.py": 6,
+      "test_bicubic_runtime_storage.py": 6,
+      "test_cache_metadata.py": 40,
+      "test_contract_failures.py": 48,
+      "test_errors.py": 36,
+      "test_evaluator_state_metadata.py": 23,
+      "test_example_runner.py": 7,
+      "test_fluid_factory.py": 69,
+      "test_fluid_state.py": 5,
+      "test_helmholtz_eos.py": 56,
+      "test_metastable_table_continuation.py": 4,
+      "test_native_state_factory.py": 37,
+      "test_perfect_gas_eos.py": 40,
+      "test_perfect_gas_hotpath.py": 6,
+      "test_perfect_gas_jax_execution.py": 5,
+      "test_perfect_gas_lean_kernel.py": 54,
+      "test_phase10_calculations.py": 61,
+      "test_phase10_grids.py": 40,
+      "test_phase10_legacy_api.py": 55,
+      "test_phase10_quality.py": 88,
+      "test_phase10_table_physics.py": 24,
+      "test_phase11_callback_failures.py": 12,
+      "test_phase11_consumers.py": 7,
+      "test_phase11_helpers.py": 19,
+      "test_phase11_import.py": 7,
+      "test_phase11_lifecycle.py": 20,
+      "test_phase11_plotting.py": 25,
+      "test_phase11_stability.py": 21,
+      "test_phase12_bicubic_examples.py": 48,
+      "test_phase12_binary_examples.py": 10,
+      "test_phase12_derivative_examples.py": 26,
+      "test_phase12_pressure_acceptance.py": 9,
+      "test_phase13_state_helpers.py": 18,
+      "test_phase14_bicubic.py": 27,
+      "test_phase14_perfect_gas.py": 32,
+      "test_phase4_api.py": 155,
+      "test_phase4_jax_edges.py": 5,
+      "test_phase6_callback.py": 70,
+      "test_phase6_diagnostics.py": 145,
+      "test_phase6_source.py": 97,
+      "test_phase7_model_lifecycle.py": 19,
+      "test_phase7_perfect_gas.py": 172,
+      "test_phase8_interpolation.py": 24,
+      "test_phase8_inverse_numerics.py": 45,
+      "test_phase8_nearcritical.py": 6,
+      "test_phase8_policies.py": 35,
+      "test_phase8_saturation.py": 12,
+      "test_phase8_table_integrity.py": 22,
+      "test_phase9_api.py": 139,
+      "test_phase9_host.py": 21,
+      "test_phase9_inverses.py": 43,
+      "test_phase9_model_jvp.py": 36,
+      "test_phase9_physics.py": 28,
+      "test_property_derivatives.py": 32,
+      "test_public_fluid_constructor.py": 34,
+      "test_saturation_reference_identity.py": 4,
+      "test_solvers_coolprop.py": 126,
+      "test_solvers_equilibrium.py": 96,
+      "test_solvers_metastable.py": 56,
+      "test_source_gas_constant.py": 56,
+      "test_source_references.py": 45,
+      "test_spinodal_calculation.py": 14,
+      "test_state_clipping.py": 33,
+      "test_state_collection_storage.py": 20,
+      "test_state_construction_validation.py": 13,
+      "test_state_contract.py": 35,
+      "test_state_foundation.py": 88,
+      "test_state_lazy_validity.py": 12,
+      "test_test_runner.py": 15,
+      "test_uniform_fluid_contract.py": 140
+    },
+    "session_testscollected": 3029,
+    "session_testsfailed": 0,
+    "session_exitstatus": 0,
+    "consistency_log_modules": {
+      "test_helmholtz_eos": {
+        "entries": 1232,
+        "finite_count": 1172,
+        "unavailable_count": 60,
+        "value_count": 1232,
+        "failed": 0
+      },
+      "test_solvers_coolprop": {
+        "entries": 28224,
+        "finite_count": 24521,
+        "unavailable_count": 3703,
+        "value_count": 28224,
+        "failed": 0
+      },
+      "test_solvers_equilibrium": {
+        "entries": 16192,
+        "finite_count": 13970,
+        "unavailable_count": 2222,
+        "value_count": 16192,
+        "failed": 0
+      },
+      "test_solvers_metastable": {
+        "entries": 8624,
+        "finite_count": 8204,
+        "unavailable_count": 420,
+        "value_count": 8624,
+        "failed": 0
+      }
+    },
+    "property_comparisons": 54272,
+    "consistency_count_sums": {
+      "finite_count": 47867,
+      "unavailable_count": 6405,
+      "value_count": 54272
+    },
+    "finite_values_compared": 47867,
+    "unavailable_values_checked": 6405,
+    "total_values_checked": 54272,
+    "failed_comparisons": 0,
+    "coverage_by_property": {
+      "pressure": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "temperature": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "density": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "enthalpy": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "entropy": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "internal_energy": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "isobaric_heat_capacity": {
+        "finite_count": 1616,
+        "unavailable_count": 774,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "isochoric_heat_capacity": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "heat_capacity_ratio": {
+        "finite_count": 1616,
+        "unavailable_count": 774,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "compressibility_factor": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "isothermal_compressibility": {
+        "finite_count": 1616,
+        "unavailable_count": 774,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "isentropic_compressibility": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "isothermal_bulk_modulus": {
+        "finite_count": 1616,
+        "unavailable_count": 774,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "isentropic_bulk_modulus": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "speed_of_sound": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "viscosity": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "conductivity": {
+        "finite_count": 2245,
+        "unavailable_count": 145,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "gruneisen": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "isobaric_expansion_coefficient": {
+        "finite_count": 1616,
+        "unavailable_count": 774,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "isothermal_joule_thomson": {
+        "finite_count": 1616,
+        "unavailable_count": 774,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "joule_thomson": {
+        "finite_count": 2390,
+        "unavailable_count": 0,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "surface_tension": {
+        "finite_count": 774,
+        "unavailable_count": 1616,
+        "value_count": 2390,
+        "failed": 0
+      },
+      "is_two_phase": {
+        "finite_count": 1206,
+        "unavailable_count": 0,
+        "value_count": 1206,
+        "failed": 0
+      },
+      "quality_mass": {
+        "finite_count": 486,
+        "unavailable_count": 0,
+        "value_count": 486,
+        "failed": 0
+      }
+    },
+    "seconds": 695.2390971,
+    "pytest_exit_code": 0,
+    "source_sha256_after": "6f93cb822c058f40fe1e1503f7a92dd0ee185de0eb4b84014c24e919251cec56",
+    "source_unchanged_during_run": true,
+    "junit_recorded_cases": 3029,
+    "counts": {
+      "passed": 3029,
+      "failed": 0,
+      "skipped": 0,
+      "xfailed": 0
+    },
+    "outcomes_by_file": {
+      "test_assertion_helpers": {
+        "passed": 37
+      },
+      "test_bicubic_accuracy": {
+        "passed": 13
+      },
+      "test_bicubic_cache": {
+        "passed": 62
+      },
+      "test_bicubic_cache_integration": {
+        "passed": 8
+      },
+      "test_bicubic_consistency": {
+        "passed": 25
+      },
+      "test_bicubic_jax_execution": {
+        "passed": 6
+      },
+      "test_bicubic_runtime_storage": {
+        "passed": 6
+      },
+      "test_cache_metadata": {
+        "passed": 40
+      },
+      "test_contract_failures": {
+        "passed": 48
+      },
+      "test_errors": {
+        "passed": 36
+      },
+      "test_evaluator_state_metadata": {
+        "passed": 23
+      },
+      "test_example_runner": {
+        "passed": 7
+      },
+      "test_fluid_factory": {
+        "passed": 69
+      },
+      "test_fluid_state": {
+        "passed": 5
+      },
+      "test_helmholtz_eos": {
+        "passed": 56
+      },
+      "test_metastable_table_continuation": {
+        "passed": 4
+      },
+      "test_native_state_factory": {
+        "passed": 37
+      },
+      "test_perfect_gas_eos": {
+        "passed": 40
+      },
+      "test_perfect_gas_hotpath": {
+        "passed": 6
+      },
+      "test_perfect_gas_jax_execution": {
+        "passed": 5
+      },
+      "test_perfect_gas_lean_kernel": {
+        "passed": 54
+      },
+      "test_phase10_calculations": {
+        "passed": 61
+      },
+      "test_phase10_grids": {
+        "passed": 40
+      },
+      "test_phase10_legacy_api": {
+        "passed": 55
+      },
+      "test_phase10_quality": {
+        "passed": 88
+      },
+      "test_phase10_table_physics": {
+        "passed": 24
+      },
+      "test_phase11_callback_failures": {
+        "passed": 12
+      },
+      "test_phase11_consumers": {
+        "passed": 7
+      },
+      "test_phase11_helpers": {
+        "passed": 19
+      },
+      "test_phase11_import": {
+        "passed": 7
+      },
+      "test_phase11_lifecycle": {
+        "passed": 20
+      },
+      "test_phase11_plotting": {
+        "passed": 25
+      },
+      "test_phase11_stability": {
+        "passed": 21
+      },
+      "test_phase12_bicubic_examples": {
+        "passed": 48
+      },
+      "test_phase12_binary_examples": {
+        "passed": 10
+      },
+      "test_phase12_derivative_examples": {
+        "passed": 26
+      },
+      "test_phase12_pressure_acceptance": {
+        "passed": 9
+      },
+      "test_phase13_state_helpers": {
+        "passed": 18
+      },
+      "test_phase14_bicubic": {
+        "passed": 27
+      },
+      "test_phase14_perfect_gas": {
+        "passed": 32
+      },
+      "test_phase4_api": {
+        "passed": 155
+      },
+      "test_phase4_jax_edges": {
+        "passed": 5
+      },
+      "test_phase6_callback": {
+        "passed": 70
+      },
+      "test_phase6_diagnostics": {
+        "passed": 145
+      },
+      "test_phase6_source": {
+        "passed": 97
+      },
+      "test_phase7_model_lifecycle": {
+        "passed": 19
+      },
+      "test_phase7_perfect_gas": {
+        "passed": 172
+      },
+      "test_phase8_interpolation": {
+        "passed": 24
+      },
+      "test_phase8_inverse_numerics": {
+        "passed": 45
+      },
+      "test_phase8_nearcritical": {
+        "passed": 6
+      },
+      "test_phase8_policies": {
+        "passed": 35
+      },
+      "test_phase8_saturation": {
+        "passed": 12
+      },
+      "test_phase8_table_integrity": {
+        "passed": 22
+      },
+      "test_phase9_api": {
+        "passed": 139
+      },
+      "test_phase9_host": {
+        "passed": 21
+      },
+      "test_phase9_inverses": {
+        "passed": 43
+      },
+      "test_phase9_model_jvp": {
+        "passed": 36
+      },
+      "test_phase9_physics": {
+        "passed": 28
+      },
+      "test_property_derivatives": {
+        "passed": 32
+      },
+      "test_public_fluid_constructor": {
+        "passed": 34
+      },
+      "test_saturation_reference_identity": {
+        "passed": 4
+      },
+      "test_solvers_coolprop": {
+        "passed": 126
+      },
+      "test_solvers_equilibrium": {
+        "passed": 96
+      },
+      "test_solvers_metastable": {
+        "passed": 56
+      },
+      "test_source_gas_constant": {
+        "passed": 56
+      },
+      "test_source_references": {
+        "passed": 45
+      },
+      "test_spinodal_calculation": {
+        "passed": 14
+      },
+      "test_state_clipping": {
+        "passed": 33
+      },
+      "test_state_collection_storage": {
+        "passed": 20
+      },
+      "test_state_construction_validation": {
+        "passed": 13
+      },
+      "test_state_contract": {
+        "passed": 35
+      },
+      "test_state_foundation": {
+        "passed": 88
+      },
+      "test_state_lazy_validity": {
+        "passed": 12
+      },
+      "test_test_runner": {
+        "passed": 15
+      },
+      "test_uniform_fluid_contract": {
+        "passed": 140
+      }
+    },
+    "unexpected_failures": 0,
+    "skips": 0,
+    "verification_checks": {
+      "pytest_passed": true,
+      "source_unchanged": true,
+      "source_matches_frozen_candidate": true,
+      "junit_written": true,
+      "no_unexpected_skips": true,
+      "expected_comparisons_preserved": true,
+      "no_failed_comparisons": true,
+      "all_values_accounted_for": true
+    },
+    "verification_passed": true
+  },
+  "full_suite_record": "development/test_audit/results/phase14/followup_20261115/full_20261115_011703_783191/summary.json",
+  "full_runner_exit_code": 0,
+  "formatting": {
+    "tool": "black --check --workers 1",
+    "files": 11,
+    "passed": true
+  },
+  "source_docstrings": {
+    "reference": "C3 ce94b70d",
+    "current": "6f93cb822c058f40fe1e1503f7a92dd0ee185de0eb4b84014c24e919251cec56",
+    "existing_docstrings_checked": 271,
+    "changed_or_removed": [],
+    "passed": true
+  },
+  "performance": {
+    "evidence": "development/performance/phase14/followup_validation.json",
+    "evidence_sha256": "29854758ea3c6aa7c871eb51b5bae86d7eae8b90cd75098dda6ab3c09efb9096",
+    "comparable_warm_cases": 119,
+    "within_original_budget": 114,
+    "above_original_budget": 5,
+    "setup_passed": 22,
+    "setup_total": 22,
+    "cold_passed": 4,
+    "cold_total": 4,
+    "original_budgets_unchanged": true,
+    "user_accepted_remaining_costs": false,
+    "controlled_warm_and_unrestricted_cold_are_separate_cohorts": true
+  },
+  "archives": {
+    "numerical_source": "helper_source.zip",
+    "numerical_source_zip_sha256": "319a93f6473c0b283c1b898cee33030b0114d1c764911c33f6b4d99ab34dc7e0",
+    "raw_evidence": "followup_evidence.zip",
+    "raw_evidence_manifest": "followup_evidence_manifest.json"
+  },
+  "prior_checkpoint": {
+    "source_sha256": "ce94b70d2ddc89fe602a52a2fac8fb71ff5e7f095588431e7d6a5e065611cde3",
+    "verification": "development/performance/phase14_verification.json",
+    "scope": "Historical C3 union, examples and documentation remain separate; this follow-up is one complete green full-suite execution."
+  },
+  "thermopt_run": false,
+  "final_thermopt_phase": 15
+}
