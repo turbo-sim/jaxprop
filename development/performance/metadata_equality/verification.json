@@ -1,0 +1,2878 @@
+{
+  "package": {
+    "candidate_wheel": "C:\\Users\\roagr\\git_projects\\jaxprop\\benchmarks\\results\\metadata_equality\\wheel\\jaxprop-0.6.0-py3-none-any.whl",
+    "candidate_sha256": "bd9d3cdf7ee73ffb096a615f1ed34abd4ced141a18105f09e29c256101e40d71",
+    "baseline_wheel": "C:\\Users\\roagr\\git_projects\\thermopt\\benchmark\\results\\pypi_060\\jaxprop-0.6.0-py3-none-any.whl",
+    "baseline_sha256": "0a8dfb68ca4d21cf97b7483e1da776b946cec108a94d50ebb770bb9848127d3c",
+    "environment": "C:\\Users\\roagr\\git_projects\\results\\thermopt_metadata_fix_20261115",
+    "changed_package_files": [
+      "jaxprop/configuration.py"
+    ],
+    "note": "Unpublished local test wheel built from the equality fix, retaining source version 0.6.0. Identify it by SHA256; it is not the official PyPI artifact."
+  },
+  "jaxprop_suite": {
+    "passed": 3044,
+    "skipped": [
+      {
+        "name": "test_actual_c_reader_matches_exported_values_and_phase_mask[equilibrium]",
+        "type": "pytest.skip",
+        "message": "Optional native C interoperability check: set JAXPROP_TEST_CC or provide cc/gcc/clang"
+      },
+      {
+        "name": "test_actual_c_reader_matches_exported_values_and_phase_mask[metastable_liquid]",
+        "type": "pytest.skip",
+        "message": "Optional native C interoperability check: set JAXPROP_TEST_CC or provide cc/gcc/clang"
+      }
+    ],
+    "failures": 0,
+    "junit_sha256": "db90f65adebf8ba768a8617058a06988cb7ab20b2db44fc86f971d78efce4796"
+  },
+  "native_c_followup": {
+    "passed": 2,
+    "skipped": [],
+    "failures": 0,
+    "junit_sha256": "c9db0758ac8620878d40b2195b031ca191653cbc1807a8181f07716862492adc"
+  },
+  "thermopt_suite": {
+    "passed": 396,
+    "skipped": [
+      {
+        "name": "test_cocurrent_total_heat_is_nonzero_and_balanced",
+        "type": "pytest.xfail",
+        "message": "Existing co-current energy accounting uses hot heat_flow[0], which is zero."
+      },
+      {
+        "name": "test_recompression_reported_energy_balance_closes",
+        "type": "pytest.xfail",
+        "message": "Recompression energy_balance includes auxiliary pump work outside the working-fluid heat duties."
+      },
+      {
+        "name": "test_documented_logcosh_absolute_selector_is_accepted",
+        "type": "pytest.xfail",
+        "message": "Existing API defect: documented 'logcosh' selector is rejected; code accepts 'logarithmic'."
+      },
+      {
+        "name": "test_logarithmic_absolute_remains_finite_at_default_smoothing_scale",
+        "type": "pytest.xfail",
+        "message": "Existing stability defect: direct cosh(x/epsilon) overflows at ordinary inputs and default epsilon."
+      }
+    ],
+    "failures": 0,
+    "junit_sha256": "39cb2b072e31792f7a1b9449c6be0bd40762ad8108a8cf92eadb8668a4ca490b"
+  },
+  "standalone": {
+    "experiment": {
+      "declared_at_utc": "2026-11-15T16:23:11.330413+00:00",
+      "protocol": {
+        "phase": 14,
+        "purpose": "Diagnose and reduce the retained Phase 13 deviations without changing their acceptance budgets.",
+        "reference_points": {
+          "published": "The unchanged official PyPI 0.5.8 wheel pinned by Phase 13.",
+          "frozen": "Phase 13 source 9fc27b79041931d98cbcb8349cdab7d81fe31000a49cd3fe14dc7cd85ebe3651.",
+          "current": "The candidate source hash captured before each experiment."
+        },
+        "default_workers_per_version": 4,
+        "default_samples": 12,
+        "long_repeat_samples": 30,
+        "warmup_calls": 8,
+        "fixed_scalar_calls_per_sample": 48,
+        "fixed_batch_calls_per_sample": 16,
+        "fixed_host_calls_per_sample": 1,
+        "two_version_order": "Frozen/current isolation uses ABBA blocks, repeated for four workers each; an explicit order offset reverses the initial block.",
+        "diagnostics": "Status projections are opt-in, so they do not change the workload mix of the primary gate.",
+        "version_blocks": [
+          [
+            "published",
+            "frozen",
+            "current"
+          ],
+          [
+            "current",
+            "frozen",
+            "published"
+          ],
+          [
+            "frozen",
+            "published",
+            "current"
+          ],
+          [
+            "current",
+            "published",
+            "frozen"
+          ]
+        ],
+        "case_order": "Balanced forward/reverse blocks; identical registered case order and repetition counts on all versions. Every numerical return is synchronized.",
+        "compiler_cache": "A new UUID directory for every worker invocation; no persisted cache reuse between runs.",
+        "primary_outputs": "Complete actual public states and the unchanged status-preserving consumers. Diagnostic projections cannot replace primary workloads or invent published status outputs.",
+        "published_correctness": "Unchanged Phase 13 common-field tolerances and declared semantic differences.",
+        "candidate_correctness": {
+          "scope": "Every actual numerical state field, returned consumer field, status and clipping leaf; exact shapes/dtypes/NaN patterns and semantic metadata.",
+          "floating_rtol": 1e-12,
+          "default_atol": 1e-12,
+          "field_atol": {
+            "pressure": 1e-07,
+            "temperature": 1e-10,
+            "density": 1e-10,
+            "enthalpy": 1e-08,
+            "internal_energy": 1e-08,
+            "entropy": 1e-10,
+            "viscosity": 1e-15,
+            "conductivity": 1e-13
+          },
+          "reference_identity": "Physical metadata is compared; reference identifier representations are retained separately because source-code cache provenance can change. No numerical identity check is moved into repeated state calls."
+        },
+        "budgets": "Original Phase 13 manifest remains authoritative. No budget is widened by this tooling; same-source controls against frozen Phase 13 are reported as additional evidence.",
+        "invalid_run_criteria": [
+          "Source or harness changes during a worker or between controller/worker capture.",
+          "An imported package is outside its declared source directory.",
+          "Published package bytes differ from the pinned wheel.",
+          "Numerical dependencies, interpreter, device, precision or thread settings differ between workers.",
+          "A public evaluation, independent oracle, complete-array comparison or expected successful status check fails."
+        ],
+        "host_observations": "Record load averages and process CPU/context information when available; retain every sample. Do not stop unrelated user processes or remove slow observations after seeing results.",
+        "cold_measurement": "The unchanged first synchronized public call remains primary. Optional lower/compile/first-executable diagnostics use separate fresh workers and are never summed and relabeled as that call."
+      },
+      "baseline": {
+        "resolved_at_utc": "2026-11-14T12:55:25.738762+00:00",
+        "source": "https://pypi.org/pypi/jaxprop/json",
+        "pypi_project_url": "https://pypi.org/project/jaxprop/",
+        "api_current_version": "0.5.8",
+        "latest_non_yanked_stable": "0.5.8",
+        "wheel_filename": "jaxprop-0.5.8-py3-none-any.whl",
+        "wheel_url": "https://files.pythonhosted.org/packages/5b/21/62a2e3f7f6719b1870fbb66f4bd99dccdeec3e82854cf74dd74b45bcd9e8/jaxprop-0.5.8-py3-none-any.whl",
+        "wheel_sha256": "3b6db9bfa5bd9ee37a4c3441f92f86b772e0c88ce8609bf76d32c322fbc795a3",
+        "wheel_bytes": 68539,
+        "uploaded_utc": "2026-10-28T11:23:58.378231Z",
+        "requires_python": "<3.14,>=3.11",
+        "requires_dist": [
+          "CoolProp (>=7.0.0,<8.0.0)",
+          "diffrax (>=0.7.0,<0.8.0)",
+          "equinox (>=0.12.0,<0.13.0)",
+          "jax (>=0.6.0,<0.7.0)",
+          "jaxlib (>=0.6.0,<0.7.0)",
+          "matplotlib (>=3.10.6,<4.0.0)",
+          "numpy (>=2.3.0,<3.0.0)",
+          "optimistix (>=0.0.10,<0.0.11)",
+          "pysolver_view (>=0.7.1,<1.0.0)",
+          "scipy (>=1.16.1,<2.0.0)",
+          "tqdm (>=4.67.1,<5.0.0)"
+        ],
+        "pypi_metadata_sha256": "49194dca0942e93907e8b2e0f0ca26bf366ae4f9664b095f4909b4375b062dfb",
+        "installed": true,
+        "isolated_source_directory": "development/performance/results/phase13/published",
+        "install_command": "python -m pip install --no-deps --no-compile --no-index --target development/performance/results/phase13/published development/performance/phase13/baseline/jaxprop-0.5.8-py3-none-any.whl"
+      },
+      "sources": {
+        "frozen": "C:\\Users\\roagr\\git_projects\\jaxprop\\benchmarks\\results\\metadata_equality\\reference",
+        "current": "C:\\Users\\roagr\\git_projects\\jaxprop"
+      },
+      "source_hashes": {
+        "frozen": "e8fa7006fee32f89f4c001a113b4cd8acc03c9e77a9dad230fa03c9537f5f07a",
+        "current": "3c44404a39afcdd1a7250f52738c116544e198034a523da01647edfd63ca9498"
+      },
+      "frozen_reference_sha256": "e8fa7006fee32f89f4c001a113b4cd8acc03c9e77a9dad230fa03c9537f5f07a",
+      "harness_sha256": "8d201c19111bf20a73f8df5c0d99c3597376229f2c4e9d5e71a6be12c87cb2e8",
+      "suite": "native",
+      "case_filters": [
+        "^(pg_matched|bicubic_CO2)_(eager|compiled)_HP_(scalar|batch1024)$",
+        "^(pg_matched|bicubic_CO2)_compiled_(compressor|expander|heat_exchanger_128cells)$"
+      ],
+      "samples": 12,
+      "workers_per_version": 2,
+      "version_order": [
+        "frozen",
+        "current",
+        "current",
+        "frozen"
+      ],
+      "fixed_scalar_calls": 48,
+      "fixed_batch_calls": 16,
+      "fixed_host_calls": 1,
+      "diagnostics": false,
+      "order_offset": 0,
+      "original_acceptance": {
+        "declared_before_acceptance_timings": true,
+        "baseline": "Latest stable non-yanked official PyPI release resolved at phase start; pinned wheel and SHA256 in baseline_manifest.json.",
+        "primary_output": "Complete actual public FluidState return, all numerical leaves synchronized; no lazy/export-only substitute for full-state timing.",
+        "warmup_calls": 8,
+        "maximum_target_sample_microseconds": 20000,
+        "repetition_calibration": "Before acceptance, cap requested repetitions using eight untimed warmups to target20ms for slow workloads; never belowone call. Fastnative calls retain requested repetitions. Record perworker effectivecalls, normalizepercall,alternatevariantsacrosssamples,keep9samples/4workers andallaccuracy/budgetrequirements.",
+        "samples_per_worker": 9,
+        "independent_workers_per_version": 4,
+        "order": [
+          "baseline",
+          "current",
+          "current",
+          "baseline",
+          "baseline",
+          "current",
+          "current",
+          "baseline"
+        ],
+        "budgets": {
+          "warmed_evaluation_ratio": 1.1,
+          "accepted_phase7_pg_compiled_batch_ratio": 1.4,
+          "accepted_phase7_scope": "Only explicitly identified closed-model PG compiled 1024-state complete returns (PT/HP/PS and scalar/array pressure variants), within the user's previously accepted 31-38% complete-batch tradeoff. This scope is declared before acceptance timing. Strict 10% flags remain visible. No dynamic-model/consumer/projection exceptions are inferred.",
+          "construction": {
+            "ratio": 1.25,
+            "additional_microseconds": 10000,
+            "reason": "Required verified source/reference/native identity and calibration prepared at setup; approximately 4 ms source provenance cost recorded in Phase11."
+          },
+          "cached_loading": {
+            "ratio": 1.25,
+            "additional_microseconds": 100000,
+            "reason": "Full manifest, source/native/reference and numerical payload validation retained; accepted Phase11 loading is approximately92 ms versus original approximately23 ms. No validation disabled."
+          },
+          "fresh_generation": {
+            "ratio": 1.25,
+            "additional_microseconds": 100000,
+            "reason": "Additional construction-time source-domain/envelope validation; equal physical domain/resolution/gradient settings required."
+          },
+          "first_public_call": {
+            "ratio": 1.5,
+            "additional_microseconds": 100000,
+            "reason": "Separate cold compilation/binding cost, including complete states/status and additional materialized properties."
+          },
+          "state_inspection": {
+            "ratio": 1.1,
+            "additional_microseconds": 25,
+            "reason": "Diagnostic property/metadata access now enforces supported/available fields; not a thermodynamic evaluation substitute."
+          },
+          "state_construction": {
+            "ratio": 1.1,
+            "additional_microseconds": 1000,
+            "batch_additional_microseconds": 2000,
+            "reason": "Public user-created states now validate canonical schema, availability, shape, status and immutable metadata. Evaluator trusted assembly remains included in full-state timings."
+          }
+        },
+        "correctness": {
+          "default_rtol": 1e-07,
+          "field_atol": {
+            "pressure": 0.001,
+            "temperature": 1e-06,
+            "density": 1e-06,
+            "enthalpy": 1e-05,
+            "internal_energy": 1e-05,
+            "entropy": 1e-06,
+            "viscosity": 1e-13,
+            "conductivity": 1e-10,
+            "quality_mass": 1e-09,
+            "quality_volume": 1e-09
+          },
+          "unavailable": "NaNs only match when both outcomes are declared unavailable. Intentional changed optional-property definitions are excluded by explicit per-case field lists and recorded as semantic differences.",
+          "shape": "Keep actual returned shapes and dtypes in timing records. Compare complete arrays and unavailable masks, not sampled values. Only declared old PG broadcast/scalar-pressure cases may expand their genuine scalar/partial-axis constant coordinates to the common physical shape outside timing. Arbitrary unequal lengths cannot pass.",
+          "status": "Validate all current primal statuses; legacy has no status and receives no fabricated status success output.",
+          "pg": "Matched public-model constants/reference/transport parameters allow common13 equality; as-shipped calibration differences receive independent per-model identities and explicit comparison exclusions.",
+          "tables": "Identical declared domains/resolutions/gradient settings and independent source checks at1e-3 relative interpolation accuracy plus AD-vs-finite-difference1e-5; cross-version field tolerances remain tighter. No demand for bitwise identical old coefficient arrays after intentional source repairs.",
+          "homogeneous_water_model_correction": "Only explicitly named Water homogeneous/metastable cases allow cross-version rtol3e-5 for the repaired universal-vs-source gas-constant bias (old liquid pressure error about1.064e-5 relative). The two vapor_HP_inverse cases alone use5e-5 because the same known physical-model bias shifts their inverse density/temperature roots by up to3.6888e-5. Current states must still pass strict independent raw-source checks; old p/h/u/s must match the independently reconstructed published gas-constant formula. Solver tolerances remain matched; these are documented physical-model corrections, not arbitrary root-error allowances."
+        },
+        "unique_python_numbers": "Use never-before-seen timed Python floats, not previously warmed validation inputs; record compiler events and including-compilation time separately from warmed JAX-array calls.",
+        "scope_limits": [
+          "CPU/x64 device profile; no inferred GPU performance.",
+          "Optional REFPROP is run when installed, with absence explicit.",
+          "New-only functionality has independent checks and no invented published-version speedup.",
+          "Standalone JaxProp consumers only; ThermOpt remains final Phase14."
+        ]
+      },
+      "validate_only": false,
+      "cpu_affinity_requested": "0xffff",
+      "cpu_affinity_scope": "Own worker before numerical imports; inherited when omitted; actual mask verified in worker environment"
+    },
+    "correctness_passed": true,
+    "cases": {
+      "pg_matched_eager_HP_scalar": {
+        "manifest": {
+          "name": "pg_matched_eager_HP_scalar",
+          "calls": 48,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "isobaric_heat_capacity",
+            "isochoric_heat_capacity",
+            "heat_capacity_ratio",
+            "speed_of_sound",
+            "viscosity",
+            "conductivity",
+            "compressibility_factor",
+            "gruneisen"
+          ],
+          "category": "full_state",
+          "budget": 1.1,
+          "note": "",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 32,
+          "fixed_repetition_class": "scalar"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            48.93333333333334,
+            47.811458333333334
+          ],
+          "current": [
+            48.682291666666664,
+            45.859375
+          ]
+        },
+        "median_us": {
+          "frozen": 48.372395833333336,
+          "current": 47.27083333333333
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              48.275,
+              51.04375,
+              49.302083333333336,
+              53.99583333333334,
+              41.94375,
+              41.62916666666666,
+              51.28333333333334,
+              50.36875,
+              45.12291666666666,
+              52.708333333333336,
+              46.96666666666666,
+              48.56458333333334
+            ],
+            "median": 48.93333333333334,
+            "calls_per_sample": 48
+          },
+          "current1": {
+            "microseconds_per_call": [
+              61.09166666666666,
+              50.791666666666664,
+              48.87291666666666,
+              48.49166666666667,
+              45.725,
+              46.27708333333334,
+              50.875,
+              52.6,
+              46.172916666666666,
+              43.833333333333336,
+              53.2125,
+              46.62916666666666
+            ],
+            "median": 48.682291666666664,
+            "calls_per_sample": 48
+          },
+          "current2": {
+            "microseconds_per_call": [
+              46.4625,
+              50.72083333333334,
+              46.702083333333334,
+              50.985416666666666,
+              44.170833333333334,
+              43.89791666666667,
+              44.56875,
+              45.06458333333334,
+              50.3,
+              50.4375,
+              43.5625,
+              45.25625
+            ],
+            "median": 45.859375,
+            "calls_per_sample": 48
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              54.7,
+              56.20625,
+              50.083333333333336,
+              48.87083333333334,
+              41.639583333333334,
+              46.75208333333334,
+              51.71875,
+              46.59375,
+              44.12083333333334,
+              44.510416666666664,
+              44.11875,
+              52.875
+            ],
+            "median": 47.811458333333334,
+            "calls_per_sample": 48
+          }
+        },
+        "candidate_to_frozen_ratio": 0.9772274562584117,
+        "above_frozen_10_percent": false
+      },
+      "pg_matched_compiled_HP_scalar": {
+        "manifest": {
+          "name": "pg_matched_compiled_HP_scalar",
+          "calls": 48,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "isobaric_heat_capacity",
+            "isochoric_heat_capacity",
+            "heat_capacity_ratio",
+            "speed_of_sound",
+            "viscosity",
+            "conductivity",
+            "compressibility_factor",
+            "gruneisen"
+          ],
+          "category": "full_state",
+          "budget": 1.1,
+          "note": "",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 32,
+          "fixed_repetition_class": "scalar"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            32.80625,
+            33.677083333333336
+          ],
+          "current": [
+            32.97395833333333,
+            31.59166666666667
+          ]
+        },
+        "median_us": {
+          "frozen": 33.24166666666667,
+          "current": 32.2828125
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              31.429166666666667,
+              34.608333333333334,
+              32.9875,
+              33.725,
+              34.145833333333336,
+              31.414583333333333,
+              30.71666666666667,
+              38.40625,
+              32.19375,
+              31.6125,
+              34.12083333333334,
+              32.625
+            ],
+            "median": 32.80625,
+            "calls_per_sample": 48
+          },
+          "current1": {
+            "microseconds_per_call": [
+              31.333333333333332,
+              33.69375,
+              34.8375,
+              35.110416666666666,
+              30.67291666666667,
+              32.58333333333333,
+              34.07083333333333,
+              36.58125,
+              29.602083333333333,
+              29.3875,
+              33.364583333333336,
+              31.633333333333333
+            ],
+            "median": 32.97395833333333,
+            "calls_per_sample": 48
+          },
+          "current2": {
+            "microseconds_per_call": [
+              34.0625,
+              31.80625,
+              32.80625,
+              31.239583333333332,
+              30.104166666666668,
+              31.027083333333334,
+              29.37291666666667,
+              31.447916666666668,
+              31.64166666666667,
+              31.541666666666668,
+              35.21458333333334,
+              39.15416666666666
+            ],
+            "median": 31.59166666666667,
+            "calls_per_sample": 48
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              33.49375,
+              48.05,
+              33.577083333333334,
+              34.87708333333334,
+              29.7375,
+              31.7625,
+              35.547916666666666,
+              36.31041666666666,
+              33.047916666666666,
+              34.47083333333334,
+              33.77708333333334,
+              32.48958333333333
+            ],
+            "median": 33.677083333333336,
+            "calls_per_sample": 48
+          }
+        },
+        "candidate_to_frozen_ratio": 0.9711550513913261,
+        "above_frozen_10_percent": false
+      },
+      "pg_matched_eager_HP_batch1024": {
+        "manifest": {
+          "name": "pg_matched_eager_HP_batch1024",
+          "calls": 16,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "isobaric_heat_capacity",
+            "isochoric_heat_capacity",
+            "heat_capacity_ratio",
+            "speed_of_sound",
+            "viscosity",
+            "conductivity",
+            "compressibility_factor",
+            "gruneisen"
+          ],
+          "category": "full_state",
+          "budget": 1.1,
+          "note": "",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 12,
+          "fixed_repetition_class": "batch"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            99.825,
+            105.315625
+          ],
+          "current": [
+            97.134375,
+            101.83125000000001
+          ]
+        },
+        "median_us": {
+          "frozen": 102.5703125,
+          "current": 99.48281250000001
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              183.53125,
+              79.91875,
+              108.6125,
+              80.50625,
+              119.35625,
+              102.65625,
+              88.0875,
+              105.44375,
+              117.88125,
+              89.875,
+              96.99375,
+              79.18125
+            ],
+            "median": 99.825,
+            "calls_per_sample": 16
+          },
+          "current1": {
+            "microseconds_per_call": [
+              212.375,
+              88.46875,
+              129.275,
+              94.06875,
+              98.125,
+              106.59375,
+              96.14375,
+              82.33125,
+              102.71875,
+              94.66875,
+              112.425,
+              94.9375
+            ],
+            "median": 97.134375,
+            "calls_per_sample": 16
+          },
+          "current2": {
+            "microseconds_per_call": [
+              154.5375,
+              79.29375,
+              109.2625,
+              87.66875,
+              99.075,
+              141.9,
+              97.93125,
+              87.8375,
+              113.6,
+              85.79375,
+              207.51875,
+              104.5875
+            ],
+            "median": 101.83125000000001,
+            "calls_per_sample": 16
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              240.0125,
+              109.775,
+              152.64375,
+              96.28125,
+              112.0875,
+              88.18125,
+              108.6,
+              95.4,
+              111.5875,
+              87.59375,
+              102.03125,
+              97.325
+            ],
+            "median": 105.315625,
+            "calls_per_sample": 16
+          }
+        },
+        "candidate_to_frozen_ratio": 0.9698986975397975,
+        "above_frozen_10_percent": false
+      },
+      "pg_matched_compiled_HP_batch1024": {
+        "manifest": {
+          "name": "pg_matched_compiled_HP_batch1024",
+          "calls": 16,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "isobaric_heat_capacity",
+            "isochoric_heat_capacity",
+            "heat_capacity_ratio",
+            "speed_of_sound",
+            "viscosity",
+            "conductivity",
+            "compressibility_factor",
+            "gruneisen"
+          ],
+          "category": "full_state",
+          "budget": 1.4,
+          "note": " Prior accepted Phase7 closed-model1024 full-state batch family, including PT/HP/PS and scalar/arraypressure; scope clarified before acceptance timing. Strict10% flag remains visible.",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 12,
+          "fixed_repetition_class": "batch"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            78.134375,
+            82.271875
+          ],
+          "current": [
+            76.984375,
+            79.609375
+          ]
+        },
+        "median_us": {
+          "frozen": 80.203125,
+          "current": 78.296875
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              74.69375,
+              79.19375,
+              78.65625,
+              71.7,
+              77.6125,
+              73.0375,
+              79.825,
+              79.68125,
+              81.7,
+              73.45,
+              71.08125,
+              79.18125
+            ],
+            "median": 78.134375,
+            "calls_per_sample": 16
+          },
+          "current1": {
+            "microseconds_per_call": [
+              83.775,
+              73.85,
+              82.4375,
+              80.58125,
+              76.26875,
+              81.38125,
+              83.45625,
+              72.29375,
+              77.7,
+              73.21875,
+              73.80625,
+              74.29375
+            ],
+            "median": 76.984375,
+            "calls_per_sample": 16
+          },
+          "current2": {
+            "microseconds_per_call": [
+              74.20625,
+              74.73125,
+              80.50625,
+              78.0375,
+              89.35625,
+              82.9375,
+              71.68125,
+              77.3125,
+              80.15625,
+              80.36875,
+              80.325,
+              79.0625
+            ],
+            "median": 79.609375,
+            "calls_per_sample": 16
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              94.45625,
+              100.7125,
+              92.44375,
+              87.99375,
+              74.4125,
+              73.30625,
+              81.81875,
+              74.475,
+              74.65625,
+              74.5125,
+              82.725,
+              82.925
+            ],
+            "median": 82.271875,
+            "calls_per_sample": 16
+          }
+        },
+        "candidate_to_frozen_ratio": 0.976232222871615,
+        "above_frozen_10_percent": false
+      },
+      "bicubic_CO2_eager_HP_scalar": {
+        "manifest": {
+          "name": "bicubic_CO2_eager_HP_scalar",
+          "calls": 48,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "internal_energy",
+            "isobaric_heat_capacity",
+            "isochoric_heat_capacity",
+            "heat_capacity_ratio",
+            "speed_of_sound",
+            "viscosity",
+            "conductivity"
+          ],
+          "category": "full_state",
+          "budget": 1.1,
+          "note": "",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 32,
+          "fixed_repetition_class": "scalar"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            84.61666666666666,
+            85.93958333333333
+          ],
+          "current": [
+            81.32395833333334,
+            80.53958333333334
+          ]
+        },
+        "median_us": {
+          "frozen": 85.27812499999999,
+          "current": 80.93177083333333
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              73.44375,
+              88.02708333333332,
+              86.82708333333333,
+              80.31666666666668,
+              85.05833333333332,
+              88.72916666666667,
+              87.48125,
+              79.02083333333333,
+              89.36875,
+              74.02291666666667,
+              79.02291666666667,
+              84.175
+            ],
+            "median": 84.61666666666666,
+            "calls_per_sample": 48
+          },
+          "current1": {
+            "microseconds_per_call": [
+              70.97083333333333,
+              80.84375,
+              85.91458333333333,
+              142.58333333333334,
+              83.04583333333333,
+              83.0625,
+              95.47291666666668,
+              72.18958333333333,
+              75.42916666666667,
+              73.91875,
+              72.16458333333333,
+              81.80416666666667
+            ],
+            "median": 81.32395833333334,
+            "calls_per_sample": 48
+          },
+          "current2": {
+            "microseconds_per_call": [
+              71.48541666666667,
+              203.48333333333335,
+              80.7,
+              93.1,
+              79.12708333333333,
+              70.16875,
+              76.30625,
+              73.14375,
+              80.86666666666667,
+              99.39583333333333,
+              80.37916666666668,
+              83.20208333333333
+            ],
+            "median": 80.53958333333334,
+            "calls_per_sample": 48
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              100.60833333333333,
+              115.18125,
+              116.64583333333333,
+              67.42916666666667,
+              80.47291666666668,
+              75.16041666666668,
+              85.26875,
+              86.61041666666667,
+              82.71666666666667,
+              90.85833333333333,
+              93.95625,
+              75.65625
+            ],
+            "median": 85.93958333333333,
+            "calls_per_sample": 48
+          }
+        },
+        "candidate_to_frozen_ratio": 0.9490331879756191,
+        "above_frozen_10_percent": false
+      },
+      "bicubic_CO2_compiled_HP_scalar": {
+        "manifest": {
+          "name": "bicubic_CO2_compiled_HP_scalar",
+          "calls": 48,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "internal_energy",
+            "isobaric_heat_capacity",
+            "isochoric_heat_capacity",
+            "heat_capacity_ratio",
+            "speed_of_sound",
+            "viscosity",
+            "conductivity"
+          ],
+          "category": "full_state",
+          "budget": 1.1,
+          "note": "",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 32,
+          "fixed_repetition_class": "scalar"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            54.140625,
+            57.55520833333334
+          ],
+          "current": [
+            53.12083333333333,
+            54.55833333333334
+          ]
+        },
+        "median_us": {
+          "frozen": 55.84791666666667,
+          "current": 53.83958333333334
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              53.64375,
+              60.84166666666666,
+              47.16875,
+              60.895833333333336,
+              50.266666666666666,
+              48.0875,
+              52.62708333333334,
+              59.635416666666664,
+              54.6375,
+              55.577083333333334,
+              49.2375,
+              60.27291666666667
+            ],
+            "median": 54.140625,
+            "calls_per_sample": 48
+          },
+          "current1": {
+            "microseconds_per_call": [
+              44.733333333333334,
+              59.46041666666667,
+              54.479166666666664,
+              60.302083333333336,
+              62.74791666666666,
+              49.645833333333336,
+              55.72708333333333,
+              51.885416666666664,
+              52.49791666666666,
+              53.74375,
+              50.55416666666667,
+              44.68125
+            ],
+            "median": 53.12083333333333,
+            "calls_per_sample": 48
+          },
+          "current2": {
+            "microseconds_per_call": [
+              48.516666666666666,
+              53.854166666666664,
+              58.30625,
+              51.860416666666666,
+              52.14375,
+              52.9,
+              62.10208333333333,
+              54.89791666666667,
+              54.21875,
+              57.520833333333336,
+              61.4875,
+              55.697916666666664
+            ],
+            "median": 54.55833333333334,
+            "calls_per_sample": 48
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              60.141666666666666,
+              77.96666666666667,
+              71.0125,
+              52.975,
+              56.30625,
+              52.18541666666666,
+              58.483333333333334,
+              61.93541666666666,
+              49.27916666666666,
+              48.42916666666667,
+              58.84166666666666,
+              56.62708333333334
+            ],
+            "median": 57.55520833333334,
+            "calls_per_sample": 48
+          }
+        },
+        "candidate_to_frozen_ratio": 0.9640392434811803,
+        "above_frozen_10_percent": false
+      },
+      "bicubic_CO2_eager_HP_batch1024": {
+        "manifest": {
+          "name": "bicubic_CO2_eager_HP_batch1024",
+          "calls": 16,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "internal_energy",
+            "isobaric_heat_capacity",
+            "isochoric_heat_capacity",
+            "heat_capacity_ratio",
+            "speed_of_sound",
+            "viscosity",
+            "conductivity"
+          ],
+          "category": "full_state",
+          "budget": 1.1,
+          "note": "",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 12,
+          "fixed_repetition_class": "batch"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            174.90625,
+            177.9875
+          ],
+          "current": [
+            179.615625,
+            167.565625
+          ]
+        },
+        "median_us": {
+          "frozen": 176.446875,
+          "current": 173.590625
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              152.4875,
+              197.86875,
+              176.9375,
+              149.7625,
+              180.14375,
+              183.8125,
+              145.5875,
+              195.56875,
+              172.875,
+              163.95625,
+              179.21875,
+              166.49375
+            ],
+            "median": 174.90625,
+            "calls_per_sample": 16
+          },
+          "current1": {
+            "microseconds_per_call": [
+              200.94375,
+              145.55625,
+              206.7875,
+              196.65625,
+              177.85,
+              171.4125,
+              200.48125,
+              161.26875,
+              191.7875,
+              181.38125,
+              164.08125,
+              160.38125
+            ],
+            "median": 179.615625,
+            "calls_per_sample": 16
+          },
+          "current2": {
+            "microseconds_per_call": [
+              156.8,
+              155.9125,
+              166.69375,
+              175.7,
+              167.63125,
+              150.2375,
+              170.68125,
+              185.93125,
+              158.2875,
+              167.5,
+              178.43125,
+              177.65
+            ],
+            "median": 167.565625,
+            "calls_per_sample": 16
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              394.94375,
+              242.525,
+              253.3125,
+              163.4875,
+              167.43125,
+              166.5125,
+              172.05,
+              176.73125,
+              179.59375,
+              202.0,
+              179.24375,
+              160.45
+            ],
+            "median": 177.9875,
+            "calls_per_sample": 16
+          }
+        },
+        "candidate_to_frozen_ratio": 0.9838124081256752,
+        "above_frozen_10_percent": false
+      },
+      "bicubic_CO2_compiled_HP_batch1024": {
+        "manifest": {
+          "name": "bicubic_CO2_compiled_HP_batch1024",
+          "calls": 16,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "internal_energy",
+            "isobaric_heat_capacity",
+            "isochoric_heat_capacity",
+            "heat_capacity_ratio",
+            "speed_of_sound",
+            "viscosity",
+            "conductivity"
+          ],
+          "category": "full_state",
+          "budget": 1.1,
+          "note": "",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 12,
+          "fixed_repetition_class": "batch"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            128.434375,
+            148.64375
+          ],
+          "current": [
+            131.409375,
+            123.178125
+          ]
+        },
+        "median_us": {
+          "frozen": 138.5390625,
+          "current": 127.29375
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              123.25625,
+              161.38125,
+              119.90625,
+              114.725,
+              118.9625,
+              135.325,
+              114.95,
+              149.45,
+              126.3,
+              165.925,
+              130.56875,
+              133.3875
+            ],
+            "median": 128.434375,
+            "calls_per_sample": 16
+          },
+          "current1": {
+            "microseconds_per_call": [
+              131.38125,
+              118.15,
+              135.63125,
+              150.73125,
+              117.41875,
+              125.95625,
+              149.45,
+              133.59375,
+              133.0375,
+              131.4375,
+              113.8375,
+              128.9625
+            ],
+            "median": 131.409375,
+            "calls_per_sample": 16
+          },
+          "current2": {
+            "microseconds_per_call": [
+              103.34375,
+              115.95,
+              114.19375,
+              125.10625,
+              121.25,
+              134.86875,
+              113.19375,
+              143.53125,
+              135.775,
+              130.3,
+              119.05,
+              155.16875
+            ],
+            "median": 123.178125,
+            "calls_per_sample": 16
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              231.51875,
+              207.6875,
+              166.86875,
+              166.90625,
+              110.075,
+              149.875,
+              133.08125,
+              147.4125,
+              125.84375,
+              137.2875,
+              138.5375,
+              156.06875
+            ],
+            "median": 148.64375,
+            "calls_per_sample": 16
+          }
+        },
+        "candidate_to_frozen_ratio": 0.918829301302656,
+        "above_frozen_10_percent": false
+      },
+      "pg_matched_compiled_compressor": {
+        "manifest": {
+          "name": "pg_matched_compiled_compressor",
+          "calls": 48,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "internal_energy"
+          ],
+          "category": "consumer",
+          "budget": 1.1,
+          "note": "Real current status arrays are returned; published absence is recorded, never replaced with invented status.",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 32,
+          "fixed_repetition_class": "scalar"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            11.665624999999999,
+            12.78125
+          ],
+          "current": [
+            11.4875,
+            11.427083333333334
+          ]
+        },
+        "median_us": {
+          "frozen": 12.2234375,
+          "current": 11.457291666666666
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              10.760416666666666,
+              13.685416666666667,
+              13.333333333333334,
+              11.147916666666665,
+              15.354166666666666,
+              11.470833333333333,
+              11.860416666666666,
+              12.6125,
+              11.1,
+              10.789583333333335,
+              12.44375,
+              11.347916666666666
+            ],
+            "median": 11.665624999999999,
+            "calls_per_sample": 48
+          },
+          "current1": {
+            "microseconds_per_call": [
+              11.547916666666666,
+              11.235416666666666,
+              14.20625,
+              13.45,
+              11.427083333333334,
+              11.091666666666667,
+              12.18125,
+              11.925,
+              11.3875,
+              10.79375,
+              11.7875,
+              10.941666666666666
+            ],
+            "median": 11.4875,
+            "calls_per_sample": 48
+          },
+          "current2": {
+            "microseconds_per_call": [
+              11.695833333333335,
+              11.677083333333334,
+              13.5375,
+              11.14375,
+              12.091666666666667,
+              11.1875,
+              11.320833333333335,
+              11.314583333333333,
+              11.939583333333333,
+              10.225,
+              11.383333333333335,
+              11.470833333333333
+            ],
+            "median": 11.427083333333334,
+            "calls_per_sample": 48
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              22.34583333333333,
+              13.754166666666666,
+              13.252083333333333,
+              13.16875,
+              11.045833333333334,
+              11.45625,
+              12.9625,
+              11.758333333333335,
+              13.335416666666665,
+              11.395833333333334,
+              12.6,
+              12.508333333333335
+            ],
+            "median": 12.78125,
+            "calls_per_sample": 48
+          }
+        },
+        "candidate_to_frozen_ratio": 0.9373215731390345,
+        "above_frozen_10_percent": false
+      },
+      "pg_matched_compiled_expander": {
+        "manifest": {
+          "name": "pg_matched_compiled_expander",
+          "calls": 48,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "internal_energy"
+          ],
+          "category": "consumer",
+          "budget": 1.1,
+          "note": "Real current status arrays are returned; published absence is recorded, never replaced with invented status.",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 32,
+          "fixed_repetition_class": "scalar"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            11.796875,
+            12.286458333333334
+          ],
+          "current": [
+            12.030208333333334,
+            11.34375
+          ]
+        },
+        "median_us": {
+          "frozen": 12.041666666666668,
+          "current": 11.686979166666667
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              10.302083333333334,
+              13.30625,
+              15.783333333333333,
+              11.941666666666666,
+              11.652083333333334,
+              11.533333333333333,
+              12.45625,
+              14.020833333333334,
+              10.75,
+              10.827083333333334,
+              12.366666666666665,
+              11.3375
+            ],
+            "median": 11.796875,
+            "calls_per_sample": 48
+          },
+          "current1": {
+            "microseconds_per_call": [
+              11.902083333333334,
+              11.45625,
+              12.345833333333333,
+              12.504166666666666,
+              12.158333333333333,
+              11.252083333333333,
+              12.364583333333334,
+              11.545833333333334,
+              11.047916666666666,
+              12.404166666666667,
+              12.4125,
+              10.895833333333334
+            ],
+            "median": 12.030208333333334,
+            "calls_per_sample": 48
+          },
+          "current2": {
+            "microseconds_per_call": [
+              11.377083333333333,
+              11.658333333333333,
+              12.095833333333333,
+              11.310416666666667,
+              13.445833333333335,
+              11.48125,
+              10.8625,
+              11.175,
+              12.11875,
+              10.3875,
+              11.091666666666667,
+              11.035416666666666
+            ],
+            "median": 11.34375,
+            "calls_per_sample": 48
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              17.958333333333332,
+              13.704166666666666,
+              12.88125,
+              12.397916666666665,
+              10.747916666666667,
+              11.5375,
+              12.920833333333334,
+              12.041666666666666,
+              12.283333333333333,
+              11.897916666666665,
+              12.252083333333333,
+              12.289583333333335
+            ],
+            "median": 12.286458333333334,
+            "calls_per_sample": 48
+          }
+        },
+        "candidate_to_frozen_ratio": 0.9705449826989618,
+        "above_frozen_10_percent": false
+      },
+      "pg_matched_compiled_heat_exchanger_128cells": {
+        "manifest": {
+          "name": "pg_matched_compiled_heat_exchanger_128cells",
+          "calls": 16,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "internal_energy"
+          ],
+          "category": "consumer",
+          "budget": 1.1,
+          "note": "Two full public batch calls; numerical output and both real current status arrays are retained.",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 32,
+          "fixed_repetition_class": "batch"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            21.771875,
+            20.125
+          ],
+          "current": [
+            19.5375,
+            19.734375
+          ]
+        },
+        "median_us": {
+          "frozen": 20.9484375,
+          "current": 19.6359375
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              26.075,
+              18.84375,
+              22.175,
+              18.74375,
+              24.29375,
+              16.7125,
+              22.9375,
+              25.725,
+              21.36875,
+              14.8875,
+              23.16875,
+              16.7375
+            ],
+            "median": 21.771875,
+            "calls_per_sample": 16
+          },
+          "current1": {
+            "microseconds_per_call": [
+              23.6625,
+              21.86875,
+              22.20625,
+              21.2,
+              18.21875,
+              16.7,
+              20.09375,
+              17.7,
+              22.64375,
+              16.4625,
+              18.98125,
+              16.18125
+            ],
+            "median": 19.5375,
+            "calls_per_sample": 16
+          },
+          "current2": {
+            "microseconds_per_call": [
+              21.00625,
+              15.39375,
+              21.09375,
+              24.675,
+              19.8125,
+              18.69375,
+              19.65625,
+              22.83125,
+              23.28125,
+              17.875,
+              19.34375,
+              16.15625
+            ],
+            "median": 19.734375,
+            "calls_per_sample": 16
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              37.275,
+              26.6125,
+              29.71875,
+              19.8625,
+              19.64375,
+              15.08125,
+              24.00625,
+              17.18125,
+              20.3875,
+              17.8375,
+              21.95,
+              18.93125
+            ],
+            "median": 20.125,
+            "calls_per_sample": 16
+          }
+        },
+        "candidate_to_frozen_ratio": 0.9373461624524502,
+        "above_frozen_10_percent": false
+      },
+      "bicubic_CO2_compiled_compressor": {
+        "manifest": {
+          "name": "bicubic_CO2_compiled_compressor",
+          "calls": 48,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "internal_energy"
+          ],
+          "category": "consumer",
+          "budget": 1.1,
+          "note": "Real current status arrays are returned; published absence is recorded, never replaced with invented status.",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 32,
+          "fixed_repetition_class": "scalar"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            21.325000000000003,
+            21.780208333333334
+          ],
+          "current": [
+            19.910416666666666,
+            19.946875
+          ]
+        },
+        "median_us": {
+          "frozen": 21.55260416666667,
+          "current": 19.928645833333334
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              20.81041666666667,
+              20.441666666666666,
+              22.302083333333332,
+              20.4625,
+              23.447916666666668,
+              21.839583333333334,
+              23.535416666666666,
+              25.727083333333333,
+              25.847916666666666,
+              17.10833333333333,
+              20.74791666666667,
+              18.804166666666667
+            ],
+            "median": 21.325000000000003,
+            "calls_per_sample": 48
+          },
+          "current1": {
+            "microseconds_per_call": [
+              24.19375,
+              18.08125,
+              23.93125,
+              23.741666666666667,
+              19.914583333333333,
+              18.95416666666667,
+              23.65625,
+              19.90625,
+              19.104166666666668,
+              22.6125,
+              19.245833333333334,
+              17.3
+            ],
+            "median": 19.910416666666666,
+            "calls_per_sample": 48
+          },
+          "current2": {
+            "microseconds_per_call": [
+              22.50208333333333,
+              18.7375,
+              20.039583333333333,
+              19.285416666666666,
+              21.81875,
+              19.854166666666668,
+              19.575,
+              22.49375,
+              20.552083333333332,
+              19.58125,
+              24.98541666666667,
+              19.37708333333333
+            ],
+            "median": 19.946875,
+            "calls_per_sample": 48
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              32.06458333333333,
+              31.08125,
+              22.525,
+              20.86041666666667,
+              22.333333333333332,
+              18.1,
+              23.04375,
+              18.51666666666667,
+              26.26458333333333,
+              21.13958333333333,
+              20.177083333333332,
+              21.227083333333333
+            ],
+            "median": 21.780208333333334,
+            "calls_per_sample": 48
+          }
+        },
+        "candidate_to_frozen_ratio": 0.9246514100674222,
+        "above_frozen_10_percent": false
+      },
+      "bicubic_CO2_compiled_expander": {
+        "manifest": {
+          "name": "bicubic_CO2_compiled_expander",
+          "calls": 48,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "internal_energy"
+          ],
+          "category": "consumer",
+          "budget": 1.1,
+          "note": "Real current status arrays are returned; published absence is recorded, never replaced with invented status.",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 32,
+          "fixed_repetition_class": "scalar"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            22.442708333333336,
+            22.369791666666664
+          ],
+          "current": [
+            21.391666666666666,
+            21.157291666666666
+          ]
+        },
+        "median_us": {
+          "frozen": 22.40625,
+          "current": 21.274479166666666
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              31.822916666666668,
+              27.13125,
+              21.65625,
+              20.347916666666666,
+              25.495833333333334,
+              25.489583333333332,
+              19.8875,
+              28.375,
+              21.60625,
+              20.875,
+              23.229166666666668,
+              17.604166666666668
+            ],
+            "median": 22.442708333333336,
+            "calls_per_sample": 48
+          },
+          "current1": {
+            "microseconds_per_call": [
+              17.770833333333332,
+              21.6875,
+              21.589583333333334,
+              21.604166666666668,
+              20.195833333333333,
+              22.53125,
+              18.691666666666666,
+              24.09583333333333,
+              26.183333333333334,
+              20.59583333333333,
+              21.19375,
+              18.304166666666667
+            ],
+            "median": 21.391666666666666,
+            "calls_per_sample": 48
+          },
+          "current2": {
+            "microseconds_per_call": [
+              18.71666666666667,
+              20.2125,
+              25.43958333333333,
+              27.479166666666668,
+              18.625,
+              22.65625,
+              19.402083333333334,
+              22.34166666666667,
+              24.239583333333332,
+              21.21875,
+              20.43958333333333,
+              21.09583333333333
+            ],
+            "median": 21.157291666666666,
+            "calls_per_sample": 48
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              29.789583333333333,
+              26.15416666666667,
+              21.6375,
+              31.820833333333333,
+              20.82708333333333,
+              18.74375,
+              21.35,
+              19.722916666666666,
+              25.4,
+              23.102083333333333,
+              20.11875,
+              24.45625
+            ],
+            "median": 22.369791666666664,
+            "calls_per_sample": 48
+          }
+        },
+        "candidate_to_frozen_ratio": 0.949488609948861,
+        "above_frozen_10_percent": false
+      },
+      "bicubic_CO2_compiled_heat_exchanger_128cells": {
+        "manifest": {
+          "name": "bicubic_CO2_compiled_heat_exchanger_128cells",
+          "calls": 16,
+          "fields": [
+            "pressure",
+            "temperature",
+            "density",
+            "enthalpy",
+            "entropy",
+            "internal_energy"
+          ],
+          "category": "consumer",
+          "budget": 1.1,
+          "note": "Two full public batch calls; numerical output and both real current status arrays are retained.",
+          "rtol": 1e-07,
+          "atol": 1e-07,
+          "comparable": true,
+          "phase13_requested_calls": 32,
+          "fixed_repetition_class": "batch"
+        },
+        "worker_medians_us": {
+          "frozen": [
+            27.565624999999997,
+            27.959375
+          ],
+          "current": [
+            25.978125,
+            27.153125000000003
+          ]
+        },
+        "median_us": {
+          "frozen": 27.7625,
+          "current": 26.565625
+        },
+        "samples_us": {
+          "frozen1": {
+            "microseconds_per_call": [
+              31.40625,
+              31.1375,
+              22.41875,
+              37.3625,
+              24.61875,
+              33.6125,
+              19.81875,
+              23.1875,
+              30.5125,
+              35.8125,
+              23.65,
+              24.0
+            ],
+            "median": 27.565624999999997,
+            "calls_per_sample": 16
+          },
+          "current1": {
+            "microseconds_per_call": [
+              31.1875,
+              24.43125,
+              35.725,
+              27.125,
+              35.9625,
+              26.76875,
+              21.64375,
+              25.1875,
+              23.65,
+              24.61875,
+              25.13125,
+              27.11875
+            ],
+            "median": 25.978125,
+            "calls_per_sample": 16
+          },
+          "current2": {
+            "microseconds_per_call": [
+              22.0,
+              24.475,
+              24.49375,
+              26.4625,
+              40.2,
+              29.0375,
+              27.1125,
+              28.53125,
+              24.6,
+              27.19375,
+              29.31875,
+              28.9625
+            ],
+            "median": 27.153125000000003,
+            "calls_per_sample": 16
+          },
+          "frozen2": {
+            "microseconds_per_call": [
+              41.7375,
+              30.8875,
+              39.09375,
+              35.44375,
+              24.50625,
+              25.4375,
+              23.81875,
+              27.2375,
+              25.00625,
+              26.71875,
+              28.68125,
+              43.475
+            ],
+            "median": 27.959375,
+            "calls_per_sample": 16
+          }
+        },
+        "candidate_to_frozen_ratio": 0.9568887888338586,
+        "above_frozen_10_percent": false
+      }
+    },
+    "setup": {
+      "frozen1": {
+        "pg_matched_construction": {
+          "first_microseconds": 42853.9,
+          "subsequent_microseconds": [
+            10094.2,
+            10239.3
+          ],
+          "samples_microseconds": [
+            42853.9,
+            10094.2,
+            10239.3
+          ],
+          "median_microseconds": 10239.3
+        },
+        "pg_default_construction": {
+          "first_microseconds": 7654.1,
+          "subsequent_microseconds": [
+            8436.1,
+            7376.5
+          ],
+          "samples_microseconds": [
+            7654.1,
+            8436.1,
+            7376.5
+          ],
+          "median_microseconds": 7654.1
+        },
+        "bicubic_CO2_HEOS_fresh_generation": {
+          "first_microseconds": 1399477.5,
+          "subsequent_microseconds": [],
+          "samples_microseconds": [
+            1399477.5
+          ],
+          "median_microseconds": 1399477.5
+        },
+        "bicubic_CO2_HEOS_cached_loading": {
+          "first_microseconds": 112813.8,
+          "subsequent_microseconds": [
+            26515.0,
+            26419.9,
+            27111.6,
+            25962.9
+          ],
+          "samples_microseconds": [
+            112813.8,
+            26515.0,
+            26419.9,
+            27111.6,
+            25962.9
+          ],
+          "median_microseconds": 26515.0
+        },
+        "bicubic_Water_HEOS_fresh_generation": {
+          "first_microseconds": 392131.4,
+          "subsequent_microseconds": [],
+          "samples_microseconds": [
+            392131.4
+          ],
+          "median_microseconds": 392131.4
+        },
+        "bicubic_Water_HEOS_cached_loading": {
+          "first_microseconds": 85745.5,
+          "subsequent_microseconds": [
+            24936.7,
+            24910.3,
+            25918.2,
+            25433.6
+          ],
+          "samples_microseconds": [
+            85745.5,
+            24936.7,
+            24910.3,
+            25918.2,
+            25433.6
+          ],
+          "median_microseconds": 25433.6
+        },
+        "bicubic_CO2_REFPROP_fresh_generation": {
+          "first_microseconds": 391424.2,
+          "subsequent_microseconds": [],
+          "samples_microseconds": [
+            391424.2
+          ],
+          "median_microseconds": 391424.2
+        },
+        "bicubic_CO2_REFPROP_cached_loading": {
+          "first_microseconds": 92565.5,
+          "subsequent_microseconds": [
+            26136.2,
+            29256.2,
+            27748.8,
+            27275.5
+          ],
+          "samples_microseconds": [
+            92565.5,
+            26136.2,
+            29256.2,
+            27748.8,
+            27275.5
+          ],
+          "median_microseconds": 27748.8
+        },
+        "binary_native_pgpg_construction": {
+          "first_microseconds": 1595.1,
+          "subsequent_microseconds": [
+            696.6,
+            658.7
+          ],
+          "samples_microseconds": [
+            1595.1,
+            696.6,
+            658.7
+          ],
+          "median_microseconds": 696.6
+        }
+      },
+      "current1": {
+        "pg_matched_construction": {
+          "first_microseconds": 48768.8,
+          "subsequent_microseconds": [
+            9749.3,
+            10546.9
+          ],
+          "samples_microseconds": [
+            48768.8,
+            9749.3,
+            10546.9
+          ],
+          "median_microseconds": 10546.9
+        },
+        "pg_default_construction": {
+          "first_microseconds": 7897.3,
+          "subsequent_microseconds": [
+            7726.8,
+            7412.4
+          ],
+          "samples_microseconds": [
+            7897.3,
+            7726.8,
+            7412.4
+          ],
+          "median_microseconds": 7726.8
+        },
+        "bicubic_CO2_HEOS_fresh_generation": {
+          "first_microseconds": 1477021.7,
+          "subsequent_microseconds": [],
+          "samples_microseconds": [
+            1477021.7
+          ],
+          "median_microseconds": 1477021.7
+        },
+        "bicubic_CO2_HEOS_cached_loading": {
+          "first_microseconds": 97368.1,
+          "subsequent_microseconds": [
+            27519.7,
+            27119.2,
+            27453.0,
+            26321.1
+          ],
+          "samples_microseconds": [
+            97368.1,
+            27519.7,
+            27119.2,
+            27453.0,
+            26321.1
+          ],
+          "median_microseconds": 27453.0
+        },
+        "bicubic_Water_HEOS_fresh_generation": {
+          "first_microseconds": 392244.2,
+          "subsequent_microseconds": [],
+          "samples_microseconds": [
+            392244.2
+          ],
+          "median_microseconds": 392244.2
+        },
+        "bicubic_Water_HEOS_cached_loading": {
+          "first_microseconds": 98044.8,
+          "subsequent_microseconds": [
+            27639.8,
+            27512.2,
+            27366.5,
+            27549.2
+          ],
+          "samples_microseconds": [
+            98044.8,
+            27639.8,
+            27512.2,
+            27366.5,
+            27549.2
+          ],
+          "median_microseconds": 27549.2
+        },
+        "bicubic_CO2_REFPROP_fresh_generation": {
+          "first_microseconds": 387715.0,
+          "subsequent_microseconds": [],
+          "samples_microseconds": [
+            387715.0
+          ],
+          "median_microseconds": 387715.0
+        },
+        "bicubic_CO2_REFPROP_cached_loading": {
+          "first_microseconds": 57860.8,
+          "subsequent_microseconds": [
+            29447.5,
+            33017.7,
+            30051.5,
+            28396.4
+          ],
+          "samples_microseconds": [
+            57860.8,
+            29447.5,
+            33017.7,
+            30051.5,
+            28396.4
+          ],
+          "median_microseconds": 30051.5
+        },
+        "binary_native_pgpg_construction": {
+          "first_microseconds": 1864.3,
+          "subsequent_microseconds": [
+            740.2,
+            635.9
+          ],
+          "samples_microseconds": [
+            1864.3,
+            740.2,
+            635.9
+          ],
+          "median_microseconds": 740.2
+        }
+      },
+      "current2": {
+        "pg_matched_construction": {
+          "first_microseconds": 38410.4,
+          "subsequent_microseconds": [
+            9905.0,
+            11329.6
+          ],
+          "samples_microseconds": [
+            38410.4,
+            9905.0,
+            11329.6
+          ],
+          "median_microseconds": 11329.6
+        },
+        "pg_default_construction": {
+          "first_microseconds": 8799.5,
+          "subsequent_microseconds": [
+            8548.6,
+            7735.9
+          ],
+          "samples_microseconds": [
+            8799.5,
+            8548.6,
+            7735.9
+          ],
+          "median_microseconds": 8548.6
+        },
+        "bicubic_CO2_HEOS_fresh_generation": {
+          "first_microseconds": 1502769.9,
+          "subsequent_microseconds": [],
+          "samples_microseconds": [
+            1502769.9
+          ],
+          "median_microseconds": 1502769.9
+        },
+        "bicubic_CO2_HEOS_cached_loading": {
+          "first_microseconds": 93338.8,
+          "subsequent_microseconds": [
+            27137.5,
+            28863.3,
+            28234.2,
+            28483.4
+          ],
+          "samples_microseconds": [
+            93338.8,
+            27137.5,
+            28863.3,
+            28234.2,
+            28483.4
+          ],
+          "median_microseconds": 28483.4
+        },
+        "bicubic_Water_HEOS_fresh_generation": {
+          "first_microseconds": 393500.5,
+          "subsequent_microseconds": [],
+          "samples_microseconds": [
+            393500.5
+          ],
+          "median_microseconds": 393500.5
+        },
+        "bicubic_Water_HEOS_cached_loading": {
+          "first_microseconds": 40055.0,
+          "subsequent_microseconds": [
+            26880.0,
+            24829.0,
+            28075.3,
+            28014.6
+          ],
+          "samples_microseconds": [
+            40055.0,
+            26880.0,
+            24829.0,
+            28075.3,
+            28014.6
+          ],
+          "median_microseconds": 28014.6
+        },
+        "bicubic_CO2_REFPROP_fresh_generation": {
+          "first_microseconds": 381319.5,
+          "subsequent_microseconds": [],
+          "samples_microseconds": [
+            381319.5
+          ],
+          "median_microseconds": 381319.5
+        },
+        "bicubic_CO2_REFPROP_cached_loading": {
+          "first_microseconds": 88863.0,
+          "subsequent_microseconds": [
+            27306.9,
+            31183.1,
+            28024.9,
+            29360.9
+          ],
+          "samples_microseconds": [
+            88863.0,
+            27306.9,
+            31183.1,
+            28024.9,
+            29360.9
+          ],
+          "median_microseconds": 29360.9
+        },
+        "binary_native_pgpg_construction": {
+          "first_microseconds": 1525.7,
+          "subsequent_microseconds": [
+            774.9,
+            801.8
+          ],
+          "samples_microseconds": [
+            1525.7,
+            774.9,
+            801.8
+          ],
+          "median_microseconds": 801.8
+        }
+      },
+      "frozen2": {
+        "pg_matched_construction": {
+          "first_microseconds": 52207.9,
+          "subsequent_microseconds": [
+            12415.5,
+            11356.3
+          ],
+          "samples_microseconds": [
+            52207.9,
+            12415.5,
+            11356.3
+          ],
+          "median_microseconds": 12415.5
+        },
+        "pg_default_construction": {
+          "first_microseconds": 8401.3,
+          "subsequent_microseconds": [
+            7229.1,
+            8387.0
+          ],
+          "samples_microseconds": [
+            8401.3,
+            7229.1,
+            8387.0
+          ],
+          "median_microseconds": 8387.0
+        },
+        "bicubic_CO2_HEOS_fresh_generation": {
+          "first_microseconds": 1455353.3,
+          "subsequent_microseconds": [],
+          "samples_microseconds": [
+            1455353.3
+          ],
+          "median_microseconds": 1455353.3
+        },
+        "bicubic_CO2_HEOS_cached_loading": {
+          "first_microseconds": 88324.3,
+          "subsequent_microseconds": [
+            28991.9,
+            28848.3,
+            28517.9,
+            28332.5
+          ],
+          "samples_microseconds": [
+            88324.3,
+            28991.9,
+            28848.3,
+            28517.9,
+            28332.5
+          ],
+          "median_microseconds": 28848.3
+        },
+        "bicubic_Water_HEOS_fresh_generation": {
+          "first_microseconds": 391939.4,
+          "subsequent_microseconds": [],
+          "samples_microseconds": [
+            391939.4
+          ],
+          "median_microseconds": 391939.4
+        },
+        "bicubic_Water_HEOS_cached_loading": {
+          "first_microseconds": 98489.2,
+          "subsequent_microseconds": [
+            25652.8,
+            28185.0,
+            26895.9,
+            27139.2
+          ],
+          "samples_microseconds": [
+            98489.2,
+            25652.8,
+            28185.0,
+            26895.9,
+            27139.2
+          ],
+          "median_microseconds": 27139.2
+        },
+        "bicubic_CO2_REFPROP_fresh_generation": {
+          "first_microseconds": 369145.8,
+          "subsequent_microseconds": [],
+          "samples_microseconds": [
+            369145.8
+          ],
+          "median_microseconds": 369145.8
+        },
+        "bicubic_CO2_REFPROP_cached_loading": {
+          "first_microseconds": 102871.6,
+          "subsequent_microseconds": [
+            28084.7,
+            29842.1,
+            29293.3,
+            29787.2
+          ],
+          "samples_microseconds": [
+            102871.6,
+            28084.7,
+            29842.1,
+            29293.3,
+            29787.2
+          ],
+          "median_microseconds": 29787.2
+        },
+        "binary_native_pgpg_construction": {
+          "first_microseconds": 1666.2,
+          "subsequent_microseconds": [
+            741.9,
+            709.6
+          ],
+          "samples_microseconds": [
+            1666.2,
+            741.9,
+            709.6
+          ],
+          "median_microseconds": 741.9
+        }
+      }
+    },
+    "limitations": [
+      "Targeted experiments do not replace the complete original Phase 13 gate.",
+      "Shared-worker first encounters are not isolated cold compilation measurements.",
+      "Diagnostic status projections are attribution tools, never substituted acceptance results."
+    ]
+  },
+  "ratios": {
+    "recuperated_working/100/source": 1.0018944151674507,
+    "recuperated_working/100/bicubic": 1.0245695186954273,
+    "recuperated_all/100/source": 0.9698491918444354,
+    "recuperated_all/100/bicubic": 0.9623351924385045,
+    "simple_polytropic/100/source": 1.0090532464612754,
+    "simple_polytropic/100/bicubic": 1.0016770836100035,
+    "recompression/100/source": 1.0335850556235084,
+    "recompression/100/bicubic": 1.0351314746367029,
+    "refrigeration/100/source": 1.0753656899039181,
+    "refrigeration/100/bicubic": 1.1174536173660359
+  },
+  "first_matrix_flags": [
+    "refrigeration/100/bicubic"
+  ],
+  "nitrogen_followup": {
+    "samples": 36,
+    "cohorts": 3,
+    "cpu_affinity": "0xffff",
+    "hash_seed": 0,
+    "ratios": {
+      "source": 0.9986727613515507,
+      "bicubic": 1.0035904742053192
+    },
+    "raw_samples": {
+      "baseline": [
+        {
+          "source": [
+            0.024578199998359196,
+            0.022972099999606144,
+            0.02263680000032764,
+            0.030403999997361097,
+            0.026832800002011936,
+            0.02325810000183992,
+            0.02375190000020666,
+            0.023530300000857096,
+            0.025197200004186016,
+            0.023135800001909956,
+            0.02364270000543911,
+            0.024573299997427966,
+            0.02373290000105044,
+            0.02411030000075698,
+            0.023581000001286156,
+            0.02461079999920912,
+            0.025299400003859773,
+            0.02520150000054855,
+            0.02513409999664873,
+            0.02592979999462841,
+            0.02526680000300985,
+            0.02432260000205133,
+            0.02560079999966547,
+            0.023940800005220808,
+            0.023285999996005557,
+            0.025223600001481827,
+            0.024460599997837562,
+            0.023994600000150967,
+            0.023277000000234693,
+            0.024198400002205744,
+            0.024053399996773805,
+            0.026000799996836577,
+            0.024665899996762164,
+            0.026930300002277363,
+            0.023510799997893628,
+            0.02355620000162162
+          ],
+          "bicubic": [
+            0.01970930000243243,
+            0.017295999998168554,
+            0.017654099996434525,
+            0.018226899999717716,
+            0.01627120000193827,
+            0.015633299997716676,
+            0.017315199998847675,
+            0.01719460000458639,
+            0.01767870000185212,
+            0.016568099999858532,
+            0.017621700004383456,
+            0.01635320000059437,
+            0.01642829999764217,
+            0.016020199997001328,
+            0.016765399996074848,
+            0.016056699998443946,
+            0.01654259999486385,
+            0.016048900004534516,
+            0.017517899999802466,
+            0.016586400000960566,
+            0.016172700001334306,
+            0.017012099997373298,
+            0.01597070000570966,
+            0.0161115000009886,
+            0.01690269999380689,
+            0.01617110000370303,
+            0.01726570000028005,
+            0.01584059999731835,
+            0.017419700001482852,
+            0.015227200005028863,
+            0.017728700004226994,
+            0.015817100000276696,
+            0.016598800000792835,
+            0.015946399995300453,
+            0.01735569999436848,
+            0.016775200005213264
+          ]
+        },
+        {
+          "source": [
+            0.022821099999418948,
+            0.026395100001536775,
+            0.023738600000797305,
+            0.02593699999852106,
+            0.02511380000214558,
+            0.025322800000139978,
+            0.024449900003673974,
+            0.026409400001284666,
+            0.02466209999693092,
+            0.02667170000495389,
+            0.02485520000482211,
+            0.023639700004423503,
+            0.02431320000323467,
+            0.026629300002241507,
+            0.023930700001074,
+            0.02478500000142958,
+            0.02512410000053933,
+            0.024527499997930136,
+            0.023982699996849988,
+            0.02635089999967022,
+            0.02330950000032317,
+            0.02588349999859929,
+            0.023871899997175205,
+            0.025209799998265225,
+            0.02368479999859119,
+            0.024795999997877516,
+            0.025183599995216355,
+            0.026492600001802202,
+            0.02473450000252342,
+            0.0259753999998793,
+            0.02179959999921266,
+            0.025890099997923244,
+            0.025806600002397317,
+            0.025022800000442658,
+            0.024105999997118488,
+            0.02627379999466939
+          ],
+          "bicubic": [
+            0.018764600004942622,
+            0.017450200000894256,
+            0.017228500000783242,
+            0.01668950000021141,
+            0.017506500000308733,
+            0.016056300002674107,
+            0.01764040000125533,
+            0.016554599998926278,
+            0.016245400001935195,
+            0.016484899999340996,
+            0.019202700001187623,
+            0.017201000002387445,
+            0.01722670000162907,
+            0.017034399999829475,
+            0.017734299995936453,
+            0.01635379999788711,
+            0.017859699997643474,
+            0.017257100000279024,
+            0.01720789999671979,
+            0.016741400002501905,
+            0.01751999999396503,
+            0.017168099999253172,
+            0.01679159999912372,
+            0.01675670000258833,
+            0.016725399997085333,
+            0.015701399999670684,
+            0.016799400000309106,
+            0.016645499999867752,
+            0.017123800003901124,
+            0.01652749999630032,
+            0.01654889999917941,
+            0.015976399998180568,
+            0.01807109999936074,
+            0.016827700004796498,
+            0.01765960000193445,
+            0.016944399998465087
+          ]
+        },
+        {
+          "source": [
+            0.026333099995099474,
+            0.026249700000334997,
+            0.025042600005690474,
+            0.027607900003204122,
+            0.024108500001602806,
+            0.026073300003190525,
+            0.023990100002265535,
+            0.024727800002438016,
+            0.025740099998074584,
+            0.028304999999818392,
+            0.023808600002666935,
+            0.025527400001010392,
+            0.02486960000533145,
+            0.026089999999385327,
+            0.02498560000094585,
+            0.026202999993984122,
+            0.026122399998712353,
+            0.024658100002852734,
+            0.025196800001140218,
+            0.026346999999077525,
+            0.023742700002912898,
+            0.02592749999894295,
+            0.02594400000089081,
+            0.02712720000272384,
+            0.025977599994803313,
+            0.028490600001532584,
+            0.02573860000120476,
+            0.025166200000967365,
+            0.02594380000664387,
+            0.026271000002452638,
+            0.02527850000478793,
+            0.025548100005835295,
+            0.024768800001766067,
+            0.026457099993422162,
+            0.0258620999957202,
+            0.02485750000050757
+          ],
+          "bicubic": [
+            0.02008620000560768,
+            0.017303000000538304,
+            0.01795480000146199,
+            0.01632419999805279,
+            0.016083800001069903,
+            0.016534299997147173,
+            0.016453600001113955,
+            0.01823500000318745,
+            0.017474000000220258,
+            0.017507099997601472,
+            0.018084399998770095,
+            0.014958199993998278,
+            0.017285200003243517,
+            0.015718099995865487,
+            0.018050400001811795,
+            0.025388000001839828,
+            0.01971620000404073,
+            0.016281399999570567,
+            0.017451499996241182,
+            0.017629400004807394,
+            0.020172999997157604,
+            0.017860399995697662,
+            0.01831359999778215,
+            0.02014719999715453,
+            0.018058199995721225,
+            0.016274499997962266,
+            0.017822800000431016,
+            0.017319300000963267,
+            0.018560200005595107,
+            0.016727399997762404,
+            0.016702799999620765,
+            0.01644759999908274,
+            0.01827190000039991,
+            0.016060299996752292,
+            0.01749299999937648,
+            0.01734480000595795
+          ]
+        }
+      ],
+      "candidate": [
+        {
+          "source": [
+            0.025945699999283534,
+            0.02409590000024764,
+            0.024351299995032605,
+            0.022191900003235787,
+            0.023799700000381563,
+            0.023992800000996795,
+            0.02477820000058273,
+            0.025021200002811383,
+            0.02428670000517741,
+            0.023282600006496068,
+            0.02452590000029886,
+            0.02475369999592658,
+            0.024118799999996554,
+            0.02453879999666242,
+            0.025187200000800658,
+            0.025744400001713075,
+            0.02551149999635527,
+            0.025938499995390885,
+            0.023458700001356192,
+            0.024461900000460446,
+            0.023971499998879153,
+            0.022652599996945355,
+            0.024063100005150773,
+            0.023136099996918347,
+            0.023847800002840813,
+            0.023049600000376813,
+            0.02391440000064904,
+            0.024254000003566034,
+            0.02396759999828646,
+            0.023397099997964688,
+            0.02468340000632452,
+            0.025913899997249246,
+            0.023216699999466073,
+            0.024045300000580028,
+            0.022834600000351202,
+            0.023434499998984393
+          ],
+          "bicubic": [
+            0.018623900003149174,
+            0.01811969999835128,
+            0.018123200003174134,
+            0.01706929999636486,
+            0.017382300000463147,
+            0.018588299994007684,
+            0.017511199999717064,
+            0.016755500000726897,
+            0.016877800000656862,
+            0.017581599997356534,
+            0.01834489999600919,
+            0.017687999999907333,
+            0.017031500006851275,
+            0.015897500001301523,
+            0.01687600000150269,
+            0.016564699995797127,
+            0.01791360000061104,
+            0.017492200000560842,
+            0.016446399997221306,
+            0.015599300000758376,
+            0.017213799997989554,
+            0.016968999996606726,
+            0.01824829999532085,
+            0.01742530000046827,
+            0.016763599996920675,
+            0.014941900000849273,
+            0.016107900002680253,
+            0.016854600005899556,
+            0.01742460000241408,
+            0.016057000000728294,
+            0.018009200000960846,
+            0.01738570000452455,
+            0.016528799998923205,
+            0.015758900000946596,
+            0.017022300002281554,
+            0.016713499993784353
+          ]
+        },
+        {
+          "source": [
+            0.024685399999725632,
+            0.024880299999495037,
+            0.026631900000211317,
+            0.02757240000210004,
+            0.023580900000524707,
+            0.022864800004754215,
+            0.026178200001595542,
+            0.02676169999904232,
+            0.024805100001685787,
+            0.024623600002087187,
+            0.024931499996455386,
+            0.025175399998261128,
+            0.026203200002782978,
+            0.02444909999758238,
+            0.024737300002016127,
+            0.025145100000372622,
+            0.0236116999949445,
+            0.027185500002815388,
+            0.025519399998302106,
+            0.02343950000067707,
+            0.024759700005233753,
+            0.02469060000294121,
+            0.023799699993105605,
+            0.027261499999440275,
+            0.024774100005743094,
+            0.025721900005009957,
+            0.023717600000964012,
+            0.02888830000301823,
+            0.024065099998551887,
+            0.03128940000169678,
+            0.02495490000001155,
+            0.02419229999941308,
+            0.025376900004630443,
+            0.024549900001147762,
+            0.025618400002713315,
+            0.026295900002878625
+          ],
+          "bicubic": [
+            0.01875579999614274,
+            0.01581820000137668,
+            0.01947430000291206,
+            0.018151399999624118,
+            0.019066799999563955,
+            0.016538500000024214,
+            0.023157499999797437,
+            0.017331900002318434,
+            0.018580899995868094,
+            0.01710839999577729,
+            0.016600599999947008,
+            0.016090199998870958,
+            0.017029799993906636,
+            0.016362199996365234,
+            0.017211599995789584,
+            0.015915300005872268,
+            0.019175699999323115,
+            0.01670150000427384,
+            0.016583500000706408,
+            0.015317699995648582,
+            0.015446299999894109,
+            0.014902100003382657,
+            0.016729100003431085,
+            0.01574399999663001,
+            0.017186299999593757,
+            0.016581000003498048,
+            0.01645779999671504,
+            0.016739600003347732,
+            0.016832900000736117,
+            0.016131800002767704,
+            0.016138400002091657,
+            0.015502000002015848,
+            0.015647200001694728,
+            0.016219199998886324,
+            0.016301700001349673,
+            0.01585000000341097
+          ]
+        },
+        {
+          "source": [
+            0.026310300003387965,
+            0.024978399997053202,
+            0.023707300002570264,
+            0.025079599996388424,
+            0.024310200002219062,
+            0.023797499998181593,
+            0.024588100000983104,
+            0.026136499996937346,
+            0.02618619999702787,
+            0.02650069999799598,
+            0.02461069999844767,
+            0.025166499995975755,
+            0.024708900004043244,
+            0.025686000000860076,
+            0.027455700001155492,
+            0.024719000000914093,
+            0.025178700001561083,
+            0.026315499999327585,
+            0.026573800001642667,
+            0.024703800001589116,
+            0.025848900004348252,
+            0.026557899996987544,
+            0.02657129999715835,
+            0.027331900004355703,
+            0.02589589999843156,
+            0.025893899997754488,
+            0.025135500000033062,
+            0.026630200001818594,
+            0.02363550000154646,
+            0.024323799996636808,
+            0.026511899995966814,
+            0.025025799994182307,
+            0.02562509999552276,
+            0.02361199999722885,
+            0.024237799996626563,
+            0.02511159999994561
+          ],
+          "bicubic": [
+            0.018130299999029376,
+            0.016195699994568713,
+            0.01905550000083167,
+            0.016480300000694115,
+            0.018990199998370372,
+            0.016897199995582923,
+            0.017252000005100854,
+            0.016287300000840332,
+            0.016831699998874683,
+            0.01667759999691043,
+            0.018113899997842964,
+            0.017115800001192838,
+            0.018644800002221018,
+            0.01620089999778429,
+            0.018854000001738314,
+            0.017994399997405708,
+            0.01851139999780571,
+            0.015001200001279358,
+            0.016637100001389626,
+            0.01751469999726396,
+            0.017719000003125984,
+            0.01622250000218628,
+            0.01779240000178106,
+            0.01564259999577189,
+            0.019154000001435634,
+            0.018113500002073124,
+            0.017555200000060722,
+            0.01658020000468241,
+            0.01725290000467794,
+            0.015860599996813107,
+            0.01660489999630954,
+            0.016315599998051766,
+            0.017707300001347903,
+            0.0161694999987958,
+            0.017728200000419747,
+            0.016143300003022887
+          ]
+        }
+      ]
+    },
+    "interpretation": "Separate matched repeat of the sole fresh matrix flag; original samples remain retained. Hash seed, sample count and measurement time changed, so a single cause is not assigned."
+  },
+  "assessment": "Metadata lookup penalty reduced; 17 new metadata cases, all 3046 distinct library tests and 396 ThermOpt tests pass. Four existing ThermOpt strict xfails remain. All 14 targeted standalone budgets and all 12 paired application comparisons pass; the sole fresh matrix flag does not repeat in the targeted three-cohort follow-up. Older absolute checkpoint flags remain historical evidence, not erased observations."
+}

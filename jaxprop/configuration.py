@@ -70,6 +70,26 @@ class FrozenMapping(Mapping):
     def __hash__(self):
         return self._hash
 
+    def __eq__(self, other):
+        """Compare aligned frozen metadata without reconstructing dictionaries.
+
+        JAX compares static metadata when equivalent evaluator instances reuse
+        a compiled call. Mapping's general equality repeatedly materializes
+        dictionaries through our linear field lookup, including nested options.
+        The stored immutable tuples give the common equal case a direct path.
+        Reordered mappings, changed values, foreign mappings and subclasses keep
+        the general Mapping semantics; hashes and iteration order are unchanged.
+        """
+        if self is other:
+            return True
+        if (
+            type(self) is FrozenMapping
+            and type(other) is FrozenMapping
+            and self._items == other._items
+        ):
+            return True
+        return Mapping.__eq__(self, other)
+
     def __repr__(self):
         return f"FrozenMapping({dict(self._items)!r})"
 

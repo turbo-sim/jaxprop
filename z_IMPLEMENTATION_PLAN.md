@@ -718,6 +718,25 @@ Acceptance requires the intended consumer workflows to pass through the common A
 
 ## Verification log
 
+### ThermOpt metadata-cache follow-up (15 November 2026)
+
+- [x] Reproduce equivalent independent-model dispatch overhead and add regression
+  coverage before changing it. Optimize aligned immutable equality without
+  global evaluator sharing, hash-only equality, new numerical checks or model changes.
+- [x] Verify 17 new metadata cases, all 3,046 distinct HEOS/REFPROP/native-C tests,
+  unchanged cache/mapping semantics and JIT reuse versus real metadata changes.
+- [x] Build and identify a separate local wheel; verify its 43 Python files and
+  confirm `configuration.py` is its sole source delta from published 0.6.0.
+- [x] Verify ThermOpt's 396 passing tests/four existing expected failures, fourteen
+  standalone budgets and twelve paired complete consumers. Preserve the initial
+  nitrogen timing flag and its successful three-cohort targeted follow-up.
+- [ ] Publish this fix only under a separate release instruction; update downstream
+  locks to that released artifact. The current local wheel remains unpublished.
+
+See [the report](development/performance/metadata_equality/REPORT.md). The user's
+ThermOpt adoption scope remains eager NumPy/SciPy; the earlier Phase 15 whole-cycle
+JAX compilation research is deferred to a separate future sweep.
+
 | Work | Status | Evidence |
 | --- | --- | --- |
 | Pre-phase-1 HEOS suite | Completed baseline | 252 passed. [Recorded run](development/test_audit/results/baseline_20261112_195233/summary.json). Shared assertion-helper limitation is documented. |

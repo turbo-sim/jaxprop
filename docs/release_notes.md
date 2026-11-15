@@ -1,3 +1,12 @@
+# Unreleased follow-up
+
+- Reduce equivalent-model JIT-cache overhead with a direct immutable metadata
+  equality fast path. Preserve reordered/foreign mapping semantics, hashing,
+  model validation and all numerical equations. See the
+  [downstream verification](../development/performance/metadata_equality/REPORT.md).
+  This fix is committed for a future release; local test wheels are explicitly
+  distinguished from the published 0.6.0 artifact by their SHA256.
+
 # JaxProp 0.6.0
 
 **Released on 15 November 2026.** Hosted Linux and Windows HEOS tests passed,
