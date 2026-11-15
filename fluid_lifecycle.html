@@ -1,0 +1,621 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Reusing fluid models in applications &#8212; jaxprop v0.6.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=4fe0b1e1"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'fluid_lifecycle';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Bibliography" href="source/bibliography.html" />
+    <link rel="prev" title="Migrating to the consistent fluid interface" href="migration.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Reusing fluid models in applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/bibliography.html">Bibliography</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="source/api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="source/api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="source/api/jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="source/api/jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="source/api/jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.perfect_gas.perfect_gas.html">jaxprop.perfect_gas.perfect_gas module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.graphics.html">jaxprop.graphics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.factory.html">jaxprop.factory module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.math.html">jaxprop.math module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.utils.html">jaxprop.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/fluid_lifecycle.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Reusing fluid models in applications</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#application-owned-jax-settings">Application-owned JAX settings</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compiled-consumers-and-failure-status">Compiled consumers and failure status</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#independent-states-threads-and-workers">Independent states, threads and workers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-reference-plotting">Phase/reference plotting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-and-formal-metastable-tables">Physical and formal metastable tables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verification-profile">Verification profile</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="reusing-fluid-models-in-applications">
+<h1>Reusing fluid models in applications<a class="headerlink" href="#reusing-fluid-models-in-applications" title="Link to this heading">#</a></h1>
+<p>Construct a configured fluid once and reuse it for repeated state calls. The
+common <code class="docutils literal notranslate"><span class="pre">Fluid(...)</span></code> initializer returns the actual evaluator class. Configuration,
+source references, capability records and table validity are prepared at setup;
+they are not rediscovered during native state evaluation.</p>
+<section id="application-owned-jax-settings">
+<h2>Application-owned JAX settings<a class="headerlink" href="#application-owned-jax-settings" title="Link to this heading">#</a></h2>
+<p>Set the device and numerical precision before constructing models. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+
+<span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">&quot;jax_enable_x64&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">jaxprop</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jp</span>
+
+<span class="n">fluid</span> <span class="o">=</span> <span class="n">jp</span><span class="o">.</span><span class="n">Fluid</span><span class="p">(</span><span class="s2">&quot;Air&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;perfect_gas&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>JaxProp does not select a JAX platform or replace <code class="docutils literal notranslate"><span class="pre">sys.excepthook</span></code>. It honors
+<code class="docutils literal notranslate"><span class="pre">JAX_ENABLE_X64</span></code> and a JAX configuration already loaded by the application. When
+JaxProp imports JAX first and no precision setting is supplied, double precision
+remains the default. CPU and accelerator selection use JAX’s own environment and
+configuration settings. Accelerator performance has not been inferred from the
+CPU measurements retained in this repository.</p>
+<p>Direct CoolProp calculations use the source’s double precision. Masked/compiled
+callback paths compute in the same host precision and return the active JAX
+floating precision; their declared callback shapes/dtypes agree when double
+precision is disabled. Eager raising binary source calls retain NumPy double
+precision.
+Choose solver tolerances appropriate to the model’s numerical precision.</p>
+</section>
+<section id="compiled-consumers-and-failure-status">
+<h2>Compiled consumers and failure status<a class="headerlink" href="#compiled-consumers-and-failure-status" title="Link to this heading">#</a></h2>
+<p>Native perfect-gas, bicubic and supported native binary models can be arguments
+of compiled application functions. Their numerical coefficients remain dynamic.
+The input-pair selector and numerical policy are static choices; different pairs
+can be used in the same simulation and are compiled as their respective calls.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jaxprop</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jp</span>
+
+<span class="nd">@jax</span><span class="o">.</span><span class="n">jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">recover_state</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">enthalpy</span><span class="p">,</span> <span class="n">pressure</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
+        <span class="n">jp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">enthalpy</span><span class="p">,</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;mask&quot;</span>
+    <span class="p">)</span>
+
+<span class="n">state</span> <span class="o">=</span> <span class="n">recover_state</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">enthalpy</span><span class="p">,</span> <span class="n">pressure</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The complete returned state retains its properties, status and property
+availability. A consumer returning selected numerical outputs should also return
+<code class="docutils literal notranslate"><span class="pre">state.status</span></code>, and clipping flags when that policy is relevant. Required status
+checks then belong at the application’s chosen boundary. Eager raising property
+access inspects concrete availability and can synchronize a device; use
+<code class="docutils literal notranslate"><span class="pre">raw_property(...)</span></code> and the explicit status/availability contract inside compiled
+numerical code. Source callbacks remain host operations even inside <code class="docutils literal notranslate"><span class="pre">jax.jit</span></code>.</p>
+<p>Failed primal rows and unavailable primal optional properties contribute zero
+callback derivatives in both forward and reverse mode. A valid state whose
+required forward finite-difference probe fails retains an unavailable NaN
+derivative; it does not acquire an invented zero slope at that boundary.</p>
+<p>Synchronize numerical outputs before measuring JAX work. Separate construction,
+table generation/loading, compilation and warmed full-state execution. The
+repeatable checkpoint runner is
+<code class="docutils literal notranslate"><span class="pre">development/performance/phase11_benchmark.py</span></code>; the published-release comparison
+belongs to Phase 13.</p>
+</section>
+<section id="independent-states-threads-and-workers">
+<h2>Independent states, threads and workers<a class="headerlink" href="#independent-states-threads-and-workers" title="Link to this heading">#</a></h2>
+<p>Returned states are independent snapshots. Subsequent source flashes do not
+change their values. Native numerical evaluators use immutable model data and
+can be reused by compiled consumers. Direct-source objects and callbacks protect
+their shared primary/scratch handles with an object lock for the complete source
+transaction. This makes shared-source evaluation safe but serializes competing
+host transactions. Source binaries use a stable ordering of component locks.</p>
+<p>For process workers, reconstruct a configured evaluator from a pickle snapshot:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+
+<span class="n">snapshot</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">restored</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">enthalpy</span><span class="p">,</span> <span class="n">pressure</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Native snapshots retain the actual coefficients/tables without initializing a
+source EOS. Nested binary snapshots retain their configured component models,
+including shared aliases. Source snapshots rebuild all native handles, helper
+objects and locks; they verify the original energy-reference convention, backend
+configuration and native definitions/files before accepting the restore. A
+mismatching environment raises an informative configuration error. Restoration
+never changes process-global source reference settings. Backends whose native
+identity cannot be verified remain usable for evaluation but explicitly reject
+lossless source serialization.</p>
+<p><code class="docutils literal notranslate"><span class="pre">fluid.configuration</span></code> is an inspection record, not a general lossless factory
+recipe. It can contain actual calibrated constants or nested component records
+that differ from constructor arguments. Pickle is the complete reconstruction
+recipe for configured evaluators. For a perfect-gas model, <code class="docutils literal notranslate"><span class="pre">with_constants(...)</span></code>
+and <code class="docutils literal notranslate"><span class="pre">materialize()</span></code> provide validated eager model updates/reconstruction. An
+arbitrary numerical view used for differentiation does not automatically refresh
+its static physical identity or certify a changed model’s physical domain.</p>
+</section>
+<section id="phase-reference-plotting">
+<h2>Phase/reference plotting<a class="headerlink" href="#phase-reference-plotting" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">figure</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">jp</span><span class="o">.</span><span class="n">plot_phase_diagram</span><span class="p">(</span>
+    <span class="n">real_fluid</span><span class="p">,</span> <span class="n">x_prop</span><span class="o">=</span><span class="s2">&quot;enthalpy&quot;</span><span class="p">,</span> <span class="n">y_prop</span><span class="o">=</span><span class="s2">&quot;pressure&quot;</span><span class="p">,</span> <span class="n">y_scale</span><span class="o">=</span><span class="s2">&quot;log&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This common eager function plots the configured <strong>source EOS</strong> for direct-source,
+callback and real-fluid bicubic objects. A bicubic source diagram can extend
+beyond the table’s numerical domain; it does not certify interpolation there.
+The plotting-only source must match the table’s reference and provenance.
+Perfect-gas and binary parcel models explicitly reject their own phase diagram;
+their available source-reference records can be inspected separately.</p>
+<p>Repeated calls reuse/update the fluid’s artists on the supplied axes. Numerical
+curve caches include sampling and solver settings, and named streams keep
+independent artists. Generated labels and limits refresh with the plotted
+properties while caller overrides are preserved. Pickle retains numerical curves
+and discards transient Matplotlib artists; a restored model creates fresh artists.</p>
+</section>
+<section id="physical-and-formal-metastable-tables">
+<h2>Physical and formal metastable tables<a class="headerlink" href="#physical-and-formal-metastable-tables" title="Link to this heading">#</a></h2>
+<p>The default <code class="docutils literal notranslate"><span class="pre">metastable_domain=&quot;physical&quot;</span></code> requires positive constant-volume heat
+capacity <span class="math notranslate nohighlight">\(c_v\)</span> and isothermal bulk modulus <span class="math notranslate nohighlight">\(K_T\)</span> at every homogeneous source sample,
+including finite-difference stencil points. Failed construction does not publish
+a partial table or overwrite an existing valid cache. A requested rectangle that
+extends beyond these bounds must be deliberately redesigned.</p>
+<p>For an explicitly formal homogeneous-EOS study, use
+<code class="docutils literal notranslate"><span class="pre">metastable_domain=&quot;formal&quot;</span></code> together with <code class="docutils literal notranslate"><span class="pre">metastable_phase=&quot;liquid&quot;</span></code> or
+<code class="docutils literal notranslate"><span class="pre">&quot;vapor&quot;</span></code> in <code class="docutils literal notranslate"><span class="pre">Fluid(...,</span> <span class="pre">method=&quot;bicubic&quot;,</span> <span class="pre">table_options=...)</span></code>. Formal mode retains
+calorically unstable states; it still requires positive sampled <span class="math notranslate nohighlight">\(K_T\)</span>. The raw
+homogeneous source solver remains available for scientific spinodal grids,
+including mechanically unstable states; that is a different operation from
+constructing a usable metastable interpolation table.</p>
+<p>Construction converts bicubic power coefficients to Bernstein control values to
+bound each interpolation polynomial over its entire cell. Physical-mode cells
+must have strictly positive <span class="math notranslate nohighlight">\(c_v\)</span> and <span class="math notranslate nohighlight">\(K_T\)</span> lower bounds; formal-mode cells retain
+the mechanical bound. Cells that may cross <span class="math notranslate nohighlight">\(c_v=0\)</span> do not expose Grüneisen,
+heat-capacity ratio, isentropic bulk modulus or speed of sound. A possible
+<span class="math notranslate nohighlight">\(c_p=0\)</span> crossing similarly disables Joule–Thomson and isentropic compressibility.
+The original node values remain available for inspection. Disabled responses
+use the existing optional-property masks and do not invalidate otherwise valid
+formal core states.</p>
+<p>These are conservative bounds on the interpolant, not a proof of the exact EOS
+between samples or of every independently interpolated thermodynamic identity.
+Positive sampled response values alone do not establish whole-domain accuracy.
+The policy and domain are part of the generation manifest, cached guards are
+validated, and runtime evaluation reuses existing masks without source queries
+or new stability arithmetic.</p>
+</section>
+<section id="verification-profile">
+<h2>Verification profile<a class="headerlink" href="#verification-profile" title="Link to this heading">#</a></h2>
+<p>The scientific suite explicitly selects double precision in <code class="docutils literal notranslate"><span class="pre">tests/conftest.py</span></code>;
+float32 and import-setting contracts have dedicated tests. A reproducible full
+CPU run with both locally installed source backends is:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nv">$env:JAX_ENABLE_X64</span> <span class="p">=</span> <span class="s2">&quot;true&quot;</span>
+<span class="nv">$env:JAX_PLATFORM_NAME</span> <span class="p">=</span> <span class="s2">&quot;cpu&quot;</span>
+<span class="nv">$env:JAXPROP_TEST_BACKENDS</span> <span class="p">=</span> <span class="s2">&quot;HEOS,REFPROP&quot;</span>
+<span class="n">python</span> <span class="n">-m</span> <span class="n">pytest</span> <span class="n">tests</span> <span class="n">-c</span> <span class="n">tests</span><span class="p">/</span><span class="n">pytest</span><span class="p">.</span><span class="n">ini</span> <span class="n">-q</span>
+</pre></div>
+</div>
+<p>REFPROP cases are optional and reported as skipped when that backend is absent.
+The retained Phase 11 verification record states the actual backends, precision,
+source hash, numerical comparison counts and outcomes.</p>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="migration.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Migrating to the consistent fluid interface</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="source/bibliography.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Bibliography</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#application-owned-jax-settings">Application-owned JAX settings</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compiled-consumers-and-failure-status">Compiled consumers and failure status</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#independent-states-threads-and-workers">Independent states, threads and workers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-reference-plotting">Phase/reference plotting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-and-formal-metastable-tables">Physical and formal metastable tables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verification-profile">Verification profile</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Roberto Agromayor.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

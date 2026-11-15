@@ -1,0 +1,1189 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jaxprop.fluid_state &#8212; jaxprop v0.6.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=4fe0b1e1"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/jaxprop/fluid_state';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/bibliography.html">Bibliography</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../source/api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.perfect_gas.perfect_gas.html">jaxprop.perfect_gas.perfect_gas module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.graphics.html">jaxprop.graphics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.factory.html">jaxprop.factory module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.math.html">jaxprop.math module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.utils.html">jaxprop.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for jaxprop.fluid_state</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Immutable, JAX-compatible fluid values with explicit property availability.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">update_wrapper</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">signature</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">equinox</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">eqx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.errors</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">InvalidConfigurationError</span><span class="p">,</span>
+    <span class="n">InvalidStateError</span><span class="p">,</span>
+    <span class="n">PropertyUnavailableError</span><span class="p">,</span>
+    <span class="n">UnsupportedExecutionModeError</span><span class="p">,</span>
+    <span class="n">UnsupportedPropertyError</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.property_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="p">,</span> <span class="n">PROPERTY_ALIASES</span><span class="p">,</span> <span class="n">PROPERTIES_CANONICAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.fluid_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatusCode</span>
+
+
+<span class="nd">@jax</span><span class="o">.</span><span class="n">tree_util</span><span class="o">.</span><span class="n">register_pytree_node_class</span>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_BoundStateMethod</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A cheap immutable method binding whose state remains a dynamic PyTree.</span>
+
+<span class="sd">    Equinox normally constructs a new Module and copies wrapper metadata for</span>
+<span class="sd">    every method lookup. That work dominates tiny state getters. This local</span>
+<span class="sd">    callable retains the same function/static and self/dynamic distinction,</span>
+<span class="sd">    without depending on Equinox&#39;s private bound-method implementation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__func__</span><span class="p">:</span> <span class="nb">object</span>
+    <span class="vm">__self__</span><span class="p">:</span> <span class="nb">object</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__func__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__self__</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="c1"># Introspection metadata is shared with the function, rather than copied</span>
+        <span class="c1"># into every binding. Normal numerical calls read only the two slots.</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="s2">&quot;__name__&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;__qualname__&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;__doc__&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;__module__&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;__annotations__&quot;</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;__func__&quot;</span><span class="p">),</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__wrapped__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__func__</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__self__</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__self__</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__signature__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">tree_flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__self__</span><span class="p">,),</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__func__</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tree_unflatten</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">children</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__func__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__self__</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_StateMethod</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bind a small public state method without Equinox&#39;s Module construction.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">function</span> <span class="o">=</span> <span class="n">function</span>
+        <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">function</span>
+            <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">_BoundStateMethod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">,</span> <span class="n">instance</span><span class="p">)</span>
+        <span class="p">)</span>
+
+
+<span class="nd">@jax</span><span class="o">.</span><span class="n">jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_jax_at_index</span><span class="p">(</span><span class="n">properties</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">clipped</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gather every numerical state leaf together, with a dynamic valid index.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+        <span class="n">status</span><span class="p">[</span><span class="n">index</span><span class="p">],</span>
+        <span class="kc">None</span> <span class="k">if</span> <span class="n">clipped</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">clipped</span><span class="p">[</span><span class="n">index</span><span class="p">],</span>
+    <span class="p">)</span>
+
+
+<span class="nd">@jax</span><span class="o">.</span><span class="n">jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_jax_property_valid</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Materialize a requested mask in one compiled array operation.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="n">StatusCode</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">)</span>
+
+
+<span class="nd">@jax</span><span class="o">.</span><span class="n">jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_jax_property_validity</span><span class="p">(</span><span class="n">properties</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Materialize serialization masks together, avoiding per-field dispatch.&quot;&quot;&quot;</span>
+    <span class="n">successful</span> <span class="o">=</span> <span class="n">status</span> <span class="o">==</span> <span class="n">StatusCode</span><span class="o">.</span><span class="n">SUCCESS</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">successful</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+
+
+<div class="viewcode-block" id="FluidState">
+<a class="viewcode-back" href="../../source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FluidState</span><span class="p">(</span><span class="n">eqx</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A numeric pytree whose public properties enforce their availability.</span>
+
+<span class="sd">    Raw leaves are private so Equinox/JAX transformations never invoke guarded</span>
+<span class="sd">    public lookups. Metadata contains only immutable, non-array values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fluid_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">providers</span><span class="p">:</span> <span class="nb">frozenset</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">reference_id</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">available_properties</span><span class="p">:</span> <span class="nb">frozenset</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">error_policy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_data</span><span class="p">:</span> <span class="nb">dict</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span>
+    <span class="n">_clipped</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">fluid_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">identifier</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">provider</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">providers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">reference_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">available_properties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">error_policy</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span>
+        <span class="n">status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">clipped</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">property_validity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">properties</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span> <span class="o">=</span> <span class="n">fluid_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_id</span> <span class="o">=</span> <span class="n">reference_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_policy</span> <span class="o">=</span> <span class="n">error_policy</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">fluid_name</span><span class="o">=</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="n">provider</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot;fluid_name&quot;</span><span class="p">,</span> <span class="n">fluid_name</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;identifier&quot;</span><span class="p">,</span> <span class="n">identifier</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;provider&quot;</span><span class="p">,</span> <span class="n">provider</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">model</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;State identity metadata must be strings or None.&quot;</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">providers</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;providers&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Provider provenance must be a collection of names, not a string.&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">provenance</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+            <span class="n">providers</span>
+            <span class="k">if</span> <span class="n">providers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="p">(()</span> <span class="k">if</span> <span class="n">provider</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="n">provider</span><span class="p">,))</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">value</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;mixed&quot;</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">provenance</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;providers&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Provider provenance must contain nonempty individual provider names.&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">derived_provider</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">provenance</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">provenance</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="k">else</span> <span class="p">(</span><span class="s2">&quot;mixed&quot;</span> <span class="k">if</span> <span class="n">provenance</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">provider</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">provider</span> <span class="o">!=</span> <span class="n">derived_provider</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;providers&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Provider and provenance describe different evaluators.&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">provider</span> <span class="o">=</span> <span class="n">derived_provider</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">providers</span> <span class="o">=</span> <span class="n">provenance</span>
+        <span class="n">context</span><span class="p">[</span><span class="s2">&quot;provider&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived_provider</span>
+        <span class="k">if</span> <span class="n">error_policy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span> <span class="s2">&quot;clip&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;error_policy&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Choose &#39;raise&#39;, &#39;clip&#39; or &#39;mask&#39;.&quot;</span><span class="p">,</span>
+                <span class="n">supported</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span> <span class="s2">&quot;clip&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">),</span>
+                <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">hash</span><span class="p">(</span><span class="n">reference_id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;reference_id&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Reference identity must be immutable and hashable.&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+        <span class="c1"># Keep ordinary CoolProp/table sampling on NumPy. Converting every</span>
+        <span class="c1"># scalar/property to a JAX device array here adds thousands of tiny</span>
+        <span class="c1"># dispatches during table generation. Native/traced inputs stay in JAX.</span>
+        <span class="n">leaves</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree_util</span><span class="o">.</span><span class="n">tree_leaves</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">properties</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">property_validity</span><span class="p">,</span> <span class="n">clipped</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">xp</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">jnp</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">))</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">leaves</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">np</span>
+        <span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">canonical</span> <span class="o">=</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">canonical</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Unknown state property.&quot;</span><span class="p">,</span>
+                    <span class="n">supported</span><span class="o">=</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">canonical</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">canonical</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;A property was supplied more than once through canonical/alias names.&quot;</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">values</span><span class="p">[</span><span class="n">canonical</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numeric_array</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">canonical</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">xp</span><span class="p">)</span>
+        <span class="n">enabled</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">set</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="k">if</span> <span class="n">available_properties</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">set</span><span class="p">(</span><span class="n">available_properties</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">normalized</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">enabled</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Unknown enabled property.&quot;</span><span class="p">,</span>
+                    <span class="n">supported</span><span class="o">=</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">normalized</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ALIAS_TO_CANONICAL</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">available_properties</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span>
+        <span class="n">masks</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="n">property_validity</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">canonical</span> <span class="o">=</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">canonical</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">normalized</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Validity masks require an enabled property.&quot;</span><span class="p">,</span>
+                    <span class="n">supported</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">normalized</span><span class="p">),</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">canonical</span> <span class="ow">in</span> <span class="n">masks</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">canonical</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;A validity mask was supplied more than once through canonical/alias names.&quot;</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidStateError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Property validity masks must contain booleans.&quot;</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">masks</span><span class="p">[</span><span class="n">canonical</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask</span>
+        <span class="n">clipped_array</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">clipped</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">clipped_array</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">clipped</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidStateError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="s2">&quot;clipped&quot;</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Clipping flags must contain a boolean array.&quot;</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+            <span class="k">if</span> <span class="n">clipped_array</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidStateError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="s2">&quot;clipped&quot;</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Clipping flags must contain booleans.&quot;</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="n">status_array</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">StatusCode</span><span class="o">.</span><span class="n">SUCCESS</span> <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">status</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">status_array</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">status_array</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidStateError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Status must contain integer codes.&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">context</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">status_array</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">status_array</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">StatusCode</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">)</span>
+            <span class="o">|</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">status_array</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">StatusCode</span><span class="o">.</span><span class="n">PROVIDER_FAILURE</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidStateError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;status&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Status codes must be in the range 0 through 4.&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_shapes</span><span class="p">(</span>
+                <span class="o">*</span><span class="p">(</span>
+                    <span class="n">array</span><span class="o">.</span><span class="n">shape</span>
+                    <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="p">(</span>
+                        <span class="o">*</span><span class="n">values</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+                        <span class="o">*</span><span class="n">masks</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+                        <span class="n">status_array</span><span class="p">,</span>
+                        <span class="o">*</span><span class="p">((</span><span class="n">clipped_array</span><span class="p">,)</span> <span class="k">if</span> <span class="n">clipped_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">()),</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidStateError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;shape&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;State properties, masks, clipping flags and status must have compatible broadcast shapes.&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+        <span class="c1"># Most evaluator outputs already have the final shape. Avoid dispatching</span>
+        <span class="c1"># a broadcast for every value/mask, especially for ordinary NumPy scalars.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">status_array</span>
+            <span class="k">if</span> <span class="n">status_array</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">shape</span>
+            <span class="k">else</span> <span class="n">xp</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">status_array</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">xp</span> <span class="ow">is</span> <span class="n">np</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">successful</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">StatusCode</span><span class="o">.</span><span class="n">SUCCESS</span>
+        <span class="c1"># Ordinary states keep None: no extra numerical PyTree leaf, boolean</span>
+        <span class="c1"># array or compiled bookkeeping is added until clipping is supplied.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clipped</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">clipped_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">clipped_array</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">:</span>
+                <span class="n">clipped_array</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">clipped_array</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_clipped</span> <span class="o">=</span> <span class="n">clipped_array</span> <span class="o">&amp;</span> <span class="n">successful</span>
+            <span class="k">if</span> <span class="n">xp</span> <span class="ow">is</span> <span class="n">np</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_clipped</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">PROPERTIES_CANONICAL</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">normalized</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># dict.get eagerly evaluates its default even when the key exists.</span>
+            <span class="c1"># Allocate missing-value arrays only for genuinely missing fields.</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">values</span> <span class="k">else</span> <span class="n">xp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="n">successful</span> <span class="o">&amp;</span> <span class="n">xp</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">masks</span><span class="p">:</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">masks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">:</span>
+                    <span class="n">mask</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="o">&amp;</span> <span class="n">mask</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">valid</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">xp</span> <span class="ow">is</span> <span class="n">np</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># Unavailable values are already NaN. Recovering their validity on</span>
+        <span class="c1"># demand avoids returning a redundant boolean array per property from</span>
+        <span class="c1"># compiled evaluators. NumPy/JAX states share the same tree structure.</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_numeric_array</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">xp</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidStateError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;State values must be real numeric arrays.&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">jnp</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;is_two_phase&quot;</span> <span class="ow">and</span> <span class="n">array</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">jnp</span><span class="o">.</span><span class="n">bool_</span><span class="p">)</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="n">jnp</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">complexfloating</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidStateError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;State values must be real numeric arrays.&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">array</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">StatusCode</span><span class="o">.</span><span class="n">SUCCESS</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clipped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report recovered clipped elements, independently of failure status.</span>
+
+<span class="sd">        Unclipped states store no mask. Materialize their all-false flags only</span>
+<span class="sd">        when requested, preserving the numerical leaves of ordinary calls.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clipped</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clipped</span>
+        <span class="n">xp</span> <span class="o">=</span> <span class="n">jnp</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">))</span> <span class="k">else</span> <span class="n">np</span>
+        <span class="n">flags</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">xp</span> <span class="ow">is</span> <span class="n">np</span><span class="p">:</span>
+            <span class="n">flags</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">flags</span>
+
+<div class="viewcode-block" id="FluidState.supports_property">
+<a class="viewcode-back" href="../../source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.supports_property">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_properties</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_canonical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">canonical</span> <span class="o">=</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">canonical</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown property alias: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">canonical</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_properties</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnsupportedPropertyError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="n">canonical</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;This property is unsupported or not enabled for this state.&quot;</span><span class="p">,</span>
+                <span class="n">supported</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_properties</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">canonical</span>
+
+<div class="viewcode-block" id="FluidState.raw_property">
+<a class="viewcode-back" href="../../source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.raw_property">[docs]</a>
+    <span class="nd">@_StateMethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">raw_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read an enabled canonical/alias field without availability guards.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">FluidState</span><span class="o">.</span><span class="n">_canonical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="FluidState.property_valid">
+<a class="viewcode-back" href="../../source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.property_valid">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">property_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">FluidState</span><span class="o">.</span><span class="n">_canonical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="n">_jax_property_valid</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">StatusCode</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">))</span>
+        <span class="n">valid</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">valid</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">canonical</span> <span class="o">=</span> <span class="n">FluidState</span><span class="o">.</span><span class="n">_canonical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">canonical</span><span class="p">]</span>
+        <span class="c1"># Evaluator wrappers enforce transformed error modes in later phases.</span>
+        <span class="c1"># State operations never turn traced availability into a Python bool.</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error_policy</span> <span class="o">==</span> <span class="s2">&quot;raise&quot;</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="c1"># Inspect concrete storage directly rather than launching a tiny</span>
+            <span class="c1"># JAX validity kernel and immediately synchronizing it to the host.</span>
+            <span class="n">concrete_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">)</span> <span class="o">==</span> <span class="n">StatusCode</span><span class="o">.</span><span class="n">SUCCESS</span>
+            <span class="p">)</span>
+            <span class="n">all_valid</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">bool</span><span class="p">(</span><span class="n">concrete_valid</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">concrete_valid</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span>
+                <span class="k">else</span> <span class="n">concrete_valid</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">all_valid</span><span class="p">:</span>
+                <span class="n">unavailable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">concrete_valid</span><span class="p">)</span>
+                <span class="n">indices</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">[()]</span>
+                    <span class="k">if</span> <span class="n">unavailable</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span>
+                    <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">unavailable</span><span class="p">)))</span>
+                <span class="p">)</span>
+                <span class="k">raise</span> <span class="n">PropertyUnavailableError</span><span class="p">(</span>
+                    <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span>
+                    <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                    <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">canonical</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;The enabled property is undefined at the requested state indices.&quot;</span><span class="p">,</span>
+                    <span class="n">supported</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_properties</span><span class="p">),</span>
+                    <span class="n">indices</span><span class="o">=</span><span class="n">indices</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FluidState</span><span class="o">.</span><span class="n">_read_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;FluidState&#39; object has no attribute &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="s2">&quot;fluid_name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;identifier&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;provider&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;providers&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;model&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;reference_id&quot;</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">FluidState</span><span class="o">.</span><span class="n">_read_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FluidState.to_dict">
+<a class="viewcode-back" href="../../source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_aliases</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export enabled raw numeric fields, never metadata/status or guards.&quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">include_aliases</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">canonical</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">PROPERTY_ALIASES</span><span class="p">[</span><span class="n">canonical</span><span class="p">]:</span>
+                    <span class="n">result</span><span class="p">[</span><span class="n">alias</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">canonical</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="FluidState.keys">
+<a class="viewcode-back" href="../../source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.keys">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="FluidState.values">
+<a class="viewcode-back" href="../../source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.values">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="FluidState.items">
+<a class="viewcode-back" href="../../source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.items">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span>
+            <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+            <span class="n">providers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">providers</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">reference_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_id</span><span class="p">,</span>
+            <span class="n">available_properties</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">available_properties</span><span class="p">,</span>
+            <span class="n">error_policy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_policy</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="FluidState.to_data">
+<a class="viewcode-back" href="../../source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.to_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export metadata, raw values, status and masks for a lossless round trip.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="n">masks</span> <span class="o">=</span> <span class="n">_jax_property_validity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">masks</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">FluidState</span><span class="o">.</span><span class="n">property_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">}</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">(),</span>
+            <span class="n">properties</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+            <span class="n">status</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+            <span class="n">clipped</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_clipped</span><span class="p">,</span>
+            <span class="n">property_validity</span><span class="o">=</span><span class="n">masks</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FluidState.from_data">
+<a class="viewcode-back" href="../../source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.from_data">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="o">**</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">],</span>
+            <span class="o">**</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">],</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">],</span>
+            <span class="n">clipped</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;clipped&quot;</span><span class="p">),</span>
+            <span class="n">property_validity</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;property_validity&quot;</span><span class="p">],</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Reconstruct through validation so NumPy&#39;s pickle restoration cannot</span>
+        <span class="c1"># turn exported read-only numerical arrays into writable state storage.</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">from_data</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_data</span><span class="p">(),)</span>
+
+<div class="viewcode-block" id="FluidState.at_index">
+<a class="viewcode-back" href="../../source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.at_index">[docs]</a>
+    <span class="nd">@_StateMethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">at_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract a statically bounds-checked row, preserving all state leaves.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">UnsupportedExecutionModeError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;at_index&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;State indexing requires a static integer to enforce bounds.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;State index must be an integer&quot;</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="o">-</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;State index </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> is outside the first-axis length </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">FluidState</span><span class="p">:</span>
+            <span class="c1"># Preserve any additional numerical fields a subclass may introduce.</span>
+            <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree_util</span><span class="o">.</span><span class="n">tree_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="n">properties</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">clipped</span> <span class="o">=</span> <span class="n">_jax_at_index</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clipped</span><span class="p">,</span> <span class="n">index</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">properties</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="n">clipped</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clipped</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clipped</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="c1"># NumPy slices retain their read-only owners; JAX gathers are immutable.</span>
+        <span class="c1"># Metadata is already validated and must not enter a numerical kernel&#39;s</span>
+        <span class="c1"># cache key. The internal index is dynamic, avoiding per-index compiles.</span>
+        <span class="k">return</span> <span class="n">FluidState</span><span class="o">.</span><span class="n">_from_validated</span><span class="p">(</span>
+            <span class="n">FluidState</span><span class="o">.</span><span class="n">_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">properties</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">clipped</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FluidState.flipped">
+<a class="viewcode-back" href="../../source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.flipped">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">flipped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="c1"># Slicing preserves each leaf&#39;s storage backend and NumPy read-only</span>
+        <span class="c1"># views; jnp.flip would transfer ordinary source states to JAX.</span>
+        <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree_util</span><span class="o">.</span><span class="n">tree_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_native</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">,</span>
+        <span class="n">properties</span><span class="p">,</span>
+        <span class="n">status</span><span class="p">,</span>
+        <span class="n">clipped</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">mask_failed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">success_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assemble already validated native outputs without repeated checks.</span>
+
+<span class="sd">        The native caller supplies complete immutable metadata, canonical</span>
+<span class="sd">        floating arrays at the exact status shape, and finite core values or</span>
+<span class="sd">        optional NaNs on successful rows. Optional overflow is normalized at</span>
+<span class="sd">        its definition. Public arbitrary-input construction stays validating.</span>
+
+<span class="sd">        Large all-success batches return those arrays directly. Mixed/failed</span>
+<span class="sd">        batches apply a single success mask to all fields. A guarded eager</span>
+<span class="sd">        raise entry may set ``mask_failed=False`` because it inspects status</span>
+<span class="sd">        and raises before exposing any failed intermediate state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mask_failed</span> <span class="ow">and</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;error_policy&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;raise&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unmasked native assembly requires guarded raise policy&quot;</span><span class="p">)</span>
+        <span class="n">xp</span> <span class="o">=</span> <span class="n">jnp</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">))</span> <span class="k">else</span> <span class="n">np</span>
+        <span class="k">if</span> <span class="n">xp</span> <span class="ow">is</span> <span class="n">np</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">successful</span> <span class="o">=</span> <span class="n">success_mask</span>
+        <span class="k">if</span> <span class="n">successful</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">mask_failed</span> <span class="ow">or</span> <span class="n">clipped</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">successful</span> <span class="o">=</span> <span class="n">status</span> <span class="o">==</span> <span class="n">StatusCode</span><span class="o">.</span><span class="n">SUCCESS</span>
+        <span class="k">if</span> <span class="n">mask_failed</span><span class="p">:</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">masked_values</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span>
+                    <span class="n">name</span><span class="p">:</span> <span class="n">xp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">successful</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">}</span>
+
+            <span class="k">if</span> <span class="n">xp</span> <span class="ow">is</span> <span class="n">jnp</span> <span class="ow">and</span> <span class="n">status</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;=</span> <span class="mi">64</span><span class="p">:</span>
+                <span class="n">masked</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">cond</span><span class="p">(</span>
+                    <span class="n">jnp</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">successful</span><span class="p">),</span>
+                    <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">properties</span><span class="p">),</span>
+                    <span class="n">masked_values</span><span class="p">,</span>
+                    <span class="n">operand</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">masked</span> <span class="o">=</span> <span class="n">masked_values</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">xp</span> <span class="ow">is</span> <span class="n">np</span><span class="p">:</span>
+            <span class="n">masked</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">name</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">masked</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">properties</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">clipped</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">clipped</span> <span class="o">=</span> <span class="n">clipped</span> <span class="o">&amp;</span> <span class="n">successful</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_from_validated</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">masked</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">clipped</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_validated</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">properties</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">clipped</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assemble collection results whose inputs/invariants are validated.</span>
+
+<span class="sd">        Collection inputs have passed public compatibility checks and contain</span>
+<span class="sd">        NaN-masked values. Trusted native callers establish equivalent numeric</span>
+<span class="sd">        guarantees through ``_from_native``; guarded raising entries may hold</span>
+<span class="sd">        raw intermediates privately until status is checked. New NumPy arrays</span>
+<span class="sd">        are owned by the result and frozen before exposing them.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="o">*</span><span class="n">properties</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">status</span><span class="p">,</span> <span class="n">clipped</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">&quot;_data&quot;</span><span class="p">,</span> <span class="n">properties</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">&quot;_clipped&quot;</span><span class="p">,</span> <span class="n">clipped</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_combine</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">stack</span><span class="p">):</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">state</span><span class="o">.</span><span class="n">fluid_name</span> <span class="o">!=</span> <span class="n">first</span><span class="o">.</span><span class="n">fluid_name</span>
+                <span class="ow">or</span> <span class="n">state</span><span class="o">.</span><span class="n">identifier</span> <span class="o">!=</span> <span class="n">first</span><span class="o">.</span><span class="n">identifier</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Cannot combine states with different fluid_name or identifier&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">model</span> <span class="o">!=</span> <span class="n">first</span><span class="o">.</span><span class="n">model</span> <span class="ow">or</span> <span class="n">state</span><span class="o">.</span><span class="n">reference_id</span> <span class="o">!=</span> <span class="n">first</span><span class="o">.</span><span class="n">reference_id</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Cannot combine states with different physical model or reference_id&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">error_policy</span> <span class="o">!=</span> <span class="n">first</span><span class="o">.</span><span class="n">error_policy</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot combine states with different error_policy&quot;</span><span class="p">)</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">stack</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Stack requires identical state shapes&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">stack</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">shape</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">1</span><span class="p">,))[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="p">(</span><span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">1</span><span class="p">,))[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Concatenation requires matching trailing state shapes&quot;</span><span class="p">)</span>
+        <span class="n">enabled</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">available_properties</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">providers</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">providers</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">))</span>
+        <span class="n">provider</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">providers</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">providers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="k">else</span> <span class="p">(</span><span class="s2">&quot;mixed&quot;</span> <span class="k">if</span> <span class="n">providers</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># Keep ordinary source states on NumPy. Mixed storage and transformed</span>
+        <span class="c1"># calls use JAX so no traced numerical leaves reach NumPy operations.</span>
+        <span class="n">xp</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">jnp</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span>
+                <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span>
+                    <span class="n">state</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+                    <span class="n">state</span><span class="o">.</span><span class="n">_clipped</span><span class="p">,</span>
+                    <span class="o">*</span><span class="n">state</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">else</span> <span class="n">np</span>
+        <span class="p">)</span>
+        <span class="n">combine</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="k">lambda</span> <span class="n">arrays</span><span class="p">:</span> <span class="n">xp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">stack</span>
+            <span class="k">else</span> <span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">arrays</span><span class="p">:</span> <span class="n">xp</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">xp</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="n">combine</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">enabled</span>
+        <span class="p">}</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">FluidState</span><span class="o">.</span><span class="n">_metadata</span><span class="p">(</span><span class="n">first</span><span class="p">)</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">provider</span><span class="o">=</span><span class="n">provider</span><span class="p">,</span> <span class="n">providers</span><span class="o">=</span><span class="n">providers</span><span class="p">,</span> <span class="n">available_properties</span><span class="o">=</span><span class="n">enabled</span>
+        <span class="p">)</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">combine</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">status</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+            <span class="c1"># Signed/unsigned integer promotion can produce floats (for example</span>
+            <span class="c1"># int64 + uint64). Existing states only contain validated codes 0–4,</span>
+            <span class="c1"># so restoring an integer dtype is exact and keeps status semantic.</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">clipped</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">_clipped</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">):</span>
+            <span class="n">clipped</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">(</span>
+                        <span class="n">state</span><span class="o">.</span><span class="n">_clipped</span>
+                        <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">_clipped</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                        <span class="k">else</span> <span class="n">xp</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_from_validated</span><span class="p">(</span>
+            <span class="n">metadata</span><span class="p">,</span>
+            <span class="n">properties</span><span class="p">,</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span>
+            <span class="n">clipped</span><span class="o">=</span><span class="n">clipped</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_combine</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="n">stack</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FluidState.stack">
+<a class="viewcode-back" href="../../source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.stack">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stack</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">states</span><span class="p">):</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">states</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No states provided to stack&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Stack requires FluidState objects&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_combine</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;FluidState(fluid_name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="si">!r}</span><span class="s2">, identifier=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">!r}</span><span class="s2">, provider=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="si">!r}</span><span class="s2">, model=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="si">!r}</span><span class="s2">, shape=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, properties=</span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_properties</span><span class="p">)</span><span class="si">!r}</span><span class="s2">)&quot;</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Roberto Agromayor.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>jaxprop.bicubic package &#8212; jaxprop v0.5.8 documentation</title>
+    <title>jaxprop.bicubic package &#8212; jaxprop v0.6.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=4e4ceabb"></script>
+    <script src="../../_static/documentation_options.js?v=4fe0b1e1"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -55,7 +55,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'source/api/jaxprop.bicubic';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="jaxprop.bicubic.bicubic_interpolant_property module" href="jaxprop.bicubic.bicubic_interpolant_property.html" />
+    <link rel="next" title="jaxprop.bicubic.bicubic_interpolation module" href="jaxprop.bicubic.bicubic_interpolation.html" />
     <link rel="prev" title="jaxprop package" href="jaxprop.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -134,7 +134,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.8 documentation</p>
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -149,24 +149,23 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="jaxprop.html">jaxprop package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">jaxprop.bicubic package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.components.html">jaxprop.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -174,7 +173,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.graphics.html">jaxprop.graphics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.factory.html">jaxprop.factory module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.math.html">jaxprop.math module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.utils.html">jaxprop.utils module</a></li>
@@ -325,6 +331,47 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic"><code class="docutils literal notranslate"><span class="pre">FluidBicubic</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.N_h"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.N_h</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.N_p"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.N_p</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.N_p_sat"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.N_p_sat</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.PROPERTY_CALCULATORS"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.PROPERTY_CALCULATORS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.backend"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.backend</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.capabilities"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.capabilities</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.coarse_step"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.coarse_step</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.configuration"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.configuration</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.delta_h"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.delta_h</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.delta_logP"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.delta_logP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.delta_logP_sat"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.delta_logP_sat</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.fluid_name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.get_state"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.get_state()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.get_state_saturation"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.get_state_saturation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.grad_method"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.grad_method</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.h_max"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.h_max</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.h_min"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.h_min</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.h_vals"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.h_vals</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.identifier"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.identifier</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.inverse_max_steps"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.inverse_max_steps</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.inverse_tolerance"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.inverse_tolerance</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.logP_sat_vals"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.logP_sat_vals</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.logP_vals"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.logP_vals</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.metadata"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.metadata</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.metastable_domain"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.metastable_domain</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.metastable_phase"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.metastable_phase</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.mixture_ratio"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.mixture_ratio</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.model"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.model</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.name"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.p_max"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.p_max</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.p_min"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.p_min</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.provider"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.provider</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.reference_id"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.reference_id</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.table"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.table_dir"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table_dir</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.table_mode"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table_mode</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.table_name"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table_name</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.compute_bicubic_coefficients"><code class="docutils literal notranslate"><span class="pre">compute_bicubic_coefficients()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 </ul>
             </nav>
@@ -339,13 +386,338 @@
                   
   <section id="module-jaxprop.bicubic">
 <span id="jaxprop-bicubic-package"></span><h1>jaxprop.bicubic package<a class="headerlink" href="#module-jaxprop.bicubic" title="Link to this heading">#</a></h1>
+<p>Public bicubic evaluator and coefficient-construction utility.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.bicubic.</span></span><span class="sig-name descname"><span class="pre">FluidBicubic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HEOS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_p_sat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixture_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metastable_phase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coarse_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'central'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'fluid_tables'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse_max_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse_tolerance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metastable_domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'physical'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/bicubic_interpolation.html#FluidBicubic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin" title="jaxprop.source_references.SourceReferencesMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">SourceReferencesMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>Fluid model using bicubic property interpolation on an enthalpy-pressure grid.</p>
+<dl class="simple">
+<dt>Workflow:</dt><dd><ul class="simple">
+<li><p>On construction, attempts to load a precomputed table from disk.</p></li>
+<li><p>If not found, generates the table with finite-difference derivatives,
+saves it to disk, and stores it in memory.</p></li>
+<li><p>On <cite>get_state</cite>, performs bicubic interpolation at the requested state.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Generation uses the selected finite-difference scheme. Cache reuse requires
+an exact generation manifest, verified source identity and valid arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fluid_name</strong><span class="classifier">str</span></dt><dd><p>Fluid identifier for CoolProp.</p>
+</dd>
+<dt><strong>backend</strong><span class="classifier">str</span></dt><dd><p>CoolProp backend string.</p>
+</dd>
+<dt><strong>h_min, h_max</strong><span class="classifier">float</span></dt><dd><p>Min/max enthalpy [J/kg].</p>
+</dd>
+<dt><strong>p_min, p_max</strong><span class="classifier">float</span></dt><dd><p>Min/max pressure [Pa].</p>
+</dd>
+<dt><strong>N_h, N_p</strong><span class="classifier">int</span></dt><dd><p>Number of grid points in h and p.</p>
+</dd>
+<dt><strong>coarse_step</strong><span class="classifier">int</span></dt><dd><p>Number of points to skip when determining the initial guess during 2D inverse interpolations</p>
+</dd>
+<dt><strong>inverse_max_steps</strong><span class="classifier">int, optional</span></dt><dd><p>Nonnegative iteration limit for property-pair inverses (default: 64).</p>
+</dd>
+<dt><strong>inverse_tolerance</strong><span class="classifier">float, optional</span></dt><dd><p>Positive tolerance for the nonlinear solver and its independent scaled
+residual check (default: 1e-10). These inverse controls do not change
+table generation or the persisted cache identity.</p>
+</dd>
+<dt><strong>metastable_domain</strong><span class="classifier">{‘physical’, ‘formal’}, optional</span></dt><dd><p>Physical metastable tables require positive constant-volume heat
+capacity and isothermal bulk modulus at source samples. Formal mode
+explicitly permits calorically unstable homogeneous EOS states for
+research. Cells that may cross a heat-capacity pole do not expose the
+affected response properties. Both modes retain mechanical guards.
+Stability is prepared during construction, with no added EOS queries
+in interpolation. The default is ‘physical’.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str, optional</span></dt><dd><p>File stem. The default includes a digest of the complete generation
+identity so different configurations can coexist in one cache directory.</p>
+</dd>
+<dt><strong>table_dir</strong><span class="classifier">str, optional</span></dt><dd><p>Directory for saving/loading table pickle (default: “fluid_tables”).</p>
+</dd>
+<dt><strong>identifier</strong><span class="classifier">str, optional</span></dt><dd><p>Tag stored in the returned FluidState objects.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>capabilities</strong></dt><dd></dd>
+<dt><strong>configuration</strong></dt><dd></dd>
+<dt><strong>critical_point</strong></dt><dd></dd>
+<dt><strong>name</strong></dt><dd></dd>
+<dt><strong>references</strong></dt><dd></dd>
+<dt><a class="reference internal" href="#jaxprop.bicubic.FluidBicubic.table" title="jaxprop.bicubic.FluidBicubic.table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table</span></code></a></dt><dd><p>Expose the complete payload for inspection without tracing metadata.</p>
+</dd>
+<dt><strong>triple_point_liquid</strong></dt><dd></dd>
+<dt><strong>triple_point_vapor</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.bicubic.FluidBicubic.get_state" title="jaxprop.bicubic.FluidBicubic.get_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state</span></code></a>(input_type, prop_1, prop_2, *[, ...])</p></td>
+<td><p>Evaluate a bounded table state with explicit numerical failure policy.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jaxprop.bicubic.FluidBicubic.get_state_saturation" title="jaxprop.bicubic.FluidBicubic.get_state_saturation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state_saturation</span></code></a>(input_type, prop_1, ...)</p></td>
+<td><p>Evaluate the stored PQ saturation endpoint; other tables reject it.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.N_h">
+<span class="sig-name descname"><span class="pre">N_h</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.N_h" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.N_p">
+<span class="sig-name descname"><span class="pre">N_p</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.N_p" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.N_p_sat">
+<span class="sig-name descname"><span class="pre">N_p_sat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.N_p_sat" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.PROPERTY_CALCULATORS">
+<span class="sig-name descname"><span class="pre">PROPERTY_CALCULATORS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{9:</span> <span class="pre">&lt;function</span> <span class="pre">FluidBicubic.&lt;dictcomp&gt;.&lt;lambda&gt;&gt;,</span> <span class="pre">10:</span> <span class="pre">&lt;function</span> <span class="pre">FluidBicubic.&lt;dictcomp&gt;.&lt;lambda&gt;&gt;,</span> <span class="pre">18:</span> <span class="pre">&lt;function</span> <span class="pre">FluidBicubic.&lt;dictcomp&gt;.&lt;lambda&gt;&gt;,</span> <span class="pre">20:</span> <span class="pre">&lt;function</span> <span class="pre">FluidBicubic.&lt;dictcomp&gt;.&lt;lambda&gt;&gt;,</span> <span class="pre">22:</span> <span class="pre">&lt;function</span> <span class="pre">FluidBicubic.&lt;dictcomp&gt;.&lt;lambda&gt;&gt;,</span> <span class="pre">26:</span> <span class="pre">&lt;function</span> <span class="pre">FluidBicubic.&lt;dictcomp&gt;.&lt;lambda&gt;&gt;,</span> <span class="pre">30:</span> <span class="pre">&lt;function</span> <span class="pre">FluidBicubic.&lt;dictcomp&gt;.&lt;lambda&gt;&gt;,</span> <span class="pre">32:</span> <span class="pre">&lt;function</span> <span class="pre">FluidBicubic.&lt;dictcomp&gt;.&lt;lambda&gt;&gt;}</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.PROPERTY_CALCULATORS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.backend">
+<span class="sig-name descname"><span class="pre">backend</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.backend" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.capabilities">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">capabilities</span></span><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.capabilities" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.coarse_step">
+<span class="sig-name descname"><span class="pre">coarse_step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.coarse_step" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.configuration">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">configuration</span></span><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.configuration" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.delta_h">
+<span class="sig-name descname"><span class="pre">delta_h</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.delta_h" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.delta_logP">
+<span class="sig-name descname"><span class="pre">delta_logP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.delta_logP" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.delta_logP_sat">
+<span class="sig-name descname"><span class="pre">delta_logP_sat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.delta_logP_sat" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.fluid_name">
+<span class="sig-name descname"><span class="pre">fluid_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.fluid_name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.get_state">
+<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/bicubic_interpolation.html#FluidBicubic.get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.get_state" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate a bounded table state with explicit numerical failure policy.</p>
+<p>The input-pair selector is static for JAX compilation; numerical inputs
+and table coefficients remain dynamic. Each pair has its own cached
+specialization, so the same fluid object supports different advertised
+pairs throughout a simulation without specializing on numerical values.</p>
+<p>Eager calls default to indexed raising. Within JAX transformations,
+explicitly select <code class="docutils literal notranslate"><span class="pre">errors='mask'</span></code> or <code class="docutils literal notranslate"><span class="pre">errors='clip'</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.get_state_saturation">
+<span class="sig-name descname"><span class="pre">get_state_saturation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/bicubic_interpolation.html#FluidBicubic.get_state_saturation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.get_state_saturation" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate the stored PQ saturation endpoint; other tables reject it.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.grad_method">
+<span class="sig-name descname"><span class="pre">grad_method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.grad_method" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.h_max">
+<span class="sig-name descname"><span class="pre">h_max</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.h_max" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.h_min">
+<span class="sig-name descname"><span class="pre">h_min</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.h_min" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.h_vals">
+<span class="sig-name descname"><span class="pre">h_vals</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.h_vals" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.identifier">
+<span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.identifier" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.inverse_max_steps">
+<span class="sig-name descname"><span class="pre">inverse_max_steps</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.inverse_max_steps" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.inverse_tolerance">
+<span class="sig-name descname"><span class="pre">inverse_tolerance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.inverse_tolerance" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.logP_sat_vals">
+<span class="sig-name descname"><span class="pre">logP_sat_vals</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.logP_sat_vals" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.logP_vals">
+<span class="sig-name descname"><span class="pre">logP_vals</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.logP_vals" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.metadata" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.metastable_domain">
+<span class="sig-name descname"><span class="pre">metastable_domain</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.metastable_domain" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.metastable_phase">
+<span class="sig-name descname"><span class="pre">metastable_phase</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.metastable_phase" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.mixture_ratio">
+<span class="sig-name descname"><span class="pre">mixture_ratio</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.mixture_ratio" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.model">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.model" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.p_max">
+<span class="sig-name descname"><span class="pre">p_max</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.p_max" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.p_min">
+<span class="sig-name descname"><span class="pre">p_min</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.p_min" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.provider">
+<span class="sig-name descname"><span class="pre">provider</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.provider" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.reference_id">
+<span class="sig-name descname"><span class="pre">reference_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.reference_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.table">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">table</span></span><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.table" title="Link to this definition">#</a></dt>
+<dd><p>Expose the complete payload for inspection without tracing metadata.</p>
+<p>The outer dictionary is a snapshot; numerical entries share the stored
+arrays. Generation/reload validate the complete persisted manifest.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.table_dir">
+<span class="sig-name descname"><span class="pre">table_dir</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.table_dir" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.table_mode">
+<span class="sig-name descname"><span class="pre">table_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.table_mode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.bicubic.FluidBicubic.table_name">
+<span class="sig-name descname"><span class="pre">table_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.bicubic.FluidBicubic.table_name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jaxprop.bicubic.compute_bicubic_coefficients">
+<span class="sig-prename descclassname"><span class="pre">jaxprop.bicubic.</span></span><span class="sig-name descname"><span class="pre">compute_bicubic_coefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_logP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_hlogP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_logP</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/bicubic/bicubic_interpolation.html#compute_bicubic_coefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.bicubic.compute_bicubic_coefficients" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic"><code class="docutils literal notranslate"><span class="pre">FluidBicubic</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.N_h"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.N_h</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.N_p"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.N_p</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.N_p_sat"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.N_p_sat</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.PROPERTY_CALCULATORS"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.PROPERTY_CALCULATORS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.backend"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.backend</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.capabilities"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.capabilities</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.coarse_step"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.coarse_step</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.configuration"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.configuration</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.delta_h"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.delta_h</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.delta_logP"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.delta_logP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.delta_logP_sat"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.delta_logP_sat</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.fluid_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.get_state"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.get_state()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.get_state_saturation"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.get_state_saturation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.grad_method"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.grad_method</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.h_max"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.h_max</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.h_min"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.h_min</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.h_vals"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.h_vals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.identifier"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.identifier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.inverse_max_steps"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.inverse_max_steps</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.inverse_tolerance"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.inverse_tolerance</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.logP_sat_vals"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.logP_sat_vals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.logP_vals"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.logP_vals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.metadata"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.metadata</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.metastable_domain"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.metastable_domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.metastable_phase"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.metastable_phase</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.mixture_ratio"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.mixture_ratio</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.model"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.name"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.p_max"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.p_max</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.p_min"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.p_min</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.provider"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.provider</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.reference_id"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.reference_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.table"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.table_dir"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table_dir</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.table_mode"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table_mode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.table_name"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.compute_bicubic_coefficients"><code class="docutils literal notranslate"><span class="pre">compute_bicubic_coefficients()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -372,11 +744,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="jaxprop.bicubic.bicubic_interpolant_property.html"
+       href="jaxprop.bicubic.bicubic_interpolation.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">jaxprop.bicubic.bicubic_interpolant_property module</p>
+        <p class="prev-next-title">jaxprop.bicubic.bicubic_interpolation module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -398,6 +770,47 @@
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic"><code class="docutils literal notranslate"><span class="pre">FluidBicubic</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.N_h"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.N_h</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.N_p"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.N_p</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.N_p_sat"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.N_p_sat</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.PROPERTY_CALCULATORS"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.PROPERTY_CALCULATORS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.backend"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.backend</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.capabilities"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.capabilities</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.coarse_step"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.coarse_step</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.configuration"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.configuration</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.delta_h"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.delta_h</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.delta_logP"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.delta_logP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.delta_logP_sat"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.delta_logP_sat</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.fluid_name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.get_state"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.get_state()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.get_state_saturation"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.get_state_saturation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.grad_method"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.grad_method</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.h_max"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.h_max</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.h_min"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.h_min</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.h_vals"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.h_vals</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.identifier"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.identifier</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.inverse_max_steps"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.inverse_max_steps</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.inverse_tolerance"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.inverse_tolerance</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.logP_sat_vals"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.logP_sat_vals</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.logP_vals"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.logP_vals</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.metadata"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.metadata</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.metastable_domain"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.metastable_domain</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.metastable_phase"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.metastable_phase</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.mixture_ratio"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.mixture_ratio</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.model"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.model</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.name"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.p_max"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.p_max</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.p_min"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.p_min</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.provider"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.provider</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.reference_id"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.reference_id</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.table"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.table_dir"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table_dir</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.table_mode"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table_mode</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.FluidBicubic.table_name"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table_name</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.bicubic.compute_bicubic_coefficients"><code class="docutils literal notranslate"><span class="pre">compute_bicubic_coefficients()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 </ul>
   </nav></div>

@@ -1,0 +1,813 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jaxprop.property_derivatives &#8212; jaxprop v0.6.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=4fe0b1e1"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/jaxprop/property_derivatives';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/bibliography.html">Bibliography</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../source/api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.perfect_gas.perfect_gas.html">jaxprop.perfect_gas.perfect_gas module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.graphics.html">jaxprop.graphics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.factory.html">jaxprop.factory module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.math.html">jaxprop.math module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.utils.html">jaxprop.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for jaxprop.property_derivatives</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Property partial derivatives with separate primal-state provenance and units.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Real</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">CoolProp.CoolProp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">CP</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">equinox</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">eqx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.configuration</span><span class="w"> </span><span class="kn">import</span> <span class="n">FrozenMapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.errors</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">InvalidConfigurationError</span><span class="p">,</span>
+    <span class="n">InvalidStateError</span><span class="p">,</span>
+    <span class="n">UnsupportedExecutionModeError</span><span class="p">,</span>
+    <span class="n">UnsupportedOptionError</span><span class="p">,</span>
+    <span class="n">UnsupportedPropertyError</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.fluid_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_request</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.fluid_state</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluidState</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.property_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="p">,</span> <span class="n">PROPERTY_ALIASES</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PropertyDerivatives&quot;</span><span class="p">,</span> <span class="s2">&quot;get_props_gradient&quot;</span><span class="p">]</span>
+
+
+<span class="n">_PAIR_INPUT_NAMES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">CP</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;temperature&quot;</span><span class="p">),</span>
+    <span class="n">CP</span><span class="o">.</span><span class="n">HmassSmass_INPUTS</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;enthalpy&quot;</span><span class="p">,</span> <span class="s2">&quot;entropy&quot;</span><span class="p">),</span>
+    <span class="n">CP</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;enthalpy&quot;</span><span class="p">,</span> <span class="s2">&quot;pressure&quot;</span><span class="p">),</span>
+    <span class="n">CP</span><span class="o">.</span><span class="n">PSmass_INPUTS</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;entropy&quot;</span><span class="p">),</span>
+    <span class="n">CP</span><span class="o">.</span><span class="n">DmassHmass_INPUTS</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="s2">&quot;enthalpy&quot;</span><span class="p">),</span>
+    <span class="n">CP</span><span class="o">.</span><span class="n">DmassP_INPUTS</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="s2">&quot;pressure&quot;</span><span class="p">),</span>
+    <span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="s2">&quot;temperature&quot;</span><span class="p">),</span>
+    <span class="n">CP</span><span class="o">.</span><span class="n">DmassSmass_INPUTS</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="s2">&quot;entropy&quot;</span><span class="p">),</span>
+    <span class="n">CP</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;quality_mass&quot;</span><span class="p">),</span>
+    <span class="n">CP</span><span class="o">.</span><span class="n">QT_INPUTS</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">,</span> <span class="s2">&quot;temperature&quot;</span><span class="p">),</span>
+    <span class="n">CP</span><span class="o">.</span><span class="n">SmassT_INPUTS</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;entropy&quot;</span><span class="p">,</span> <span class="s2">&quot;temperature&quot;</span><span class="p">),</span>
+    <span class="n">CP</span><span class="o">.</span><span class="n">DmassUmass_INPUTS</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="s2">&quot;internal_energy&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="n">_PROPERTY_UNITS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="s2">&quot;Pa&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="s2">&quot;kg/m^3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;enthalpy&quot;</span><span class="p">:</span> <span class="s2">&quot;J/kg&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;entropy&quot;</span><span class="p">:</span> <span class="s2">&quot;J/(kg K)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;internal_energy&quot;</span><span class="p">:</span> <span class="s2">&quot;J/kg&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;isobaric_heat_capacity&quot;</span><span class="p">:</span> <span class="s2">&quot;J/(kg K)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;isochoric_heat_capacity&quot;</span><span class="p">:</span> <span class="s2">&quot;J/(kg K)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;heat_capacity_ratio&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;compressibility_factor&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">:</span> <span class="s2">&quot;1/Pa&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;isentropic_compressibility&quot;</span><span class="p">:</span> <span class="s2">&quot;1/Pa&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">:</span> <span class="s2">&quot;Pa&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;isentropic_bulk_modulus&quot;</span><span class="p">:</span> <span class="s2">&quot;Pa&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;speed_of_sound&quot;</span><span class="p">:</span> <span class="s2">&quot;m/s&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;speed_of_sound_p&quot;</span><span class="p">:</span> <span class="s2">&quot;m/s&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;speed_of_sound_pT&quot;</span><span class="p">:</span> <span class="s2">&quot;m/s&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="s2">&quot;Pa s&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="s2">&quot;W/(m K)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;gruneisen&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;isobaric_expansion_coefficient&quot;</span><span class="p">:</span> <span class="s2">&quot;1/K&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;isothermal_joule_thomson&quot;</span><span class="p">:</span> <span class="s2">&quot;J/(kg Pa)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;joule_thomson&quot;</span><span class="p">:</span> <span class="s2">&quot;K/Pa&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;quality_volume&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;surface_tension&quot;</span><span class="p">:</span> <span class="s2">&quot;N/m&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pressure_saturation&quot;</span><span class="p">:</span> <span class="s2">&quot;Pa&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;temperature_saturation&quot;</span><span class="p">:</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;supersaturation_degree&quot;</span><span class="p">:</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;supersaturation_ratio&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;subcooling&quot;</span><span class="p">:</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;superheating&quot;</span><span class="p">:</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mixture_ratio&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mass_frac_1&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mass_frac_2&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;vol_frac_1&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;vol_frac_2&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;drho_dp&quot;</span><span class="p">:</span> <span class="s2">&quot;(kg/m^3)/Pa&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;drho_dh&quot;</span><span class="p">:</span> <span class="s2">&quot;(kg/m^3)/(J/kg)&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="nd">@jax</span><span class="o">.</span><span class="n">jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_mask_partial_values</span><span class="p">(</span><span class="n">partials</span><span class="p">,</span> <span class="n">primal_properties</span><span class="p">):</span>
+    <span class="c1"># A constant NaN property can have a formal zero AD tangent. It still has</span>
+    <span class="c1"># no thermodynamic derivative when its primal value is unavailable.</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">jnp</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">primal_properties</span><span class="p">[</span><span class="n">name</span><span class="p">])[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+            <span class="n">value</span><span class="p">,</span>
+            <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">partials</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+
+
+<div class="viewcode-block" id="PropertyDerivatives">
+<a class="viewcode-back" href="../../source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PropertyDerivatives</span><span class="p">(</span><span class="n">eqx</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Local two-input partials, distinct from ordinary thermodynamic values.</span>
+
+<span class="sd">    ``shape`` is the primal broadcast shape; every derivative array has</span>
+<span class="sd">    ``derivative_shape == shape + (2,)``. The final axis follows ``input_names``.</span>
+<span class="sd">    ``primal`` retains the physical state, status, validity and clipping flags.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">primal</span><span class="p">:</span> <span class="n">FluidState</span>
+    <span class="n">_data</span><span class="p">:</span> <span class="nb">dict</span>
+    <span class="n">input_names</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">input_units</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">property_units</span><span class="p">:</span> <span class="n">FrozenMapping</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">quantity_kind</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;property_derivatives&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">primal</span><span class="p">,</span> <span class="n">derivatives</span><span class="p">,</span> <span class="n">input_names</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;autodiff&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">primal</span><span class="p">,</span> <span class="n">FluidState</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;PropertyDerivatives requires a primal FluidState&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">primal</span> <span class="o">=</span> <span class="n">primal</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="n">primal</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="n">primal</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">primal</span><span class="o">.</span><span class="n">model</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_names</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_names</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span>
+            <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">input_names</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;input_names&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Provide two canonical thermodynamic input names.&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ALIAS_TO_CANONICAL</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">input_names</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_PROPERTY_UNITS</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;input_names&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Input names require known mass-based SI properties.&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_names</span> <span class="o">=</span> <span class="n">names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_units</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_PROPERTY_UNITS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="s2">&quot;autodiff&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;finite_difference&quot;</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;method&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Derivative metadata must identify the calculation method.&quot;</span><span class="p">,</span>
+                <span class="n">supported</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;autodiff&quot;</span><span class="p">,</span> <span class="s2">&quot;finite_difference&quot;</span><span class="p">),</span>
+                <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">derivatives</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;derivatives&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Provide a canonical-property derivative mapping.&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quantity_kind</span> <span class="o">=</span> <span class="s2">&quot;property_derivatives&quot;</span>
+        <span class="n">arrays</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">derivatives</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">canonical</span> <span class="o">=</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">canonical</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">primal</span><span class="o">.</span><span class="n">available_properties</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">UnsupportedPropertyError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Derivative properties must be enabled in the primal state.&quot;</span><span class="p">,</span>
+                    <span class="n">supported</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">primal</span><span class="o">.</span><span class="n">available_properties</span><span class="p">),</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">canonical</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">canonical</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;A derivative was supplied more than once through aliases.&quot;</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">array</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidStateError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">canonical</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Property derivatives must contain real floating arrays.&quot;</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">jnp</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">floating</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">InvalidStateError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">canonical</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Property derivatives must contain real floating arrays.&quot;</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">primal</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span><span class="p">,):</span>
+                <span class="k">raise</span> <span class="n">InvalidStateError</span><span class="p">(</span>
+                    <span class="n">request</span><span class="o">=</span><span class="s2">&quot;shape&quot;</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Derivative arrays must have primal.shape + (2,) axes.&quot;</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">arrays</span><span class="p">[</span><span class="n">canonical</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">_mask_partial_values</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">primal</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">property_units</span> <span class="o">=</span> <span class="n">FrozenMapping</span><span class="p">(</span>
+            <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">_PROPERTY_UNITS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primal</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">primal_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primal</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">derivative_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primal</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span><span class="p">,)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fluid_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primal</span><span class="o">.</span><span class="n">fluid_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primal</span><span class="o">.</span><span class="n">identifier</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">provider</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primal</span><span class="o">.</span><span class="n">provider</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">providers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primal</span><span class="o">.</span><span class="n">providers</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primal</span><span class="o">.</span><span class="n">model</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reference_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primal</span><span class="o">.</span><span class="n">reference_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primal</span><span class="o">.</span><span class="n">status</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primal</span><span class="o">.</span><span class="n">valid</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clipped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primal</span><span class="o">.</span><span class="n">clipped</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">error_policy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primal</span><span class="o">.</span><span class="n">error_policy</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">available_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">frozenset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_canonical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">canonical</span> <span class="o">=</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">canonical</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown property alias: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">canonical</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnsupportedPropertyError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="n">canonical</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;This derivative property is unsupported or not enabled.&quot;</span><span class="p">,</span>
+                <span class="n">supported</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">canonical</span>
+
+<div class="viewcode-block" id="PropertyDerivatives.supports_property">
+<a class="viewcode-back" href="../../source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.supports_property">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span></div>
+
+
+<div class="viewcode-block" id="PropertyDerivatives.raw_property">
+<a class="viewcode-back" href="../../source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.raw_property">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">raw_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">PropertyDerivatives</span><span class="o">.</span><span class="n">_canonical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="PropertyDerivatives.property_valid">
+<a class="viewcode-back" href="../../source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.property_valid">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">property_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_property</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="PropertyDerivatives.derivative_units">
+<a class="viewcode-back" href="../../source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.derivative_units">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">derivative_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return SI numerator/denominator units in final-axis order.&quot;&quot;&quot;</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_units</span><span class="p">[</span><span class="n">PropertyDerivatives</span><span class="o">.</span><span class="n">_canonical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">)/(</span><span class="si">{</span><span class="n">denominator</span><span class="si">}</span><span class="s2">)&quot;</span> <span class="k">for</span> <span class="n">denominator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_units</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">PropertyDerivatives</span><span class="o">.</span><span class="n">raw_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ALIAS_TO_CANONICAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PropertyDerivatives</span><span class="o">.</span><span class="n">raw_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;PropertyDerivatives&#39; object has no attribute &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PropertyDerivatives.to_dict">
+<a class="viewcode-back" href="../../source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_aliases</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">include_aliases</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">PROPERTY_ALIASES</span><span class="p">[</span><span class="n">name</span><span class="p">]:</span>
+                    <span class="n">result</span><span class="p">[</span><span class="n">alias</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="PropertyDerivatives.keys">
+<a class="viewcode-back" href="../../source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.keys">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="PropertyDerivatives.values">
+<a class="viewcode-back" href="../../source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.values">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="PropertyDerivatives.items">
+<a class="viewcode-back" href="../../source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.items">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_option_error</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">reason</span><span class="p">,</span> <span class="n">supported</span><span class="o">=</span><span class="p">()):</span>
+    <span class="k">return</span> <span class="n">UnsupportedOptionError</span><span class="p">(</span>
+        <span class="n">fluid_name</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">provider</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+        <span class="n">request</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
+        <span class="n">supported</span><span class="o">=</span><span class="n">supported</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_props_gradient">
+<a class="viewcode-back" href="../../source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.get_props_gradient">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_props_gradient</span><span class="p">(</span>
+    <span class="n">fluid</span><span class="p">,</span>
+    <span class="n">input_pair</span><span class="p">,</span>
+    <span class="n">x</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+    <span class="n">eps_rel</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
+    <span class="n">eps_abs</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;mask&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return local two-coordinate property partials and their primal state.</span>
+
+<span class="sd">    Native AD linearizes one numerical property dictionary and applies its JVP</span>
+<span class="sd">    to two unit directions. Array/broadcast inputs produce ``shape + (2,)``</span>
+<span class="sd">    local partials, never a full cross-element Jacobian. The FD alternative</span>
+<span class="sd">    uses independent centered perturbations. Differentiation follows the</span>
+<span class="sd">    selected mask/clip policy, including zero sensitivities outside clip bounds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">choices</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;jax&quot;</span><span class="p">,</span> <span class="s2">&quot;fd&quot;</span><span class="p">,</span> <span class="s2">&quot;finite_difference&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">choices</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">_option_error</span><span class="p">(</span>
+            <span class="n">fluid</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="s2">&quot;Choose an advertised differentiation method.&quot;</span><span class="p">,</span> <span class="n">choices</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;eps_rel&quot;</span><span class="p">,</span> <span class="n">eps_rel</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;eps_abs&quot;</span><span class="p">,</span> <span class="n">eps_abs</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Real</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">_option_error</span><span class="p">(</span>
+                <span class="n">fluid</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;Perturbation sizes must be finite nonnegative scalars.&quot;</span>
+            <span class="p">)</span>
+    <span class="k">if</span> <span class="n">eps_rel</span> <span class="o">==</span> <span class="n">eps_abs</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">_option_error</span><span class="p">(</span>
+            <span class="n">fluid</span><span class="p">,</span> <span class="s2">&quot;eps_rel/eps_abs&quot;</span><span class="p">,</span> <span class="s2">&quot;At least one perturbation size must be positive.&quot;</span>
+        <span class="p">)</span>
+    <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">validate_request</span><span class="p">(</span>
+        <span class="n">fluid</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span> <span class="n">array_backend</span><span class="o">=</span><span class="s2">&quot;jax&quot;</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">errors</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">,</span> <span class="s2">&quot;clip&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">UnsupportedExecutionModeError</span><span class="p">(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">provider</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">request</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;errors=</span><span class="si">{</span><span class="n">errors</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Property differentiation requires explicit mask or clip execution.&quot;</span><span class="p">,</span>
+            <span class="n">supported</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;errors=mask&quot;</span><span class="p">,</span> <span class="s2">&quot;errors=clip&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span>
+        <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
+        <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="n">primal</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
+        <span class="c1"># Only floating property fields enter the differentiated value. Integer</span>
+        <span class="c1"># statuses and boolean clipping/validity remain undifferentiated aux.</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="p">(</span>
+                <span class="n">value</span>
+                <span class="k">if</span> <span class="n">jnp</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">primal</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">properties</span><span class="p">,</span> <span class="n">primal</span>
+
+    <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;jax&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;jvp&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fluid</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">jax_modes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnsupportedExecutionModeError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;property_derivatives&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;The evaluator does not support JVP differentiation.&quot;</span><span class="p">,</span>
+                <span class="n">supported</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">jax_modes</span><span class="p">)),</span>
+            <span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">linearized</span><span class="p">,</span> <span class="n">primal</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">linearize</span><span class="p">(</span><span class="n">evaluate</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">has_aux</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">first_partials</span> <span class="o">=</span> <span class="n">linearized</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">second</span><span class="p">))</span>
+        <span class="n">second_partials</span> <span class="o">=</span> <span class="n">linearized</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">second</span><span class="p">))</span>
+        <span class="n">actual_method</span> <span class="o">=</span> <span class="s2">&quot;autodiff&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">primal</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">)</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">eps_rel</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">eps_abs</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="n">eps_rel</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">second</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">eps_abs</span>
+        <span class="n">plus_x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">first</span> <span class="o">+</span> <span class="n">dx</span><span class="p">,</span> <span class="n">second</span><span class="p">)</span>
+        <span class="n">minus_x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">first</span> <span class="o">-</span> <span class="n">dx</span><span class="p">,</span> <span class="n">second</span><span class="p">)</span>
+        <span class="n">plus_y</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">+</span> <span class="n">dy</span><span class="p">)</span>
+        <span class="n">minus_y</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">-</span> <span class="n">dy</span><span class="p">)</span>
+        <span class="n">first_partials</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="n">minus_x</span><span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">plus_x</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="n">second_partials</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="n">minus_y</span><span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dy</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">plus_y</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="n">actual_method</span> <span class="o">=</span> <span class="s2">&quot;finite_difference&quot;</span>
+    <span class="n">partials</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">value</span><span class="p">,</span> <span class="n">second_partials</span><span class="p">[</span><span class="n">name</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">first_partials</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">PropertyDerivatives</span><span class="p">(</span>
+        <span class="n">primal</span><span class="p">,</span>
+        <span class="n">partials</span><span class="p">,</span>
+        <span class="n">_PAIR_INPUT_NAMES</span><span class="p">[</span><span class="n">input_pair</span><span class="p">],</span>
+        <span class="n">method</span><span class="o">=</span><span class="n">actual_method</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Roberto Agromayor.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

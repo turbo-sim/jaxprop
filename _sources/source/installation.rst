@@ -1,116 +1,64 @@
-
 .. _installation:
-
 
 Installation
 ============
 
-This section is under construction.
+JaxProp supports Python 3.11 through 3.13. Create a dedicated environment before
+installing the package:
 
+.. code-block:: bash
 
-..
-   User Installation Guide
-   -----------------------
+   python -m venv .venv
 
-   This guide will walk you through the process of installing ``cycleopt`` via ``pip``. To isolate the installation and avoid conflicts with other Python packages, it is recommended to create a dedicated Conda virtual environment.
+Activate it with ``.venv\Scripts\Activate.ps1`` on Windows PowerShell or
+``source .venv/bin/activate`` on Linux/macOS, then install the published package:
 
-   1. Ensure conda is installed:
+.. code-block:: bash
 
-      - Check if conda is installed in your terminal:
+   python -m pip install jaxprop
+   python -c "import jaxprop; print(jaxprop.__version__)"
 
-      .. code-block:: bash
+Version 0.6.0 is prepared locally and awaits ThermOpt and Barotropy verification
+before publication. To test the prepared artifact before that release, install
+its wheel explicitly from the JaxProp checkout:
 
-         conda list
+.. code-block:: bash
 
-      - If installed packages do not appear, `install conda <https://conda.io/projects/conda/en/latest/user-guide/install/index.html>`_.
+   python -m pip install dist/jaxprop-0.6.0-py3-none-any.whl
 
-   2. Open a terminal or command prompt and create a new virtual environment named ``barotropy_env``:
+Run import checks outside the source checkout and inspect ``jaxprop.__file__``
+to confirm that the installed distribution is being tested. See the
+:doc:`migration guide </migration>` for the 0.6.0 interface changes and
+:doc:`release notes </release_notes>` for verification scope and known costs.
 
-      .. code-block:: bash
+Backends and JAX configuration
+------------------------------
 
-         conda create --name barotropy_env python=3.11
+CoolProp's HEOS backend is available through the standard dependencies.
+REFPROP requires a separate licensed installation and its native library/data
+configuration; it is not included in the JaxProp wheel. Select an available
+backend when constructing a fluid, for example
+``Fluid("CO2", method="coolprop", backend="HEOS")``.
 
-   3. Activate the newly created virtual environment:
+Device and precision settings belong to the consuming application. Set
+``JAX_ENABLE_X64=true`` and, for the verified CPU profile,
+``JAX_PLATFORM_NAME=cpu`` before importing JAX. JaxProp respects existing JAX
+configuration. See :doc:`the lifecycle guide </fluid_lifecycle>` for complete
+compiled-consumer and worker examples.
 
-      .. code-block:: bash
+Development installation
+------------------------
 
-         conda activate barotropy
+Use Poetry 2.1 or later with this repository's lock file:
 
-   4. Install ``barotropy`` using ``pip`` within the activated virtual environment:
+.. code-block:: bash
 
-      .. code-block:: bash
+   git clone https://github.com/turbo-sim/jaxprop.git
+   cd jaxprop
+   poetry install
+   poetry run python -m pytest tests -c tests/pytest.ini -q
 
-         pip install barotropy
-
-   5. Verify the installation by running the following command in your terminal:
-
-      .. code-block:: bash
-
-         python -c "import barotropy; barotropy.print_package_info()"
-
-      If the installation was successful, you should see the banner and package information displayed in the console output.
-
-
-
-   Congratulations! You have now successfully installed barotropy in its own Conda virtual environment using pip. You're ready to start using the package for your Python projects.
-
-
-
-
-..
-   Developer Installation Guide
-   ------------------------------
-
-   This installation guide is intended for developers who wish to contribute to or modify the source code. It assumes that the developer is using a Linux distribution or Windows with Git Bash terminal to have access to Git and Linux-like commands.
-
-   1. **Fork the repository:**
-
-      Navigate to the `project's GitHub page <https://github.com/turbo-sim/barotropy>` and click the "Fork" button in the upper right corner of the repository page to create a copy of the repository under your own GitHub account.
-
-
-   2. **Clone the forked repository:**
-
-      Open your terminal and run the following command, replacing `<your-username>` with your GitHub username:
-
-      .. code-block:: bash
-
-         git clone https://github.com/<your-username>/<repository-name>.git
-
-      Navigate into the cloned repository:
-
-      .. code-block:: bash
-
-         cd <repository-name>
-
-   3. **Create a dedicated Conda virtual environment for development**:
-
-      Check that conda is installed:
-
-      .. code-block:: bash
-
-         conda list
-
-      If conda is not installed, `install conda <https://conda.io/projects/conda/en/latest/user-guide/install/index.html>`_.
-      
-      Create dedicated virtual environment for the package:
-
-      .. code-block:: bash
-
-         conda env create --file environment.yaml
-
-   4. **Activate the newly created virtual environment**:
-
-      .. code-block:: bash
-
-         conda activate barotropy_env
-
-      
-   5. **Use Poetry to install the dependencies required for development**:
-
-      .. code-block:: bash
-
-         poetry install
-
-      Poetry is a powerful dependency manager that offers separation of user and developer dependencies, ensuring that only the necessary packages are installed based on the user's intent. Additionally, it simplifies the process of adding, updating, and removing dependencies, making it easier to maintain the project's requirements.
-
-
+The scientific test profile enables double precision. Select optional source
+backends explicitly with ``JAXPROP_TEST_BACKENDS=HEOS,REFPROP`` only where
+REFPROP is installed. For example execution requirements and bounded/full
+profiles, see the repository's ``examples/README.md``.

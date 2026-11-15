@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>jaxprop.coolprop.jax_wrapper module &#8212; jaxprop v0.5.8 documentation</title>
+    <title>jaxprop.coolprop.jax_wrapper module &#8212; jaxprop v0.6.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=4e4ceabb"></script>
+    <script src="../../_static/documentation_options.js?v=4fe0b1e1"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -55,7 +55,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'source/api/jaxprop.coolprop.jax_wrapper';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="jaxprop.coolprop.jax_wrapper_working module" href="jaxprop.coolprop.jax_wrapper_working.html" />
+    <link rel="next" title="jaxprop.perfect_gas package" href="jaxprop.perfect_gas.html" />
     <link rel="prev" title="jaxprop.coolprop.fluid_properties module" href="jaxprop.coolprop.fluid_properties.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -134,7 +134,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.8 documentation</p>
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -149,24 +149,23 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="jaxprop.html">jaxprop package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.components.html">jaxprop.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="jaxprop.coolprop.html">jaxprop.coolprop package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">jaxprop.coolprop.jax_wrapper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -174,7 +173,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.graphics.html">jaxprop.graphics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.factory.html">jaxprop.factory module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.math.html">jaxprop.math module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.utils.html">jaxprop.utils module</a></li>
@@ -327,12 +333,20 @@
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX"><code class="docutils literal notranslate"><span class="pre">FluidJAX</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.backend"><code class="docutils literal notranslate"><span class="pre">FluidJAX.backend</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.capabilities"><code class="docutils literal notranslate"><span class="pre">FluidJAX.capabilities</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.configuration"><code class="docutils literal notranslate"><span class="pre">FluidJAX.configuration</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.exceptions"><code class="docutils literal notranslate"><span class="pre">FluidJAX.exceptions</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.fluid"><code class="docutils literal notranslate"><span class="pre">FluidJAX.fluid</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state"><code class="docutils literal notranslate"><span class="pre">FluidJAX.get_state()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state_saturation"><code class="docutils literal notranslate"><span class="pre">FluidJAX.get_state_saturation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.identifier"><code class="docutils literal notranslate"><span class="pre">FluidJAX.identifier</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.model"><code class="docutils literal notranslate"><span class="pre">FluidJAX.model</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.name"><code class="docutils literal notranslate"><span class="pre">FluidJAX.name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.provider"><code class="docutils literal notranslate"><span class="pre">FluidJAX.provider</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.reference_id"><code class="docutils literal notranslate"><span class="pre">FluidJAX.reference_id</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.get_state"><code class="docutils literal notranslate"><span class="pre">get_state()</span></code></a></li>
 </ul>
             </nav>
         </div>
@@ -346,15 +360,31 @@
                   
   <section id="module-jaxprop.coolprop.jax_wrapper">
 <span id="jaxprop-coolprop-jax-wrapper-module"></span><h1>jaxprop.coolprop.jax_wrapper module<a class="headerlink" href="#module-jaxprop.coolprop.jax_wrapper" title="Link to this heading">#</a></h1>
+<p>CoolProp evaluation with eager typed errors and explicit JAX mask mode.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.jax_wrapper.</span></span><span class="sig-name descname"><span class="pre">FluidJAX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HEOS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exceptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/jax_wrapper.html#FluidJAX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.jax_wrapper.</span></span><span class="sig-name descname"><span class="pre">FluidJAX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HEOS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exceptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/jax_wrapper.html#FluidJAX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin" title="jaxprop.source_references.SourceReferencesMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">SourceReferencesMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>capabilities</strong></dt><dd></dd>
+<dt><strong>configuration</strong></dt><dd></dd>
+<dt><strong>critical_point</strong></dt><dd></dd>
+<dt><strong>references</strong></dt><dd></dd>
+<dt><strong>triple_point_liquid</strong></dt><dd></dd>
+<dt><strong>triple_point_vapor</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state" title="jaxprop.coolprop.jax_wrapper.FluidJAX.get_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state</span></code></a>(input_pair, x, y)</p></td>
-<td><p>Return a CoolPropState with fields shaped like broadcast(x, y).</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state" title="jaxprop.coolprop.jax_wrapper.FluidJAX.get_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state</span></code></a>(input_type, prop_1, prop_2, *[, ...])</p></td>
+<td><p>Evaluate eagerly with typed errors, or use explicit mask mode in JAX.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state_saturation" title="jaxprop.coolprop.jax_wrapper.FluidJAX.get_state_saturation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state_saturation</span></code></a>(input_type, prop_1, ...)</p></td>
+<td><p>Evaluate saturation through the common state path.</p></td>
 </tr>
 </tbody>
 </table>
@@ -362,6 +392,16 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.backend">
 <span class="sig-name descname"><span class="pre">backend</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.backend" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.capabilities">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">capabilities</span></span><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.capabilities" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.configuration">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">configuration</span></span><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.configuration" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -376,15 +416,52 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.get_state">
-<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/jax_wrapper.html#FluidJAX.get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state" title="Link to this definition">#</a></dt>
-<dd><p>Return a CoolPropState with fields shaped like broadcast(x, y).</p>
+<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/jax_wrapper.html#FluidJAX.get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate eagerly with typed errors, or use explicit mask mode in JAX.</p>
+<p>Derivatives are first-order forward finite differences over successful
+source states, away from phase/domain boundaries. Failed primal rows
+and unavailable primal properties have zero tangent contributions. If
+a valid state’s forward stencil fails, its derivative is unavailable
+(NaN); zero is not a physical derivative claim at that boundary.</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.get_state_saturation">
+<span class="sig-name descname"><span class="pre">get_state_saturation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/jax_wrapper.html#FluidJAX.get_state_saturation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state_saturation" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate saturation through the common state path.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.identifier">
+<span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.identifier" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.model">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.model" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.name">
 <span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.name" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.provider">
+<span class="sig-name descname"><span class="pre">provider</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.provider" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.FluidJAX.reference_id">
+<span class="sig-name descname"><span class="pre">reference_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span></em><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.reference_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jaxprop.coolprop.jax_wrapper.get_state">
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.jax_wrapper.</span></span><span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/jax_wrapper.html#get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.jax_wrapper.get_state" title="Link to this definition">#</a></dt>
+<dd><p>Compatibility numeric helper; use FluidJAX.get_state for policies.</p>
 </dd></dl>
 
 </section>
@@ -410,11 +487,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="jaxprop.coolprop.jax_wrapper_working.html"
+       href="jaxprop.perfect_gas.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">jaxprop.coolprop.jax_wrapper_working module</p>
+        <p class="prev-next-title">jaxprop.perfect_gas package</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -438,12 +515,20 @@
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX"><code class="docutils literal notranslate"><span class="pre">FluidJAX</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.backend"><code class="docutils literal notranslate"><span class="pre">FluidJAX.backend</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.capabilities"><code class="docutils literal notranslate"><span class="pre">FluidJAX.capabilities</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.configuration"><code class="docutils literal notranslate"><span class="pre">FluidJAX.configuration</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.exceptions"><code class="docutils literal notranslate"><span class="pre">FluidJAX.exceptions</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.fluid"><code class="docutils literal notranslate"><span class="pre">FluidJAX.fluid</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state"><code class="docutils literal notranslate"><span class="pre">FluidJAX.get_state()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state_saturation"><code class="docutils literal notranslate"><span class="pre">FluidJAX.get_state_saturation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.identifier"><code class="docutils literal notranslate"><span class="pre">FluidJAX.identifier</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.model"><code class="docutils literal notranslate"><span class="pre">FluidJAX.model</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.name"><code class="docutils literal notranslate"><span class="pre">FluidJAX.name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.provider"><code class="docutils literal notranslate"><span class="pre">FluidJAX.provider</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.FluidJAX.reference_id"><code class="docutils literal notranslate"><span class="pre">FluidJAX.reference_id</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.coolprop.jax_wrapper.get_state"><code class="docutils literal notranslate"><span class="pre">get_state()</span></code></a></li>
 </ul>
   </nav></div>
 

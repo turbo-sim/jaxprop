@@ -1,0 +1,631 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jaxprop.factory &#8212; jaxprop v0.6.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=4fe0b1e1"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/jaxprop/factory';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/bibliography.html">Bibliography</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../source/api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.perfect_gas.perfect_gas.html">jaxprop.perfect_gas.perfect_gas module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.graphics.html">jaxprop.graphics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.factory.html">jaxprop.factory module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.math.html">jaxprop.math module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.utils.html">jaxprop.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for jaxprop.factory</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Construct configured fluid evaluators without application-side adapters.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Integral</span><span class="p">,</span> <span class="n">Real</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.configuration</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_configuration</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidConfigurationError</span><span class="p">,</span> <span class="n">JaxPropError</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;create_fluid&quot;</span><span class="p">]</span>
+
+<span class="n">_ROUTES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;real_fluid&quot;</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;coolprop&quot;</span><span class="p">,</span> <span class="s2">&quot;coolprop_jax&quot;</span><span class="p">,</span> <span class="s2">&quot;bicubic&quot;</span><span class="p">}),</span>
+    <span class="s2">&quot;perfect_gas&quot;</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;native&quot;</span><span class="p">}),</span>
+    <span class="s2">&quot;binary_mixture&quot;</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;native&quot;</span><span class="p">}),</span>
+<span class="p">}</span>
+<span class="n">_TABLE_REQUIRED</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;h_min&quot;</span><span class="p">,</span> <span class="s2">&quot;h_max&quot;</span><span class="p">,</span> <span class="s2">&quot;p_min&quot;</span><span class="p">,</span> <span class="s2">&quot;p_max&quot;</span><span class="p">,</span> <span class="s2">&quot;N_h&quot;</span><span class="p">,</span> <span class="s2">&quot;N_p&quot;</span><span class="p">})</span>
+<span class="n">_TABLE_ALLOWED</span> <span class="o">=</span> <span class="n">_TABLE_REQUIRED</span> <span class="o">|</span> <span class="p">{</span>
+    <span class="s2">&quot;N_p_sat&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;coarse_step&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;inverse_max_steps&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;inverse_tolerance&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;gradient_method&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;table_dir&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;table_name&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;metastable_phase&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;metastable_domain&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="create_fluid">
+<a class="viewcode-back" href="../../source/api/jaxprop.factory.html#jaxprop.factory.create_fluid">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_fluid</span><span class="p">(</span>
+    <span class="n">name</span><span class="p">,</span>
+    <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;coolprop&quot;</span><span class="p">,</span>
+    <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">identifier</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;real_fluid&quot;</span><span class="p">,</span>
+    <span class="n">table_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">model_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create the requested physical model and numerical provider.</span>
+
+<span class="sd">    Provider selectors are exact lowercase strings. The backend is the source</span>
+<span class="sd">    EOS and defaults to HEOS for single-source models. Binary models use the</span>
+<span class="sd">    already configured component objects and have no backend override.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Primitive metadata validation must precede backend initialization. Options</span>
+    <span class="c1"># are validated below before recursively snapshotting their accepted values.</span>
+    <span class="n">build_configuration</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">provider</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">fluid_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="n">provider</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">invalid</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">reason</span><span class="p">,</span> <span class="n">supported</span><span class="o">=</span><span class="p">()):</span>
+        <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+            <span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span> <span class="n">supported</span><span class="o">=</span><span class="n">supported</span><span class="p">,</span> <span class="o">**</span><span class="n">context</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">model</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_ROUTES</span><span class="p">:</span>
+        <span class="n">invalid</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;Unknown physical model.&quot;</span><span class="p">,</span> <span class="n">_ROUTES</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">provider</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="n">_ROUTES</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+        <span class="n">invalid</span><span class="p">(</span>
+            <span class="s2">&quot;provider&quot;</span><span class="p">,</span> <span class="s2">&quot;Unknown numerical provider.&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="n">_ROUTES</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">provider</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_ROUTES</span><span class="p">[</span><span class="n">model</span><span class="p">]:</span>
+        <span class="n">invalid</span><span class="p">(</span>
+            <span class="s2">&quot;provider/model&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;The provider cannot evaluate this physical model.&quot;</span><span class="p">,</span>
+            <span class="n">_ROUTES</span><span class="p">[</span><span class="n">model</span><span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">options</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+            <span class="n">invalid</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;Options must be a mapping or None.&quot;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">result</span><span class="p">):</span>
+            <span class="n">invalid</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;Option names must be strings.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="n">table</span> <span class="o">=</span> <span class="n">options</span><span class="p">(</span><span class="n">table_options</span><span class="p">,</span> <span class="s2">&quot;table_options&quot;</span><span class="p">)</span>
+    <span class="n">physical</span> <span class="o">=</span> <span class="n">options</span><span class="p">(</span><span class="n">model_options</span><span class="p">,</span> <span class="s2">&quot;model_options&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">provider</span> <span class="o">!=</span> <span class="s2">&quot;bicubic&quot;</span> <span class="ow">and</span> <span class="n">table</span><span class="p">:</span>
+        <span class="n">invalid</span><span class="p">(</span><span class="s2">&quot;table_options&quot;</span><span class="p">,</span> <span class="s2">&quot;Table settings apply only to the bicubic provider.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;binary_mixture&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">invalid</span><span class="p">(</span>
+                <span class="s2">&quot;backend&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;A composite uses its component source backends; an override is unsupported.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">required</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;components&quot;</span><span class="p">,</span> <span class="s2">&quot;mass_fractions&quot;</span><span class="p">}</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="n">required</span> <span class="o">|</span> <span class="p">{</span><span class="s2">&quot;inverse_max_steps&quot;</span><span class="p">,</span> <span class="s2">&quot;inverse_tolerance&quot;</span><span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">required</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">physical</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">(</span><span class="n">physical</span><span class="p">)</span> <span class="o">-</span> <span class="n">expected</span><span class="p">:</span>
+            <span class="n">invalid</span><span class="p">(</span>
+                <span class="s2">&quot;model_options&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;A binary model requires components and mass_fractions; optional inverse controls are setup settings.&quot;</span><span class="p">,</span>
+                <span class="n">expected</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="n">physical</span><span class="p">[</span><span class="s2">&quot;components&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">components</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span>
+            <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;get_state&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span>
+            <span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">invalid</span><span class="p">(</span>
+                <span class="s2">&quot;components&quot;</span><span class="p">,</span> <span class="s2">&quot;Provide exactly two configured component fluid objects.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">fractions</span> <span class="o">=</span> <span class="n">physical</span><span class="p">[</span><span class="s2">&quot;mass_fractions&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fractions</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">fractions</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span>
+            <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Real</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">fractions</span>
+            <span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">invalid</span><span class="p">(</span>
+                <span class="s2">&quot;mass_fractions&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Provide two finite, nonnegative scalar mass fractions.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span>
+            <span class="nb">sum</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">fractions</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">rel_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">abs_tol</span><span class="o">=</span><span class="mf">1e-12</span>
+        <span class="p">):</span>
+            <span class="n">invalid</span><span class="p">(</span>
+                <span class="s2">&quot;mass_fractions&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Mass fractions must sum to one without normalization.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.binary_mixture.fluid</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluidBinaryMixture</span>
+
+        <span class="k">return</span> <span class="n">FluidBinaryMixture</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">physical</span><span class="p">)</span>
+
+    <span class="n">source_backend</span> <span class="o">=</span> <span class="s2">&quot;HEOS&quot;</span> <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">backend</span>
+    <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;perfect_gas&quot;</span><span class="p">:</span>
+        <span class="n">unknown</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">physical</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s2">&quot;T_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;p_ref&quot;</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
+            <span class="n">invalid</span><span class="p">(</span>
+                <span class="s2">&quot;model_options&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Unknown perfect-gas settings: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">unknown</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">&quot;T_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;p_ref&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">physical</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Real</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+            <span class="p">):</span>
+                <span class="n">invalid</span><span class="p">(</span>
+                    <span class="n">key</span><span class="p">,</span>
+                    <span class="s2">&quot;Calibration reference coordinates must be finite positive real scalars.&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">physical</span><span class="p">:</span>
+        <span class="n">invalid</span><span class="p">(</span>
+            <span class="s2">&quot;model_options&quot;</span><span class="p">,</span> <span class="s2">&quot;Model settings do not apply to source-EOS real fluids.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">provider</span> <span class="o">==</span> <span class="s2">&quot;bicubic&quot;</span><span class="p">:</span>
+        <span class="n">unknown</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">table</span><span class="p">)</span> <span class="o">-</span> <span class="n">_TABLE_ALLOWED</span>
+        <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
+            <span class="n">invalid</span><span class="p">(</span>
+                <span class="s2">&quot;table_options&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Unknown or unsupported table settings: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">unknown</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
+                <span class="n">_TABLE_ALLOWED</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="n">_TABLE_REQUIRED</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="n">invalid</span><span class="p">(</span>
+                <span class="s2">&quot;table_options&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Missing required table settings: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
+                <span class="n">_TABLE_REQUIRED</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;h_min&quot;</span><span class="p">,</span> <span class="s2">&quot;h_max&quot;</span><span class="p">,</span> <span class="s2">&quot;p_min&quot;</span><span class="p">,</span> <span class="s2">&quot;p_max&quot;</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Real</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">invalid</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;Table bounds must be finite real scalars.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;h_min&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;h_max&quot;</span><span class="p">]:</span>
+            <span class="n">invalid</span><span class="p">(</span><span class="s2">&quot;h_min/h_max&quot;</span><span class="p">,</span> <span class="s2">&quot;Require h_min &lt; h_max.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;p_min&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;p_max&quot;</span><span class="p">]:</span>
+            <span class="n">invalid</span><span class="p">(</span><span class="s2">&quot;p_min/p_max&quot;</span><span class="p">,</span> <span class="s2">&quot;Require 0 &lt; p_min &lt; p_max.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;N_h&quot;</span><span class="p">,</span> <span class="s2">&quot;N_p&quot;</span><span class="p">,</span> <span class="s2">&quot;N_p_sat&quot;</span><span class="p">,</span> <span class="s2">&quot;coarse_step&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">table</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">minimum</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;coarse_step&quot;</span> <span class="k">else</span> <span class="mi">2</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Integral</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="n">minimum</span>
+            <span class="p">):</span>
+                <span class="n">invalid</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Require an integer &gt;= </span><span class="si">{</span><span class="n">minimum</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="n">gradient_method</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gradient_method&quot;</span><span class="p">,</span> <span class="s2">&quot;central&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gradient_method</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">gradient_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span>
+            <span class="s2">&quot;forward&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;central&quot;</span><span class="p">,</span>
+        <span class="p">}:</span>
+            <span class="n">invalid</span><span class="p">(</span>
+                <span class="s2">&quot;gradient_method&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Unsupported table gradient method.&quot;</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">&quot;forward&quot;</span><span class="p">,</span> <span class="s2">&quot;central&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;table_dir&quot;</span> <span class="ow">in</span> <span class="n">table</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">table</span><span class="p">[</span><span class="s2">&quot;table_dir&quot;</span><span class="p">],</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">invalid</span><span class="p">(</span><span class="s2">&quot;table_dir&quot;</span><span class="p">,</span> <span class="s2">&quot;Provide a directory path.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;table_name&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s2">&quot;table_name&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;table_name&quot;</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="n">invalid</span><span class="p">(</span><span class="s2">&quot;table_name&quot;</span><span class="p">,</span> <span class="s2">&quot;Provide a nonempty table name or None.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metastable_phase&quot;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;liquid&quot;</span><span class="p">,</span> <span class="s2">&quot;vapor&quot;</span><span class="p">):</span>
+            <span class="n">invalid</span><span class="p">(</span><span class="s2">&quot;metastable_phase&quot;</span><span class="p">,</span> <span class="s2">&quot;Choose None, &#39;liquid&#39;, or &#39;vapor&#39;.&quot;</span><span class="p">)</span>
+        <span class="n">metastable_domain</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metastable_domain&quot;</span><span class="p">,</span> <span class="s2">&quot;physical&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">metastable_domain</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;physical&quot;</span><span class="p">,</span> <span class="s2">&quot;formal&quot;</span><span class="p">):</span>
+            <span class="n">invalid</span><span class="p">(</span><span class="s2">&quot;metastable_domain&quot;</span><span class="p">,</span> <span class="s2">&quot;Choose &#39;physical&#39; or &#39;formal&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metastable_phase&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">metastable_domain</span> <span class="o">==</span> <span class="s2">&quot;formal&quot;</span><span class="p">:</span>
+            <span class="n">invalid</span><span class="p">(</span>
+                <span class="s2">&quot;metastable_domain&quot;</span><span class="p">,</span> <span class="s2">&quot;Formal EOS domains require a metastable phase.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="n">build_configuration</span><span class="p">(</span>
+        <span class="n">name</span><span class="p">,</span>
+        <span class="n">provider</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">source_backend</span><span class="p">,</span>
+        <span class="n">identifier</span><span class="p">,</span>
+        <span class="n">table_options</span><span class="o">=</span><span class="n">table</span><span class="p">,</span>
+        <span class="n">model_options</span><span class="o">=</span><span class="n">physical</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">provider</span> <span class="o">==</span> <span class="s2">&quot;coolprop&quot;</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.coolprop.fluid_properties</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluidCoolProp</span>
+
+            <span class="k">return</span> <span class="n">FluidCoolProp</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">source_backend</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">provider</span> <span class="o">==</span> <span class="s2">&quot;coolprop_jax&quot;</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.coolprop.jax_wrapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluidJAX</span>
+
+            <span class="k">return</span> <span class="n">FluidJAX</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">source_backend</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">provider</span> <span class="o">==</span> <span class="s2">&quot;bicubic&quot;</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.bicubic.bicubic_interpolation</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluidBicubic</span>
+
+            <span class="k">return</span> <span class="n">FluidBicubic</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">source_backend</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">table</span>
+            <span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.perfect_gas.perfect_gas</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluidPerfectGas</span>
+
+        <span class="k">return</span> <span class="n">FluidPerfectGas</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">source_backend</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">physical</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="n">JaxPropError</span><span class="p">:</span>
+        <span class="k">raise</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">provider</span> <span class="o">==</span> <span class="s2">&quot;bicubic&quot;</span><span class="p">:</span>
+            <span class="k">raise</span>
+        <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+            <span class="n">request</span><span class="o">=</span><span class="s2">&quot;construction&quot;</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Source initialization failed: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+            <span class="n">request</span><span class="o">=</span><span class="s2">&quot;construction&quot;</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Fluid construction failed: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">context</span><span class="p">,</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Roberto Agromayor.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

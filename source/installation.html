@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; jaxprop v0.5.8 documentation</title>
+    <title>Installation &#8212; jaxprop v0.6.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=4e4ceabb"></script>
+    <script src="../_static/documentation_options.js?v=4fe0b1e1"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -55,7 +55,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'source/installation';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Bibliography" href="bibliography.html" />
+    <link rel="next" title="JaxProp 0.6.0" href="../release_notes.html" />
     <link rel="prev" title="Welcome to jaxprop’s documentation!" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -134,7 +134,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.8 documentation</p>
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -149,24 +149,23 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="api/jaxprop.components.html">jaxprop.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="api/jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="api/jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="api/jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -174,7 +173,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="api/jaxprop.graphics.html">jaxprop.graphics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/jaxprop.factory.html">jaxprop.factory module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/jaxprop.math.html">jaxprop.math module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/jaxprop.utils.html">jaxprop.utils module</a></li>
@@ -302,7 +308,9 @@
 <button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
 </button>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -318,6 +326,15 @@
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backends-and-jax-configuration">Backends and JAX configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-installation">Development installation</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -329,7 +346,54 @@
                   
   <section id="installation">
 <span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
-<p>This section is under construction.</p>
+<p>JaxProp supports Python 3.11 through 3.13. Create a dedicated environment before
+installing the package:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+</pre></div>
+</div>
+<p>Activate it with <code class="docutils literal notranslate"><span class="pre">.venv\Scripts\Activate.ps1</span></code> on Windows PowerShell or
+<code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">.venv/bin/activate</span></code> on Linux/macOS, then install the published package:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>jaxprop
+python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import jaxprop; print(jaxprop.__version__)&quot;</span>
+</pre></div>
+</div>
+<p>Version 0.6.0 is prepared locally and awaits ThermOpt and Barotropy verification
+before publication. To test the prepared artifact before that release, install
+its wheel explicitly from the JaxProp checkout:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>dist/jaxprop-0.6.0-py3-none-any.whl
+</pre></div>
+</div>
+<p>Run import checks outside the source checkout and inspect <code class="docutils literal notranslate"><span class="pre">jaxprop.__file__</span></code>
+to confirm that the installed distribution is being tested. See the
+<a class="reference internal" href="../migration.html"><span class="doc">migration guide</span></a> for the 0.6.0 interface changes and
+<a class="reference internal" href="../release_notes.html"><span class="doc">release notes</span></a> for verification scope and known costs.</p>
+<section id="backends-and-jax-configuration">
+<h2>Backends and JAX configuration<a class="headerlink" href="#backends-and-jax-configuration" title="Link to this heading">#</a></h2>
+<p>CoolProp’s HEOS backend is available through the standard dependencies.
+REFPROP requires a separate licensed installation and its native library/data
+configuration; it is not included in the JaxProp wheel. Select an available
+backend when constructing a fluid, for example
+<code class="docutils literal notranslate"><span class="pre">Fluid(&quot;CO2&quot;,</span> <span class="pre">method=&quot;coolprop&quot;,</span> <span class="pre">backend=&quot;HEOS&quot;)</span></code>.</p>
+<p>Device and precision settings belong to the consuming application. Set
+<code class="docutils literal notranslate"><span class="pre">JAX_ENABLE_X64=true</span></code> and, for the verified CPU profile,
+<code class="docutils literal notranslate"><span class="pre">JAX_PLATFORM_NAME=cpu</span></code> before importing JAX. JaxProp respects existing JAX
+configuration. See <a class="reference internal" href="../fluid_lifecycle.html"><span class="doc">the lifecycle guide</span></a> for complete
+compiled-consumer and worker examples.</p>
+</section>
+<section id="development-installation">
+<h2>Development installation<a class="headerlink" href="#development-installation" title="Link to this heading">#</a></h2>
+<p>Use Poetry 2.1 or later with this repository’s lock file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/turbo-sim/jaxprop.git
+<span class="nb">cd</span><span class="w"> </span>jaxprop
+poetry<span class="w"> </span>install
+poetry<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests<span class="w"> </span>-c<span class="w"> </span>tests/pytest.ini<span class="w"> </span>-q
+</pre></div>
+</div>
+<p>The scientific test profile enables double precision. Select optional source
+backends explicitly with <code class="docutils literal notranslate"><span class="pre">JAXPROP_TEST_BACKENDS=HEOS,REFPROP</span></code> only where
+REFPROP is installed. For example execution requirements and bounded/full
+profiles, see the repository’s <code class="docutils literal notranslate"><span class="pre">examples/README.md</span></code>.</p>
+</section>
 </section>
 
 
@@ -353,11 +417,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="bibliography.html"
+       href="../release_notes.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Bibliography</p>
+        <p class="prev-next-title">JaxProp 0.6.0</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -367,6 +431,24 @@
             </div>
             
             
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backends-and-jax-configuration">Backends and JAX configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-installation">Development installation</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

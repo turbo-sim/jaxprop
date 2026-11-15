@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>jaxprop.coolprop package &#8212; jaxprop v0.5.8 documentation</title>
+    <title>jaxprop.coolprop package &#8212; jaxprop v0.6.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=4e4ceabb"></script>
+    <script src="../../_static/documentation_options.js?v=4fe0b1e1"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -52,12 +52,13 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'source/api/jaxprop.coolprop';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="jaxprop.coolprop.core_calculations module" href="jaxprop.coolprop.core_calculations.html" />
-    <link rel="prev" title="jaxprop.components.nozzle_model_solver module" href="jaxprop.components.nozzle_model_solver.html" />
+    <link rel="prev" title="jaxprop.binary_mixture.fluid module" href="jaxprop.binary_mixture.fluid.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -135,7 +136,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.8 documentation</p>
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -150,24 +151,23 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="jaxprop.html">jaxprop package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.components.html">jaxprop.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">jaxprop.coolprop package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -175,7 +175,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.graphics.html">jaxprop.graphics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.factory.html">jaxprop.factory module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.math.html">jaxprop.math module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.utils.html">jaxprop.utils module</a></li>
@@ -366,16 +373,14 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid"><code class="docutils literal notranslate"><span class="pre">Fluid</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.get_state"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.get_state_blending"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_blending()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.get_state_equilibrium"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_equilibrium()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.get_state_metastable"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state_metastable()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.plot_phase_diagram"><code class="docutils literal notranslate"><span class="pre">Fluid.plot_phase_diagram()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidMix"><code class="docutils literal notranslate"><span class="pre">FluidMix</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidMix.get_state"><code class="docutils literal notranslate"><span class="pre">FluidMix.get_state()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid"><code class="docutils literal notranslate"><span class="pre">Fluid</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp"><code class="docutils literal notranslate"><span class="pre">FluidCoolProp</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp.get_state"><code class="docutils literal notranslate"><span class="pre">FluidCoolProp.get_state()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp.get_state_blending"><code class="docutils literal notranslate"><span class="pre">FluidCoolProp.get_state_blending()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp.get_state_equilibrium"><code class="docutils literal notranslate"><span class="pre">FluidCoolProp.get_state_equilibrium()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp.get_state_metastable"><code class="docutils literal notranslate"><span class="pre">FluidCoolProp.get_state_metastable()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp.get_state_saturation"><code class="docutils literal notranslate"><span class="pre">FluidCoolProp.get_state_saturation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp.plot_phase_diagram"><code class="docutils literal notranslate"><span class="pre">FluidCoolProp.plot_phase_diagram()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.build_alias_map"><code class="docutils literal notranslate"><span class="pre">build_alias_map()</span></code></a></li>
@@ -395,15 +400,22 @@
 <li class="toctree-l1"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX"><code class="docutils literal notranslate"><span class="pre">FluidJAX</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.backend"><code class="docutils literal notranslate"><span class="pre">FluidJAX.backend</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.capabilities"><code class="docutils literal notranslate"><span class="pre">FluidJAX.capabilities</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.configuration"><code class="docutils literal notranslate"><span class="pre">FluidJAX.configuration</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.exceptions"><code class="docutils literal notranslate"><span class="pre">FluidJAX.exceptions</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.fluid"><code class="docutils literal notranslate"><span class="pre">FluidJAX.fluid</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state"><code class="docutils literal notranslate"><span class="pre">FluidJAX.get_state()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state_saturation"><code class="docutils literal notranslate"><span class="pre">FluidJAX.get_state_saturation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.identifier"><code class="docutils literal notranslate"><span class="pre">FluidJAX.identifier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.model"><code class="docutils literal notranslate"><span class="pre">FluidJAX.model</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.name"><code class="docutils literal notranslate"><span class="pre">FluidJAX.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.provider"><code class="docutils literal notranslate"><span class="pre">FluidJAX.provider</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.reference_id"><code class="docutils literal notranslate"><span class="pre">FluidJAX.reference_id</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.get_state"><code class="docutils literal notranslate"><span class="pre">get_state()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
 </ul>
 </div>
 </section>
@@ -421,12 +433,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="jaxprop.components.nozzle_model_solver.html"
+       href="jaxprop.binary_mixture.fluid.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">jaxprop.components.nozzle_model_solver module</p>
+        <p class="prev-next-title">jaxprop.binary_mixture.fluid module</p>
       </div>
     </a>
     <a class="right-next"

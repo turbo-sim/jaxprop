@@ -1,0 +1,1041 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jaxprop.source_references &#8212; jaxprop v0.6.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=4fe0b1e1"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/jaxprop/source_references';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/bibliography.html">Bibliography</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../source/api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.perfect_gas.perfect_gas.html">jaxprop.perfect_gas.perfect_gas module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.graphics.html">jaxprop.graphics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.factory.html">jaxprop.factory module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.math.html">jaxprop.math module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.utils.html">jaxprop.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for jaxprop.source_references</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Immutable source-EOS reference data, independent of numerical evaluators.</span>
+
+<span class="sd">Only scalar Python metadata is retained. Reference ``FluidState`` arrays are</span>
+<span class="sd">materialized on explicit access, so these records are safe static JAX metadata.</span>
+<span class="sd">Every initialization probes a fresh source anchor: CoolProp reference settings</span>
+<span class="sd">are process-global and a cache keyed only by fluid name would become stale.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">CoolProp.CoolProp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">CP</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.configuration</span><span class="w"> </span><span class="kn">import</span> <span class="n">FrozenMapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidConfigurationError</span><span class="p">,</span> <span class="n">UnavailableReferencePointError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.fluid_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">SOURCE_PROPERTIES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.fluid_state</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluidState</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;ReferencePoint&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SourceReferences&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SourceReferencesMixin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;initialize_source_references&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;source_reference_metadata&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;source_reference_identity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;reference_anchor&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;composite_source_references&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">_SOURCE_ERRORS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="ne">ValueError</span><span class="p">,</span>
+    <span class="ne">RuntimeError</span><span class="p">,</span>
+    <span class="ne">NotImplementedError</span><span class="p">,</span>
+    <span class="ne">AttributeError</span><span class="p">,</span>
+    <span class="ne">OverflowError</span><span class="p">,</span>
+    <span class="ne">OSError</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">_POINT_NAMES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;critical_point&quot;</span><span class="p">,</span> <span class="s2">&quot;triple_point_liquid&quot;</span><span class="p">,</span> <span class="s2">&quot;triple_point_vapor&quot;</span><span class="p">)</span>
+<span class="n">_CORE</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="s2">&quot;enthalpy&quot;</span><span class="p">,</span> <span class="s2">&quot;entropy&quot;</span><span class="p">,</span> <span class="s2">&quot;internal_energy&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="reference_anchor">
+<a class="viewcode-back" href="../../source/api/jaxprop.source_references.html#jaxprop.source_references.reference_anchor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">reference_anchor</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Probe h/s at deterministic coordinates independent of their offsets.&quot;&quot;&quot;</span>
+    <span class="n">attempts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T_critical</span><span class="p">())</span> <span class="o">*</span> <span class="mf">1.2</span>
+        <span class="n">density</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">rhomass_critical</span><span class="p">())</span> <span class="o">*</span> <span class="mf">0.1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">density</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Nonfinite or nonpositive critical coordinates&quot;</span><span class="p">)</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="p">[(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">density</span><span class="p">,</span> <span class="n">temperature</span><span class="p">)]</span>
+    <span class="k">except</span> <span class="n">_SOURCE_ERRORS</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">attempts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">candidates</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">temperature</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">temperature</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="p">(</span><span class="mf">101325.0</span><span class="p">,</span> <span class="mf">300.0</span><span class="p">),</span>
+            <span class="p">(</span><span class="mf">101325.0</span><span class="p">,</span> <span class="mf">500.0</span><span class="p">),</span>
+            <span class="p">(</span><span class="mf">1e6</span><span class="p">,</span> <span class="mf">500.0</span><span class="p">),</span>
+            <span class="p">(</span><span class="mf">1e5</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">input_pair</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">)</span>
+            <span class="n">anchor</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;input_pair&quot;</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="s2">&quot;DmassT_INPUTS&quot;</span> <span class="k">if</span> <span class="n">input_pair</span> <span class="o">==</span> <span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span> <span class="k">else</span> <span class="s2">&quot;PT_INPUTS&quot;</span>
+                <span class="p">),</span>
+                <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">second</span><span class="p">)],</span>
+                <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">rhomass</span><span class="p">()),</span>
+                <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">()),</span>
+                <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">p</span><span class="p">()),</span>
+                <span class="s2">&quot;enthalpy&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">hmass</span><span class="p">()),</span>
+                <span class="s2">&quot;entropy&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">smass</span><span class="p">()),</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">anchor</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="s2">&quot;temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;enthalpy&quot;</span><span class="p">,</span> <span class="s2">&quot;entropy&quot;</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Reference anchor contains nonfinite core properties&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">anchor</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="s2">&quot;temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;pressure&quot;</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Reference anchor has nonpositive physical coordinates&quot;</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">anchor</span>
+        <span class="k">except</span> <span class="n">_SOURCE_ERRORS</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">attempts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+        <span class="s2">&quot;No deterministic source-reference anchor could be evaluated&quot;</span>
+    <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">attempts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_version</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">fallback</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">get_global_param_string</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+    <span class="k">except</span> <span class="n">_SOURCE_ERRORS</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fallback</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_backend_name</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">backend</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">backend</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">backend_name</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;HelmholtzEOSBackend&quot;</span><span class="p">:</span> <span class="s2">&quot;HEOS&quot;</span><span class="p">,</span> <span class="s2">&quot;REFPROPBackend&quot;</span><span class="p">:</span> <span class="s2">&quot;REFPROP&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_identity_payload</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">anchor</span><span class="p">,</span> <span class="n">backend</span><span class="p">):</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">fluid_names</span><span class="p">())</span>
+    <span class="c1"># REFPROP preserves input aliases in fluid_names; canonicalize catalogue</span>
+    <span class="c1"># names while retaining native-only and predefined mixture selections.</span>
+    <span class="n">canonical_names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">canonical</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">name</span>
+                <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.MIX&quot;</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">CP</span><span class="o">.</span><span class="n">get_fluid_param_string</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">_SOURCE_ERRORS</span><span class="p">:</span>
+            <span class="n">canonical</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="n">canonical_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">canonical</span><span class="p">)</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">canonical_names</span><span class="p">)</span>
+    <span class="n">fractions</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">get_mole_fractions</span><span class="p">())</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="n">names</span>
+        <span class="ow">or</span> <span class="ow">not</span> <span class="n">fractions</span>
+        <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">fractions</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The source did not provide a valid composition&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">fractions</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">rel_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">abs_tol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The source composition does not sum to one&quot;</span><span class="p">)</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">_version</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
+    <span class="n">backend_version</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">_version</span><span class="p">(</span><span class="s2">&quot;REFPROP_version&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;REFPROP&quot;</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">else</span> <span class="n">version</span>
+    <span class="p">)</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;fluid_names&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">names</span><span class="p">),</span>
+        <span class="s2">&quot;mole_fractions&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">fractions</span><span class="p">),</span>
+        <span class="s2">&quot;backend&quot;</span><span class="p">:</span> <span class="n">backend</span><span class="p">,</span>
+        <span class="s2">&quot;backend_version&quot;</span><span class="p">:</span> <span class="n">backend_version</span><span class="p">,</span>
+        <span class="s2">&quot;coolprop_version&quot;</span><span class="p">:</span> <span class="n">version</span><span class="p">,</span>
+        <span class="s2">&quot;coolprop_git_revision&quot;</span><span class="p">:</span> <span class="n">_version</span><span class="p">(</span><span class="s2">&quot;gitrevision&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;reference_anchor&quot;</span><span class="p">:</span> <span class="n">anchor</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">digest</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+            <span class="n">payload</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span> <span class="n">allow_nan</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="n">reference_id</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;real_fluid&quot;</span><span class="p">,</span> <span class="s2">&quot;coolprop-source-v1&quot;</span><span class="p">,</span> <span class="n">digest</span><span class="p">)</span>
+    <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;reference_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reference_id</span>
+    <span class="k">return</span> <span class="n">payload</span>
+
+
+<div class="viewcode-block" id="source_reference_identity">
+<a class="viewcode-back" href="../../source/api/jaxprop.source_references.html#jaxprop.source_references.source_reference_identity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">source_reference_identity</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the canonical source/model identity used by states and caches.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_identity_payload</span><span class="p">(</span>
+        <span class="n">state</span><span class="p">,</span>
+        <span class="n">reference_anchor</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="k">if</span> <span class="n">anchor</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">anchor</span><span class="p">,</span>
+        <span class="n">_backend_name</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">backend</span><span class="p">),</span>
+    <span class="p">)[</span><span class="s2">&quot;reference_id&quot;</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="source_reference_metadata">
+<a class="viewcode-back" href="../../source/api/jaxprop.source_references.html#jaxprop.source_references.source_reference_metadata">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">source_reference_metadata</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;HEOS&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return canonical composition/version/active-reference metadata.</span>
+
+<span class="sd">    Supplying a newly constructed AbstractState avoids duplicate initialization;</span>
+<span class="sd">    the function still evaluates the actual reference anchor on every call.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">CP</span><span class="o">.</span><span class="n">AbstractState</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">state</span>
+        <span class="k">return</span> <span class="n">_identity_payload</span><span class="p">(</span>
+            <span class="n">state</span><span class="p">,</span> <span class="n">reference_anchor</span><span class="p">(</span><span class="n">state</span><span class="p">),</span> <span class="n">_backend_name</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="n">_SOURCE_ERRORS</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;coolprop&quot;</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;real_fluid&quot;</span><span class="p">,</span>
+            <span class="n">request</span><span class="o">=</span><span class="s2">&quot;source_reference&quot;</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span></div>
+
+
+
+<div class="viewcode-block" id="ReferencePoint">
+<a class="viewcode-back" href="../../source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ReferencePoint</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">available</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">classification</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">interpretation</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">source</span><span class="p">:</span> <span class="n">FrozenMapping</span>
+    <span class="n">reference_id</span><span class="p">:</span> <span class="nb">tuple</span>
+    <span class="n">reported_coordinates</span><span class="p">:</span> <span class="n">FrozenMapping</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">FrozenMapping</span><span class="p">)</span>
+    <span class="n">evaluation_coordinates</span><span class="p">:</span> <span class="n">FrozenMapping</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">FrozenMapping</span><span class="p">)</span>
+    <span class="n">evaluation_offsets</span><span class="p">:</span> <span class="n">FrozenMapping</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">FrozenMapping</span><span class="p">)</span>
+    <span class="n">properties</span><span class="p">:</span> <span class="n">FrozenMapping</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">FrozenMapping</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="s2">&quot;source&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;reported_coordinates&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;evaluation_coordinates&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;evaluation_offsets&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">FrozenMapping</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">backend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;backend&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">source_fluid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&amp;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;fluid_names&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reference_convention</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;reference_convention&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">available</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnavailableReferencePointError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">source_fluid</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;native&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classification</span> <span class="o">==</span> <span class="s2">&quot;composite&quot;</span> <span class="k">else</span> <span class="s2">&quot;coolprop&quot;</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="p">(</span>
+                    <span class="s2">&quot;binary_mixture&quot;</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classification</span> <span class="o">==</span> <span class="s2">&quot;composite&quot;</span>
+                    <span class="k">else</span> <span class="s2">&quot;real_fluid&quot;</span>
+                <span class="p">),</span>
+                <span class="n">request</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reason</span> <span class="ow">or</span> <span class="s2">&quot;The source reference is unavailable.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">FluidState</span><span class="p">(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">source_fluid</span><span class="p">,</span>
+            <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;coolprop&quot;</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;real_fluid&quot;</span><span class="p">,</span>
+            <span class="n">reference_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_id</span><span class="p">,</span>
+            <span class="n">available_properties</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">),</span>
+            <span class="o">**</span><span class="p">{</span>
+                <span class="n">name</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">value</span>
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SourceReferences">
+<a class="viewcode-back" href="../../source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferences">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SourceReferences</span><span class="p">(</span><span class="n">Mapping</span><span class="p">):</span>
+    <span class="n">critical</span><span class="p">:</span> <span class="n">ReferencePoint</span>
+    <span class="n">triple_liquid</span><span class="p">:</span> <span class="n">ReferencePoint</span>
+    <span class="n">triple_vapor</span><span class="p">:</span> <span class="n">ReferencePoint</span>
+    <span class="n">source</span><span class="p">:</span> <span class="n">FrozenMapping</span>
+    <span class="n">anchor</span><span class="p">:</span> <span class="n">FrozenMapping</span>
+    <span class="n">reference_id</span><span class="p">:</span> <span class="nb">tuple</span>
+    <span class="n">components</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="n">FrozenMapping</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">))</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;anchor&quot;</span><span class="p">,</span> <span class="n">FrozenMapping</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anchor</span><span class="p">))</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;components&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;critical_point&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">critical</span><span class="p">,</span>
+                <span class="s2">&quot;triple_point_liquid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">triple_liquid</span><span class="p">,</span>
+                <span class="s2">&quot;triple_point_vapor&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">triple_vapor</span><span class="p">,</span>
+            <span class="p">}[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">_POINT_NAMES</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">3</span></div>
+
+
+
+<div class="viewcode-block" id="SourceReferencesMixin">
+<a class="viewcode-back" href="../../source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SourceReferencesMixin</span><span class="p">:</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">references</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_references</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reference_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">references</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">record</span><span class="o">.</span><span class="n">available</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnavailableReferencePointError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">reason</span> <span class="ow">or</span> <span class="s2">&quot;The source reference is unavailable.&quot;</span><span class="p">,</span>
+                <span class="n">supported</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span>
+                    <span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">references</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">point</span><span class="o">.</span><span class="n">available</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">record</span><span class="o">.</span><span class="n">state</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">critical_point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reference_state</span><span class="p">(</span><span class="s2">&quot;critical_point&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">triple_point_liquid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reference_state</span><span class="p">(</span><span class="s2">&quot;triple_point_liquid&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">triple_point_vapor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reference_state</span><span class="p">(</span><span class="s2">&quot;triple_point_vapor&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_optional</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">function</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">value</span> <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">except</span> <span class="n">_SOURCE_ERRORS</span> <span class="o">+</span> <span class="p">(</span><span class="ne">ZeroDivisionError</span><span class="p">,):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_reference_properties</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="s2">&quot;p&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="s2">&quot;rhomass&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;enthalpy&quot;</span><span class="p">:</span> <span class="s2">&quot;hmass&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;entropy&quot;</span><span class="p">:</span> <span class="s2">&quot;smass&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;internal_energy&quot;</span><span class="p">:</span> <span class="s2">&quot;umass&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;isobaric_heat_capacity&quot;</span><span class="p">:</span> <span class="s2">&quot;cpmass&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;isochoric_heat_capacity&quot;</span><span class="p">:</span> <span class="s2">&quot;cvmass&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;compressibility_factor&quot;</span><span class="p">:</span> <span class="s2">&quot;compressibility_factor&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;speed_of_sound&quot;</span><span class="p">:</span> <span class="s2">&quot;speed_sound&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="s2">&quot;viscosity&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="s2">&quot;conductivity&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">:</span> <span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;isobaric_expansion_coefficient&quot;</span><span class="p">:</span> <span class="s2">&quot;isobaric_expansion_coefficient&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;surface_tension&quot;</span><span class="p">:</span> <span class="s2">&quot;surface_tension&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">props</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">_optional</span><span class="p">(</span><span class="k">lambda</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">method</span><span class="p">)())</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">derive</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">dependencies</span><span class="p">):</span>
+        <span class="n">props</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">_optional</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dependencies</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dependencies</span><span class="p">)</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+
+    <span class="n">derive</span><span class="p">(</span>
+        <span class="s2">&quot;heat_capacity_ratio&quot;</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">cp</span><span class="p">,</span> <span class="n">cv</span><span class="p">:</span> <span class="n">cp</span> <span class="o">/</span> <span class="n">cv</span><span class="p">,</span>
+        <span class="s2">&quot;isobaric_heat_capacity&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;isochoric_heat_capacity&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">derive</span><span class="p">(</span>
+        <span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;isothermal_compressibility&quot;</span>
+    <span class="p">)</span>
+    <span class="n">derive</span><span class="p">(</span>
+        <span class="s2">&quot;isentropic_bulk_modulus&quot;</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">rho</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span><span class="p">,</span>
+        <span class="s2">&quot;density&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;speed_of_sound&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">derive</span><span class="p">(</span>
+        <span class="s2">&quot;isentropic_compressibility&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;isentropic_bulk_modulus&quot;</span>
+    <span class="p">)</span>
+    <span class="n">derive</span><span class="p">(</span>
+        <span class="s2">&quot;gruneisen&quot;</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">cv</span><span class="p">:</span> <span class="n">alpha</span> <span class="o">/</span> <span class="p">(</span><span class="n">kappa</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">cv</span><span class="p">),</span>
+        <span class="s2">&quot;isobaric_expansion_coefficient&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;density&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;isochoric_heat_capacity&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">derive</span><span class="p">(</span>
+        <span class="s2">&quot;joule_thomson&quot;</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">cp</span><span class="p">:</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">temperature</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="n">cp</span><span class="p">),</span>
+        <span class="s2">&quot;isobaric_expansion_coefficient&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;temperature&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;density&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;isobaric_heat_capacity&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">derive</span><span class="p">(</span>
+        <span class="s2">&quot;isothermal_joule_thomson&quot;</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">coefficient</span><span class="p">,</span> <span class="n">cp</span><span class="p">:</span> <span class="o">-</span><span class="n">coefficient</span> <span class="o">*</span> <span class="n">cp</span><span class="p">,</span>
+        <span class="s2">&quot;joule_thomson&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;isobaric_heat_capacity&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_two_phase&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">quality</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;quality_volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">quality</span>
+    <span class="k">if</span> <span class="n">critical</span><span class="p">:</span>
+        <span class="c1"># Critical response functions are singular; near-critical fallback</span>
+        <span class="c1"># numbers must not masquerade as finite critical susceptibilities.</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="s2">&quot;isobaric_heat_capacity&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;isochoric_heat_capacity&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;heat_capacity_ratio&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;isobaric_expansion_coefficient&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;isentropic_bulk_modulus&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;isentropic_compressibility&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;gruneisen&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;joule_thomson&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;isothermal_joule_thomson&quot;</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="n">props</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SOURCE_PROPERTIES</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_coordinates</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">()),</span>
+        <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">p</span><span class="p">()),</span>
+        <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">rhomass</span><span class="p">()),</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_point</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">point_name</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">reference_id</span><span class="p">):</span>
+    <span class="n">interpretation</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;critical_point&quot;</span>
+        <span class="k">if</span> <span class="n">point_name</span> <span class="o">==</span> <span class="s2">&quot;critical_point&quot;</span>
+        <span class="k">else</span> <span class="p">(</span>
+            <span class="s2">&quot;triple_point&quot;</span> <span class="k">if</span> <span class="n">classification</span> <span class="o">==</span> <span class="s2">&quot;pure&quot;</span> <span class="k">else</span> <span class="s2">&quot;lower_saturation_endpoint&quot;</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">reported</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">classification</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mixture&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;This source has no unambiguous pure or pseudo-pure reference point.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">critical</span> <span class="o">=</span> <span class="n">point_name</span> <span class="o">==</span> <span class="s2">&quot;critical_point&quot;</span>
+        <span class="n">quality</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="n">critical</span> <span class="k">else</span> <span class="p">(</span><span class="mf">0.0</span> <span class="k">if</span> <span class="n">point_name</span> <span class="o">==</span> <span class="s2">&quot;triple_point_liquid&quot;</span> <span class="k">else</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">critical</span><span class="p">:</span>
+            <span class="n">reported</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T_critical</span><span class="p">()),</span>
+                <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">p_critical</span><span class="p">()),</span>
+                <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">rhomass_critical</span><span class="p">()),</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">reported</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Source critical coordinates are nonfinite or nonpositive.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">attempts</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">pair</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">reported</span><span class="p">[</span><span class="s2">&quot;density&quot;</span><span class="p">],</span> <span class="n">reported</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]),</span>
+                <span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">DmassT_INPUTS</span><span class="p">,</span> <span class="n">reported</span><span class="p">[</span><span class="s2">&quot;density&quot;</span><span class="p">],</span> <span class="n">reported</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1e-5</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">reported</span><span class="p">[</span><span class="s2">&quot;pressure&quot;</span><span class="p">],</span> <span class="n">reported</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1e-5</span><span class="p">),</span>
+            <span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">state</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pair</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">)</span>
+                    <span class="n">props</span> <span class="o">=</span> <span class="n">_reference_properties</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_CORE</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;Reference evaluation has unavailable core properties.&quot;</span>
+                        <span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">except</span> <span class="n">_SOURCE_ERRORS</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                    <span class="n">attempts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Critical-point evaluation failed: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">attempts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">attempts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temperature</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">Ttriple</span><span class="p">())</span>
+            <span class="n">reported</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">temperature</span><span class="p">,</span> <span class="s2">&quot;quality_mass&quot;</span><span class="p">:</span> <span class="n">quality</span><span class="p">}</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CP</span><span class="o">.</span><span class="n">QT_INPUTS</span><span class="p">,</span> <span class="n">quality</span><span class="p">,</span> <span class="n">temperature</span><span class="p">)</span>
+            <span class="n">props</span> <span class="o">=</span> <span class="n">_reference_properties</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="n">quality</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_CORE</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Reference evaluation has unavailable core properties.&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Bubble/dew pressures are independently evaluated, including Air.</span>
+            <span class="n">reported</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_coordinates</span><span class="p">(</span><span class="n">state</span><span class="p">))</span>
+        <span class="n">evaluation</span> <span class="o">=</span> <span class="n">_coordinates</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">quality</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">evaluation</span><span class="p">[</span><span class="s2">&quot;quality_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">quality</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">evaluation</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;quality_mass&quot;</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Reference evaluation coordinates are nonfinite or nonpositive.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">offsets</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="n">evaluation</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">-</span> <span class="n">value</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">reported</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">evaluation</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">ReferencePoint</span><span class="p">(</span>
+            <span class="n">point_name</span><span class="p">,</span>
+            <span class="kc">True</span><span class="p">,</span>
+            <span class="kc">None</span><span class="p">,</span>
+            <span class="n">classification</span><span class="p">,</span>
+            <span class="n">interpretation</span><span class="p">,</span>
+            <span class="n">source</span><span class="p">,</span>
+            <span class="n">reference_id</span><span class="p">,</span>
+            <span class="n">reported</span><span class="p">,</span>
+            <span class="n">evaluation</span><span class="p">,</span>
+            <span class="n">offsets</span><span class="p">,</span>
+            <span class="n">props</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="n">_SOURCE_ERRORS</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ReferencePoint</span><span class="p">(</span>
+            <span class="n">point_name</span><span class="p">,</span>
+            <span class="kc">False</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">classification</span><span class="p">,</span>
+            <span class="n">interpretation</span><span class="p">,</span>
+            <span class="n">source</span><span class="p">,</span>
+            <span class="n">reference_id</span><span class="p">,</span>
+            <span class="n">reported</span><span class="p">,</span>
+        <span class="p">)</span>
+
+
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_intern_references</span><span class="p">(</span><span class="n">references</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">references</span>
+
+
+<div class="viewcode-block" id="initialize_source_references">
+<a class="viewcode-back" href="../../source/api/jaxprop.source_references.html#jaxprop.source_references.initialize_source_references">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">initialize_source_references</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;HEOS&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize independently available source critical/lower-endpoint records.</span>
+
+<span class="sd">    An evaluator may supply its freshly constructed source state so ordinary</span>
+<span class="sd">    evaluation and reference records capture the same convention, even if the</span>
+<span class="sd">    process-global convention changes during construction. This is setup-only:</span>
+<span class="sd">    callers must not pass a state serving an in-flight numerical evaluation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">CP</span><span class="o">.</span><span class="n">AbstractState</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">state</span>
+    <span class="k">except</span> <span class="n">_SOURCE_ERRORS</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;coolprop&quot;</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;real_fluid&quot;</span><span class="p">,</span>
+            <span class="n">request</span><span class="o">=</span><span class="s2">&quot;source&quot;</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">source_reference_metadata</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
+    <span class="n">reference_id</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;reference_id&quot;</span><span class="p">)</span>
+    <span class="n">anchor</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;reference_anchor&quot;</span><span class="p">)</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;reference_convention&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FrozenMapping</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Active CoolProp enthalpy/entropy convention; detected from actual source anchor values.&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;source_reference_id&quot;</span><span class="p">:</span> <span class="n">reference_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">FrozenMapping</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;fluid_names&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;mole_fractions&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.MIX&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">source</span><span class="p">[</span><span class="s2">&quot;fluid_names&quot;</span><span class="p">])</span>
+    <span class="p">):</span>
+        <span class="n">classification</span> <span class="o">=</span> <span class="s2">&quot;mixture&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">purity</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">fluid_param_string</span><span class="p">(</span><span class="s2">&quot;pure&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">_SOURCE_ERRORS</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">purity</span> <span class="o">=</span> <span class="n">CP</span><span class="o">.</span><span class="n">get_fluid_param_string</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;fluid_names&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;pure&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">_SOURCE_ERRORS</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">purity</span> <span class="o">=</span> <span class="n">CP</span><span class="o">.</span><span class="n">get_fluid_param_string</span><span class="p">(</span>
+                        <span class="n">state</span><span class="o">.</span><span class="n">fluid_param_string</span><span class="p">(</span><span class="s2">&quot;CAS&quot;</span><span class="p">),</span> <span class="s2">&quot;pure&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="n">_SOURCE_ERRORS</span><span class="p">:</span>
+                    <span class="n">purity</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
+        <span class="n">classification</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;true&quot;</span><span class="p">:</span> <span class="s2">&quot;pure&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">:</span> <span class="s2">&quot;pseudo_pure&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">purity</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="s2">&quot;unknown&quot;</span>
+        <span class="p">)</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">_evaluate_point</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">reference_id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">_POINT_NAMES</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">_intern_references</span><span class="p">(</span>
+        <span class="n">SourceReferences</span><span class="p">(</span><span class="o">*</span><span class="n">points</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">FrozenMapping</span><span class="p">(</span><span class="n">anchor</span><span class="p">),</span> <span class="n">reference_id</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_binary_model_reference_id</span><span class="p">(</span><span class="n">component_reference_ids</span><span class="p">,</span> <span class="n">mass_fractions</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;One physical-model identity shared by native and tabulated binaries.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="s2">&quot;binary_mixture&quot;</span><span class="p">,</span>
+        <span class="nb">tuple</span><span class="p">(</span><span class="n">component_reference_ids</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;mass_fractions&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">mass_fractions</span><span class="p">)),</span>
+        <span class="s2">&quot;common_pT_no_mass_exchange&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pressure_temperature_equilibrium_acoustics&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="composite_source_references">
+<a class="viewcode-back" href="../../source/api/jaxprop.source_references.html#jaxprop.source_references.composite_source_references">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">composite_source_references</span><span class="p">(</span>
+    <span class="n">name</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">,</span>
+    <span class="n">component_references</span><span class="p">,</span>
+    <span class="n">mixture_ratio</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">mass_fractions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">component_reference_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Record that a component mixing model has no assumed unique phase points.&quot;&quot;&quot;</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">component_references</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mass_fractions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">reference_id</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;binary_mixture&quot;</span><span class="p">,</span>
+            <span class="nb">tuple</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">reference_id</span> <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;mass_ratio&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">mixture_ratio</span><span class="p">)),</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Component model identities distinguish calibrated PG models from</span>
+        <span class="c1"># source-equivalent evaluators without inventing an aggregate phase EOS.</span>
+        <span class="n">reference_id</span> <span class="o">=</span> <span class="n">_binary_model_reference_id</span><span class="p">(</span>
+            <span class="n">component_reference_ids</span> <span class="ow">or</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">reference_id</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">components</span><span class="p">),</span>
+            <span class="n">mass_fractions</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">FrozenMapping</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;fluid_names&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">name</span><span class="p">,),</span>
+            <span class="s2">&quot;mole_fractions&quot;</span><span class="p">:</span> <span class="p">(),</span>
+            <span class="s2">&quot;backend&quot;</span><span class="p">:</span> <span class="n">backend</span><span class="p">,</span>
+            <span class="s2">&quot;coolprop_version&quot;</span><span class="p">:</span> <span class="n">_version</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;classification&quot;</span><span class="p">:</span> <span class="s2">&quot;composite&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;reference_convention&quot;</span><span class="p">:</span> <span class="n">FrozenMapping</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Mass-weighted component enthalpy/entropy conventions.&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;source_reference_id&quot;</span><span class="p">:</span> <span class="n">reference_id</span><span class="p">,</span>
+                    <span class="s2">&quot;component_reference_ids&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
+                        <span class="n">component</span><span class="o">.</span><span class="n">reference_id</span> <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span>
+                    <span class="p">),</span>
+                <span class="p">}</span>
+            <span class="p">),</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">reason</span> <span class="o">=</span> <span class="s2">&quot;A component mixing model has no assumed unique critical or triple point; inspect its component source references.&quot;</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">ReferencePoint</span><span class="p">(</span>
+            <span class="n">point</span><span class="p">,</span>
+            <span class="kc">False</span><span class="p">,</span>
+            <span class="n">reason</span><span class="p">,</span>
+            <span class="s2">&quot;composite&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;not_defined_for_composite&quot;</span><span class="p">,</span>
+            <span class="n">source</span><span class="p">,</span>
+            <span class="n">reference_id</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">_POINT_NAMES</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">_intern_references</span><span class="p">(</span>
+        <span class="n">SourceReferences</span><span class="p">(</span><span class="o">*</span><span class="n">points</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">FrozenMapping</span><span class="p">(),</span> <span class="n">reference_id</span><span class="p">,</span> <span class="n">components</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Roberto Agromayor.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

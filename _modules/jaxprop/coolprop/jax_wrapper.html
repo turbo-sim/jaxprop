@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.coolprop.jax_wrapper &#8212; jaxprop v0.5.8 documentation</title>
+    <title>jaxprop.coolprop.jax_wrapper &#8212; jaxprop v0.6.0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=4e4ceabb"></script>
+    <script src="../../../_static/documentation_options.js?v=4fe0b1e1"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -133,7 +133,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.8 documentation</p>
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -148,24 +148,23 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.components.html">jaxprop.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -173,7 +172,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.graphics.html">jaxprop.graphics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.factory.html">jaxprop.factory module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.math.html">jaxprop.math module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.utils.html">jaxprop.utils module</a></li>
@@ -279,137 +285,457 @@
                 <article class="bd-article">
                   
   <h1>Source code for jaxprop.coolprop.jax_wrapper</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span></span><span class="sd">&quot;&quot;&quot;CoolProp evaluation with eager typed errors and explicit JAX mask mode.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span><span class="p">,</span> <span class="n">update_wrapper</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Integral</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jax.custom_derivatives</span><span class="w"> </span><span class="kn">import</span> <span class="n">SymbolicZero</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">equinox</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">eqx</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
-
-
 <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">helpers_props</span> <span class="k">as</span> <span class="n">jxp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..configuration</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FluidCapabilities</span><span class="p">,</span>
+    <span class="n">FluidConfiguration</span><span class="p">,</span>
+    <span class="n">build_configuration</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..errors</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">InvalidConfigurationError</span><span class="p">,</span>
+    <span class="n">JaxPropError</span><span class="p">,</span>
+    <span class="n">UnsupportedExecutionModeError</span><span class="p">,</span>
+    <span class="n">UnsupportedOperationError</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..fluid_api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DIAGNOSTIC_PROPERTIES</span><span class="p">,</span>
+    <span class="n">SOURCE_PROPERTIES</span><span class="p">,</span>
+    <span class="n">enabled_properties</span><span class="p">,</span>
+    <span class="n">validate_request</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..source_references</span><span class="w"> </span><span class="kn">import</span> <span class="n">SourceReferencesMixin</span>
+
+<span class="n">_EAGER_TRACE_STATE</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_opaque_trace_state</span><span class="p">()</span>
+<span class="n">_BASE_PROPERTY_NAMES</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+    <span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SOURCE_PROPERTIES</span>
+<span class="p">)</span>
+<span class="n">_EXTENDED_PROPERTY_NAMES</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+    <span class="n">name</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SOURCE_PROPERTIES</span> <span class="o">|</span> <span class="n">DIAGNOSTIC_PROPERTIES</span>
+<span class="p">)</span>
 
 
-<span class="c1"># output template for pure_callback (shapes/dtypes must be static)</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_make_template</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a pure_callback template dict with the given output shape.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">ShapeDtypeStruct</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">}</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_names</span><span class="p">(</span><span class="n">supersaturation</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_EXTENDED_PROPERTY_NAMES</span> <span class="k">if</span> <span class="n">supersaturation</span> <span class="k">else</span> <span class="n">_BASE_PROPERTY_NAMES</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_props_python</span><span class="p">(</span><span class="n">input_type</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fluid</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Host-side evaluation. Accepts scalars or arrays and returns dict of ndarrays.</span>
-<span class="sd">    If the state is None or a property is missing/non-finite, fills with np.nan.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_make_template</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">canonicalize_dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">dtype</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">ShapeDtypeStruct</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_names</span><span class="p">(</span><span class="n">supersaturation</span><span class="p">)},</span>
+        <span class="n">jax</span><span class="o">.</span><span class="n">ShapeDtypeStruct</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_props_python</span><span class="p">(</span>
+    <span class="n">input_type</span><span class="p">,</span>
+    <span class="n">x</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">,</span>
+    <span class="n">fluid</span><span class="p">,</span>
+    <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return masked host data; static validation precedes this path.&quot;&quot;&quot;</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">}</span>
-
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">input_type</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Fill all properties with NaN if state is invalid</span>
-            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">:</span>
-                <span class="n">results</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">state_dict</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">:</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="n">state_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
-                <span class="c1"># Convert only if it&#39;s a finite number; otherwise force NaN</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">val_f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-                    <span class="n">results</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">val_f</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">val_f</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                    <span class="n">results</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-
-    <span class="k">return</span> <span class="n">results</span>
-
-<span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">custom_jvp</span><span class="p">,</span> <span class="n">nondiff_argnums</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fluid</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    JAX-callable wrapper around CoolProp returning a dictionary of properties</span>
-
-<span class="sd">    Internally calls CoolProp via a host callback, using STATE_TEMPLATE</span>
-<span class="sd">    for shape/dtype specification. Supports JIT but not direct autodiff.</span>
-<span class="sd">    A custom JVP rule is registered to provide finite-difference gradients.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># determine broadcasted output shape at trace time</span>
-    <span class="n">shape1</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">shape2</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-    <span class="n">out_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_shapes</span><span class="p">(</span><span class="n">shape1</span><span class="p">,</span> <span class="n">shape2</span><span class="p">)</span>
-    <span class="n">template</span> <span class="o">=</span> <span class="n">_make_template</span><span class="p">(</span><span class="n">out_shape</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">local_eval</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
-        <span class="c1"># returns dict[str, float]; pure_callback will map to jnp scalars using _TEMPLATE</span>
-        <span class="k">return</span> <span class="n">_get_props_python</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">fluid</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">pure_callback</span><span class="p">(</span><span class="n">local_eval</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">vmap_method</span><span class="o">=</span><span class="s2">&quot;broadcast_all&quot;</span><span class="p">)</span>
+    <span class="n">properties</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">_evaluate_state_data</span><span class="p">(</span>
+        <span class="n">input_type</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">,</span>
+        <span class="n">generalize_quality</span><span class="o">=</span><span class="n">generalize_quality</span><span class="p">,</span>
+        <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
+        <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;mask&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">properties</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_names</span><span class="p">(</span><span class="n">supersaturation</span><span class="p">)</span>
+        <span class="p">},</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+    <span class="p">)</span>
 
 
-<span class="nd">@get_state</span><span class="o">.</span><span class="n">defjvp</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_state_jvp</span><span class="p">(</span><span class="n">input_state</span><span class="p">,</span> <span class="n">fluid</span><span class="p">,</span> <span class="n">primals</span><span class="p">,</span> <span class="n">tangents</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom JVP rule for get_props() using finite differences.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_host_callback</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fluid</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">):</span>
+    <span class="c1"># CoolProp computes in double precision; the callback boundary must still</span>
+    <span class="c1"># honor an application&#39;s explicit JAX precision choice. Capture the dtype</span>
+    <span class="c1"># while tracing, so host callbacks and their declared templates agree.</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">canonicalize_dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">_make_template</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">broadcast_shapes</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">y</span><span class="p">)),</span> <span class="n">supersaturation</span><span class="p">,</span> <span class="n">dtype</span>
+    <span class="p">)</span>
+    <span class="n">evaluate</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+        <span class="n">_get_props_python</span><span class="p">,</span>
+        <span class="n">input_pair</span><span class="p">,</span>
+        <span class="n">fluid</span><span class="o">=</span><span class="n">fluid</span><span class="p">,</span>
+        <span class="n">generalize_quality</span><span class="o">=</span><span class="n">generalize_quality</span><span class="p">,</span>
+        <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">pure_callback</span><span class="p">(</span><span class="n">evaluate</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">vmap_method</span><span class="o">=</span><span class="s2">&quot;broadcast_all&quot;</span><span class="p">)</span>
 
-<span class="sd">    Approximates partial derivatives of each state property with respect</span>
-<span class="sd">    to the inputs (x, y) by evaluating CoolProp at slightly perturbed</span>
-<span class="sd">    states, then combines with tangents (x_dot, y_dot).</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    base : dict</span>
-<span class="sd">        State evaluated at the primal inputs.</span>
-<span class="sd">    jvp : dict</span>
-<span class="sd">        Tangent state containing directional derivatives.</span>
+<span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">custom_jvp</span><span class="p">,</span> <span class="n">nondiff_argnums</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_first_order_samples</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fluid</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_host_callback</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fluid</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">)</span>
+
+
+<span class="nd">@_first_order_samples</span><span class="o">.</span><span class="n">defjvp</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_reject_higher_derivatives</span><span class="p">(</span>
+    <span class="n">input_pair</span><span class="p">,</span> <span class="n">fluid</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">,</span> <span class="n">primals</span><span class="p">,</span> <span class="n">tangents</span>
+<span class="p">):</span>
+    <span class="k">raise</span> <span class="n">UnsupportedExecutionModeError</span><span class="p">(</span>
+        <span class="n">fluid_name</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;coolprop_jax&quot;</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+        <span class="n">request</span><span class="o">=</span><span class="s2">&quot;derivative_order&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;The callback supports first-order finite-difference derivatives only; higher-order differentiation is unsupported.&quot;</span><span class="p">,</span>
+        <span class="n">supported</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;first-order&quot;</span><span class="p">,),</span>
+    <span class="p">)</span>
+
+
+<span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">custom_jvp</span><span class="p">,</span> <span class="n">nondiff_argnums</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_callback_state</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fluid</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_host_callback</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fluid</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_callback_state_jvp</span><span class="p">(</span>
+    <span class="n">input_pair</span><span class="p">,</span> <span class="n">fluid</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">,</span> <span class="n">primals</span><span class="p">,</span> <span class="n">tangents</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward differences, with zero contributions from failed primal rows.</span>
+
+<span class="sd">    Mask derivative coefficients before multiplying tangents: selecting the</span>
+<span class="sd">    final tangent alone leaves ``0 * NaN`` in reverse-mode transposition.</span>
+<span class="sd">    Undefined primal properties likewise contribute zero. A successful primal</span>
+<span class="sd">    whose forward stencil fails has an unavailable (NaN) derivative, rather</span>
+<span class="sd">    than an invented zero slope at the source/domain boundary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">primals</span>
     <span class="n">x_dot</span><span class="p">,</span> <span class="n">y_dot</span> <span class="o">=</span> <span class="n">tangents</span>
+    <span class="n">evaluate</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+        <span class="n">_first_order_samples</span><span class="p">,</span>
+        <span class="n">input_pair</span><span class="p">,</span>
+        <span class="n">fluid</span><span class="o">=</span><span class="n">fluid</span><span class="p">,</span>
+        <span class="n">generalize_quality</span><span class="o">=</span><span class="n">generalize_quality</span><span class="p">,</span>
+        <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">properties</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">primal_valid</span> <span class="o">=</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">contributions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">tangent</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(((</span><span class="n">x</span><span class="p">,</span> <span class="n">x_dot</span><span class="p">),</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_dot</span><span class="p">))):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">tangent</span><span class="p">,</span> <span class="n">SymbolicZero</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tangent</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="n">jax</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">float0</span>
+        <span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="c1"># Keep the established double-precision stencil; float32 outputs need</span>
+        <span class="c1"># a larger step so subtracting rounded callback values remains useful.</span>
+        <span class="n">output_dtype</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">canonicalize_dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">step_scale</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">output_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">))</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">step_scale</span> <span class="o">*</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">perturbed</span><span class="p">,</span> <span class="n">perturbed_status</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">evaluate</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">step</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">step</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">contributions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="n">name</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                    <span class="n">primal_valid</span> <span class="o">&amp;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">properties</span><span class="p">[</span><span class="n">name</span><span class="p">]),</span>
+                    <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                        <span class="n">perturbed_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">perturbed</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">-</span> <span class="n">properties</span><span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="o">/</span> <span class="n">step</span><span class="p">,</span>
+                        <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="mf">0.0</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="o">*</span> <span class="n">tangent</span>
+                <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">properties</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="n">numerical_tangent</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">sum</span><span class="p">((</span><span class="n">term</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">contributions</span><span class="p">),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="n">status_tangent</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jax</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">float0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">properties</span><span class="p">,</span> <span class="n">status</span><span class="p">),</span> <span class="p">(</span><span class="n">numerical_tangent</span><span class="p">,</span> <span class="n">status_tangent</span><span class="p">)</span>
 
-    <span class="c1"># shapes and template (same logic as in primal)</span>
-    <span class="n">out_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_shapes</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
-    <span class="n">template</span> <span class="o">=</span> <span class="n">_make_template</span><span class="p">(</span><span class="n">out_shape</span><span class="p">)</span>
 
-    <span class="c1"># elementwise FD steps (broadcasted)</span>
-    <span class="n">eps1</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
-    <span class="n">eps2</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">_callback_state</span><span class="o">.</span><span class="n">defjvp</span><span class="p">(</span><span class="n">_callback_state_jvp</span><span class="p">,</span> <span class="n">symbolic_zeros</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">local_eval</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">_get_props_python</span><span class="p">(</span><span class="n">input_state</span><span class="p">,</span> <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">fluid</span><span class="p">)</span>
 
-    <span class="c1"># base and perturbed evaluations (each returns dict of arrays)</span>
-    <span class="n">props_base</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">pure_callback</span><span class="p">(</span><span class="n">local_eval</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">vmap_method</span><span class="o">=</span><span class="s2">&quot;broadcast_all&quot;</span><span class="p">)</span>
-    <span class="n">props_x</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">pure_callback</span><span class="p">(</span><span class="n">local_eval</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">eps1</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">vmap_method</span><span class="o">=</span><span class="s2">&quot;broadcast_all&quot;</span><span class="p">)</span>
-    <span class="n">props_y</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">pure_callback</span><span class="p">(</span><span class="n">local_eval</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">eps2</span><span class="p">,</span> <span class="n">vmap_method</span><span class="o">=</span><span class="s2">&quot;broadcast_all&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_state">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.get_state">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fluid</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compatibility numeric helper; use FluidJAX.get_state for policies.&quot;&quot;&quot;</span>
+    <span class="n">properties</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_callback_state</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fluid</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">properties</span></div>
 
-    <span class="c1"># directional derivatives (broadcasted arithmetic)</span>
-    <span class="n">df_dp1</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">(</span><span class="n">props_x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">props_base</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">/</span> <span class="n">eps1</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">}</span>
-    <span class="n">df_dp2</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">(</span><span class="n">props_y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">props_base</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">/</span> <span class="n">eps2</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">}</span>
-    <span class="n">jvp</span>    <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">df_dp1</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">x_dot</span> <span class="o">+</span> <span class="n">df_dp2</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">y_dot</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">}</span>
 
-    <span class="k">return</span> <span class="n">props_base</span><span class="p">,</span> <span class="n">jvp</span>
+
+<span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">,</span> <span class="n">static_argnames</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_assemble_state</span><span class="p">(</span><span class="n">properties</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">metadata</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">provider</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">reference_id</span><span class="p">,</span> <span class="n">available</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">metadata</span>
+    <span class="k">return</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidState</span><span class="p">(</span>
+        <span class="n">fluid_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span>
+        <span class="n">provider</span><span class="o">=</span><span class="n">provider</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+        <span class="n">reference_id</span><span class="o">=</span><span class="n">reference_id</span><span class="p">,</span>
+        <span class="n">available_properties</span><span class="o">=</span><span class="n">available</span><span class="p">,</span>
+        <span class="n">error_policy</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">properties</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_state_metadata</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">,</span> <span class="n">errors</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">fluid</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+        <span class="n">fluid</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+        <span class="n">fluid</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+        <span class="n">fluid</span><span class="o">.</span><span class="n">reference_id</span><span class="p">,</span>
+        <span class="n">enabled_properties</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">),</span>
+        <span class="n">errors</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_eager_state</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">input_type</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">):</span>
+    <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">second</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">properties</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">fluid</span><span class="o">.</span><span class="n">_evaluate_state_data</span><span class="p">(</span>
+            <span class="n">input_type</span><span class="p">,</span>
+            <span class="n">first</span><span class="p">,</span>
+            <span class="n">second</span><span class="p">,</span>
+            <span class="n">generalize_quality</span><span class="o">=</span><span class="n">generalize_quality</span><span class="p">,</span>
+            <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
+            <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="n">JaxPropError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">mapped</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">provider</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">request</span><span class="o">=</span><span class="n">error</span><span class="o">.</span><span class="n">request</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="n">error</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span>
+            <span class="n">supported</span><span class="o">=</span><span class="n">error</span><span class="o">.</span><span class="n">supported</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">error</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">indices</span><span class="o">=</span><span class="n">error</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">mapped</span> <span class="kn">from</span><span class="w"> </span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">__cause__</span> <span class="ow">or</span> <span class="n">error</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_assemble_state</span><span class="p">(</span>
+        <span class="n">properties</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">_state_metadata</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">,</span> <span class="s2">&quot;raise&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_CallbackStateCall</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Select eager errors or compiled masks without touching native JIT.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+        <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compiled</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span>
+            <span class="n">function</span><span class="p">,</span>
+            <span class="n">static_argnames</span><span class="o">=</span><span class="p">(</span>
+                <span class="s2">&quot;input_type&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;generalize_quality&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;supersaturation&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;errors&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">fluid</span><span class="p">,</span>
+        <span class="n">input_type</span><span class="p">,</span>
+        <span class="n">prop_1</span><span class="p">,</span>
+        <span class="n">prop_2</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">options</span>
+    <span class="p">):</span>
+        <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">validate_request</span><span class="p">(</span>
+            <span class="n">fluid</span><span class="p">,</span>
+            <span class="n">input_type</span><span class="p">,</span>
+            <span class="n">prop_1</span><span class="p">,</span>
+            <span class="n">prop_2</span><span class="p">,</span>
+            <span class="n">generalize_quality</span><span class="o">=</span><span class="n">generalize_quality</span><span class="p">,</span>
+            <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
+            <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span>
+            <span class="n">array_backend</span><span class="o">=</span><span class="s2">&quot;jax&quot;</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">errors</span> <span class="o">==</span> <span class="s2">&quot;raise&quot;</span><span class="p">:</span>
+            <span class="c1"># Also cover a traced closure with only constant inputs.</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tracer</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">jax</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_opaque_trace_state</span><span class="p">()</span> <span class="o">!=</span> <span class="n">_EAGER_TRACE_STATE</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="n">UnsupportedExecutionModeError</span><span class="p">(</span>
+                    <span class="n">fluid_name</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">provider</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                    <span class="n">model</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                    <span class="n">request</span><span class="o">=</span><span class="s2">&quot;errors=raise&quot;</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;JAX transformations require explicit errors=&#39;mask&#39;; eager raising evaluation preserves typed source failures.&quot;</span><span class="p">,</span>
+                    <span class="n">supported</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;errors=mask&quot;</span><span class="p">,),</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">_eager_state</span><span class="p">(</span>
+                <span class="n">fluid</span><span class="p">,</span>
+                <span class="n">input_type</span><span class="p">,</span>
+                <span class="n">first</span><span class="p">,</span>
+                <span class="n">second</span><span class="p">,</span>
+                <span class="nb">bool</span><span class="p">(</span><span class="n">generalize_quality</span><span class="p">),</span>
+                <span class="nb">bool</span><span class="p">(</span><span class="n">supersaturation</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled</span><span class="p">(</span>
+            <span class="n">fluid</span><span class="p">,</span>
+            <span class="n">input_type</span><span class="p">,</span>
+            <span class="n">first</span><span class="p">,</span>
+            <span class="n">second</span><span class="p">,</span>
+            <span class="n">generalize_quality</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">generalize_quality</span><span class="p">),</span>
+            <span class="n">supersaturation</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">supersaturation</span><span class="p">),</span>
+            <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;mask&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
 
 <div class="viewcode-block" id="FluidJAX">
 <a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FluidJAX</span><span class="p">(</span><span class="n">eqx</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FluidJAX</span><span class="p">(</span><span class="n">SourceReferencesMixin</span><span class="p">,</span> <span class="n">eqx</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">fluid</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># raw CoolProp.AbstractState object</span>
+    <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">reference_id</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fluid</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_configuration</span><span class="p">:</span> <span class="n">FluidConfiguration</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_capabilities</span><span class="p">:</span> <span class="n">FluidCapabilities</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_references</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s2">&quot;HEOS&quot;</span><span class="p">,</span> <span class="n">exceptions</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">.fluid_properties</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fluid</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;HEOS&quot;</span><span class="p">,</span> <span class="n">exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.fluid_properties</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluidCoolProp</span>
+
+        <span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;HEOS&quot;</span> <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">backend</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_configuration</span> <span class="o">=</span> <span class="n">build_configuration</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;coolprop_jax&quot;</span><span class="p">,</span> <span class="s2">&quot;real_fluid&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">identifier</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exceptions</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="n">exceptions</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;coolprop_jax&quot;</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;real_fluid&quot;</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;exceptions&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Use per-call errors=&#39;mask&#39; instead of legacy exceptions=False.&quot;</span><span class="p">,</span>
+                <span class="n">supported</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,),</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exceptions</span> <span class="o">=</span> <span class="n">exceptions</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span> <span class="o">=</span> <span class="n">Fluid</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">exceptions</span><span class="o">=</span><span class="n">exceptions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exceptions</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">provider</span> <span class="o">=</span> <span class="s2">&quot;coolprop_jax&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="s2">&quot;real_fluid&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span> <span class="o">=</span> <span class="n">FluidCoolProp</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="n">source_capabilities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span><span class="o">.</span><span class="n">capabilities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_capabilities</span> <span class="o">=</span> <span class="n">FluidCapabilities</span><span class="p">(</span>
+            <span class="n">input_pairs</span><span class="o">=</span><span class="n">source_capabilities</span><span class="o">.</span><span class="n">input_pairs</span><span class="p">,</span>
+            <span class="n">properties</span><span class="o">=</span><span class="n">source_capabilities</span><span class="o">.</span><span class="n">properties</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">source_capabilities</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
+            <span class="c1"># The wrapped source also offers eager legacy phase solvers;</span>
+            <span class="c1"># this callback exposes only its implemented uniform operation.</span>
+            <span class="n">phase_operations</span><span class="o">=</span><span class="n">source_capabilities</span><span class="o">.</span><span class="n">phase_operations</span> <span class="o">&amp;</span> <span class="p">{</span><span class="s2">&quot;saturation&quot;</span><span class="p">},</span>
+            <span class="n">error_modes</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">}),</span>
+            <span class="n">jax_modes</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;eager&quot;</span><span class="p">,</span> <span class="s2">&quot;jit&quot;</span><span class="p">,</span> <span class="s2">&quot;vmap&quot;</span><span class="p">,</span> <span class="s2">&quot;jvp&quot;</span><span class="p">,</span> <span class="s2">&quot;grad&quot;</span><span class="p">}),</span>
+            <span class="n">derivative_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">derivative_method</span><span class="o">=</span><span class="s2">&quot;finite_difference&quot;</span><span class="p">,</span>
+            <span class="n">domain</span><span class="o">=</span><span class="n">source_capabilities</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span><span class="o">.</span><span class="n">reference_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_references</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span><span class="o">.</span><span class="n">references</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configuration</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capabilities</span>
 
 <div class="viewcode-block" id="FluidJAX.get_state">
 <a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state">[docs]</a>
-    <span class="nd">@eqx</span><span class="o">.</span><span class="n">filter_jit</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a CoolPropState with fields shaped like broadcast(x, y).&quot;&quot;&quot;</span>
-        <span class="n">raw</span> <span class="o">=</span> <span class="n">get_state</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidState</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">raw</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">})</span></div>
+    <span class="nd">@_CallbackStateCall</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">input_type</span><span class="p">,</span>
+        <span class="n">prop_1</span><span class="p">,</span>
+        <span class="n">prop_2</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate eagerly with typed errors, or use explicit mask mode in JAX.</span>
+
+<span class="sd">        Derivatives are first-order forward finite differences over successful</span>
+<span class="sd">        source states, away from phase/domain boundaries. Failed primal rows</span>
+<span class="sd">        and unavailable primal properties have zero tangent contributions. If</span>
+<span class="sd">        a valid state&#39;s forward stencil fails, its derivative is unavailable</span>
+<span class="sd">        (NaN); zero is not a physical derivative claim at that boundary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">errors</span> <span class="o">!=</span> <span class="s2">&quot;mask&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnsupportedExecutionModeError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;errors=raise&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;The compiled callback path requires errors=&#39;mask&#39;.&quot;</span><span class="p">,</span>
+                <span class="n">supported</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;errors=mask&quot;</span><span class="p">,),</span>
+            <span class="p">)</span>
+        <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">prop_1</span><span class="p">),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">prop_2</span><span class="p">))</span>
+        <span class="n">properties</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">_callback_state</span><span class="p">(</span>
+            <span class="n">input_type</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="p">,</span> <span class="n">supersaturation</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">_assemble_state</span><span class="p">(</span>
+            <span class="n">properties</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">_state_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supersaturation</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FluidJAX.get_state_saturation">
+<a class="viewcode-back" href="../../../source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state_saturation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_state_saturation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_type</span><span class="p">,</span> <span class="n">prop_1</span><span class="p">,</span> <span class="n">prop_2</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate saturation through the common state path.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_type</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_type</span><span class="p">,</span> <span class="n">Integral</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">input_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">jxp</span><span class="o">.</span><span class="n">QT_INPUTS</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">UnsupportedOperationError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;saturation&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Saturation evaluation accepts only PQ_INPUTS or QT_INPUTS.&quot;</span><span class="p">,</span>
+                <span class="n">supported</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;PQ_INPUTS&quot;</span><span class="p">,</span> <span class="s2">&quot;QT_INPUTS&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">input_type</span><span class="p">,</span> <span class="n">prop_1</span><span class="p">,</span> <span class="n">prop_2</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

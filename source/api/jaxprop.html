@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>jaxprop package &#8212; jaxprop v0.5.8 documentation</title>
+    <title>jaxprop package &#8212; jaxprop v0.6.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=4e4ceabb"></script>
+    <script src="../../_static/documentation_options.js?v=4fe0b1e1"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -52,7 +52,8 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'source/api/jaxprop';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -135,7 +136,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.8 documentation</p>
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -150,24 +151,23 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">jaxprop package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.components.html">jaxprop.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -175,7 +175,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.graphics.html">jaxprop.graphics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.factory.html">jaxprop.factory module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.math.html">jaxprop.math module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.utils.html">jaxprop.utils module</a></li>
@@ -341,23 +348,97 @@
                   
   <section id="module-jaxprop">
 <span id="jaxprop-package"></span><h1>jaxprop package<a class="headerlink" href="#module-jaxprop" title="Link to this heading">#</a></h1>
+<p>Thermodynamic models with consumer-controlled JAX execution settings.</p>
+<p>When JaxProp imports JAX first, double precision remains the default for
+scientific calculations. An explicit <code class="docutils literal notranslate"><span class="pre">JAX_ENABLE_X64</span></code> environment setting,
+or an application that imports/configures JAX before JaxProp, takes priority.
+Choose devices through JAX’s own configuration before constructing models;
+importing this package does not select a platform or install an exception hook.</p>
 <section id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="jaxprop.bicubic.html">jaxprop.bicubic package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic"><code class="docutils literal notranslate"><span class="pre">FluidBicubic</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.N_h"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.N_h</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.N_p"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.N_p</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.N_p_sat"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.N_p_sat</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.PROPERTY_CALCULATORS"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.PROPERTY_CALCULATORS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.backend"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.backend</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.capabilities"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.capabilities</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.coarse_step"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.coarse_step</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.configuration"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.configuration</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.delta_h"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.delta_h</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.delta_logP"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.delta_logP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.delta_logP_sat"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.delta_logP_sat</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.fluid_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.get_state"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.get_state()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.get_state_saturation"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.get_state_saturation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.grad_method"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.grad_method</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.h_max"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.h_max</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.h_min"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.h_min</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.h_vals"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.h_vals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.identifier"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.identifier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.inverse_max_steps"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.inverse_max_steps</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.inverse_tolerance"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.inverse_tolerance</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.logP_sat_vals"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.logP_sat_vals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.logP_vals"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.logP_vals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.metadata"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.metadata</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.metastable_domain"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.metastable_domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.metastable_phase"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.metastable_phase</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.mixture_ratio"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.mixture_ratio</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.model"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.name"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.p_max"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.p_max</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.p_min"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.p_min</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.provider"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.provider</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.reference_id"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.reference_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.table"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.table_dir"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table_dir</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.table_mode"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table_mode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.table_name"><code class="docutils literal notranslate"><span class="pre">FluidBicubic.table_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.bicubic.html#jaxprop.bicubic.compute_bicubic_coefficients"><code class="docutils literal notranslate"><span class="pre">compute_bicubic_coefficients()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.bicubic.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic"><code class="docutils literal notranslate"><span class="pre">FluidBicubic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.compute_bicubic_coefficients"><code class="docutils literal notranslate"><span class="pre">compute_bicubic_coefficients()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="jaxprop.components.html">jaxprop.components package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="jaxprop.components.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.backend"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.backend</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.capabilities"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.capabilities</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.components"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.components</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.configuration"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.configuration</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.get_state"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.get_state()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.get_state_saturation"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.get_state_saturation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.identifier"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.identifier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.inverse_max_steps"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.inverse_max_steps</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.inverse_tolerance"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.inverse_tolerance</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.mass_fractions"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.mass_fractions</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.mixture_ratio"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.mixture_ratio</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.model"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.name"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.p_max"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.p_max</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.p_min"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.p_min</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.provider"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.provider</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.reference_id"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture.reference_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidMix"><code class="docutils literal notranslate"><span class="pre">FluidMix()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidTwoComponent"><code class="docutils literal notranslate"><span class="pre">FluidTwoComponent</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.binary_mixture.html#jaxprop.binary_mixture.get_mixture_state"><code class="docutils literal notranslate"><span class="pre">get_mixture_state()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.binary_mixture.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture"><code class="docutils literal notranslate"><span class="pre">FluidBinaryMixture</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -387,7 +468,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid"><code class="docutils literal notranslate"><span class="pre">Fluid</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidMix"><code class="docutils literal notranslate"><span class="pre">FluidMix</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp"><code class="docutils literal notranslate"><span class="pre">FluidCoolProp</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.build_alias_map"><code class="docutils literal notranslate"><span class="pre">build_alias_map()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.compute_property_grid_rhoT"><code class="docutils literal notranslate"><span class="pre">compute_property_grid_rhoT()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.compute_pseudocritical_line"><code class="docutils literal notranslate"><span class="pre">compute_pseudocritical_line()</span></code></a></li>
@@ -404,9 +485,9 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX"><code class="docutils literal notranslate"><span class="pre">FluidJAX</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.get_state"><code class="docutils literal notranslate"><span class="pre">get_state()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
 </ul>
 </li>
 </ul>
@@ -459,7 +540,192 @@
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.graphics.html#jaxprop.graphics.set_plot_options"><code class="docutils literal notranslate"><span class="pre">set_plot_options()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jaxprop.fluid.html">jaxprop.fluid module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid"><code class="docutils literal notranslate"><span class="pre">Fluid</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid.backend"><code class="docutils literal notranslate"><span class="pre">Fluid.backend</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid.capabilities"><code class="docutils literal notranslate"><span class="pre">Fluid.capabilities</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid.configuration"><code class="docutils literal notranslate"><span class="pre">Fluid.configuration</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid.critical_point"><code class="docutils literal notranslate"><span class="pre">Fluid.critical_point</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid.get_state"><code class="docutils literal notranslate"><span class="pre">Fluid.get_state()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid.identifier"><code class="docutils literal notranslate"><span class="pre">Fluid.identifier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid.model"><code class="docutils literal notranslate"><span class="pre">Fluid.model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid.name"><code class="docutils literal notranslate"><span class="pre">Fluid.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid.provider"><code class="docutils literal notranslate"><span class="pre">Fluid.provider</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid.reference_id"><code class="docutils literal notranslate"><span class="pre">Fluid.reference_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid.references"><code class="docutils literal notranslate"><span class="pre">Fluid.references</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid.triple_point_liquid"><code class="docutils literal notranslate"><span class="pre">Fluid.triple_point_liquid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid.html#jaxprop.fluid.Fluid.triple_point_vapor"><code class="docutils literal notranslate"><span class="pre">Fluid.triple_point_vapor</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="jaxprop.fluid_state.html">jaxprop.fluid_state module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState"><code class="docutils literal notranslate"><span class="pre">FluidState</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.at_index"><code class="docutils literal notranslate"><span class="pre">FluidState.at_index()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.available_properties"><code class="docutils literal notranslate"><span class="pre">FluidState.available_properties</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.clipped"><code class="docutils literal notranslate"><span class="pre">FluidState.clipped</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.error_policy"><code class="docutils literal notranslate"><span class="pre">FluidState.error_policy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.flipped"><code class="docutils literal notranslate"><span class="pre">FluidState.flipped()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidState.fluid_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.from_data"><code class="docutils literal notranslate"><span class="pre">FluidState.from_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.identifier"><code class="docutils literal notranslate"><span class="pre">FluidState.identifier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.items"><code class="docutils literal notranslate"><span class="pre">FluidState.items()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.keys"><code class="docutils literal notranslate"><span class="pre">FluidState.keys()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.model"><code class="docutils literal notranslate"><span class="pre">FluidState.model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.property_valid"><code class="docutils literal notranslate"><span class="pre">FluidState.property_valid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.provider"><code class="docutils literal notranslate"><span class="pre">FluidState.provider</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.providers"><code class="docutils literal notranslate"><span class="pre">FluidState.providers</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.raw_property"><code class="docutils literal notranslate"><span class="pre">FluidState.raw_property()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.reference_id"><code class="docutils literal notranslate"><span class="pre">FluidState.reference_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.shape"><code class="docutils literal notranslate"><span class="pre">FluidState.shape</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.stack"><code class="docutils literal notranslate"><span class="pre">FluidState.stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.status"><code class="docutils literal notranslate"><span class="pre">FluidState.status</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.supports_property"><code class="docutils literal notranslate"><span class="pre">FluidState.supports_property()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.to_data"><code class="docutils literal notranslate"><span class="pre">FluidState.to_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.to_dict"><code class="docutils literal notranslate"><span class="pre">FluidState.to_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.valid"><code class="docutils literal notranslate"><span class="pre">FluidState.valid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.values"><code class="docutils literal notranslate"><span class="pre">FluidState.values()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="jaxprop.configuration.html">jaxprop.configuration module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities"><code class="docutils literal notranslate"><span class="pre">FluidCapabilities</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.derivative_method"><code class="docutils literal notranslate"><span class="pre">FluidCapabilities.derivative_method</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.derivative_order"><code class="docutils literal notranslate"><span class="pre">FluidCapabilities.derivative_order</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.domain"><code class="docutils literal notranslate"><span class="pre">FluidCapabilities.domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.error_modes"><code class="docutils literal notranslate"><span class="pre">FluidCapabilities.error_modes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.input_pairs"><code class="docutils literal notranslate"><span class="pre">FluidCapabilities.input_pairs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.jax_modes"><code class="docutils literal notranslate"><span class="pre">FluidCapabilities.jax_modes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.options"><code class="docutils literal notranslate"><span class="pre">FluidCapabilities.options</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.phase_operations"><code class="docutils literal notranslate"><span class="pre">FluidCapabilities.phase_operations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.properties"><code class="docutils literal notranslate"><span class="pre">FluidCapabilities.properties</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration"><code class="docutils literal notranslate"><span class="pre">FluidConfiguration</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.backend"><code class="docutils literal notranslate"><span class="pre">FluidConfiguration.backend</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.identifier"><code class="docutils literal notranslate"><span class="pre">FluidConfiguration.identifier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.model"><code class="docutils literal notranslate"><span class="pre">FluidConfiguration.model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.model_options"><code class="docutils literal notranslate"><span class="pre">FluidConfiguration.model_options</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.name"><code class="docutils literal notranslate"><span class="pre">FluidConfiguration.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.provider"><code class="docutils literal notranslate"><span class="pre">FluidConfiguration.provider</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.table_options"><code class="docutils literal notranslate"><span class="pre">FluidConfiguration.table_options</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidDomain"><code class="docutils literal notranslate"><span class="pre">FluidDomain</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidDomain.bounds"><code class="docutils literal notranslate"><span class="pre">FluidDomain.bounds</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidDomain.description"><code class="docutils literal notranslate"><span class="pre">FluidDomain.description</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidDomain.extrapolation"><code class="docutils literal notranslate"><span class="pre">FluidDomain.extrapolation</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FluidDomain.phases"><code class="docutils literal notranslate"><span class="pre">FluidDomain.phases</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.FrozenMapping"><code class="docutils literal notranslate"><span class="pre">FrozenMapping</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.configuration.html#jaxprop.configuration.build_configuration"><code class="docutils literal notranslate"><span class="pre">build_configuration()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="jaxprop.errors.html">jaxprop.errors module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.CalculationError"><code class="docutils literal notranslate"><span class="pre">CalculationError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.ConvergenceError"><code class="docutils literal notranslate"><span class="pre">ConvergenceError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.InvalidConfigurationError"><code class="docutils literal notranslate"><span class="pre">InvalidConfigurationError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.InvalidStateError"><code class="docutils literal notranslate"><span class="pre">InvalidStateError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.JaxPropError"><code class="docutils literal notranslate"><span class="pre">JaxPropError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.OutOfDomainError"><code class="docutils literal notranslate"><span class="pre">OutOfDomainError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.PropertyUnavailableError"><code class="docutils literal notranslate"><span class="pre">PropertyUnavailableError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.UnavailableReferencePointError"><code class="docutils literal notranslate"><span class="pre">UnavailableReferencePointError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.UnsupportedExecutionModeError"><code class="docutils literal notranslate"><span class="pre">UnsupportedExecutionModeError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.UnsupportedInputPairError"><code class="docutils literal notranslate"><span class="pre">UnsupportedInputPairError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.UnsupportedOperationError"><code class="docutils literal notranslate"><span class="pre">UnsupportedOperationError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.UnsupportedOptionError"><code class="docutils literal notranslate"><span class="pre">UnsupportedOptionError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.UnsupportedPropertyError"><code class="docutils literal notranslate"><span class="pre">UnsupportedPropertyError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html#jaxprop.errors.UnsupportedRequestError"><code class="docutils literal notranslate"><span class="pre">UnsupportedRequestError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="jaxprop.source_references.html">jaxprop.source_references module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint"><code class="docutils literal notranslate"><span class="pre">ReferencePoint</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.available"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.available</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.backend"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.backend</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.classification"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.classification</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.evaluation_coordinates"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.evaluation_coordinates</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.evaluation_offsets"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.evaluation_offsets</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.interpretation"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.interpretation</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.name"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.properties"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.properties</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.reason"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.reason</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.reference_convention"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.reference_convention</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.reference_id"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.reference_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.reported_coordinates"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.reported_coordinates</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.source"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.source</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.source_fluid"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.source_fluid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.state"><code class="docutils literal notranslate"><span class="pre">ReferencePoint.state</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferences"><code class="docutils literal notranslate"><span class="pre">SourceReferences</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferences.anchor"><code class="docutils literal notranslate"><span class="pre">SourceReferences.anchor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferences.components"><code class="docutils literal notranslate"><span class="pre">SourceReferences.components</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferences.critical"><code class="docutils literal notranslate"><span class="pre">SourceReferences.critical</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferences.reference_id"><code class="docutils literal notranslate"><span class="pre">SourceReferences.reference_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferences.source"><code class="docutils literal notranslate"><span class="pre">SourceReferences.source</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferences.triple_liquid"><code class="docutils literal notranslate"><span class="pre">SourceReferences.triple_liquid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferences.triple_vapor"><code class="docutils literal notranslate"><span class="pre">SourceReferences.triple_vapor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin"><code class="docutils literal notranslate"><span class="pre">SourceReferencesMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin.critical_point"><code class="docutils literal notranslate"><span class="pre">SourceReferencesMixin.critical_point</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin.references"><code class="docutils literal notranslate"><span class="pre">SourceReferencesMixin.references</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin.triple_point_liquid"><code class="docutils literal notranslate"><span class="pre">SourceReferencesMixin.triple_point_liquid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin.triple_point_vapor"><code class="docutils literal notranslate"><span class="pre">SourceReferencesMixin.triple_point_vapor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.composite_source_references"><code class="docutils literal notranslate"><span class="pre">composite_source_references()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.initialize_source_references"><code class="docutils literal notranslate"><span class="pre">initialize_source_references()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.reference_anchor"><code class="docutils literal notranslate"><span class="pre">reference_anchor()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.source_reference_identity"><code class="docutils literal notranslate"><span class="pre">source_reference_identity()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.source_reference_metadata"><code class="docutils literal notranslate"><span class="pre">source_reference_metadata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.available_properties"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.available_properties</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.clipped"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.clipped</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.derivative_shape"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.derivative_shape</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.derivative_units"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.derivative_units()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.error_policy"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.error_policy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.fluid_name"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.fluid_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.identifier"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.identifier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.input_names"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.input_names</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.input_units"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.input_units</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.items"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.items()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.keys"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.keys()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.method"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.method</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.model"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.primal"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.primal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.primal_shape"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.primal_shape</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.property_units"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.property_units</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.property_valid"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.property_valid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.provider"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.provider</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.providers"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.providers</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.quantity_kind"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.quantity_kind</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.raw_property"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.raw_property()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.reference_id"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.reference_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.shape"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.shape</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.status"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.status</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.supports_property"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.supports_property()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.to_dict"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.to_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.valid"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.valid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.values"><code class="docutils literal notranslate"><span class="pre">PropertyDerivatives.values()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.property_derivatives.html#jaxprop.property_derivatives.get_props_gradient"><code class="docutils literal notranslate"><span class="pre">get_props_gradient()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="jaxprop.plotting.html">jaxprop.plotting module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.plotting.html#jaxprop.plotting.plot_phase_diagram"><code class="docutils literal notranslate"><span class="pre">plot_phase_diagram()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="jaxprop.factory.html">jaxprop.factory module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.factory.html#jaxprop.factory.create_fluid"><code class="docutils literal notranslate"><span class="pre">create_fluid()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_jax.html#jaxprop.helpers_jax.format_list_80"><code class="docutils literal notranslate"><span class="pre">format_list_80()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_jax.html#jaxprop.helpers_jax.make_diffrax_adjoint"><code class="docutils literal notranslate"><span class="pre">make_diffrax_adjoint()</span></code></a></li>

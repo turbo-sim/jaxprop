@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.perfect_gas.perfect_gas &#8212; jaxprop v0.5.8 documentation</title>
+    <title>jaxprop.perfect_gas.perfect_gas &#8212; jaxprop v0.6.0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=4e4ceabb"></script>
+    <script src="../../../_static/documentation_options.js?v=4fe0b1e1"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -133,7 +133,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.8 documentation</p>
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -148,24 +148,23 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.components.html">jaxprop.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../source/api/jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -173,7 +172,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.graphics.html">jaxprop.graphics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.factory.html">jaxprop.factory module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.math.html">jaxprop.math module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/api/jaxprop.utils.html">jaxprop.utils module</a></li>
@@ -282,9 +288,20 @@
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">equinox</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">eqx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..coolprop</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fluid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..coolprop</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluidCoolProp</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">helpers_props</span> <span class="k">as</span> <span class="n">jxp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..configuration</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_configuration</span><span class="p">,</span> <span class="n">FluidCapabilities</span><span class="p">,</span> <span class="n">FluidDomain</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidConfigurationError</span><span class="p">,</span> <span class="n">JaxPropError</span><span class="p">,</span> <span class="n">UnsupportedOperationError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.request_policy</span><span class="w"> </span><span class="kn">import</span> <span class="n">checked_perfect_gas_jit</span><span class="p">,</span> <span class="n">evaluate_state</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..source_references</span><span class="w"> </span><span class="kn">import</span> <span class="n">SourceReferencesMixin</span>
+
+<span class="n">MIN_TEMPERATURE</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">MIN_PRESSURE</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">MIN_DENSITY</span> <span class="o">=</span> <span class="mf">1e-12</span>
+
 
 <span class="c1"># ----------------------------------------------------------------------------- #</span>
 <span class="c1"># Constant generation and Sutherland estimation</span>
@@ -296,6 +313,7 @@
     <span class="n">gamma</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="n">T_ref</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="n">P_ref</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">h_ref</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="n">s_ref</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="n">k_ref</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="n">mu_ref</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span>
@@ -318,7 +336,7 @@
 
 <div class="viewcode-block" id="get_constants">
 <a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.get_constants">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_constants</span><span class="p">(</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">T_ref</span><span class="p">,</span> <span class="n">p_ref</span><span class="p">,</span> <span class="n">dT</span><span class="o">=</span><span class="mf">100.0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_constants</span><span class="p">(</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">T_ref</span><span class="p">,</span> <span class="n">p_ref</span><span class="p">,</span> <span class="n">dT</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;HEOS&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute perfect-gas constants from a real-fluid model at a reference state,</span>
 <span class="sd">    and estimate Sutherland constants using offset temperatures.</span>
@@ -334,6 +352,8 @@
 <span class="sd">    dT : float, optional</span>
 <span class="sd">        Temperature offset used to evaluate `mu` and `k` at T_ref ± dT for</span>
 <span class="sd">        Sutherland constant estimation [K]. Default is 100.0.</span>
+<span class="sd">    backend : str, optional</span>
+<span class="sd">        CoolProp source backend used for calibration. Default is &quot;HEOS&quot;.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -356,44 +376,98 @@
 <span class="sd">    ZeroDivisionError</span>
 <span class="sd">        If the Sutherland estimation becomes numerically unstable.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Calculate fluid constants at the reference pressure and temperature</span>
-    <span class="n">fluid</span> <span class="o">=</span> <span class="n">Fluid</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;HEOS&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_get_constants_from_source</span><span class="p">(</span>
+        <span class="n">FluidCoolProp</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">fluid_name</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">),</span> <span class="n">T_ref</span><span class="p">,</span> <span class="n">p_ref</span><span class="p">,</span> <span class="n">dT</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_constants_from_source</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">T_ref</span><span class="p">,</span> <span class="n">p_ref</span><span class="p">,</span> <span class="n">dT</span><span class="o">=</span><span class="mf">100.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calibrate one ideal-gas model, retaining the source h/s convention.</span>
+
+<span class="sd">    The real-fluid heat capacities need not obey cp-cv=R. Preserve calibrated</span>
+<span class="sd">    cp and derive cv/gamma from the ideal-gas identity instead of combining</span>
+<span class="sd">    incompatible source values. Optional transport never determines whether a</span>
+<span class="sd">    valid thermodynamic model can be constructed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_ref</span><span class="p">,</span> <span class="n">T_ref</span><span class="p">)</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">GAS_CONSTANT</span> <span class="o">/</span> <span class="n">fluid</span><span class="o">.</span><span class="n">abstract_state</span><span class="o">.</span><span class="n">molar_mass</span><span class="p">())</span>
-    <span class="n">cp</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;cp&quot;</span><span class="p">])</span>
-    <span class="n">cv</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;cv&quot;</span><span class="p">])</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">GAS_CONSTANT</span> <span class="o">/</span> <span class="n">fluid</span><span class="o">.</span><span class="n">abstract_state</span><span class="o">.</span><span class="n">molar_mass</span><span class="p">())</span>
+    <span class="n">cp</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">raw_property</span><span class="p">(</span><span class="s2">&quot;cp&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="ow">or</span> <span class="n">R</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">cp</span> <span class="o">&lt;=</span> <span class="n">R</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;native&quot;</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;perfect_gas&quot;</span><span class="p">,</span>
+            <span class="n">request</span><span class="o">=</span><span class="s2">&quot;calibration&quot;</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;The source calibration requires finite cp &gt; R &gt; 0 so ideal-gas cv is positive.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">cv</span> <span class="o">=</span> <span class="n">cp</span> <span class="o">-</span> <span class="n">R</span>
     <span class="n">gamma</span> <span class="o">=</span> <span class="n">cp</span> <span class="o">/</span> <span class="n">cv</span>
-    <span class="c1"># Use CoolProp absolute entropy at (p_ref, T_ref) so perfect-gas entropy</span>
-    <span class="c1"># is compatible with real-fluid entropy basis.</span>
-    <span class="n">s_ref</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">])</span>
-    <span class="n">mu_ref</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">])</span>
-    <span class="n">k_ref</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">])</span>
+    <span class="n">h_ref</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">raw_property</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">))</span>
+    <span class="n">s_ref</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">raw_property</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">))</span>
+    <span class="n">mu_ref</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">raw_property</span><span class="p">(</span><span class="s2">&quot;mu&quot;</span><span class="p">))</span>
+    <span class="n">k_ref</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">raw_property</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">))</span>
 
-    <span class="c1"># Estimate Sutherland constants from values at T_ref ± dT</span>
-    <span class="n">T2</span> <span class="o">=</span> <span class="n">T_ref</span> <span class="o">+</span> <span class="n">dT</span>
-    <span class="n">state2</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_ref</span><span class="p">,</span> <span class="n">T2</span><span class="p">)</span>
-    <span class="n">S_mu</span> <span class="o">=</span> <span class="n">estimate_sutherland_constant</span><span class="p">(</span><span class="n">T_ref</span><span class="p">,</span> <span class="n">mu_ref</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="n">state2</span><span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">])</span>
-    <span class="n">S_k</span> <span class="o">=</span> <span class="n">estimate_sutherland_constant</span><span class="p">(</span><span class="n">T_ref</span><span class="p">,</span> <span class="n">k_ref</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="n">state2</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">])</span>
+    <span class="c1"># Use a distinct in-domain temperature. Near a source maximum, fit below</span>
+    <span class="c1"># calibration rather than extrapolating T_ref + dT beyond the EOS limits.</span>
+    <span class="n">upper</span><span class="p">,</span> <span class="n">lower</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">T_max</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">T_min</span><span class="p">)</span>
+    <span class="n">T2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">T_ref</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">dT</span><span class="p">)),</span> <span class="n">upper</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">T2</span> <span class="o">==</span> <span class="n">T_ref</span><span class="p">:</span>
+        <span class="n">T2</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">T_ref</span><span class="p">)</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">dT</span><span class="p">)),</span> <span class="n">lower</span><span class="p">)</span>
+    <span class="n">second</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">T2</span> <span class="o">!=</span> <span class="n">T_ref</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">second</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_ref</span><span class="p">,</span> <span class="n">T2</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">JaxPropError</span><span class="p">:</span>
+            <span class="c1"># Transport fitting is optional. Core calibration above succeeded.</span>
+            <span class="k">pass</span>
 
-    <span class="c1"># Create object to store constants</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">second</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+        <span class="n">other</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">second</span><span class="o">.</span><span class="n">raw_property</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">other</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">coefficient</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+                <span class="n">estimate_sutherland_constant</span><span class="p">(</span><span class="n">T_ref</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">ZeroDivisionError</span><span class="p">,</span> <span class="ne">OverflowError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">coefficient</span><span class="p">)</span> <span class="ow">or</span> <span class="n">T_ref</span> <span class="o">+</span> <span class="n">coefficient</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">reference</span><span class="p">,</span> <span class="n">coefficient</span>
+
+    <span class="n">mu_ref</span><span class="p">,</span> <span class="n">S_mu</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">mu_ref</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">)</span>
+    <span class="n">k_ref</span><span class="p">,</span> <span class="n">S_k</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">k_ref</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">)</span>
     <span class="n">consts</span> <span class="o">=</span> <span class="n">PerfectGasConstants</span><span class="p">(</span>
-        <span class="n">R</span><span class="o">=</span><span class="n">R</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span>
-        <span class="n">T_ref</span><span class="o">=</span><span class="n">T_ref</span><span class="p">,</span> <span class="n">P_ref</span><span class="o">=</span><span class="n">p_ref</span><span class="p">,</span> <span class="n">s_ref</span><span class="o">=</span><span class="n">s_ref</span><span class="p">,</span>
-        <span class="n">k_ref</span><span class="o">=</span><span class="n">k_ref</span><span class="p">,</span> <span class="n">mu_ref</span><span class="o">=</span><span class="n">mu_ref</span><span class="p">,</span>
-        <span class="n">S_k</span><span class="o">=</span><span class="n">S_k</span><span class="p">,</span> <span class="n">S_mu</span><span class="o">=</span><span class="n">S_mu</span><span class="p">,</span>
+        <span class="o">**</span><span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">R</span><span class="o">=</span><span class="n">R</span><span class="p">,</span>
+                <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span>
+                <span class="n">T_ref</span><span class="o">=</span><span class="n">T_ref</span><span class="p">,</span>
+                <span class="n">P_ref</span><span class="o">=</span><span class="n">p_ref</span><span class="p">,</span>
+                <span class="n">h_ref</span><span class="o">=</span><span class="n">h_ref</span><span class="p">,</span>
+                <span class="n">s_ref</span><span class="o">=</span><span class="n">s_ref</span><span class="p">,</span>
+                <span class="n">k_ref</span><span class="o">=</span><span class="n">k_ref</span><span class="p">,</span>
+                <span class="n">mu_ref</span><span class="o">=</span><span class="n">mu_ref</span><span class="p">,</span>
+                <span class="n">S_k</span><span class="o">=</span><span class="n">S_k</span><span class="p">,</span>
+                <span class="n">S_mu</span><span class="o">=</span><span class="n">S_mu</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
     <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">consts</span></div>
-
+    <span class="k">return</span> <span class="n">consts</span>
 
 
 <div class="viewcode-block" id="estimate_sutherland_constant">
 <a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.estimate_sutherland_constant">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">estimate_sutherland_constant</span><span class="p">(</span><span class="n">T1</span><span class="p">,</span> <span class="n">mu1</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="n">mu2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Estimate the Sutherland constant [K] from two values of a transport property </span>
+<span class="sd">    Estimate the Sutherland constant [K] from two values of a transport property</span>
 <span class="sd">    (viscosity or thermal conductivity) at two temperatures, assuming a Sutherland-like law:</span>
-<span class="sd">    </span>
+
 <span class="sd">        mu(T) = mu_ref * (T / T_ref)^{3/2} * (T_ref + S) / (T + S)</span>
 
 <span class="sd">    Parameters</span>
@@ -413,10 +487,10 @@
 
 
 
-
 <span class="c1"># ----------------------------------------------------------------------------- #</span>
 <span class="c1"># Helper functions to calculate individual fluid properties</span>
 <span class="c1"># ----------------------------------------------------------------------------- #</span>
+
 
 <div class="viewcode-block" id="specific_heat">
 <a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.specific_heat">[docs]</a>
@@ -428,11 +502,13 @@
     <span class="k">return</span> <span class="n">cp</span><span class="p">,</span> <span class="n">cv</span></div>
 
 
+
 <div class="viewcode-block" id="temperature_from_h">
 <a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.temperature_from_h">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">temperature_from_h</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
     <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">h</span> <span class="o">/</span> <span class="n">cp</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">constants</span><span class="o">.</span><span class="n">T_ref</span> <span class="o">+</span> <span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">constants</span><span class="o">.</span><span class="n">h_ref</span><span class="p">)</span> <span class="o">/</span> <span class="n">cp</span></div>
+
 
 
 <div class="viewcode-block" id="temperature_from_Ps">
@@ -444,15 +520,17 @@
     <span class="n">P_ref</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">P_ref</span>
     <span class="n">s_ref</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">s_ref</span>
     <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
-    <span class="n">exponent</span> <span class="o">=</span> <span class="p">((</span><span class="n">s</span> <span class="o">-</span> <span class="n">s_ref</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="n">P_ref</span><span class="p">)))</span> <span class="o">/</span> <span class="n">cp</span>
-    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">T_ref</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent</span><span class="p">))</span></div>
+    <span class="n">exponent</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">T_ref</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">s</span> <span class="o">-</span> <span class="n">s_ref</span><span class="p">)</span> <span class="o">+</span> <span class="n">R</span> <span class="o">*</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P_ref</span><span class="p">)))</span> <span class="o">/</span> <span class="n">cp</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="temperature_from_rhoP">
 <a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.temperature_from_rhoP">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">temperature_from_rhoP</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">R</span>
-    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="n">R</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="n">R</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="viscosity_from_T">
@@ -461,7 +539,13 @@
     <span class="n">mu_ref</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">mu_ref</span>
     <span class="n">T_ref</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">T_ref</span>
     <span class="n">S_mu</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">S_mu</span>
-    <span class="k">return</span> <span class="n">mu_ref</span> <span class="o">*</span> <span class="p">((</span><span class="n">T</span> <span class="o">/</span> <span class="n">T_ref</span><span class="p">)</span> <span class="o">**</span> <span class="mf">1.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="n">T_ref</span> <span class="o">+</span> <span class="n">S_mu</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="n">S_mu</span><span class="p">))</span></div>
+    <span class="c1"># Cancel one T/T_ref factor before evaluation. The equivalent T**1.5</span>
+    <span class="c1"># expression overflows at high finite T even when transport is finite.</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">mu_ref</span> <span class="o">*</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">T_ref</span><span class="p">))</span> <span class="o">*</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">S_mu</span> <span class="o">/</span> <span class="n">T_ref</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">S_mu</span> <span class="o">/</span> <span class="n">T</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span> <span class="n">value</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="conductivity_from_T">
@@ -470,7 +554,11 @@
     <span class="n">k_ref</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">k_ref</span>
     <span class="n">T_ref</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">T_ref</span>
     <span class="n">S_k</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">S_k</span>
-    <span class="k">return</span> <span class="n">k_ref</span> <span class="o">*</span> <span class="p">((</span><span class="n">T</span> <span class="o">/</span> <span class="n">T_ref</span><span class="p">)</span> <span class="o">**</span> <span class="mf">1.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="n">T_ref</span> <span class="o">+</span> <span class="n">S_k</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="n">S_k</span><span class="p">))</span></div>
+    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">k_ref</span> <span class="o">*</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">T_ref</span><span class="p">))</span> <span class="o">*</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">S_k</span> <span class="o">/</span> <span class="n">T_ref</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">S_k</span> <span class="o">/</span> <span class="n">T</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span> <span class="n">value</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="speed_of_sound_from_T">
@@ -478,18 +566,25 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">speed_of_sound_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">R</span>
     <span class="n">gamma</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">gamma</span>
-    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span></div>
+    <span class="c1"># Avoid overflowing gamma*R*T when its square root is representable.</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">value</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="entropy_from_PT">
 <a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.entropy_from_PT">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">entropy_from_PT</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">entropy_from_PT</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">cp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">R</span>
     <span class="n">T_ref</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">T_ref</span>
     <span class="n">P_ref</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">P_ref</span>
     <span class="n">s_ref</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">s_ref</span>
-    <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">s_ref</span> <span class="o">+</span> <span class="p">(</span><span class="n">cp</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">T</span> <span class="o">/</span> <span class="n">T_ref</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="n">P_ref</span><span class="p">))</span></div>
+    <span class="k">if</span> <span class="n">cp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">s_ref</span> <span class="o">+</span> <span class="n">cp</span> <span class="o">*</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">-</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">T_ref</span><span class="p">))</span> <span class="o">-</span> <span class="n">R</span> <span class="o">*</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P_ref</span><span class="p">))</span>
+    <span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="entropy_from_rhoP">
@@ -504,18 +599,48 @@
 <span class="c1"># ----------------------------------------------------------------------------- #</span>
 <span class="c1"># Helper functions to calculate full fluid states</span>
 <span class="c1"># ----------------------------------------------------------------------------- #</span>
-    
+
+
+<span class="nd">@jax</span><span class="o">.</span><span class="n">custom_jvp</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_density_from_PT</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Preserve the ideal-gas primal while using stable analytic derivatives.</span>
+
+<span class="sd">    The request policy already supplies admissible coordinates. No additional</span>
+<span class="sd">    validation is introduced here. Differentiating p/(R*T) mechanically can</span>
+<span class="sd">    form p*d(R*T), overflowing even when the final derivative is finite.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
+
+
+<span class="nd">@_density_from_PT</span><span class="o">.</span><span class="n">defjvp</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_density_from_PT_jvp</span><span class="p">(</span><span class="n">primals</span><span class="p">,</span> <span class="n">tangents</span><span class="p">):</span>
+    <span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">primals</span>
+    <span class="n">dp</span><span class="p">,</span> <span class="n">dT</span><span class="p">,</span> <span class="n">dR</span> <span class="o">=</span> <span class="n">tangents</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">_density_from_PT</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+    <span class="c1"># d(rho) = dp/(R*T) - rho*dT/T - rho*dR/R. Form the relative</span>
+    <span class="c1"># directions first: tiny partials must not underflow before multiplication</span>
+    <span class="c1"># by a large model direction, and large p need not appear in a product.</span>
+    <span class="n">tangent</span> <span class="o">=</span> <span class="n">dp</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span> <span class="o">-</span> <span class="n">rho</span> <span class="o">*</span> <span class="p">(</span><span class="n">dT</span> <span class="o">/</span> <span class="n">T</span><span class="p">)</span> <span class="o">-</span> <span class="n">rho</span> <span class="o">*</span> <span class="p">(</span><span class="n">dR</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rho</span><span class="p">,</span> <span class="n">tangent</span>
+
+
 <div class="viewcode-block" id="calculate_properties_PT">
 <a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.calculate_properties_PT">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">calculate_properties_PT</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
-    <span class="n">T</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_properties_PT</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">cp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Assemble a complete state, optionally sharing a resolved heat capacity.</span>
+
+<span class="sd">    Native request policies can supply the same dynamic scalar used to resolve</span>
+<span class="sd">    and validate coordinates. Ordinary raw callers retain the original model</span>
+<span class="sd">    calculation; no derived parameter is stored or frozen on the fluid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">R</span>
-    <span class="n">rho</span> <span class="o">=</span> <span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
-    <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">T</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">entropy_from_PT</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span></div>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">_density_from_PT</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">h_ref</span> <span class="o">+</span> <span class="n">cp</span> <span class="o">*</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">constants</span><span class="o">.</span><span class="n">T_ref</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">entropy_from_PT</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">,</span> <span class="n">cp</span><span class="o">=</span><span class="n">cp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">,</span> <span class="n">cp</span><span class="o">=</span><span class="n">cp</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="calculate_properties_hs">
@@ -527,9 +652,10 @@
     <span class="n">T_ref</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">T_ref</span>
     <span class="n">P_ref</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">P_ref</span>
     <span class="n">s_ref</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">s_ref</span>
-    <span class="n">P</span> <span class="o">=</span> <span class="n">P_ref</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(((</span><span class="n">cp</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">T</span> <span class="o">/</span> <span class="n">T_ref</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">s_ref</span><span class="p">))</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span>
-    <span class="n">rho</span> <span class="o">=</span> <span class="n">P</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P_ref</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">cp</span> <span class="o">*</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">-</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">T_ref</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">s_ref</span><span class="p">))</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">_density_from_PT</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="calculate_properties_hP">
@@ -537,9 +663,10 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_properties_hP</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
     <span class="n">T</span> <span class="o">=</span> <span class="n">temperature_from_h</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">R</span>
-    <span class="n">rho</span> <span class="o">=</span> <span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">_density_from_PT</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">entropy_from_PT</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="calculate_properties_Ps">
@@ -547,10 +674,11 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_properties_Ps</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
     <span class="n">T</span> <span class="o">=</span> <span class="n">temperature_from_Ps</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">R</span>
-    <span class="n">rho</span> <span class="o">=</span> <span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">_density_from_PT</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
     <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">T</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">h_ref</span> <span class="o">+</span> <span class="n">cp</span> <span class="o">*</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">constants</span><span class="o">.</span><span class="n">T_ref</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="calculate_properties_rhoh">
@@ -563,21 +691,25 @@
     <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span></div>
 
 
+
 <div class="viewcode-block" id="calculate_properties_rhop">
 <a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.calculate_properties_rhop">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_properties_rhop</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
     <span class="n">cp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
     <span class="n">T</span> <span class="o">=</span> <span class="n">temperature_from_rhoP</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">T</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">h_ref</span> <span class="o">+</span> <span class="n">cp</span> <span class="o">*</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">constants</span><span class="o">.</span><span class="n">T_ref</span><span class="p">)</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">entropy_from_rhoP</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span></div>
 
 
+
 <div class="viewcode-block" id="assemble_properties">
 <a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.assemble_properties">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">assemble_properties</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">constants</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">cp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">R</span>
     <span class="n">gamma</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">gamma</span>
+    <span class="k">if</span> <span class="n">cp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cp</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">R</span> <span class="o">/</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="c1"># Broadcast the CONSTANT-valued props (gamma, cp, cv, Z, Grüneisen) to the shape</span>
     <span class="c1"># of the input-dependent props so EVERY FluidState field shares one shape.  Real</span>
     <span class="c1"># backends (FluidBicubic) return all fields at the input shape; consumers rely on</span>
@@ -589,16 +721,28 @@
         <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">,</span>
         <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="n">rho</span><span class="p">,</span>
         <span class="s2">&quot;enthalpy&quot;</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span>
+        <span class="s2">&quot;internal_energy&quot;</span><span class="p">:</span> <span class="n">h</span> <span class="o">-</span> <span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">,</span>
         <span class="s2">&quot;entropy&quot;</span><span class="p">:</span> <span class="n">s</span><span class="p">,</span>
         <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="n">viscosity_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">),</span>
         <span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="n">conductivity_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">),</span>
         <span class="s2">&quot;speed_of_sound&quot;</span><span class="p">:</span> <span class="n">speed_of_sound_from_T</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">constants</span><span class="p">),</span>
         <span class="s2">&quot;heat_capacity_ratio&quot;</span><span class="p">:</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">ones</span><span class="p">,</span>
-        <span class="s2">&quot;isobaric_heat_capacity&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">R</span> <span class="o">/</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">ones</span><span class="p">,</span>
+        <span class="s2">&quot;isobaric_heat_capacity&quot;</span><span class="p">:</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">ones</span><span class="p">,</span>
         <span class="s2">&quot;isochoric_heat_capacity&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">R</span> <span class="o">/</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">ones</span><span class="p">,</span>
         <span class="s2">&quot;compressibility_factor&quot;</span><span class="p">:</span> <span class="n">ones</span><span class="p">,</span>
         <span class="s2">&quot;gruneisen&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">ones</span><span class="p">,</span>
+        <span class="s2">&quot;is_two_phase&quot;</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
+        <span class="s2">&quot;isobaric_expansion_coefficient&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">T</span><span class="p">,</span>
+        <span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">p</span><span class="p">,</span>
+        <span class="s2">&quot;isentropic_compressibility&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="n">gamma</span><span class="p">,</span>
+        <span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">,</span>
+        <span class="s2">&quot;isentropic_bulk_modulus&quot;</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">jnp</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">p</span><span class="p">),</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">p</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;joule_thomson&quot;</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
+        <span class="s2">&quot;isothermal_joule_thomson&quot;</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
     <span class="p">}</span></div>
+
 
 
 <span class="c1"># ----------------------------------------------------------------------------- #</span>
@@ -615,74 +759,474 @@
 <span class="p">}</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_validated_constant_snapshot</span><span class="p">(</span><span class="n">constants</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate an eagerly materialized model; never inspect traced calls.&quot;&quot;&quot;</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">arrays</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">PerfectGasConstants</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">constants</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">()</span> <span class="ow">or</span> <span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="s2">&quot;fiu&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Use a real numeric scalar.&quot;</span><span class="p">)</span>
+            <span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+            <span class="n">arrays</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">OverflowError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;native&quot;</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;perfect_gas&quot;</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Materialize model constants eagerly as real numeric scalars outside JAX transformations.&quot;</span><span class="p">,</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">reject</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;native&quot;</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;perfect_gas&quot;</span><span class="p">,</span>
+            <span class="n">request</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="s2">&quot;T_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;P_ref&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="ow">or</span> <span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">reject</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;The model constant must be finite and positive.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">arrays</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">arrays</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">tiny</span>
+        <span class="p">):</span>
+            <span class="n">reject</span><span class="p">(</span>
+                <span class="n">key</span><span class="p">,</span>
+                <span class="s2">&quot;The model constant must be a positive normal value in its numerical dtype.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;gamma&quot;</span><span class="p">])</span> <span class="ow">or</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;gamma&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">reject</span><span class="p">(</span>
+            <span class="s2">&quot;gamma&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;The ideal-gas heat capacity ratio must be finite and greater than one.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="c1"># Respect actual coefficient dtypes. A float32 R/gamma combination can</span>
+    <span class="c1"># overflow even though converting both values to Python float would hide it.</span>
+    <span class="n">cp_value</span><span class="p">,</span> <span class="n">cv_value</span><span class="p">,</span> <span class="n">reference_scale_value</span><span class="p">,</span> <span class="n">intercept_value</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">_coefficient_arithmetic</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">cp_array</span><span class="p">,</span> <span class="n">cv_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">cp_value</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">cv_value</span><span class="p">)</span>
+    <span class="n">cp</span><span class="p">,</span> <span class="n">cv</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cp_array</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">cv_array</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">cv</span><span class="p">)):</span>
+        <span class="n">reject</span><span class="p">(</span>
+            <span class="s2">&quot;gamma&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;The selected R/gamma must produce finite positive heat capacities.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;h_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;s_ref&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
+            <span class="n">reject</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;Reference offsets must be finite real scalars.&quot;</span><span class="p">)</span>
+    <span class="n">output_dtype</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span>
+        <span class="n">constants</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>
+        <span class="n">constants</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span>
+        <span class="n">constants</span><span class="o">.</span><span class="n">T_ref</span><span class="p">,</span>
+        <span class="n">constants</span><span class="o">.</span><span class="n">P_ref</span><span class="p">,</span>
+        <span class="n">constants</span><span class="o">.</span><span class="n">h_ref</span><span class="p">,</span>
+        <span class="n">constants</span><span class="o">.</span><span class="n">s_ref</span><span class="p">,</span>
+        <span class="mf">0.0</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">output_dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">):</span>
+        <span class="n">output_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">output_dtype</span><span class="p">)</span>
+    <span class="n">reference_scale</span><span class="p">,</span> <span class="n">energy_intercept</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">reference_scale_value</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+        <span class="n">intercept_value</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">reference_scale</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">energy_intercept</span><span class="p">):</span>
+        <span class="n">reject</span><span class="p">(</span>
+            <span class="s2">&quot;h_ref&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Calibration energy scale and zero-temperature intercept must be representable in the model dtype.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">energy_intercept</span><span class="p">)</span> <span class="o">/</span> <span class="n">info</span><span class="o">.</span><span class="n">max</span>
+    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">):</span>
+        <span class="n">upper_temperature</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">max</span><span class="p">,</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">max</span> <span class="o">/</span> <span class="n">cp</span><span class="p">,</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">max</span> <span class="o">/</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;R&quot;</span><span class="p">],</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">max</span> <span class="o">*</span> <span class="p">(</span><span class="n">remaining</span> <span class="o">/</span> <span class="n">cp</span><span class="p">),</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">max</span> <span class="o">*</span> <span class="p">(</span><span class="n">remaining</span> <span class="o">/</span> <span class="n">cv</span><span class="p">),</span>
+        <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">64</span> <span class="o">*</span> <span class="n">info</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">upper_temperature</span><span class="p">)</span> <span class="ow">or</span> <span class="n">upper_temperature</span> <span class="o">&lt;</span> <span class="n">MIN_TEMPERATURE</span><span class="p">:</span>
+        <span class="n">reject</span><span class="p">(</span>
+            <span class="s2">&quot;h_ref&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;The energy reference must leave a representable temperature domain above the declared numerical floor.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="c1"># With stable logarithmic differences, every supported finite T/p has</span>
+    <span class="c1"># bounded entropy increments. Establish that once, so the repeated kernel</span>
+    <span class="c1"># need not calculate entropy merely to validate a temperature projection.</span>
+    <span class="c1"># Both coordinates use this common model precision in the native resolver.</span>
+    <span class="n">temperature_dtype</span> <span class="o">=</span> <span class="n">pressure_dtype</span> <span class="o">=</span> <span class="n">output_dtype</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">entropy_steps</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">pressure</span><span class="p">):</span>
+        <span class="n">temperature_term</span> <span class="o">=</span> <span class="n">cp_value</span> <span class="o">*</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">temperature</span><span class="p">)</span> <span class="o">-</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">T_ref</span><span class="p">))</span>
+        <span class="n">first_sum</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">s_ref</span> <span class="o">+</span> <span class="n">temperature_term</span>
+        <span class="n">pressure_term</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">R</span> <span class="o">*</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pressure</span><span class="p">)</span> <span class="o">-</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">P_ref</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">temperature_term</span><span class="p">,</span> <span class="n">first_sum</span><span class="p">,</span> <span class="n">pressure_term</span><span class="p">,</span> <span class="n">first_sum</span> <span class="o">-</span> <span class="n">pressure_term</span>
+
+    <span class="n">step_shapes</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">eval_shape</span><span class="p">(</span>
+        <span class="n">entropy_steps</span><span class="p">,</span>
+        <span class="n">jax</span><span class="o">.</span><span class="n">ShapeDtypeStruct</span><span class="p">((),</span> <span class="n">temperature_dtype</span><span class="p">),</span>
+        <span class="n">jax</span><span class="o">.</span><span class="n">ShapeDtypeStruct</span><span class="p">((),</span> <span class="n">pressure_dtype</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">step_limits</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">)</span> <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">step_shapes</span><span class="p">]</span>
+    <span class="n">temperature_span</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+        <span class="nb">abs</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">MIN_TEMPERATURE</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;T_ref&quot;</span><span class="p">])),</span>
+        <span class="nb">abs</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">temperature_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;T_ref&quot;</span><span class="p">])),</span>
+    <span class="p">)</span>
+    <span class="n">pressure_span</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+        <span class="nb">abs</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">MIN_PRESSURE</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;P_ref&quot;</span><span class="p">])),</span>
+        <span class="nb">abs</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">pressure_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;P_ref&quot;</span><span class="p">])),</span>
+    <span class="p">)</span>
+    <span class="n">temperature_term</span> <span class="o">=</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">temperature_span</span>
+    <span class="n">first_sum</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;s_ref&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="n">temperature_term</span>
+    <span class="n">pressure_term</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;R&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">pressure_span</span>
+    <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">temperature_term</span><span class="p">,</span> <span class="n">first_sum</span><span class="p">,</span> <span class="n">pressure_term</span><span class="p">,</span> <span class="n">first_sum</span> <span class="o">+</span> <span class="n">pressure_term</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+        <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">bound</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bound</span> <span class="o">&gt;</span> <span class="n">limit</span>
+        <span class="k">for</span> <span class="n">bound</span><span class="p">,</span> <span class="n">limit</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">step_limits</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="n">reject</span><span class="p">(</span>
+            <span class="s2">&quot;s_ref&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;The entropy reference and heat capacities must admit finite entropy throughout the numerical model domain.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">reference</span><span class="p">,</span> <span class="n">coefficient</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;mu_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;S_mu&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;k_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;S_k&quot;</span><span class="p">)):</span>
+        <span class="n">ref</span><span class="p">,</span> <span class="n">fit</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">reference</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="n">coefficient</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span> <span class="ow">and</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">fit</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ref</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">fit</span><span class="p">):</span>
+            <span class="n">reject</span><span class="p">(</span>
+                <span class="n">reference</span><span class="p">,</span>
+                <span class="s2">&quot;Transport requires a finite positive reference and finite coefficient, or NaN for both unavailable constants.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;T_ref&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">fit</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">reject</span><span class="p">(</span>
+                <span class="n">coefficient</span><span class="p">,</span>
+                <span class="s2">&quot;A Sutherland pole cannot coincide with the calibration temperature.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+    <span class="c1"># NaN does not compare equal across independently constructed models.</span>
+    <span class="c1"># Unavailable transport is an explicit, reflexive metadata value instead.</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+
+
+<span class="nd">@jax</span><span class="o">.</span><span class="n">jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_coefficient_arithmetic</span><span class="p">(</span><span class="n">constants</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate setup guarantees in the actual JAX coefficient dtypes.&quot;&quot;&quot;</span>
+    <span class="n">cp</span><span class="p">,</span> <span class="n">cv</span> <span class="o">=</span> <span class="n">specific_heat</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
+    <span class="n">reference_scale</span> <span class="o">=</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">constants</span><span class="o">.</span><span class="n">T_ref</span>
+    <span class="k">return</span> <span class="n">cp</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">reference_scale</span><span class="p">,</span> <span class="n">constants</span><span class="o">.</span><span class="n">h_ref</span> <span class="o">-</span> <span class="n">reference_scale</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_materialized_constants</span><span class="p">(</span><span class="n">constants</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Make model precision explicit, retaining existing strong array objects.&quot;&quot;&quot;</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">changed</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">PerfectGasConstants</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="p">:</span>
+        <span class="n">original</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">constants</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">original</span><span class="p">))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">OverflowError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;native&quot;</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;perfect_gas&quot;</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Materialize real numeric model constants outside JAX transformations.&quot;</span><span class="p">,</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+        <span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">changed</span> <span class="o">=</span> <span class="n">changed</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">original</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">changed</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">constants</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">PerfectGasConstants</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_model_reference_id</span><span class="p">(</span><span class="n">source_id</span><span class="p">,</span> <span class="n">constants</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="s2">&quot;perfect_gas&quot;</span><span class="p">,</span>
+        <span class="n">source_id</span><span class="p">,</span>
+        <span class="p">(</span><span class="s2">&quot;calibration&quot;</span><span class="p">,</span> <span class="n">constants</span><span class="p">[</span><span class="s2">&quot;T_ref&quot;</span><span class="p">],</span> <span class="n">constants</span><span class="p">[</span><span class="s2">&quot;P_ref&quot;</span><span class="p">]),</span>
+        <span class="p">(</span><span class="s2">&quot;constants&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">items</span><span class="p">())),</span>
+    <span class="p">)</span>
+
+
 <div class="viewcode-block" id="FluidPerfectGas">
 <a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FluidPerfectGas</span><span class="p">(</span><span class="n">eqx</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FluidPerfectGas</span><span class="p">(</span><span class="n">SourceReferencesMixin</span><span class="p">,</span> <span class="n">eqx</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="n">constants</span><span class="p">:</span> <span class="n">PerfectGasConstants</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">fluid_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;native&quot;</span><span class="p">)</span>
+    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;perfect_gas&quot;</span><span class="p">)</span>
+    <span class="n">reference_id</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;HEOS&quot;</span><span class="p">)</span>
+    <span class="n">_configuration</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">_capabilities</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">_references</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">T_ref</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">p_ref</span><span class="o">=</span><span class="mf">101_325.0</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">constants</span> <span class="o">=</span> <span class="n">get_constants</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">T_ref</span><span class="p">,</span> <span class="n">p_ref</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">T_ref</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">p_ref</span><span class="o">=</span><span class="mf">101_325.0</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;HEOS&quot;</span> <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">backend</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_configuration</span> <span class="o">=</span> <span class="n">build_configuration</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">backend</span><span class="p">,</span>
+            <span class="n">identifier</span><span class="p">,</span>
+            <span class="n">model_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;T_ref&quot;</span><span class="p">:</span> <span class="n">T_ref</span><span class="p">,</span> <span class="s2">&quot;p_ref&quot;</span><span class="p">:</span> <span class="n">p_ref</span><span class="p">},</span>
+        <span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Real</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;T_ref&quot;</span><span class="p">,</span> <span class="n">T_ref</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;p_ref&quot;</span><span class="p">,</span> <span class="n">p_ref</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Real</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                    <span class="n">fluid_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                    <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Calibration coordinates must be finite positive real scalars.&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_capabilities</span> <span class="o">=</span> <span class="n">FluidCapabilities</span><span class="p">(</span>
+            <span class="n">input_pairs</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">PROPERTY_CALCULATORS</span><span class="p">),</span>
+            <span class="n">properties</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;temperature&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;pressure&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;density&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;enthalpy&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;entropy&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;viscosity&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;conductivity&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;speed_of_sound&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;heat_capacity_ratio&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;isobaric_heat_capacity&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;isochoric_heat_capacity&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;compressibility_factor&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;gruneisen&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;internal_energy&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;is_two_phase&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;isobaric_expansion_coefficient&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;isothermal_compressibility&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;isentropic_compressibility&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;isothermal_bulk_modulus&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;isentropic_bulk_modulus&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;joule_thomson&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;isothermal_joule_thomson&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">),</span>
+            <span class="n">jax_modes</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;eager&quot;</span><span class="p">,</span> <span class="s2">&quot;jit&quot;</span><span class="p">,</span> <span class="s2">&quot;vmap&quot;</span><span class="p">,</span> <span class="s2">&quot;jvp&quot;</span><span class="p">,</span> <span class="s2">&quot;grad&quot;</span><span class="p">}),</span>
+            <span class="n">derivative_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">derivative_method</span><span class="o">=</span><span class="s2">&quot;autodiff&quot;</span><span class="p">,</span>
+            <span class="n">error_modes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">,</span> <span class="s2">&quot;clip&quot;</span><span class="p">},</span>
+            <span class="n">domain</span><span class="o">=</span><span class="n">FluidDomain</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Calibrated perfect-gas model with positive numerical temperature, pressure and density floors. Clip mode projects onto a consistent PT state; source-EOS bounds are calibration limits, not this model&#39;s runtime domain.&quot;</span><span class="p">,</span>
+                <span class="n">bounds</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">MIN_TEMPERATURE</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                    <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">MIN_PRESSURE</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                    <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">MIN_DENSITY</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                <span class="p">},</span>
+                <span class="n">phases</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;gas&quot;</span><span class="p">},</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="n">FluidCoolProp</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">InvalidConfigurationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="n">error</span><span class="o">.</span><span class="n">request</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="n">error</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">constants</span> <span class="o">=</span> <span class="n">_get_constants_from_source</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">T_ref</span><span class="p">,</span> <span class="n">p_ref</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">JaxPropError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="s2">&quot;calibration&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="n">error</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_references</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">references</span>
+        <span class="n">snapshot</span> <span class="o">=</span> <span class="n">_validated_constant_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_id</span> <span class="o">=</span> <span class="n">_model_reference_id</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">reference_id</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_configuration</span> <span class="o">=</span> <span class="n">build_configuration</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">backend</span><span class="p">,</span>
+            <span class="n">identifier</span><span class="p">,</span>
+            <span class="n">model_options</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;T_ref&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">T_ref</span><span class="p">),</span>
+                <span class="s2">&quot;p_ref&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">p_ref</span><span class="p">),</span>
+                <span class="s2">&quot;constants&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configuration</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capabilities</span>
+
+<div class="viewcode-block" id="FluidPerfectGas.materialize">
+<a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.materialize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">materialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate a dynamic model view and refresh its persistent identity.</span>
+
+<span class="sd">        Low-level ``eqx.tree_at`` parameter edits remain efficient ephemeral</span>
+<span class="sd">        differentiation views. Call this eager setup operation before storing</span>
+<span class="sd">        or combining the resulting physical model&#39;s states. No source is</span>
+<span class="sd">        initialized and the numerical parameter dtypes are retained.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">constants</span> <span class="o">=</span> <span class="n">_materialized_constants</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">snapshot</span> <span class="o">=</span> <span class="n">_validated_constant_snapshot</span><span class="p">(</span><span class="n">constants</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">model_options</span><span class="p">)</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">T_ref</span><span class="o">=</span><span class="n">snapshot</span><span class="p">[</span><span class="s2">&quot;T_ref&quot;</span><span class="p">],</span> <span class="n">p_ref</span><span class="o">=</span><span class="n">snapshot</span><span class="p">[</span><span class="s2">&quot;P_ref&quot;</span><span class="p">],</span> <span class="n">constants</span><span class="o">=</span><span class="n">snapshot</span>
+        <span class="p">)</span>
+        <span class="n">configuration</span> <span class="o">=</span> <span class="n">build_configuration</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="n">model_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">&quot;constants&quot;</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">&quot;_configuration&quot;</span><span class="p">,</span> <span class="n">configuration</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span>
+            <span class="n">result</span><span class="p">,</span>
+            <span class="s2">&quot;reference_id&quot;</span><span class="p">,</span>
+            <span class="n">_model_reference_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">references</span><span class="o">.</span><span class="n">reference_id</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="FluidPerfectGas.with_constants">
+<a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.with_constants">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">with_constants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">changes</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a validated model with updated constants and fresh identity.</span>
+
+<span class="sd">        Constants are named as in :class:`PerfectGasConstants`; cp/cv remain</span>
+<span class="sd">        derived from R/gamma, so they cannot become mutually inconsistent.</span>
+<span class="sd">        Changes are materialized outside JAX transformations. Source reference</span>
+<span class="sd">        records describe the calibration source, independently of this model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">unknown</span> <span class="o">=</span> <span class="n">changes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">-</span> <span class="n">PerfectGasConstants</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">unknown</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Unknown perfect-gas model constant.&quot;</span><span class="p">,</span>
+                <span class="n">supported</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">PerfectGasConstants</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="n">constants</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">constants</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">changes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">OverflowError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidConfigurationError</span><span class="p">(</span>
+                    <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                    <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                    <span class="n">request</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Use a real numeric scalar model constant.&quot;</span><span class="p">,</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+            <span class="n">constants</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">tree_at</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="n">constants</span><span class="p">,</span> <span class="n">value</span>
+            <span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">tree_at</span><span class="p">(</span><span class="k">lambda</span> <span class="n">data</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">constants</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">constants</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">materialize</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="FluidPerfectGas.get_state_saturation">
+<a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state_saturation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_state_saturation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">UnsupportedOperationError</span><span class="p">(</span>
+            <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">provider</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">request</span><span class="o">=</span><span class="s2">&quot;saturation&quot;</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;A perfect gas has no phase-equilibrium states.&quot;</span><span class="p">,</span>
+            <span class="n">supported</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">phase_operations</span><span class="p">)),</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="FluidPerfectGas.get_state">
 <a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state">[docs]</a>
-    <span class="nd">@eqx</span><span class="o">.</span><span class="n">filter_jit</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate thermodynamic state for a perfect gas.&quot;&quot;&quot;</span>
-        <span class="n">props</span> <span class="o">=</span> <span class="n">PROPERTY_CALCULATORS</span><span class="p">[</span><span class="n">input_pair</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidState</span><span class="p">(</span>
-            <span class="n">fluid_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span>
-            <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">props</span><span class="p">,</span>
-        <span class="p">)</span></div>
+    <span class="nd">@checked_perfect_gas_jit</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">input_type</span><span class="p">,</span>
+        <span class="n">prop_1</span><span class="p">,</span>
+        <span class="n">prop_2</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate with dynamic numerical inputs and a static pair selector.</span>
+
+<span class="sd">        The model is already a numerical PyTree with static identity metadata,</span>
+<span class="sd">        so native JIT avoids filtered-method binding and per-value compilation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">evaluate_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_type</span><span class="p">,</span> <span class="n">prop_1</span><span class="p">,</span> <span class="n">prop_2</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span></div>
 </div>
 
-    
+
+
 <span class="c1"># ----------------------------------------------------------------------------- #</span>
 <span class="c1"># Gradient calculations (only used when JAX is installed)</span>
 <span class="c1"># ----------------------------------------------------------------------------- #</span>
 
+
 <div class="viewcode-block" id="get_props_gradient">
 <a class="viewcode-back" href="../../../source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.get_props_gradient">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_props_gradient</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">eps_rel</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">eps_abs</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return dict of gradients for perfect_gas_props at (x, y).</span>
-<span class="sd">    Each entry: grads[prop] = jnp.array([∂prop/∂x, ∂prop/∂y])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">input_pair</span><span class="p">,</span> <span class="n">vec</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vec</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_props_gradient</span><span class="p">(</span>
+    <span class="n">fluid</span><span class="p">,</span> <span class="n">input_pair</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">eps_rel</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">eps_abs</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;mask&quot;</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return typed property partials with units and a separate primal state.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..property_derivatives</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_props_gradient</span> <span class="k">as</span> <span class="n">evaluate_derivatives</span>
 
-    <span class="c1"># JAX autodiff path</span>
-    <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;jax&quot;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">jacfwd</span><span class="p">(</span><span class="n">f</span><span class="p">)(</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]))</span>
-
-    <span class="c1"># Finite difference path</span>
-    <span class="n">dx</span> <span class="o">=</span> <span class="n">eps_rel</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">eps_abs</span>
-    <span class="n">dy</span> <span class="o">=</span> <span class="n">eps_rel</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">eps_abs</span>
-
-    <span class="n">fx_p</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span> <span class="o">+</span> <span class="n">dx</span><span class="p">,</span> <span class="n">y</span><span class="p">]))</span>
-    <span class="n">fx_m</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span> <span class="o">-</span> <span class="n">dx</span><span class="p">,</span> <span class="n">y</span><span class="p">]))</span>
-    <span class="n">fy_p</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">dy</span><span class="p">]))</span>
-    <span class="n">fy_m</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">dy</span><span class="p">]))</span>
-
-    <span class="n">grads</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">fx_p</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;fluid_name&quot;</span><span class="p">,</span> <span class="s2">&quot;identifier&quot;</span><span class="p">):</span>
-            <span class="k">continue</span>
-        <span class="n">grads</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-            <span class="p">(</span><span class="n">fx_p</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">-</span> <span class="n">fx_m</span><span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">dx</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">fy_p</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">-</span> <span class="n">fy_m</span><span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">dy</span><span class="p">),</span>
-        <span class="p">])</span>
-
-    <span class="k">return</span> <span class="n">jxp</span><span class="o">.</span><span class="n">FluidState</span><span class="p">(</span>
-        <span class="n">fluid_name</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">fluid_name</span><span class="p">,</span>
-        <span class="n">identifier</span><span class="o">=</span><span class="n">fluid</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">grads</span><span class="p">,</span>
+    <span class="k">return</span> <span class="n">evaluate_derivatives</span><span class="p">(</span>
+        <span class="n">fluid</span><span class="p">,</span>
+        <span class="n">input_pair</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+        <span class="n">eps_rel</span><span class="o">=</span><span class="n">eps_rel</span><span class="p">,</span>
+        <span class="n">eps_abs</span><span class="o">=</span><span class="n">eps_abs</span><span class="p">,</span>
+        <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span>
     <span class="p">)</span></div>
-
 
 </pre></div>
 

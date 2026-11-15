@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>jaxprop.coolprop.core_calculations module &#8212; jaxprop v0.5.8 documentation</title>
+    <title>jaxprop.coolprop.core_calculations module &#8212; jaxprop v0.6.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=4e4ceabb"></script>
+    <script src="../../_static/documentation_options.js?v=4fe0b1e1"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -52,7 +52,8 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'source/api/jaxprop.coolprop.core_calculations';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -135,7 +136,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.8 documentation</p>
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -150,24 +151,23 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="jaxprop.html">jaxprop package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.components.html">jaxprop.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="jaxprop.coolprop.html">jaxprop.coolprop package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">jaxprop.coolprop.core_calculations module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -175,7 +175,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.graphics.html">jaxprop.graphics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.factory.html">jaxprop.factory module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.math.html">jaxprop.math module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.utils.html">jaxprop.utils module</a></li>
@@ -360,7 +367,14 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.blend_properties">
 <span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">blend_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phase_change</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">props_equilibrium</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">props_metastable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blending_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blending_onset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blending_width</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#blend_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.blend_properties" title="Link to this definition">#</a></dt>
-<dd><p>Calculate blending between equilibrum and metastable fluid properties</p>
+<dd><p>Calculate blending between equilibrium and metastable fluid properties.</p>
+<p>A cubic smoothstep has zero slope at each transition endpoint. At an exact
+endpoint the selected branch is recovered even if an optional field on the
+inactive branch is unavailable. Inside the transition both optional values
+are needed. <code class="docutils literal notranslate"><span class="pre">is_two_phase</span></code> is unavailable inside the constitutive blend,
+since a fractional phase flag would not have its usual physical meaning.
+The coordinate/factor are not returned as thermodynamic fields: <code class="docutils literal notranslate"><span class="pre">sigma</span></code>
+already denotes surface tension in the public property schema.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -389,54 +403,46 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.calculate_generalized_quality">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_generalized_quality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#calculate_generalized_quality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.calculate_generalized_quality" title="Link to this definition">#</a></dt>
-<dd><p>Calculate the generalized quality of a fluid using specific entropy, extending the quality computation beyond
-the two-phase region by extrapolating entropy values.</p>
-<p>The quality, <span class="math notranslate nohighlight">\(Q\)</span>, is given by:</p>
-<div class="math notranslate nohighlight">
-\[Q = \frac{s - s(T, Q=0)}{h(T, Q=1) - s(T, Q=0)}\]</div>
-<p>where <span class="math notranslate nohighlight">\(s\)</span> is the specific enthalpy and <span class="math notranslate nohighlight">\(T\)</span> is the temperature.</p>
-<p>Smoothing limiters keep the quality in the range [-1, 2] using a <cite>logsumexp</cite> formulation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>abstract_state</strong><span class="classifier">CoolProp.AbstractState</span></dt><dd><p>CoolProp abstract state of the fluid.</p>
-</dd>
-<dt><strong>alpha</strong><span class="classifier">float</span></dt><dd><p>Smoothing factor of the quality-calculation limiters.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>float</dt><dd><p>The calculated quality of the fluid.</p>
-</dd>
-</dl>
-</dd>
-</dl>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_generalized_quality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#calculate_generalized_quality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.calculate_generalized_quality" title="Link to this definition">#</a></dt>
+<dd><p>Return physical quality in the dome and an entropy extension outside.</p>
+<p>Subcritical one-phase states use saturated entropies at their temperature:
+Q=(s-s_L)/(s_V-s_L). For supercritical temperatures no physical vapor fraction
+exists. The conventional entropy coordinate is centered on the source’s
+critical-density isochore, with positive half-width
+R_specific*max(T/Tc-1, sqrt(machine_epsilon)). This gas-constant scale replaces
+multiples of absolute critical entropy: reference changes cannot change the
+indicator or reverse its orientation. The tiny reduced-temperature floor
+defines the exact critical limit without division by zero.</p>
+<p>Outside the physical dome the log-sum-exp limiters smoothly bound the
+coordinate near [-1, 2]. It is an indicator, not an equilibrium quality or
+metastable branch selector. Missing source endpoints remain unavailable.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.calculate_mixture_properties_hp">
 <span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_mixture_properties_hp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h_mix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_mix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AS1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AS2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#calculate_mixture_properties_hp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.calculate_mixture_properties_hp" title="Link to this definition">#</a></dt>
-<dd><p>Calculate the thermodynamic properties of the mixture with h-p calls.</p>
-<p>TODO: add model equations and explanation</p>
+<dd><p>Evaluate the common-p/T parcel model from caller-owned source states.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>state_1</strong><span class="classifier">dict</span></dt><dd><p>Thermodynamic properties of fluid 1.</p>
+<dt><strong>h_mix, p_mix</strong><span class="classifier">float</span></dt><dd><p>Mixture specific enthalpy [J/kg] and common pressure [Pa].</p>
 </dd>
-<dt><strong>state_2</strong><span class="classifier">dict</span></dt><dd><p>Thermodynamic properties of fluid 2.</p>
+<dt><strong>AS1, AS2</strong><span class="classifier">CoolProp.AbstractState</span></dt><dd><p>Configured component states. Their existing reference conventions are
+retained; this compatibility call does not reconstruct source objects.</p>
 </dd>
-<dt><strong>y_1</strong><span class="classifier">float</span></dt><dd><p>Mass fraction of fluid 1.</p>
+<dt><strong>R</strong><span class="classifier">float</span></dt><dd><p>Nonnegative component mass ratio, mass_1 / mass_2.</p>
 </dd>
-<dt><strong>y_2</strong><span class="classifier">float</span></dt><dd><p>Mass fraction of fluid 2.</p>
+</dl>
 </dd>
-<dt><strong>R</strong><span class="classifier">float</span></dt><dd><p>Mixture ratio defined as m_dot_1/m_dot_2</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Canonical full properties from the consolidated binary kernel. Density
+uses additive specific volumes; h/u/s use mass weights. Thermal response
+and acoustic properties follow the same equilibrium thermodynamics.</p>
 </dd>
-<dt><strong>Returns</strong></dt><dd></dd>
-<dt><strong>——-</strong></dt><dd></dd>
-<dt><strong>mixture_properties</strong><span class="classifier">dict</span></dt><dd><p>A dictionary containing the mixture’s properties.</p>
-</dd>
+<dt>Repeated applications should construct Fluid(method=’binary_mixture’) once</dt><dd></dd>
+<dt>and use its complete get_state API. This raw compatibility entry shares its</dt><dd></dd>
+<dt>inverse and mixing implementation rather than maintaining a second model.</dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -444,7 +450,7 @@ the two-phase region by extrapolating entropy values.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.calculate_subcooling">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_subcooling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#calculate_subcooling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.calculate_subcooling" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_subcooling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_transaction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#calculate_subcooling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.calculate_subcooling" title="Link to this definition">#</a></dt>
 <dd><p>Calculate the degree of subcooling for a given CoolProp abstract state.</p>
 <p>This function computes the subcooling of a fluid using the CoolProp library’s
 abstract state class. It handles both subcritical and supercritical conditions
@@ -504,7 +510,7 @@ involving the degree of subcooling.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.calculate_superheating">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_superheating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#calculate_superheating"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.calculate_superheating" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_superheating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_transaction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#calculate_superheating"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.calculate_superheating" title="Link to this definition">#</a></dt>
 <dd><p>Calculate the degree of superheating for a given CoolProp abstract state.</p>
 <p>This function computes the superheating of a fluid using the CoolProp library’s
 abstract state class. It handles both subcritical and supercritical conditions
@@ -564,7 +570,7 @@ involving the degree of superheating.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.calculate_supersaturation">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_supersaturation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">props</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#calculate_supersaturation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.calculate_supersaturation" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_supersaturation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">props</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_transaction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#calculate_supersaturation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.calculate_supersaturation" title="Link to this definition">#</a></dt>
 <dd><p>Evaluate degree of supersaturation and supersaturation ratio.</p>
 <p>The supersaturation degree is defined as the actual temperature minus the saturation temperature at the corresponding pressure:</p>
 <div class="math notranslate nohighlight">
@@ -577,8 +583,7 @@ In the metastable liquid region, <span class="math notranslate nohighlight">\(\D
 is higher than the equilibrium temperature and will tend to evaporate. Conversely, in the metastable vapor region,
 <span class="math notranslate nohighlight">\(\Delta T &lt; 0\)</span> and <span class="math notranslate nohighlight">\(S &gt; 1\)</span>, indicating that the vapor temperature is lower than the equilibrium temperature
 and will tend to condense.</p>
-<img alt="Pressure-density diagram and spinodal points for carbon dioxide." src="../../_images/metastable_regions_CO2.svg" />
-<div class="admonition note">
+<img alt="Pressure-density diagram and spinodal points for carbon dioxide." src="../../_images/metastable_regions_CO2.svg" /><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Supersaturation properties are only computed for subcritical pressures and temperatures.
 If the fluid is in the supercritical region, the function will return NaN for the supersaturation properties.</p>
@@ -603,57 +608,51 @@ If the fluid is in the supercritical region, the function will return NaN for th
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.calculate_trimmed_quality">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_trimmed_quality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#calculate_trimmed_quality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.calculate_trimmed_quality" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_trimmed_quality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#calculate_trimmed_quality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.calculate_trimmed_quality" title="Link to this definition">#</a></dt>
+<dd><p>Return exact flash quality/void fraction, or a one-phase entropy label.</p>
+<p>Volume quality uses actual flashed vapor density, including the quality-
+dependent density of gliding pseudo-pure REFPROP models. The one-phase 0/1
+extension is only a critical-entropy label, not a physical vapor fraction.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.compute_dsdp_q">
 <span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_dsdp_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_dp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_dsdp_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_dsdp_q" title="Link to this definition">#</a></dt>
-<dd><p>Compute ds/dp|q using analytic method if available, otherwise fall back to finite difference.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><dl class="simple">
-<dt>AS<span class="classifier">CoolProp.AbstractState</span></dt><dd><p>AbstractState instance (already configured with fluid and backend)</p>
-</dd>
-<dt>pressure<span class="classifier">float</span></dt><dd><p>Pressure [Pa]</p>
-</dd>
-<dt>quality<span class="classifier">float</span></dt><dd><p>Vapor quality. 0.0 for saturated liquid, 1.0 for saturated vapor</p>
-</dd>
-<dt>rel_dp<span class="classifier">float</span></dt><dd><p>Relative pressure perturbation for finite difference (default: 1e-4)</p>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>dsdp<span class="classifier">float or np.nan</span></dt><dd><p>Derivative of entropy with respect to pressure at constant quality</p>
-</dd>
-</dl>
-</dd>
-</dl>
+<dd><p>Return a saturation entropy derivative without retaining perturbations.</p>
+<p>Analytic endpoint derivatives are preferred. The finite-difference fallback
+is central in pressure, with its physical step independent of entropy zero.
+Even failed source flashes restore a standalone caller’s original state.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.compute_gruneisen">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_gruneisen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_du</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_gruneisen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_gruneisen" title="Link to this definition">#</a></dt>
-<dd><p>Compute Gruneisen parameter Γ = (1/rho) * (∂p/∂e)_rho
-using finite differences.</p>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_gruneisen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_du</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_gruneisen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_gruneisen" title="Link to this definition">#</a></dt>
+<dd><p>Return Gamma=(1/rho)*(dp/du)_rho while preserving source state.</p>
+<p>Interior two-phase derivatives use the natural PQ map, avoiding unsupported
+pseudo-pure density/energy flashes. Homogeneous analytic EOS derivatives
+are preferred; a central energy fallback uses cv*T and p/rho as physical,
+reference-independent scales. The primary configured state is untouched.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.compute_isothermal_joule_thomson">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_isothermal_joule_thomson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_dp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_isothermal_joule_thomson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_isothermal_joule_thomson" title="Link to this definition">#</a></dt>
-<dd><p>Compute isothermal Joule-Thomson coefficient μ_T = (∂h/∂p)_T
-using finite differences.</p>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_isothermal_joule_thomson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_dp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_isothermal_joule_thomson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_isothermal_joule_thomson" title="Link to this definition">#</a></dt>
+<dd><p>Return mu_T=(dh/dp)_T, unavailable on a pure saturation manifold.</p>
+<p>Pure interior states have dependent pressure and temperature, so this
+derivative is not defined by an equilibrium two-phase EOS. A PT perturbation
+would jump to a one-phase branch and produce a misleading finite number.
+Pseudo-pure glide is differentiated through its actual PQ map instead.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.compute_joule_thomson">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_joule_thomson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_dp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_joule_thomson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_joule_thomson" title="Link to this definition">#</a></dt>
-<dd><p>Compute Joule-Thomson coefficient μ_JT = (∂T/∂p)_h
-using finite differences.</p>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_joule_thomson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_dp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_joule_thomson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_joule_thomson" title="Link to this definition">#</a></dt>
+<dd><p>Return mu_JT=(dT/dp)_h with isolated analytic/central source evaluation.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.compute_properties">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculation_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoT_guess_metastable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoT_guess_equilibrium</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_change</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blending_variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blending_onset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blending_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hybr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_max_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_convergence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_properties" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculation_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoT_guess_metastable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoT_guess_equilibrium</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_change</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blending_variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blending_onset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blending_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hybr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_max_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_convergence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_properties" title="Link to this definition">#</a></dt>
 <dd><p id="compute-properties">Determine the thermodynamic state for the given fluid property pair by iterating on the 
 density-temperature native inputs,</p>
 <p>This function uses a non-linear root finder to determine the solution of the nonlinear system given by:</p>
@@ -663,11 +662,20 @@ R_2(\rho,\, T) = y_2 - y_2(\rho,\, T) = 0\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\((y_1,\, y_2)\)</span> is the given thermodynamic property pair (e.g., enthalpy and pressure),
 while density and temperature <span class="math notranslate nohighlight">\((\rho,\, T)\)</span> are the independent variables that the solver 
 iterates until the residual of the problem is driven to zero.</p>
-<p>TODO    The calculations <span class="math notranslate nohighlight">\(y_1(\rho,\, T)\)</span> and
-<span class="math notranslate nohighlight">\(y_2(\rho,\, T)\)</span> are performed by [dependns on input]</p>
-<p>equilibrium calculations (coolprop)
-evaluating the Helmholtz energy equation of state.
-blending of both</p>
+<p>Equilibrium residuals use CoolProp’s phase-equilibrium state. Metastable
+residuals evaluate the homogeneous Helmholtz potential at the supplied
+density and temperature, including continuation beyond saturation. The
+blending route solves both branches for the same two target properties
+before interpolating their numerical properties. That interpolation is a
+constitutive transition model, not a single differentiated EOS potential;
+independent thermodynamic identities need not hold inside its transition.</p>
+<p>Density/temperature pairs are evaluated directly without a root or initial
+guess. Other pairs require finite positive density/temperature guesses.
+Energy and entropy residuals use the reference-invariant scales
+<span class="math notranslate nohighlight">\(R_sT_c\)</span> and <span class="math notranslate nohighlight">\(R_s\)</span>, where <span class="math notranslate nohighlight">\(R_s\)</span> belongs to the selected EOS.
+Zero quality/energy targets therefore remain well-defined. Solver success
+is checked against the actual final thermodynamic residual independently
+of its termination flag.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -703,6 +711,9 @@ blending of both</p>
 </dd>
 <dt><strong>print_convergence</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, displays the convergence progress. Defaults to False.</p>
 </dd>
+<dt><strong>source_context</strong><span class="classifier">SourceEvaluationContext, optional</span></dt><dd><p>Matching configured helper/reference context, reused throughout the
+complete solve. The owning Fluid holds its reentrant transaction lock.</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -716,23 +727,33 @@ blending of both</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.compute_properties_1phase">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_properties_1phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_properties_1phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_properties_1phase" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_properties_1phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_properties_1phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_properties_1phase" title="Link to this definition">#</a></dt>
 <dd><p>Extract single-phase properties from CoolProp abstract state.
 Returns dict with canonical property names.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.compute_properties_2phase">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_properties_2phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_properties_2phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_properties_2phase" title="Link to this definition">#</a></dt>
-<dd><p>Compute two-phase fluid properties from CoolProp abstract state</p>
-<p>Get two-phase properties from mixing rules and single-phase CoolProp properties</p>
-<p>Homogeneous equilibrium model</p>
-<p>TODO State formulas for T=T, p=p, mfrac/vfrac(rho), h-s-g-u-cp-cv, mu-k, a</p>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_properties_2phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_properties_2phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_properties_2phase" title="Link to this definition">#</a></dt>
+<dd><p>Return homogeneous-equilibrium responses of the actual source PQ map.</p>
+<p>Phase-change mass transfer is included in equilibrium response functions.
+In particular, cv is not a mass average of phase heat capacities. For a pure
+fluid in the dome, temperature is fixed by pressure: cp, expansion,
+isothermal compressibility and (dh/dp)_T are singular or not uniquely defined
+and remain unavailable. Exact endpoints expose one-phase responses instead.</p>
+<p>Pseudo-pure source models have temperature glide. Phase densities come from
+the actual flash, not a new QT flash at the bulk temperature. PQ Jacobians
+respect each backend’s empirical interpolation geometry. Sound speed is
+sqrt((dp/drho)_s), equivalent to the usual pure-fluid HEM sound relation.
+Transport retains an empirical phase-volume average of the pressure’s
+bubble/dew endpoint correlations. In particular, REFPROP does not expose
+actual quality-dependent phase transport through its saturation getters;
+these endpoint averages are a model approximation, not an exact mixture law.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.compute_properties_coolprop">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_properties_coolprop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_properties_coolprop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_properties_coolprop" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_properties_coolprop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_properties_coolprop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_properties_coolprop" title="Link to this definition">#</a></dt>
 <dd><p>Set the thermodynamic state of the fluid based on input properties.</p>
 <p>This method updates the thermodynamic state of the fluid in the CoolProp <code class="docutils literal notranslate"><span class="pre">abstractstate</span></code> object
 using the given input properties. It then calculates either single-phase or two-phase
@@ -763,7 +784,7 @@ predefined input pairs in CoolProp, such as <code class="docutils literal notran
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.coolprop.core_calculations.compute_properties_metastable_rhoT">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_properties_metastable_rhoT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_properties_metastable_rhoT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_properties_metastable_rhoT" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.coolprop.core_calculations.</span></span><span class="sig-name descname"><span class="pre">compute_properties_metastable_rhoT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/coolprop/core_calculations.html#compute_properties_metastable_rhoT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.coolprop.core_calculations.compute_properties_metastable_rhoT" title="Link to this definition">#</a></dt>
 <dd><p>Compute the thermodynamic properties of a fluid using temperature-density calls to the Helmholtz energy equation of state (HEOS).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -775,6 +796,14 @@ predefined input pairs in CoolProp, such as <code class="docutils literal notran
 <dt><strong>T</strong><span class="classifier">float</span></dt><dd><p>Temperature of the fluid (K).</p>
 </dd>
 <dt><strong>supersaturation</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to evaluate supersaturation properties. Default is False.</p>
+</dd>
+<dt><strong>generalize_quality</strong><span class="classifier">bool, optional</span></dt><dd><p>Request the documented generalized entropy coordinate instead of the
+trimmed one-phase label. Neither is an equilibrium vapor fraction for
+a homogeneous metastable point.</p>
+</dd>
+<dt><strong>source_context</strong><span class="classifier">SourceEvaluationContext, optional</span></dt><dd><p>Construction-prepared helper state and reference data matching the
+supplied source. Configured Fluid calls provide this context so no
+runtime source construction or later global reference convention is used.</p>
 </dd>
 </dl>
 </dd>
@@ -797,9 +826,11 @@ of temperature and density:</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\phi\)</span> is the dimensionless Helmholtz energy</p></li>
 <li><p><span class="math notranslate nohighlight">\(R\)</span> is the gas constant of the fluid</p></li>
-<li><p><span class="math notranslate nohighlight">\(\delta = \rho / \rho_c\)</span> is the reduced density</p></li>
-<li><p><span class="math notranslate nohighlight">\(\tau = T_c / T\)</span> is the inverse of the reduced temperature</p></li>
+<li><p><span class="math notranslate nohighlight">\(\delta = \rho / \rho_r\)</span> is the reduced density</p></li>
+<li><p><span class="math notranslate nohighlight">\(\tau = T_r / T\)</span> is the inverse of the reduced temperature</p></li>
 </ul>
+<p>The selected EOS supplies its gas constant and reducing parameters
+<span class="math notranslate nohighlight">\(\rho_r\)</span> and <span class="math notranslate nohighlight">\(T_r\)</span>; these need not equal the critical values.</p>
 <p>Thermodynamic properties can be derived from the Helmholtz energy and its partial derivatives.
 The following table summarizes the expressions for various properties:</p>
 <div class="pst-scrollable-table-container"><table class="table" id="id1">

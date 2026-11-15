@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>jaxprop.perfect_gas.perfect_gas module &#8212; jaxprop v0.5.8 documentation</title>
+    <title>jaxprop.perfect_gas.perfect_gas module &#8212; jaxprop v0.6.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=4e4ceabb"></script>
+    <script src="../../_static/documentation_options.js?v=4fe0b1e1"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -134,7 +134,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.8 documentation</p>
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -149,24 +149,23 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="jaxprop.html">jaxprop package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.components.html">jaxprop.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
@@ -174,7 +173,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.graphics.html">jaxprop.graphics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaxprop.factory.html">jaxprop.factory module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.math.html">jaxprop.math module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaxprop.utils.html">jaxprop.utils module</a></li>
@@ -326,10 +332,20 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.backend"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.backend</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.capabilities"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.capabilities</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.configuration"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.configuration</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.constants"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.constants</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.fluid_name</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.get_state()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state_saturation"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.get_state_saturation()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.identifier"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.identifier</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.materialize"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.materialize()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.model"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.model</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.name"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.provider"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.provider</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.reference_id"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.reference_id</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.with_constants"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.with_constants()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants</span></code></a><ul class="nav section-nav flex-column">
@@ -339,6 +355,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.S_mu"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.S_mu</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.T_ref"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.T_ref</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.gamma"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.gamma</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.h_ref"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.h_ref</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.k_ref"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.k_ref</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.mu_ref"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.mu_ref</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.s_ref"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.s_ref</span></code></a></li>
@@ -378,25 +395,62 @@
 <span id="jaxprop-perfect-gas-perfect-gas-module"></span><h1>jaxprop.perfect_gas.perfect_gas module<a class="headerlink" href="#module-jaxprop.perfect_gas.perfect_gas" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">FluidPerfectGas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">101325.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#FluidPerfectGas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">FluidPerfectGas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">101325.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#FluidPerfectGas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin" title="jaxprop.source_references.SourceReferencesMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">SourceReferencesMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
+<dt><strong>capabilities</strong></dt><dd></dd>
+<dt><strong>configuration</strong></dt><dd></dd>
+<dt><strong>critical_point</strong></dt><dd></dd>
 <dt><strong>fluid_name</strong></dt><dd></dd>
 <dt><strong>identifier</strong></dt><dd></dd>
+<dt><strong>name</strong></dt><dd></dd>
+<dt><strong>reference_id</strong></dt><dd></dd>
+<dt><strong>references</strong></dt><dd></dd>
+<dt><strong>triple_point_liquid</strong></dt><dd></dd>
+<dt><strong>triple_point_vapor</strong></dt><dd></dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state" title="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state</span></code></a>(input_pair, x, y)</p></td>
-<td><p>Evaluate thermodynamic state for a perfect gas.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state" title="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state</span></code></a>(input_type, prop_1, prop_2, *[, ...])</p></td>
+<td><p>Evaluate with dynamic numerical inputs and a static pair selector.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.materialize" title="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.materialize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">materialize</span></code></a>()</p></td>
+<td><p>Validate a dynamic model view and refresh its persistent identity.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.with_constants" title="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.with_constants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_constants</span></code></a>(**changes)</p></td>
+<td><p>Return a validated model with updated constants and fresh identity.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<div class="pst-scrollable-table-container"><table class="table">
+<tbody>
+<tr class="row-odd"><td><p><strong>get_state_saturation</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.backend">
+<span class="sig-name descname"><span class="pre">backend</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'HEOS'</span></em><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.backend" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.capabilities">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">capabilities</span></span><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.capabilities" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.configuration">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">configuration</span></span><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.configuration" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.constants">
 <span class="sig-name descname"><span class="pre">constants</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants" title="jaxprop.perfect_gas.perfect_gas.PerfectGasConstants"><span class="pre">PerfectGasConstants</span></a></em><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.constants" title="Link to this definition">#</a></dt>
@@ -409,20 +463,67 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state">
-<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pair</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#FluidPerfectGas.get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state" title="Link to this definition">#</a></dt>
-<dd><p>Evaluate thermodynamic state for a perfect gas.</p>
+<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generalize_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersaturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#FluidPerfectGas.get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate with dynamic numerical inputs and a static pair selector.</p>
+<p>The model is already a numerical PyTree with static identity metadata,
+so native JIT avoids filtered-method binding and per-value compilation.</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state_saturation">
+<span class="sig-name descname"><span class="pre">get_state_saturation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#FluidPerfectGas.get_state_saturation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state_saturation" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.identifier">
 <span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.identifier" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.materialize">
+<span class="sig-name descname"><span class="pre">materialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#FluidPerfectGas.materialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.materialize" title="Link to this definition">#</a></dt>
+<dd><p>Validate a dynamic model view and refresh its persistent identity.</p>
+<p>Low-level <code class="docutils literal notranslate"><span class="pre">eqx.tree_at</span></code> parameter edits remain efficient ephemeral
+differentiation views. Call this eager setup operation before storing
+or combining the resulting physical model’s states. No source is
+initialized and the numerical parameter dtypes are retained.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.model">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'perfect_gas'</span></em><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.model" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.provider">
+<span class="sig-name descname"><span class="pre">provider</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'native'</span></em><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.provider" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.reference_id">
+<span class="sig-name descname"><span class="pre">reference_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.reference_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.with_constants">
+<span class="sig-name descname"><span class="pre">with_constants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">changes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#FluidPerfectGas.with_constants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.with_constants" title="Link to this definition">#</a></dt>
+<dd><p>Return a validated model with updated constants and fresh identity.</p>
+<p>Constants are named as in <a class="reference internal" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants" title="jaxprop.perfect_gas.perfect_gas.PerfectGasConstants"><code class="xref py py-class docutils literal notranslate"><span class="pre">PerfectGasConstants</span></code></a>; cp/cv remain
+derived from R/gamma, so they cannot become mutually inconsistent.
+Changes are materialized outside JAX transformations. Source reference
+records describe the calibration source, independently of this model.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.PerfectGasConstants">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">PerfectGasConstants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S_mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#PerfectGasConstants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">PerfectGasConstants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S_mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">jax.Array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#PerfectGasConstants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.P_ref">
@@ -455,6 +556,11 @@
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.h_ref">
+<span class="sig-name descname"><span class="pre">h_ref</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.h_ref" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.k_ref">
 <span class="sig-name descname"><span class="pre">k_ref</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.k_ref" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -473,13 +579,17 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.assemble_properties">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">assemble_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#assemble_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.assemble_properties" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">assemble_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#assemble_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.assemble_properties" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.calculate_properties_PT">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">calculate_properties_PT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#calculate_properties_PT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.calculate_properties_PT" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">calculate_properties_PT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#calculate_properties_PT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.calculate_properties_PT" title="Link to this definition">#</a></dt>
+<dd><p>Assemble a complete state, optionally sharing a resolved heat capacity.</p>
+<p>Native request policies can supply the same dynamic scalar used to resolve
+and validate coordinates. Ordinary raw callers retain the original model
+calculation; no derived parameter is stored or frozen on the fluid.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.calculate_properties_Ps">
@@ -513,7 +623,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.entropy_from_PT">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">entropy_from_PT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#entropy_from_PT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.entropy_from_PT" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">entropy_from_PT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#entropy_from_PT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.entropy_from_PT" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -524,7 +634,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.estimate_sutherland_constant">
 <span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">estimate_sutherland_constant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#estimate_sutherland_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.estimate_sutherland_constant" title="Link to this definition">#</a></dt>
-<dd><p>Estimate the Sutherland constant [K] from two values of a transport property 
+<dd><p>Estimate the Sutherland constant [K] from two values of a transport property
 (viscosity or thermal conductivity) at two temperatures, assuming a Sutherland-like law:</p>
 <blockquote>
 <div><p>mu(T) = mu_ref * (T / T_ref)^{3/2} * (T_ref + S) / (T + S)</p>
@@ -549,7 +659,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.get_constants">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">get_constants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dT</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#get_constants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.get_constants" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">get_constants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dT</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'HEOS'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#get_constants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.get_constants" title="Link to this definition">#</a></dt>
 <dd><p>Compute perfect-gas constants from a real-fluid model at a reference state,
 and estimate Sutherland constants using offset temperatures.</p>
 <dl class="field-list simple">
@@ -563,6 +673,8 @@ and estimate Sutherland constants using offset temperatures.</p>
 </dd>
 <dt><strong>dT</strong><span class="classifier">float, optional</span></dt><dd><p>Temperature offset used to evaluate <cite>mu</cite> and <cite>k</cite> at T_ref ± dT for
 Sutherland constant estimation [K]. Default is 100.0.</p>
+</dd>
+<dt><strong>backend</strong><span class="classifier">str, optional</span></dt><dd><p>CoolProp source backend used for calibration. Default is “HEOS”.</p>
 </dd>
 </dl>
 </dd>
@@ -594,9 +706,8 @@ Sutherland constant estimation [K]. Default is 100.0.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jaxprop.perfect_gas.perfect_gas.get_props_gradient">
-<span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">get_props_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps_rel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps_abs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#get_props_gradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.get_props_gradient" title="Link to this definition">#</a></dt>
-<dd><p>Return dict of gradients for perfect_gas_props at (x, y).
-Each entry: grads[prop] = jnp.array([∂prop/∂x, ∂prop/∂y])</p>
+<span class="sig-prename descclassname"><span class="pre">jaxprop.perfect_gas.perfect_gas.</span></span><span class="sig-name descname"><span class="pre">get_props_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps_rel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps_abs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mask'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jaxprop/perfect_gas/perfect_gas.html#get_props_gradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jaxprop.perfect_gas.perfect_gas.get_props_gradient" title="Link to this definition">#</a></dt>
+<dd><p>Return typed property partials with units and a separate primal state.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -679,10 +790,20 @@ Each entry: grads[prop] = jnp.array([∂prop/∂x, ∂prop/∂y])</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.backend"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.backend</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.capabilities"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.capabilities</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.configuration"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.configuration</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.constants"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.constants</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.fluid_name"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.fluid_name</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.get_state()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state_saturation"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.get_state_saturation()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.identifier"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.identifier</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.materialize"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.materialize()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.model"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.model</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.name"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.provider"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.provider</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.reference_id"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.reference_id</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.with_constants"><code class="docutils literal notranslate"><span class="pre">FluidPerfectGas.with_constants()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants</span></code></a><ul class="nav section-nav flex-column">
@@ -692,6 +813,7 @@ Each entry: grads[prop] = jnp.array([∂prop/∂x, ∂prop/∂y])</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.S_mu"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.S_mu</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.T_ref"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.T_ref</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.gamma"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.gamma</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.h_ref"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.h_ref</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.k_ref"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.k_ref</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.mu_ref"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.mu_ref</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.s_ref"><code class="docutils literal notranslate"><span class="pre">PerfectGasConstants.s_ref</span></code></a></li>

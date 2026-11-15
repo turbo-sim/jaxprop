@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; jaxprop v0.5.8 documentation</title>
+    <title>Index &#8212; jaxprop v0.6.0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=4e4ceabb"></script>
+    <script src="_static/documentation_options.js?v=4fe0b1e1"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -133,7 +133,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.8 documentation</p>
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -148,24 +148,23 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fluid_lifecycle.html">Reusing fluid models in applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="source/api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="source/api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="source/api/jaxprop.components.html">jaxprop.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="source/api/jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="source/api/jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/api/jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="source/api/jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -173,7 +172,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.graphics.html">jaxprop.graphics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.factory.html">jaxprop.factory module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.math.html">jaxprop.math module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="source/api/jaxprop.utils.html">jaxprop.utils module</a></li>
@@ -296,12 +302,15 @@
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -311,18 +320,28 @@
 </li>
       <li><a href="source/api/jaxprop.math.html#jaxprop.math.all_numeric">all_numeric() (in module jaxprop.math)</a>
 </li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferences.anchor">anchor (jaxprop.source_references.SourceReferences attribute)</a>
+</li>
       <li><a href="source/api/jaxprop.math.html#jaxprop.math.arccosd">arccosd() (in module jaxprop.math)</a>
+</li>
+      <li><a href="source/api/jaxprop.math.html#jaxprop.math.arcsind">arcsind() (in module jaxprop.math)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.math.html#jaxprop.math.arcsind">arcsind() (in module jaxprop.math)</a>
-</li>
       <li><a href="source/api/jaxprop.math.html#jaxprop.math.arctand">arctand() (in module jaxprop.math)</a>
 </li>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.assemble_properties">assemble_properties() (in module jaxprop.perfect_gas.perfect_gas)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.at_index">at_index() (jaxprop.helpers_props.FluidState method)</a>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.at_index">at_index() (jaxprop.fluid_state.FluidState method)</a>
 </li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.available">available (jaxprop.source_references.ReferencePoint attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.available_properties">available_properties (jaxprop.fluid_state.FluidState attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.available_properties">(jaxprop.property_derivatives.PropertyDerivatives property)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -332,14 +351,32 @@
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.backend">backend (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
 
       <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.backend">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.backend">(jaxprop.binary_mixture.fluid.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.backend">(jaxprop.binary_mixture.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.backend">(jaxprop.configuration.FluidConfiguration attribute)</a>
+</li>
         <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.backend">(jaxprop.coolprop.jax_wrapper.FluidJAX attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid.backend">(jaxprop.fluid.Fluid attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.backend">(jaxprop.perfect_gas.perfect_gas.FluidPerfectGas attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.backend">(jaxprop.source_references.ReferencePoint property)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.blend_properties">blend_properties() (in module jaxprop.coolprop.core_calculations)</a>
 </li>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidDomain.bounds">bounds (jaxprop.configuration.FluidDomain attribute)</a>
+</li>
       <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.build_alias_map">build_alias_map() (in module jaxprop.coolprop.fluid_properties)</a>
+</li>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.build_configuration">build_configuration() (in module jaxprop.configuration)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -371,22 +408,64 @@
 </li>
       <li><a href="source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.calculate_trimmed_quality">calculate_trimmed_quality() (in module jaxprop.coolprop.core_calculations)</a>
 </li>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.CalculationError">CalculationError</a>
+</li>
+      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.capabilities">capabilities (jaxprop.bicubic.bicubic_interpolation.FluidBicubic property)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.capabilities">(jaxprop.bicubic.FluidBicubic property)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.capabilities">(jaxprop.binary_mixture.fluid.FluidBinaryMixture property)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.capabilities">(jaxprop.binary_mixture.FluidBinaryMixture property)</a>
+</li>
+        <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.capabilities">(jaxprop.coolprop.jax_wrapper.FluidJAX property)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid.capabilities">(jaxprop.fluid.Fluid attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.capabilities">(jaxprop.perfect_gas.perfect_gas.FluidPerfectGas property)</a>
+</li>
+      </ul></li>
       <li><a href="source/api/jaxprop.utils.html#jaxprop.utils.check_lists_match">check_lists_match() (in module jaxprop.utils)</a>
 </li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.classification">classification (jaxprop.source_references.ReferencePoint attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.clipped">clipped (jaxprop.fluid_state.FluidState property)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.clipped">(jaxprop.property_derivatives.PropertyDerivatives property)</a>
+</li>
+      </ul></li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.coarse_step">coarse_step (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.coarse_step">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.compressibility_factor">compressibility_factor (jaxprop.helpers_props.FluidState attribute)</a>
+      </ul></li>
+      <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.components">components (jaxprop.binary_mixture.fluid.FluidBinaryMixture property)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.components">(jaxprop.binary_mixture.FluidBinaryMixture property)</a>
 </li>
-      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.compute_bicubic_coefficients">compute_bicubic_coefficients() (in module jaxprop.bicubic.bicubic_interpolation)</a>
+        <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferences.components">(jaxprop.source_references.SourceReferences attribute)</a>
 </li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.composite_source_references">composite_source_references() (in module jaxprop.source_references)</a>
+</li>
+      <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.compute_bicubic_coefficients">compute_bicubic_coefficients() (in module jaxprop.bicubic)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.compute_bicubic_coefficients">(in module jaxprop.bicubic.bicubic_interpolation)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.compute_dsdp_q">compute_dsdp_q() (in module jaxprop.coolprop.core_calculations)</a>
 </li>
       <li><a href="source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.compute_gruneisen">compute_gruneisen() (in module jaxprop.coolprop.core_calculations)</a>
 </li>
       <li><a href="source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.compute_isothermal_joule_thomson">compute_isothermal_joule_thomson() (in module jaxprop.coolprop.core_calculations)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.compute_joule_thomson">compute_joule_thomson() (in module jaxprop.coolprop.core_calculations)</a>
 </li>
       <li><a href="source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.compute_properties">compute_properties() (in module jaxprop.coolprop.core_calculations)</a>
@@ -413,20 +492,44 @@
 </li>
       <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.compute_spinodal_point_general">compute_spinodal_point_general() (in module jaxprop.coolprop.fluid_properties)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.conductivity">conductivity (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.conductivity_from_T">conductivity_from_T() (in module jaxprop.perfect_gas.perfect_gas)</a>
 </li>
+      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.configuration">configuration (jaxprop.bicubic.bicubic_interpolation.FluidBicubic property)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.configuration">(jaxprop.bicubic.FluidBicubic property)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.configuration">(jaxprop.binary_mixture.fluid.FluidBinaryMixture property)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.configuration">(jaxprop.binary_mixture.FluidBinaryMixture property)</a>
+</li>
+        <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.configuration">(jaxprop.coolprop.jax_wrapper.FluidJAX property)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid.configuration">(jaxprop.fluid.Fluid attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.configuration">(jaxprop.perfect_gas.perfect_gas.FluidPerfectGas property)</a>
+</li>
+      </ul></li>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.constants">constants (jaxprop.perfect_gas.perfect_gas.FluidPerfectGas attribute)</a>
 </li>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.ConvergenceError">ConvergenceError</a>
+</li>
       <li><a href="source/api/jaxprop.math.html#jaxprop.math.cosd">cosd() (in module jaxprop.math)</a>
+</li>
+      <li><a href="source/api/jaxprop.factory.html#jaxprop.factory.create_fluid">create_fluid() (in module jaxprop.factory)</a>
 </li>
       <li><a href="source/api/jaxprop.graphics.html#jaxprop.graphics.create_gif">create_gif() (in module jaxprop.graphics)</a>
 </li>
       <li><a href="source/api/jaxprop.graphics.html#jaxprop.graphics.create_mp4">create_mp4() (in module jaxprop.graphics)</a>
 </li>
-      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.critical_point">critical_point (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferences.critical">critical (jaxprop.source_references.SourceReferences attribute)</a>
 </li>
+      <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid.critical_point">critical_point (jaxprop.fluid.Fluid attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin.critical_point">(jaxprop.source_references.SourceReferencesMixin property)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -434,18 +537,36 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.delta_h">delta_h (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.delta_h">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
+      </ul></li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.delta_logP">delta_logP (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.delta_logP">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
+      </ul></li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.delta_logP_sat">delta_logP_sat (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.delta_logP_sat">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.density">density (jaxprop.helpers_props.FluidState attribute)</a>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.derivative_method">derivative_method (jaxprop.configuration.FluidCapabilities attribute)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.drho_dh">drho_dh (jaxprop.helpers_props.FluidState attribute)</a>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.derivative_order">derivative_order (jaxprop.configuration.FluidCapabilities attribute)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.drho_dp">drho_dp (jaxprop.helpers_props.FluidState attribute)</a>
+      <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.derivative_shape">derivative_shape (jaxprop.property_derivatives.PropertyDerivatives property)</a>
+</li>
+      <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.derivative_units">derivative_units() (jaxprop.property_derivatives.PropertyDerivatives method)</a>
+</li>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidDomain.description">description (jaxprop.configuration.FluidDomain attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.domain">domain (jaxprop.configuration.FluidCapabilities attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -453,21 +574,29 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.enthalpy">enthalpy (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.entropy">entropy (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.entropy_from_PT">entropy_from_PT() (in module jaxprop.perfect_gas.perfect_gas)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.entropy_from_rhoP">entropy_from_rhoP() (in module jaxprop.perfect_gas.perfect_gas)</a>
 </li>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.error_modes">error_modes (jaxprop.configuration.FluidCapabilities attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.error_policy">error_policy (jaxprop.fluid_state.FluidState attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.error_policy">(jaxprop.property_derivatives.PropertyDerivatives property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.estimate_sutherland_constant">estimate_sutherland_constant() (in module jaxprop.perfect_gas.perfect_gas)</a>
+</li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.evaluation_coordinates">evaluation_coordinates (jaxprop.source_references.ReferencePoint attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.evaluation_offsets">evaluation_offsets (jaxprop.source_references.ReferencePoint attribute)</a>
 </li>
       <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.exceptions">exceptions (jaxprop.coolprop.jax_wrapper.FluidJAX attribute)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.extract_vars">extract_vars() (in module jaxprop.helpers_props)</a>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidDomain.extrapolation">extrapolation (jaxprop.configuration.FluidDomain attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -475,33 +604,65 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.flipped">flipped() (jaxprop.helpers_props.FluidState method)</a>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.flipped">flipped() (jaxprop.fluid_state.FluidState method)</a>
 </li>
-      <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid">Fluid (class in jaxprop.coolprop.fluid_properties)</a>
+      <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid">Fluid (class in jaxprop.fluid)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid">(in module jaxprop.coolprop.fluid_properties)</a>
 </li>
+      </ul></li>
       <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.fluid">fluid (jaxprop.coolprop.jax_wrapper.FluidJAX attribute)</a>
 </li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.fluid_name">fluid_name (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
 
       <ul>
-        <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.fluid_name">(jaxprop.helpers_props.FluidState attribute)</a>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.fluid_name">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.fluid_name">(jaxprop.fluid_state.FluidState attribute)</a>
 </li>
         <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.fluid_name">(jaxprop.perfect_gas.perfect_gas.FluidPerfectGas attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.fluid_name">(jaxprop.property_derivatives.PropertyDerivatives property)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic">FluidBicubic (class in jaxprop.bicubic)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic">(class in jaxprop.bicubic.bicubic_interpolation)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture">FluidBinaryMixture (class in jaxprop.binary_mixture)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture">(class in jaxprop.binary_mixture.fluid)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic">FluidBicubic (class in jaxprop.bicubic.bicubic_interpolation)</a>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities">FluidCapabilities (class in jaxprop.configuration)</a>
+</li>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration">FluidConfiguration (class in jaxprop.configuration)</a>
+</li>
+      <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp">FluidCoolProp (class in jaxprop.coolprop.fluid_properties)</a>
+</li>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidDomain">FluidDomain (class in jaxprop.configuration)</a>
 </li>
       <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX">FluidJAX (class in jaxprop.coolprop.jax_wrapper)</a>
 </li>
-      <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidMix">FluidMix (class in jaxprop.coolprop.fluid_properties)</a>
+      <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidMix">FluidMix() (in module jaxprop.binary_mixture)</a>
 </li>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas">FluidPerfectGas (class in jaxprop.perfect_gas.perfect_gas)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState">FluidState (class in jaxprop.helpers_props)</a>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState">FluidState (class in jaxprop.fluid_state)</a>
+</li>
+      <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidTwoComponent">FluidTwoComponent (in module jaxprop.binary_mixture)</a>
 </li>
       <li><a href="source/api/jaxprop.helpers_jax.html#jaxprop.helpers_jax.format_list_80">format_list_80() (in module jaxprop.helpers_jax)</a>
+</li>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.from_data">from_data() (jaxprop.fluid_state.FluidState class method)</a>
+</li>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FrozenMapping">FrozenMapping (class in jaxprop.configuration)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -515,36 +676,66 @@
 </li>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.get_constants">get_constants() (in module jaxprop.perfect_gas.perfect_gas)</a>
 </li>
-      <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.get_props_gradient">get_props_gradient() (in module jaxprop.perfect_gas.perfect_gas)</a>
+      <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.get_mixture_state">get_mixture_state() (in module jaxprop.binary_mixture)</a>
 </li>
-      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.get_state">get_state() (jaxprop.bicubic.bicubic_interpolation.FluidBicubic method)</a>
+      <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.get_props_gradient">get_props_gradient() (in module jaxprop.perfect_gas.perfect_gas)</a>
 
       <ul>
-        <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.get_state">(jaxprop.coolprop.fluid_properties.Fluid method)</a>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.get_props_gradient">(in module jaxprop.property_derivatives)</a>
 </li>
-        <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidMix.get_state">(jaxprop.coolprop.fluid_properties.FluidMix method)</a>
+      </ul></li>
+      <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.get_state">get_state() (in module jaxprop.coolprop.jax_wrapper)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.get_state">(jaxprop.bicubic.bicubic_interpolation.FluidBicubic method)</a>
+</li>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.get_state">(jaxprop.bicubic.FluidBicubic method)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.get_state">(jaxprop.binary_mixture.fluid.FluidBinaryMixture method)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.get_state">(jaxprop.binary_mixture.FluidBinaryMixture method)</a>
+</li>
+        <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp.get_state">(jaxprop.coolprop.fluid_properties.FluidCoolProp method)</a>
 </li>
         <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state">(jaxprop.coolprop.jax_wrapper.FluidJAX method)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid.get_state">(jaxprop.fluid.Fluid method)</a>
 </li>
         <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state">(jaxprop.perfect_gas.perfect_gas.FluidPerfectGas method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.get_state_blending">get_state_blending() (jaxprop.coolprop.fluid_properties.Fluid method)</a>
+      <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp.get_state_blending">get_state_blending() (jaxprop.coolprop.fluid_properties.FluidCoolProp method)</a>
 </li>
-      <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.get_state_equilibrium">get_state_equilibrium() (jaxprop.coolprop.fluid_properties.Fluid method)</a>
+      <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp.get_state_equilibrium">get_state_equilibrium() (jaxprop.coolprop.fluid_properties.FluidCoolProp method)</a>
 </li>
-      <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.get_state_metastable">get_state_metastable() (jaxprop.coolprop.fluid_properties.Fluid method)</a>
+      <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp.get_state_metastable">get_state_metastable() (jaxprop.coolprop.fluid_properties.FluidCoolProp method)</a>
 </li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.get_state_saturation">get_state_saturation() (jaxprop.bicubic.bicubic_interpolation.FluidBicubic method)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.get_state_saturation">(jaxprop.bicubic.FluidBicubic method)</a>
 </li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.get_state_saturation">(jaxprop.binary_mixture.fluid.FluidBinaryMixture method)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.get_state_saturation">(jaxprop.binary_mixture.FluidBinaryMixture method)</a>
+</li>
+        <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp.get_state_saturation">(jaxprop.coolprop.fluid_properties.FluidCoolProp method)</a>
+</li>
+        <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.get_state_saturation">(jaxprop.coolprop.jax_wrapper.FluidJAX method)</a>
+</li>
+        <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.get_state_saturation">(jaxprop.perfect_gas.perfect_gas.FluidPerfectGas method)</a>
+</li>
+      </ul></li>
       <li><a href="source/api/jaxprop.coolprop.core_calculations.html#jaxprop.coolprop.core_calculations.get_viscosity">get_viscosity() (in module jaxprop.coolprop.core_calculations)</a>
 </li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.grad_method">grad_method (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.grad_method">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.gruneisen">gruneisen (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -552,15 +743,27 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.h_max">h_max (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.h_max">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
+      </ul></li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.h_min">h_min (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.h_min">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.h_ref">h_ref (jaxprop.perfect_gas.perfect_gas.PerfectGasConstants attribute)</a>
+</li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.h_vals">h_vals (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.h_vals">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.heat_capacity_ratio">heat_capacity_ratio (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -570,13 +773,61 @@
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.identifier">identifier (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
 
       <ul>
-        <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.identifier">(jaxprop.helpers_props.FluidState attribute)</a>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.identifier">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.identifier">(jaxprop.binary_mixture.fluid.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.identifier">(jaxprop.binary_mixture.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.identifier">(jaxprop.configuration.FluidConfiguration attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.identifier">(jaxprop.coolprop.jax_wrapper.FluidJAX attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid.identifier">(jaxprop.fluid.Fluid attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.identifier">(jaxprop.fluid_state.FluidState attribute)</a>
 </li>
         <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.identifier">(jaxprop.perfect_gas.perfect_gas.FluidPerfectGas attribute)</a>
 </li>
-      </ul></li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.internal_energy">internal_energy (jaxprop.helpers_props.FluidState attribute)</a>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.identifier">(jaxprop.property_derivatives.PropertyDerivatives property)</a>
 </li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.initialize_source_references">initialize_source_references() (in module jaxprop.source_references)</a>
+</li>
+      <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.input_names">input_names (jaxprop.property_derivatives.PropertyDerivatives attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.input_pairs">input_pairs (jaxprop.configuration.FluidCapabilities attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.input_units">input_units (jaxprop.property_derivatives.PropertyDerivatives attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.interpretation">interpretation (jaxprop.source_references.ReferencePoint attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.InvalidConfigurationError">InvalidConfigurationError</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.InvalidStateError">InvalidStateError</a>
+</li>
+      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.inverse_max_steps">inverse_max_steps (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.inverse_max_steps">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.inverse_max_steps">(jaxprop.binary_mixture.fluid.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.inverse_max_steps">(jaxprop.binary_mixture.FluidBinaryMixture attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.inverse_tolerance">inverse_tolerance (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.inverse_tolerance">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.inverse_tolerance">(jaxprop.binary_mixture.fluid.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.inverse_tolerance">(jaxprop.binary_mixture.FluidBinaryMixture attribute)</a>
+</li>
+      </ul></li>
       <li><a href="source/api/jaxprop.math.html#jaxprop.math.is_even">is_even() (in module jaxprop.math)</a>
 </li>
       <li><a href="source/api/jaxprop.utils.html#jaxprop.utils.is_float">is_float() (in module jaxprop.utils)</a>
@@ -587,34 +838,20 @@
 </li>
       <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.is_pure_substance">is_pure_substance() (in module jaxprop.coolprop.fluid_properties)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.is_two_phase">is_two_phase (jaxprop.helpers_props.FluidState attribute)</a>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.items">items() (jaxprop.fluid_state.FluidState method)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.items">(jaxprop.property_derivatives.PropertyDerivatives method)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.isentropic_bulk_modulus">isentropic_bulk_modulus (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.isentropic_compressibility">isentropic_compressibility (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.isobaric_expansion_coefficient">isobaric_expansion_coefficient (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.isobaric_heat_capacity">isobaric_heat_capacity (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.isochoric_heat_capacity">isochoric_heat_capacity (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.isothermal_bulk_modulus">isothermal_bulk_modulus (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.isothermal_compressibility">isothermal_compressibility (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.isothermal_joule_thomson">isothermal_joule_thomson (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.items">items() (jaxprop.helpers_props.FluidState method)</a>
-</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="J">J</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.jax_modes">jax_modes (jaxprop.configuration.FluidCapabilities attribute)</a>
+</li>
       <li>
     jaxprop
 
@@ -634,6 +871,27 @@
 
       <ul>
         <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#module-jaxprop.bicubic.bicubic_interpolation">module</a>
+</li>
+      </ul></li>
+      <li>
+    jaxprop.binary_mixture
+
+      <ul>
+        <li><a href="source/api/jaxprop.binary_mixture.html#module-jaxprop.binary_mixture">module</a>
+</li>
+      </ul></li>
+      <li>
+    jaxprop.binary_mixture.fluid
+
+      <ul>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#module-jaxprop.binary_mixture.fluid">module</a>
+</li>
+      </ul></li>
+      <li>
+    jaxprop.configuration
+
+      <ul>
+        <li><a href="source/api/jaxprop.configuration.html#module-jaxprop.configuration">module</a>
 </li>
       </ul></li>
       <li>
@@ -665,26 +923,47 @@
 </li>
       </ul></li>
       <li>
+    jaxprop.errors
+
+      <ul>
+        <li><a href="source/api/jaxprop.errors.html#module-jaxprop.errors">module</a>
+</li>
+      </ul></li>
+      <li>
+    jaxprop.factory
+
+      <ul>
+        <li><a href="source/api/jaxprop.factory.html#module-jaxprop.factory">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    jaxprop.fluid
+
+      <ul>
+        <li><a href="source/api/jaxprop.fluid.html#module-jaxprop.fluid">module</a>
+</li>
+      </ul></li>
+      <li>
+    jaxprop.fluid_state
+
+      <ul>
+        <li><a href="source/api/jaxprop.fluid_state.html#module-jaxprop.fluid_state">module</a>
+</li>
+      </ul></li>
+      <li>
     jaxprop.graphics
 
       <ul>
         <li><a href="source/api/jaxprop.graphics.html#module-jaxprop.graphics">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     jaxprop.helpers_jax
 
       <ul>
         <li><a href="source/api/jaxprop.helpers_jax.html#module-jaxprop.helpers_jax">module</a>
-</li>
-      </ul></li>
-      <li>
-    jaxprop.helpers_props
-
-      <ul>
-        <li><a href="source/api/jaxprop.helpers_props.html#module-jaxprop.helpers_props">module</a>
 </li>
       </ul></li>
       <li>
@@ -709,10 +988,24 @@
 </li>
       </ul></li>
       <li>
-    jaxprop.two_component
+    jaxprop.plotting
 
       <ul>
-        <li><a href="source/api/jaxprop.two_component.html#module-jaxprop.two_component">module</a>
+        <li><a href="source/api/jaxprop.plotting.html#module-jaxprop.plotting">module</a>
+</li>
+      </ul></li>
+      <li>
+    jaxprop.property_derivatives
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#module-jaxprop.property_derivatives">module</a>
+</li>
+      </ul></li>
+      <li>
+    jaxprop.source_references
+
+      <ul>
+        <li><a href="source/api/jaxprop.source_references.html#module-jaxprop.source_references">module</a>
 </li>
       </ul></li>
       <li>
@@ -722,7 +1015,7 @@
         <li><a href="source/api/jaxprop.utils.html#module-jaxprop.utils">module</a>
 </li>
       </ul></li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.joule_thomson">joule_thomson (jaxprop.helpers_props.FluidState attribute)</a>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.JaxPropError">JaxPropError</a>
 </li>
   </ul></td>
 </tr></table>
@@ -734,8 +1027,12 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.keys">keys() (jaxprop.helpers_props.FluidState method)</a>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.keys">keys() (jaxprop.fluid_state.FluidState method)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.keys">(jaxprop.property_derivatives.PropertyDerivatives method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -743,11 +1040,19 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.logP_sat_vals">logP_sat_vals (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.logP_sat_vals">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.logP_vals">logP_vals (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.logP_vals">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -758,20 +1063,70 @@
 </li>
       <li><a href="source/api/jaxprop.helpers_jax.html#jaxprop.helpers_jax.make_diffrax_solver">make_diffrax_solver() (in module jaxprop.helpers_jax)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.mass_frac_1">mass_frac_1 (jaxprop.helpers_props.FluidState attribute)</a>
+      <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.mass_fractions">mass_fractions (jaxprop.binary_mixture.fluid.FluidBinaryMixture attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.mass_fractions">(jaxprop.binary_mixture.FluidBinaryMixture attribute)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.mass_frac_2">mass_frac_2 (jaxprop.helpers_props.FluidState attribute)</a>
+      </ul></li>
+      <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.materialize">materialize() (jaxprop.perfect_gas.perfect_gas.FluidPerfectGas method)</a>
 </li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.metadata">metadata (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.metadata">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.metastable_domain">metastable_domain (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.metastable_domain">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+      </ul></li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.metastable_phase">metastable_phase (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.metastable_phase">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.method">method (jaxprop.property_derivatives.PropertyDerivatives attribute)</a>
 </li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.mixture_ratio">mixture_ratio (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
 
       <ul>
-        <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.mixture_ratio">(jaxprop.helpers_props.FluidState attribute)</a>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.mixture_ratio">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.mixture_ratio">(jaxprop.binary_mixture.fluid.FluidBinaryMixture property)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.mixture_ratio">(jaxprop.binary_mixture.FluidBinaryMixture property)</a>
 </li>
       </ul></li>
+      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.model">model (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.model">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.model">(jaxprop.binary_mixture.fluid.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.model">(jaxprop.binary_mixture.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.model">(jaxprop.configuration.FluidConfiguration attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.model">(jaxprop.coolprop.jax_wrapper.FluidJAX attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid.model">(jaxprop.fluid.Fluid attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.model">(jaxprop.fluid_state.FluidState attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.model">(jaxprop.perfect_gas.perfect_gas.FluidPerfectGas attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.model">(jaxprop.property_derivatives.PropertyDerivatives property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.model_options">model_options (jaxprop.configuration.FluidConfiguration attribute)</a>
+</li>
       <li>
     module
 
@@ -782,6 +1137,12 @@
 </li>
         <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#module-jaxprop.bicubic.bicubic_interpolation">jaxprop.bicubic.bicubic_interpolation</a>
 </li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#module-jaxprop.binary_mixture">jaxprop.binary_mixture</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#module-jaxprop.binary_mixture.fluid">jaxprop.binary_mixture.fluid</a>
+</li>
+        <li><a href="source/api/jaxprop.configuration.html#module-jaxprop.configuration">jaxprop.configuration</a>
+</li>
         <li><a href="source/api/jaxprop.coolprop.html#module-jaxprop.coolprop">jaxprop.coolprop</a>
 </li>
         <li><a href="source/api/jaxprop.coolprop.core_calculations.html#module-jaxprop.coolprop.core_calculations">jaxprop.coolprop.core_calculations</a>
@@ -790,11 +1151,17 @@
 </li>
         <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#module-jaxprop.coolprop.jax_wrapper">jaxprop.coolprop.jax_wrapper</a>
 </li>
+        <li><a href="source/api/jaxprop.errors.html#module-jaxprop.errors">jaxprop.errors</a>
+</li>
+        <li><a href="source/api/jaxprop.factory.html#module-jaxprop.factory">jaxprop.factory</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid.html#module-jaxprop.fluid">jaxprop.fluid</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid_state.html#module-jaxprop.fluid_state">jaxprop.fluid_state</a>
+</li>
         <li><a href="source/api/jaxprop.graphics.html#module-jaxprop.graphics">jaxprop.graphics</a>
 </li>
         <li><a href="source/api/jaxprop.helpers_jax.html#module-jaxprop.helpers_jax">jaxprop.helpers_jax</a>
-</li>
-        <li><a href="source/api/jaxprop.helpers_props.html#module-jaxprop.helpers_props">jaxprop.helpers_props</a>
 </li>
         <li><a href="source/api/jaxprop.math.html#module-jaxprop.math">jaxprop.math</a>
 </li>
@@ -802,13 +1169,15 @@
 </li>
         <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#module-jaxprop.perfect_gas.perfect_gas">jaxprop.perfect_gas.perfect_gas</a>
 </li>
-        <li><a href="source/api/jaxprop.two_component.html#module-jaxprop.two_component">jaxprop.two_component</a>
+        <li><a href="source/api/jaxprop.plotting.html#module-jaxprop.plotting">jaxprop.plotting</a>
+</li>
+        <li><a href="source/api/jaxprop.property_derivatives.html#module-jaxprop.property_derivatives">jaxprop.property_derivatives</a>
+</li>
+        <li><a href="source/api/jaxprop.source_references.html#module-jaxprop.source_references">jaxprop.source_references</a>
 </li>
         <li><a href="source/api/jaxprop.utils.html#module-jaxprop.utils">jaxprop.utils</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.mu_ref">mu_ref (jaxprop.perfect_gas.perfect_gas.PerfectGasConstants attribute)</a>
 </li>
   </ul></td>
@@ -818,14 +1187,54 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.N_h">N_h (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.N_h">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
+      </ul></li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.N_p">N_p (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.N_p">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.N_p_sat">N_p_sat (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.N_p_sat">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.name">name (jaxprop.bicubic.bicubic_interpolation.FluidBicubic property)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.name">(jaxprop.bicubic.FluidBicubic property)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.name">(jaxprop.binary_mixture.fluid.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.name">(jaxprop.binary_mixture.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.name">(jaxprop.configuration.FluidConfiguration attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.name">(jaxprop.coolprop.jax_wrapper.FluidJAX attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid.name">(jaxprop.fluid.Fluid attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.name">(jaxprop.perfect_gas.perfect_gas.FluidPerfectGas property)</a>
+</li>
+        <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.name">(jaxprop.source_references.ReferencePoint attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.options">options (jaxprop.configuration.FluidCapabilities attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.N_p_sat">N_p_sat (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
-</li>
-      <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.name">name (jaxprop.coolprop.jax_wrapper.FluidJAX attribute)</a>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.OutOfDomainError">OutOfDomainError</a>
 </li>
   </ul></td>
 </tr></table>
@@ -834,20 +1243,42 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.p_max">p_max (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.p_max">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.p_max">(jaxprop.binary_mixture.fluid.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.p_max">(jaxprop.binary_mixture.FluidBinaryMixture attribute)</a>
+</li>
+      </ul></li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.p_min">p_min (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.p_min">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.p_min">(jaxprop.binary_mixture.fluid.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.p_min">(jaxprop.binary_mixture.FluidBinaryMixture attribute)</a>
+</li>
+      </ul></li>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.P_ref">P_ref (jaxprop.perfect_gas.perfect_gas.PerfectGasConstants attribute)</a>
 </li>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants">PerfectGasConstants (class in jaxprop.perfect_gas.perfect_gas)</a>
 </li>
-      <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.Fluid.plot_phase_diagram">plot_phase_diagram() (jaxprop.coolprop.fluid_properties.Fluid method)</a>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.phase_operations">phase_operations (jaxprop.configuration.FluidCapabilities attribute)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.pressure">pressure (jaxprop.helpers_props.FluidState attribute)</a>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidDomain.phases">phases (jaxprop.configuration.FluidDomain attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.pressure_saturation">pressure_saturation (jaxprop.helpers_props.FluidState attribute)</a>
+      <li><a href="source/api/jaxprop.plotting.html#jaxprop.plotting.plot_phase_diagram">plot_phase_diagram() (in module jaxprop.plotting)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.FluidCoolProp.plot_phase_diagram">(jaxprop.coolprop.fluid_properties.FluidCoolProp method)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.primal">primal (jaxprop.property_derivatives.PropertyDerivatives attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.primal_shape">primal_shape (jaxprop.property_derivatives.PropertyDerivatives property)</a>
 </li>
       <li><a href="source/api/jaxprop.utils.html#jaxprop.utils.print_dict">print_dict() (in module jaxprop.utils)</a>
 </li>
@@ -859,19 +1290,67 @@
 </li>
       <li><a href="source/api/jaxprop.graphics.html#jaxprop.graphics.print_rc_parameters">print_rc_parameters() (in module jaxprop.graphics)</a>
 </li>
-      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.PROPERTY_CALCULATORS">PROPERTY_CALCULATORS (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidCapabilities.properties">properties (jaxprop.configuration.FluidCapabilities attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.properties">(jaxprop.source_references.ReferencePoint attribute)</a>
 </li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.PROPERTY_CALCULATORS">PROPERTY_CALCULATORS (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.PROPERTY_CALCULATORS">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.property_units">property_units (jaxprop.property_derivatives.PropertyDerivatives attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.property_valid">property_valid() (jaxprop.fluid_state.FluidState method)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.property_valid">(jaxprop.property_derivatives.PropertyDerivatives method)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives">PropertyDerivatives (class in jaxprop.property_derivatives)</a>
+</li>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.PropertyUnavailableError">PropertyUnavailableError</a>
+</li>
+      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.provider">provider (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.provider">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.provider">(jaxprop.binary_mixture.fluid.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.provider">(jaxprop.binary_mixture.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.provider">(jaxprop.configuration.FluidConfiguration attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.provider">(jaxprop.coolprop.jax_wrapper.FluidJAX attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid.provider">(jaxprop.fluid.Fluid attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.provider">(jaxprop.fluid_state.FluidState attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.provider">(jaxprop.perfect_gas.perfect_gas.FluidPerfectGas attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.provider">(jaxprop.property_derivatives.PropertyDerivatives property)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.providers">providers (jaxprop.fluid_state.FluidState attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.providers">(jaxprop.property_derivatives.PropertyDerivatives property)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="Q">Q</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.quality_mass">quality_mass (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.quality_volume">quality_volume (jaxprop.helpers_props.FluidState attribute)</a>
+      <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.quantity_kind">quantity_kind (jaxprop.property_derivatives.PropertyDerivatives attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -880,6 +1359,54 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.R">R (jaxprop.perfect_gas.perfect_gas.PerfectGasConstants attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.raw_property">raw_property() (jaxprop.fluid_state.FluidState method)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.raw_property">(jaxprop.property_derivatives.PropertyDerivatives method)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.reason">reason (jaxprop.source_references.ReferencePoint attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.reference_anchor">reference_anchor() (in module jaxprop.source_references)</a>
+</li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.reference_convention">reference_convention (jaxprop.source_references.ReferencePoint property)</a>
+</li>
+      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.reference_id">reference_id (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.reference_id">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.fluid.html#jaxprop.binary_mixture.fluid.FluidBinaryMixture.reference_id">(jaxprop.binary_mixture.fluid.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.binary_mixture.html#jaxprop.binary_mixture.FluidBinaryMixture.reference_id">(jaxprop.binary_mixture.FluidBinaryMixture attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.coolprop.jax_wrapper.html#jaxprop.coolprop.jax_wrapper.FluidJAX.reference_id">(jaxprop.coolprop.jax_wrapper.FluidJAX attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid.reference_id">(jaxprop.fluid.Fluid attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.reference_id">(jaxprop.fluid_state.FluidState attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.reference_id">(jaxprop.perfect_gas.perfect_gas.FluidPerfectGas attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.reference_id">(jaxprop.property_derivatives.PropertyDerivatives property)</a>
+</li>
+        <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.reference_id">(jaxprop.source_references.ReferencePoint attribute)</a>
+</li>
+        <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferences.reference_id">(jaxprop.source_references.SourceReferences attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint">ReferencePoint (class in jaxprop.source_references)</a>
+</li>
+      <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid.references">references (jaxprop.fluid.Fluid attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin.references">(jaxprop.source_references.SourceReferencesMixin property)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.reported_coordinates">reported_coordinates (jaxprop.source_references.ReferencePoint attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -903,6 +1430,12 @@
 </li>
       <li><a href="source/api/jaxprop.graphics.html#jaxprop.graphics.set_plot_options">set_plot_options() (in module jaxprop.graphics)</a>
 </li>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.shape">shape (jaxprop.fluid_state.FluidState property)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.shape">(jaxprop.property_derivatives.PropertyDerivatives property)</a>
+</li>
+      </ul></li>
       <li><a href="source/api/jaxprop.math.html#jaxprop.math.sigmoid_hyperbolic">sigmoid_hyperbolic() (in module jaxprop.math)</a>
 </li>
       <li><a href="source/api/jaxprop.math.html#jaxprop.math.sigmoid_rational">sigmoid_rational() (in module jaxprop.math)</a>
@@ -911,34 +1444,52 @@
 </li>
       <li><a href="source/api/jaxprop.math.html#jaxprop.math.sigmoid_smoothstep">sigmoid_smoothstep() (in module jaxprop.math)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.math.html#jaxprop.math.sind">sind() (in module jaxprop.math)</a>
 </li>
       <li><a href="source/api/jaxprop.math.html#jaxprop.math.smooth_abs">smooth_abs() (in module jaxprop.math)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.math.html#jaxprop.math.smooth_maximum">smooth_maximum() (in module jaxprop.math)</a>
 </li>
       <li><a href="source/api/jaxprop.math.html#jaxprop.math.smooth_minimum">smooth_minimum() (in module jaxprop.math)</a>
 </li>
-      <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.specific_heat">specific_heat() (in module jaxprop.perfect_gas.perfect_gas)</a>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.source">source (jaxprop.source_references.ReferencePoint attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferences.source">(jaxprop.source_references.SourceReferences attribute)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.speed_of_sound">speed_of_sound (jaxprop.helpers_props.FluidState attribute)</a>
+      </ul></li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.source_fluid">source_fluid (jaxprop.source_references.ReferencePoint property)</a>
+</li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.source_reference_identity">source_reference_identity() (in module jaxprop.source_references)</a>
+</li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.source_reference_metadata">source_reference_metadata() (in module jaxprop.source_references)</a>
+</li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferences">SourceReferences (class in jaxprop.source_references)</a>
+</li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin">SourceReferencesMixin (class in jaxprop.source_references)</a>
+</li>
+      <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.specific_heat">specific_heat() (in module jaxprop.perfect_gas.perfect_gas)</a>
 </li>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.speed_of_sound_from_T">speed_of_sound_from_T() (in module jaxprop.perfect_gas.perfect_gas)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.stack">stack() (jaxprop.helpers_props.FluidState class method)</a>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.stack">stack() (jaxprop.fluid_state.FluidState class method)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.subcooling">subcooling (jaxprop.helpers_props.FluidState attribute)</a>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.ReferencePoint.state">state (jaxprop.source_references.ReferencePoint property)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.superheating">superheating (jaxprop.helpers_props.FluidState attribute)</a>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.status">status (jaxprop.fluid_state.FluidState attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.status">(jaxprop.property_derivatives.PropertyDerivatives property)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.supersaturation_degree">supersaturation_degree (jaxprop.helpers_props.FluidState attribute)</a>
+      </ul></li>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.supports_property">supports_property() (jaxprop.fluid_state.FluidState method)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.supports_property">(jaxprop.property_derivatives.PropertyDerivatives method)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.supersaturation_ratio">supersaturation_ratio (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.surface_tension">surface_tension (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -947,29 +1498,89 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.PerfectGasConstants.T_ref">T_ref (jaxprop.perfect_gas.perfect_gas.PerfectGasConstants attribute)</a>
 </li>
-      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.table">table (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.table">table (jaxprop.bicubic.bicubic_interpolation.FluidBicubic property)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.table">(jaxprop.bicubic.FluidBicubic property)</a>
 </li>
+      </ul></li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.table_dir">table_dir (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.table_dir">(jaxprop.bicubic.FluidBicubic attribute)</a>
 </li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.table_mode">table_mode (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.table_mode">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+      </ul></li>
       <li><a href="source/api/jaxprop.bicubic.bicubic_interpolation.html#jaxprop.bicubic.bicubic_interpolation.FluidBicubic.table_name">table_name (jaxprop.bicubic.bicubic_interpolation.FluidBicubic attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.bicubic.html#jaxprop.bicubic.FluidBicubic.table_name">(jaxprop.bicubic.FluidBicubic attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.configuration.html#jaxprop.configuration.FluidConfiguration.table_options">table_options (jaxprop.configuration.FluidConfiguration attribute)</a>
 </li>
       <li><a href="source/api/jaxprop.math.html#jaxprop.math.tand">tand() (in module jaxprop.math)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.temperature">temperature (jaxprop.helpers_props.FluidState attribute)</a>
+      <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.temperature_from_h">temperature_from_h() (in module jaxprop.perfect_gas.perfect_gas)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.temperature_from_h">temperature_from_h() (in module jaxprop.perfect_gas.perfect_gas)</a>
-</li>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.temperature_from_Ps">temperature_from_Ps() (in module jaxprop.perfect_gas.perfect_gas)</a>
 </li>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.temperature_from_rhoP">temperature_from_rhoP() (in module jaxprop.perfect_gas.perfect_gas)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.temperature_saturation">temperature_saturation (jaxprop.helpers_props.FluidState attribute)</a>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.to_data">to_data() (jaxprop.fluid_state.FluidState method)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.to_dict">to_dict() (jaxprop.helpers_props.FluidState method)</a>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.to_dict">to_dict() (jaxprop.fluid_state.FluidState method)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.to_dict">(jaxprop.property_derivatives.PropertyDerivatives method)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferences.triple_liquid">triple_liquid (jaxprop.source_references.SourceReferences attribute)</a>
+</li>
+      <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid.triple_point_liquid">triple_point_liquid (jaxprop.fluid.Fluid attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin.triple_point_liquid">(jaxprop.source_references.SourceReferencesMixin property)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.fluid.html#jaxprop.fluid.Fluid.triple_point_vapor">triple_point_vapor (jaxprop.fluid.Fluid attribute)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferencesMixin.triple_point_vapor">(jaxprop.source_references.SourceReferencesMixin property)</a>
+</li>
+      </ul></li>
+      <li><a href="source/api/jaxprop.source_references.html#jaxprop.source_references.SourceReferences.triple_vapor">triple_vapor (jaxprop.source_references.SourceReferences attribute)</a>
 </li>
       <li><a href="source/api/jaxprop.coolprop.fluid_properties.html#jaxprop.coolprop.fluid_properties.try_initialize_fluid">try_initialize_fluid() (in module jaxprop.coolprop.fluid_properties)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.UnavailableReferencePointError">UnavailableReferencePointError</a>
+</li>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.UnsupportedExecutionModeError">UnsupportedExecutionModeError</a>
+</li>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.UnsupportedInputPairError">UnsupportedInputPairError</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.UnsupportedOperationError">UnsupportedOperationError</a>
+</li>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.UnsupportedOptionError">UnsupportedOptionError</a>
+</li>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.UnsupportedPropertyError">UnsupportedPropertyError</a>
+</li>
+      <li><a href="source/api/jaxprop.errors.html#jaxprop.errors.UnsupportedRequestError">UnsupportedRequestError</a>
 </li>
   </ul></td>
 </tr></table>
@@ -977,17 +1588,29 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.values">values() (jaxprop.helpers_props.FluidState method)</a>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.valid">valid (jaxprop.fluid_state.FluidState property)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.valid">(jaxprop.property_derivatives.PropertyDerivatives property)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.viscosity">viscosity (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/api/jaxprop.fluid_state.html#jaxprop.fluid_state.FluidState.values">values() (jaxprop.fluid_state.FluidState method)</a>
+
+      <ul>
+        <li><a href="source/api/jaxprop.property_derivatives.html#jaxprop.property_derivatives.PropertyDerivatives.values">(jaxprop.property_derivatives.PropertyDerivatives method)</a>
+</li>
+      </ul></li>
       <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.viscosity_from_T">viscosity_from_T() (in module jaxprop.perfect_gas.perfect_gas)</a>
 </li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.vol_frac_1">vol_frac_1 (jaxprop.helpers_props.FluidState attribute)</a>
-</li>
-      <li><a href="source/api/jaxprop.helpers_props.html#jaxprop.helpers_props.FluidState.vol_frac_2">vol_frac_2 (jaxprop.helpers_props.FluidState attribute)</a>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/api/jaxprop.perfect_gas.perfect_gas.html#jaxprop.perfect_gas.perfect_gas.FluidPerfectGas.with_constants">with_constants() (jaxprop.perfect_gas.perfect_gas.FluidPerfectGas method)</a>
 </li>
   </ul></td>
 </tr></table>

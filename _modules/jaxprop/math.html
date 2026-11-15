@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.math &#8212; jaxprop v0.5.8 documentation</title>
+    <title>jaxprop.math &#8212; jaxprop v0.6.0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=4e4ceabb"></script>
+    <script src="../../_static/documentation_options.js?v=4fe0b1e1"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -133,7 +133,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.5.8 documentation</p>
+    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -148,24 +148,23 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating to the consistent fluid interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../source/api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.bicubic.bicubic_interpolant_property.html">jaxprop.bicubic.bicubic_interpolant_property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.bicubic.generate_tables.html">jaxprop.bicubic.generate_tables module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1.html">jaxprop.bicubic.jax_bicubic_HEOS_interpolation_1 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.bicubic.bicubic_interpolation.html">jaxprop.bicubic.bicubic_interpolation module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.components.html">jaxprop.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.components.nozzle_model_core.html">jaxprop.components.nozzle_model_core module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.components.nozzle_model_solver.html">jaxprop.components.nozzle_model_solver module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.binary_mixture.html">jaxprop.binary_mixture package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.binary_mixture.fluid.html">jaxprop.binary_mixture.fluid module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.coolprop.html">jaxprop.coolprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.core_calculations.html">jaxprop.coolprop.core_calculations module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.fluid_properties.html">jaxprop.coolprop.fluid_properties module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.jax_wrapper.html">jaxprop.coolprop.jax_wrapper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../source/api/jaxprop.coolprop.jax_wrapper_working.html">jaxprop.coolprop.jax_wrapper_working module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../source/api/jaxprop.perfect_gas.html">jaxprop.perfect_gas package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -173,7 +172,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.graphics.html">jaxprop.graphics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.helpers_coolprop.html">jaxprop.helpers_coolprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.fluid.html">jaxprop.fluid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.fluid_state.html">jaxprop.fluid_state module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.configuration.html">jaxprop.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.errors.html">jaxprop.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.source_references.html">jaxprop.source_references module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.property_derivatives.html">jaxprop.property_derivatives module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.plotting.html">jaxprop.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.factory.html">jaxprop.factory module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.helpers_jax.html">jaxprop.helpers_jax module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.math.html">jaxprop.math module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../source/api/jaxprop.utils.html">jaxprop.utils module</a></li>
@@ -281,75 +287,83 @@
   <h1>Source code for jaxprop.math</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
 
+
 <div class="viewcode-block" id="smooth_maximum">
 <a class="viewcode-back" href="../../source/api/jaxprop.math.html#jaxprop.math.smooth_maximum">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">smooth_maximum</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;boltzmann&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Element-wise smoooth maximum approximation of array elements. Smoothed version of numpy.maximum().</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Element-wise smooth maximum of two broadcast-compatible inputs.</span>
 
-<span class="sd">    The :math:`p`-norm approximation to the maximum is given by :cite:p:`weisstein_vector_2023`:</span>
+<span class="sd">    This is a smooth counterpart of ``numpy.maximum(x1, x2)``, not an axis</span>
+<span class="sd">    reduction. The two inputs broadcast to a common shape and are compared at</span>
+<span class="sd">    each element. Let :math:`a=|\alpha|&gt;0` and :math:`m=\max(x_1,x_2)`.</span>
 
-<span class="sd">    .. math::</span>
-
-<span class="sd">       f_{\alpha}(x) = \left( \sum_i x_i^\alpha \right)^{\frac{1}{\alpha}}</span>
-
-<span class="sd">    The Boltzmann approximation is given by :cite:p:`blanchard_accurately_2021`:</span>
+<span class="sd">    The positive-input power-sum approximation is given by</span>
+<span class="sd">    :cite:p:`weisstein_vector_2023`:</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       f_{\alpha}(x) = \frac{1}{\alpha} \log \left( \sum_i e^{\alpha \,(x_i - \hat{x})} \right) + \hat{x}</span>
+<span class="sd">       P_a(x_1,x_2) = \left(x_1^a+x_2^a\right)^{1/a}.</span>
 
-
-<span class="sd">    This LogSumExp approximation is given by :cite:p:`blanchard_accurately_2021`:</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">       f_{\alpha}(x) = \frac{1}{\alpha} \log \left( \sum_i e^{\alpha \,(x_i - \hat{x})} \right) + \hat{x}</span>
-
-<span class="sd">    where the shift :math:`\hat{x}` is defined as:</span>
+<span class="sd">    The Boltzmann approximation is an exponentially weighted mean:</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \hat{x} = \text{sign}(\alpha) \cdot \max(\text{sign}(\alpha) \cdot x)</span>
+<span class="sd">       B_a(x_1,x_2) =</span>
+<span class="sd">       \frac{\sum_{i=1}^{2}x_i\exp\left(a(x_i-m)\right)}</span>
+<span class="sd">            {\sum_{i=1}^{2}\exp\left(a(x_i-m)\right)}.</span>
 
-<span class="sd">    Shifting `x` prevents numerical overflow due to the finite precision of floating-point operations</span>
+<span class="sd">    It favors the larger input and remains between the inputs up to numerical</span>
+<span class="sd">    roundoff. The implementation adds machine epsilon to the weight denominator.</span>
+<span class="sd">    This weighted mean differs from the log-sum-exp approximation described by</span>
+<span class="sd">    :cite:p:`blanchard_accurately_2021`:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       L_a(x_1,x_2) = m + \frac{1}{a}</span>
+<span class="sd">       \log\left(\sum_{i=1}^{2}\exp\left(a(x_i-m)\right)\right).</span>
+
+<span class="sd">    Log-sum-exp approaches the maximum from above, with an excess no greater</span>
+<span class="sd">    than :math:`\log(2)/a`. Shifting the exponential arguments by :math:`m`</span>
+<span class="sd">    avoids overflow in those weights. The direct power-sum implementation does</span>
+<span class="sd">    not use this exponential stabilization.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x : array_like</span>
-<span class="sd">        Input data.</span>
-<span class="sd">    method : str, optional</span>
-<span class="sd">        Method to be used for the approximation. Supported methods are:</span>
-
-<span class="sd">        - ``boltzmann`` (default)</span>
-<span class="sd">        - ``logsumexp``</span>
-<span class="sd">        - ``p-norm``</span>
-
+<span class="sd">    x1, x2 : array_like</span>
+<span class="sd">        Scalar or array inputs compatible under JAX broadcasting.</span>
+<span class="sd">    method : {&quot;boltzmann&quot;, &quot;logsumexp&quot;, &quot;p-norm&quot;}, optional</span>
+<span class="sd">        Approximation method. The default is the Boltzmann weighted mean.</span>
 <span class="sd">    alpha : float, optional</span>
-<span class="sd">        Sharpness parameter. Large values produce a tight approximation to the</span>
-<span class="sd">        maximum function</span>
-<span class="sd">    axis : None or int or tuple of ints, optional</span>
-<span class="sd">        Axis or axes along which to operate. By default, flattened input is</span>
-<span class="sd">        used. If this is a tuple of ints, the maximum is selected over</span>
-<span class="sd">        multiple axes, instead of a single axis or all the axes as before.</span>
-<span class="sd">    keepdims : bool, optional</span>
-<span class="sd">        If this is set to True, the axes which are reduced are left</span>
-<span class="sd">        in the result as dimensions with size one. With this option,</span>
-<span class="sd">        the result will broadcast correctly against the input array.</span>
+<span class="sd">        Finite nonzero sharpness parameter; default 10. Its magnitude is used,</span>
+<span class="sd">        so its sign does not select a minimum. Increasing its magnitude tightens</span>
+<span class="sd">        the approximation in the method&#39;s valid numerical regime.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    max_approx : ndarray or scalar</span>
-<span class="sd">        Approximate maximum of `x` using the specified method.</span>
+<span class="sd">    max_approx : jax.Array</span>
+<span class="sd">        Element-wise approximation with the common broadcast shape. Scalar</span>
+<span class="sd">        inputs produce a zero-dimensional array.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If an unsupported method is specified.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Use strictly positive inputs for ``p-norm``. It evaluates powers of the raw</span>
+<span class="sd">    inputs, not their absolute values, and is not a signed-vector norm. Its</span>
+<span class="sd">    positive-input domain and the nonzero-sharpness requirement are caller</span>
+<span class="sd">    preconditions, not runtime validation. Nonfinite inputs, zero sharpness or</span>
+<span class="sd">    overflowing powers can therefore produce nonfinite numerical results.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    smooth_minimum : Element-wise approximation favoring the smaller input.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Ensure x1 and x2 have the same shape by broadcasting</span>
     <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
-    
+
     <span class="c1"># Stack the input arrays along a new axis to treat them as a single array</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
@@ -373,50 +387,75 @@
 <div class="viewcode-block" id="smooth_minimum">
 <a class="viewcode-back" href="../../source/api/jaxprop.math.html#jaxprop.math.smooth_minimum">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">smooth_minimum</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;boltzmann&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Element-wise smoooth minimum approximation of array elements. Smoothed version of numpy.minimum().</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Element-wise smooth minimum of two broadcast-compatible inputs.</span>
 
-<span class="sd">    The smooth minimum approximation is equivalent to the smooth maximum with a</span>
-<span class="sd">    negative value of the sharpness parameter :math:`\alpha`. See documentation</span>
-<span class="sd">    of the ```smooth_max()`` function for more information about the smoothing</span>
-<span class="sd">    methods available.</span>
+<span class="sd">    This is a smooth counterpart of ``numpy.minimum(x1, x2)``, not an axis</span>
+<span class="sd">    reduction. It uses the same methods as :func:`smooth_maximum` with the</span>
+<span class="sd">    internally signed exponent :math:`-a`, where :math:`a=|\alpha|&gt;0`.</span>
+
+<span class="sd">    For log-sum-exp, let :math:`m=\min(x_1,x_2)`:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       L_{-a}(x_1,x_2) = m - \frac{1}{a}</span>
+<span class="sd">       \log\left(\sum_{i=1}^{2}\exp\left(-a(x_i-m)\right)\right).</span>
+
+<span class="sd">    It approaches the minimum from below, with a deficit no greater than</span>
+<span class="sd">    :math:`\log(2)/a`. Boltzmann instead uses the weighted mean</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       B_{-a}(x_1,x_2) =</span>
+<span class="sd">       \frac{\sum_{i=1}^{2}x_i\exp\left(-a(x_i-m)\right)}</span>
+<span class="sd">            {\sum_{i=1}^{2}\exp\left(-a(x_i-m)\right)},</span>
+
+<span class="sd">    favoring the smaller input and remaining between the inputs up to numerical</span>
+<span class="sd">    roundoff. The implementation adds machine epsilon to the weight denominator.</span>
+<span class="sd">    The power-sum method uses</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       P_{-a}(x_1,x_2) = \left(x_1^{-a}+x_2^{-a}\right)^{-1/a}.</span>
+
+<span class="sd">    Its negative exponent requires strictly positive inputs; zero inputs are</span>
+<span class="sd">    singular and negative inputs do not define the intended real-valued method.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x : array_like</span>
-<span class="sd">        Input data.</span>
-<span class="sd">    method : str, optional</span>
-<span class="sd">        Method to be used for the approximation. Supported methods are:</span>
-
-<span class="sd">        - ``boltzmann`` (default)</span>
-<span class="sd">        - ``logsumexp``</span>
-<span class="sd">        - ``p-norm``</span>
-
+<span class="sd">    x1, x2 : array_like</span>
+<span class="sd">        Scalar or array inputs compatible under JAX broadcasting.</span>
+<span class="sd">    method : {&quot;boltzmann&quot;, &quot;logsumexp&quot;, &quot;p-norm&quot;}, optional</span>
+<span class="sd">        Approximation method. The default is the Boltzmann weighted mean.</span>
 <span class="sd">    alpha : float, optional</span>
-<span class="sd">        Sharpness parameter.Large values produce a tight approximation to the</span>
-<span class="sd">        minimum function</span>
-<span class="sd">    axis : None or int or tuple of ints, optional</span>
-<span class="sd">        Axis or axes along which to operate. By default, flattened input is</span>
-<span class="sd">        used. If this is a tuple of ints, the minimum is selected over</span>
-<span class="sd">        multiple axes, instead of a single axis or all the axes as before.</span>
-<span class="sd">    keepdims : bool, optional</span>
-<span class="sd">        If this is set to True, the axes which are reduced are left</span>
-<span class="sd">        in the result as dimensions with size one. With this option,</span>
-<span class="sd">        the result will broadcast correctly against the input array.</span>
+<span class="sd">        Finite nonzero sharpness parameter; default 10. Only its magnitude is</span>
+<span class="sd">        used. Increasing its magnitude tightens the approximation in the</span>
+<span class="sd">        method&#39;s valid numerical regime.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    min_approx : ndarray or scalar</span>
-<span class="sd">        Approximate minimum of `x` using the specified method.</span>
+<span class="sd">    min_approx : jax.Array</span>
+<span class="sd">        Element-wise approximation with the common broadcast shape. Scalar</span>
+<span class="sd">        inputs produce a zero-dimensional array.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If an unsupported method is specified.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The ``p-norm`` implementation powers the raw inputs without taking absolute</span>
+<span class="sd">    values or stabilizing the power sum. Positive inputs and nonzero sharpness</span>
+<span class="sd">    are caller preconditions, not runtime validation. Extreme powers or invalid</span>
+<span class="sd">    inputs can produce nonfinite numerical results.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    smooth_maximum : Element-wise approximation favoring the larger input.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Ensure x1 and x2 have the same shape by broadcasting</span>
     <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
-    
+
     <span class="c1"># Stack the input arrays along a new axis to treat them as a single array</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
@@ -438,13 +477,23 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_smooth_max_logsumexp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Smooth approximation to the maximum of an array using the log-sum-exp method&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reduce an array using shifted log-sum-exp and a signed exponent.</span>
+
+<span class="sd">    Positive ``alpha`` approximates a maximum; negative ``alpha`` approximates</span>
+<span class="sd">    a minimum. The shift follows the corresponding extremum and stabilizes</span>
+<span class="sd">    the exponential weights. ``axis`` and ``keepdims`` apply to this internal</span>
+<span class="sd">    reduction, not to the public two-input element-wise interface.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Determine the shift for numerical stability</span>
-    <span class="n">shift_value</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">shift_value</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span>
+        <span class="n">jnp</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
 
     <span class="c1"># Compute log-sum-exp with the shift and scale by alpha</span>
-    <span class="n">log_sum</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">shift_value</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="n">log_sum</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+        <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">shift_value</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="p">)</span>
 
     <span class="c1"># Normalize the result by alpha and correct for the shift</span>
     <span class="n">smooth_max</span> <span class="o">=</span> <span class="p">(</span><span class="n">log_sum</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">shift_value</span><span class="p">)</span> <span class="o">/</span> <span class="n">alpha</span>
@@ -457,7 +506,12 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_smooth_max_boltzmann</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Smooth approximation to the maximum of an array using the Boltzmann weighted average&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reduce an array using an exponentially weighted arithmetic mean.</span>
+
+<span class="sd">    Positive ``alpha`` favors larger values; negative ``alpha`` favors smaller</span>
+<span class="sd">    values. Shifted weights avoid exponential overflow. Machine epsilon is</span>
+<span class="sd">    added to the denominator. This weighted mean is distinct from log-sum-exp.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Compute the shift for numerical stability</span>
     <span class="n">shift</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -479,7 +533,13 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_smooth_max_pnorm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Smooth approximation to the maximum of an array using the p-norm method&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reduce strictly positive inputs with a signed power-sum approximation.</span>
+
+<span class="sd">    Positive ``alpha`` approaches the maximum and negative ``alpha`` approaches</span>
+<span class="sd">    the minimum. Powers use the raw inputs without absolute values, domain</span>
+<span class="sd">    validation or overflow stabilization. In particular, the negative-exponent</span>
+<span class="sd">    minimum is singular at zero. ``alpha`` must be finite and nonzero.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Compute the p-norm approximation</span>
     <span class="n">smooth_max</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">alpha</span><span class="p">)</span>
@@ -494,57 +554,69 @@
 <div class="viewcode-block" id="smooth_abs">
 <a class="viewcode-back" href="../../source/api/jaxprop.math.html#jaxprop.math.smooth_abs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">smooth_abs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;quadratic&quot;</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute a smooth approximation of the absolute value function according to the specified method.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute an element-wise smooth approximation of the absolute value.</span>
 
-<span class="sd">    1. The quadratic approximation is given by :cite:p:`ramirez_x_2013`:</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">       f_{\epsilon}(x) = \sqrt{x^2 + \epsilon}</span>
-
-<span class="sd">    2. The hyperbolic tangent approximation is given by :cite:p:`bagul_smooth_2017`:</span>
+<span class="sd">    The quadratic approximation is given by :cite:p:`ramirez_x_2013`:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       f_{\epsilon}(x) = \epsilon \tanh{x / \epsilon}</span>
 
-<span class="sd">    3. The log-cosh approximation is given by :cite:p:`saleh_statistical_2022`:</span>
+<span class="sd">       f_{\epsilon}(x) = \sqrt{x^2 + \epsilon}.</span>
+
+<span class="sd">    The hyperbolic-tangent approximation is given by</span>
+<span class="sd">    :cite:p:`bagul_smooth_2017`:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       f_{\epsilon}(x) = \epsilon \log\left(\cosh\left(\frac{x}{\epsilon}\right)\right)</span>
 
-<span class="sd">    The quadratic method is the most computationally efficient, but also requires a smaller value of :math:`\epsilon` to yield a good approximation.</span>
-<span class="sd">    The transcendental methods give a better approximation to the absolute value function, at the expense of a higher computational time.</span>
+<span class="sd">       f_{\epsilon}(x) = x\tanh\left(\frac{x}{\epsilon}\right).</span>
+
+<span class="sd">    The log-cosh approximation is given by :cite:p:`saleh_statistical_2022`:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       f_{\epsilon}(x) = \epsilon</span>
+<span class="sd">       \log\left(\cosh\left(\frac{x}{\epsilon}\right)\right).</span>
+
+<span class="sd">    All three are even, smooth functions approaching :math:`|x|` as positive</span>
+<span class="sd">    :math:`\epsilon` tends to zero. Their smoothing scales differ: the quadratic</span>
+<span class="sd">    formula adds epsilon to :math:`x^2`, whereas the other two divide x by</span>
+<span class="sd">    epsilon. Equal numerical epsilon values do not imply equal smoothing error</span>
+<span class="sd">    or physical units. The log-cosh implementation uses ``logaddexp`` to avoid</span>
+<span class="sd">    overflowing an intermediate ``cosh`` at small smoothing widths.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x : float or jnp.ndarray</span>
-<span class="sd">        Input value(s) for which the approximation is computed.</span>
-<span class="sd">    method : str, optional</span>
-<span class="sd">        The method of approximation:</span>
-
-<span class="sd">        - ``quadratic`` (default)</span>
-<span class="sd">        - ``hyperbolic``</span>
-<span class="sd">        - ``logcosh``</span>
-
+<span class="sd">    x : float or jax.Array</span>
+<span class="sd">        Input value or array of values.</span>
+<span class="sd">    method : {&quot;quadratic&quot;, &quot;hyperbolic&quot;, &quot;logcosh&quot;, &quot;logarithmic&quot;}, optional</span>
+<span class="sd">        Approximation method. ``quadratic`` is the default. ``logarithmic`` is</span>
+<span class="sd">        an alias of ``logcosh``.</span>
 <span class="sd">    epsilon : float, optional</span>
-<span class="sd">        A small positive constant affecting the approximation. Default is 1e-5.</span>
+<span class="sd">        Finite positive smoothing parameter; default 1e-5. Its numerical</span>
+<span class="sd">        interpretation depends on the selected formula as described above.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    float or jnp.ndarray</span>
-<span class="sd">        Smooth approximation value(s) of the absolute function.</span>
+<span class="sd">    jax.Array</span>
+<span class="sd">        Element-wise smooth approximation with the input shape.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If an unsupported approximation method is provided.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Positivity and finiteness of epsilon are caller preconditions, not runtime</span>
+<span class="sd">    validation. The formulas retain their ordinary floating-point limitations;</span>
+<span class="sd">    for example, the direct quadratic expression can overflow when squaring an</span>
+<span class="sd">    extremely large input.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;quadratic&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_smooth_abs_quadratic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;hyperbolic&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_smooth_abs_tanh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;logarithmic&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;logarithmic&quot;</span><span class="p">,</span> <span class="s2">&quot;logcosh&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_smooth_abs_logcosh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
@@ -568,8 +640,13 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_smooth_abs_logcosh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Log-cosh approximation of the absolute value function.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">epsilon</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">epsilon</span><span class="p">))</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Log-cosh approximation without overflowing the intermediate cosh.</span>
+
+<span class="sd">    log(cosh(z)) = logaddexp(z, -z) - log(2). The direct expression overflowed</span>
+<span class="sd">    for ordinary inputs when the smoothing width was small.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scaled</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="n">epsilon</span>
+    <span class="k">return</span> <span class="n">epsilon</span> <span class="o">*</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">scaled</span><span class="p">,</span> <span class="o">-</span><span class="n">scaled</span><span class="p">)</span> <span class="o">-</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.0</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="sind">
@@ -656,29 +733,29 @@
 <div class="viewcode-block" id="sigmoid_hyperbolic">
 <a class="viewcode-back" href="../../source/api/jaxprop.math.html#jaxprop.math.sigmoid_hyperbolic">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">sigmoid_hyperbolic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute the sigmoid hyperbolic function.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute a sigmoid using the hyperbolic tangent.</span>
 
-<span class="sd">    This function calculates a sigmoid function based on the hyperbolic tangent.</span>
-<span class="sd">    The formula is given by:</span>
+<span class="sd">    The formula is</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \sigma(x) = \frac{1 + \tanh\left(\frac{x - x_0}{\alpha}\right)}{2}</span>
+
+<span class="sd">        \sigma(x) = \frac{1 + \tanh\left(\frac{x - x_0}{\alpha}\right)}{2}.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x : array_like</span>
 <span class="sd">        Input data.</span>
 <span class="sd">    x0 : float, optional</span>
-<span class="sd">        Center of the sigmoid function. Default is 0.5.</span>
+<span class="sd">        Center of the sigmoid; default 0.5.</span>
 <span class="sd">    alpha : float, optional</span>
-<span class="sd">        Scale parameter. Default is 0.1.</span>
+<span class="sd">        Nonzero scale parameter; default 1. A positive value gives an increasing</span>
+<span class="sd">        transition, while a negative value reverses its direction. Its magnitude</span>
+<span class="sd">        controls the transition width. The scale is not validated at runtime.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    array_like</span>
-<span class="sd">        Output of the sigmoid hyperbolic function.</span>
-
+<span class="sd">    jax.Array</span>
+<span class="sd">        Sigmoid values with the input shape.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># Ensure x is a NumPy array for vectorized operations</span>
     <span class="n">sigma</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">jnp</span><span class="o">.</span><span class="n">tanh</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span> <span class="o">/</span> <span class="n">alpha</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
