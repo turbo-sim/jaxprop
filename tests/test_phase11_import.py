@@ -37,8 +37,9 @@ print(json.dumps({
         capture_output=True,
         text=True,
         timeout=60,
-        check=True,
+        check=False,
     )
+    assert result.returncode == 0, (result.stdout, result.stderr)
     return json.loads(result.stdout.strip().splitlines()[-1])
 
 
