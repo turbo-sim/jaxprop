@@ -18,13 +18,12 @@ Activate it with ``.venv\Scripts\Activate.ps1`` on Windows PowerShell or
    python -m pip install jaxprop
    python -c "import jaxprop; print(jaxprop.__version__)"
 
-Version 0.6.0 is prepared locally and awaits ThermOpt and Barotropy verification
-before publication. To test the prepared artifact before that release, install
-its wheel explicitly from the JaxProp checkout:
+To test a locally built release candidate before publication, install its wheel
+explicitly from the JaxProp checkout:
 
 .. code-block:: bash
 
-   python -m pip install dist/jaxprop-0.6.0-py3-none-any.whl
+   python -m pip install dist/jaxprop-0.6.1-py3-none-any.whl
 
 Run import checks outside the source checkout and inspect ``jaxprop.__file__``
 to confirm that the installed distribution is being tested. See the

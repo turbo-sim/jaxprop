@@ -57,7 +57,7 @@ del _fluid_type
 
 
 # Package info
-__version__ = "0.6.0"
+__version__ = "0.6.1"
 PACKAGE_NAME = "jaxprop"
 URL_GITHUB = "https://github.com/turbo-sim/jaxprop"
 URL_DOCS = "https://turbo-sim.github.io/jaxprop/"
