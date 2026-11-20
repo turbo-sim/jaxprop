@@ -26,6 +26,7 @@ _TABLE_ALLOWED = _TABLE_REQUIRED | {
     "table_name",
     "metastable_phase",
     "metastable_domain",
+    "phase_support",
 }
 
 
@@ -162,6 +163,8 @@ def create_fluid(
         )
 
     if provider == "bicubic":
+        if "phase_support" in table and not isinstance(table["phase_support"], bool):
+            invalid("phase_support", "Choose a static boolean.")
         unknown = set(table) - _TABLE_ALLOWED
         if unknown:
             invalid(
