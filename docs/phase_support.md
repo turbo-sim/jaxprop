@@ -106,4 +106,4 @@ Use separate development cache folders when comparing with published results.
 No published timing/reference artifacts are rebaselined by enabling this option.
 
 Release qualification is indexed in
-[the package validation note](../development/performance/phase_support_release/README.md).
+[the package validation note](https://github.com/turbo-sim/jaxprop/blob/main/development/performance/phase_support_release/README.md).

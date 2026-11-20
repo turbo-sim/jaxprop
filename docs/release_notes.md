@@ -1,7 +1,7 @@
 # JaxProp 0.6.2
 
 Prepared on 21 November 2026. Publication and artifact identities are recorded
-in the [patch qualification record](../development/performance/uniform_saturation_release/README.md).
+in the [patch qualification record](https://github.com/turbo-sim/jaxprop/blob/main/development/performance/uniform_saturation_release/README.md).
 
 - Correct opt-in pure-fluid HP evaluation near saturation while retaining the
   original uniform enthalpy/log-pressure mesh, dimensions, bounds and base
@@ -44,12 +44,12 @@ is verified after passing Linux/Windows and installed-wheel release checks.
 - Reduce equivalent-model JIT-cache overhead with a direct immutable metadata
   equality fast path. Preserve reordered/foreign mapping semantics, hashing,
   model validation and all numerical equations. See the
-  [downstream verification](../development/performance/metadata_equality/REPORT.md).
+  [downstream verification](https://github.com/turbo-sim/jaxprop/blob/main/development/performance/metadata_equality/REPORT.md).
   Earlier local 0.6.0 test wheels remain identified by SHA256 in that report.
 
 The release excludes the separate, unfinished bicubic nozzle/shared-core and
 boundary-derivative working-tree changes. See the
-[release qualification record](../development/performance/phase_support_release/README.md)
+[release qualification record](https://github.com/turbo-sim/jaxprop/blob/main/development/performance/phase_support_release/README.md)
 for the exact artifact, tests and downstream checks.
 
 The local installed wheel passes 3,064 HEOS/REFPROP library tests with
