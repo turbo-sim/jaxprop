@@ -1,3 +1,30 @@
+# JaxProp 0.6.2
+
+Prepared on 21 November 2026. Publication and artifact identities are recorded
+in the [patch qualification record](../development/performance/uniform_saturation_release/README.md).
+
+- Correct opt-in pure-fluid HP evaluation near saturation while retaining the
+  original uniform enthalpy/log-pressure mesh, dimensions, bounds and base
+  property coefficients. One-sided bridges use the existing saturation data
+  and homogeneous cells; pure-fluid wet states follow source equilibrium
+  relations. A smooth pressure partition preserves continuity when anchors
+  change. No mesh refinement or runtime EOS callbacks are introduced.
+- Return binary phase flags from the saturation boundary instead of smoothing
+  discrete flags with a polynomial. Seed near-saturation PT inverses on the
+  appropriate single-phase side; a saturated pure-fluid PT flash remains
+  ambiguous.
+- Preserve typed input/domain failures and optional-property availability.
+  The correction requires `phase_support=True`, a pure fluid, existing endpoint
+  pressure coverage (up to 98% of critical pressure), and safe homogeneous
+  anchors. Other guarded cells retain their previous policy.
+
+The local prototype passes all 20 previously rejected ThermOpt path points,
+eight initial native eager/JAX cycle comparisons and 20 native snapping checks.
+Those development receipts motivate the release; installed-wheel and hosted
+release checks remain separately identified. Full thermodynamic optimization,
+critical-region coverage and warm benchmarks are not established by this patch.
+The earlier uncommitted nozzle/shared-core experiments remain excluded.
+
 # JaxProp 0.6.1
 
 **Released on 20 November 2026.** [PyPI 0.6.1](https://pypi.org/project/jaxprop/0.6.1/)

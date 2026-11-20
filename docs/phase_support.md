@@ -72,7 +72,7 @@ intersecting a phase boundary remain rejected, even when the requested state is
 valid. The guard prevents a tensor polynomial from smoothing over the
 thermodynamic derivative discontinuity or interpolating a discrete phase flag.
 
-The unreleased `fix/uniform-saturation-boundary` development branch corrects
+JaxProp **0.6.2** corrects
 pure-fluid boundary evaluation with `phase_support=True`. The uniform
 $h$–$\log(p)$ nodes, grid dimensions, original property arrays and coefficients
 remain unchanged. One-sided Hermite bridges connect existing homogeneous cells
@@ -91,7 +91,7 @@ remains ambiguous. A phase-aware PT seed avoids initializing single-phase
 near-boundary flashes on the flat wet plateau.
 
 Full wet-cycle/domain qualification is separate from property-level checks.
-The development branch has not been published as a new package version.
+Release qualification is recorded separately from whole-cycle qualification.
 
 Diagnostic accuracy and sensitivities depend on the two-dimensional table;
 endpoint accuracy depends on its own pressure grid. Compare values and
