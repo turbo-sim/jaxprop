@@ -1,6 +1,7 @@
 # JaxProp 0.6.1
 
-Release candidate prepared on 20 November 2026; publication is verified separately.
+**Released on 20 November 2026.** [PyPI 0.6.1](https://pypi.org/project/jaxprop/0.6.1/)
+is verified after passing Linux/Windows and installed-wheel release checks.
 
 - Add opt-in `table_options.phase_support=True` for ordinary single-source
   equilibrium bicubic models. Native JIT/AD requests expose source-defined
@@ -8,6 +9,7 @@ Release candidate prepared on 20 November 2026; publication is verified separate
   endpoints at Q=0 and Q=1. Existing configurations keep their default
   capabilities; diagnostics still require `supersaturation=True` per request.
 - Validate/cache both endpoint payloads with their generation provenance.
+  Generator/source identities change, so previous table caches regenerate.
   Existing HP phase-boundary guards remain active. This release does not
   establish arbitrary wet-cycle domain accuracy or complete ThermOpt Phase 6.
   See [phase support](phase_support.md) for the interface and limitations.
@@ -23,10 +25,11 @@ boundary-derivative working-tree changes. See the
 [release qualification record](../development/performance/phase_support_release/README.md)
 for the exact artifact, tests and downstream checks.
 
-The prepared installed wheel passes 3,064 local HEOS/REFPROP library tests with
+The local installed wheel passes 3,064 HEOS/REFPROP library tests with
 two optional C compiler skips, plus 236 targeted ThermOpt consumer tests and
 one existing expected failure. Four-fluid property/component checks pass.
-Hosted qualification and publication remain pending their release gates.
+The published wheel's Python ASTs match the tested wheel; their different byte
+identities and exact PyPI artifact hashes remain recorded separately.
 
 # JaxProp 0.6.0
 

@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "version": "0.6.1",
-  "status": "Local release artifact qualified; hosted checks/publication pending",
-  "published": false,
+  "status": "Published JaxProp 0.6.1 after Linux/Windows and installed-wheel qualification",
+  "published": true,
   "base_commit": "52c98b8",
   "separate_uncommitted_nozzle_and_boundary_work_excluded": true,
   "artifacts": {
@@ -94,11 +94,77 @@
   },
   "ci": {
     "pull_request": "https://github.com/turbo-sim/jaxprop/pull/1",
-    "status": "Pending corrected workflow checks",
+    "status": "Passed",
     "prior_failures": [
       "Example workflow omitted its IPython test dependency",
       "Poetry command needed an explicit argument separator for --wheel"
-    ]
+    ],
+    "pull_request_run": "https://github.com/turbo-sim/jaxprop/actions/runs/44808230351",
+    "tag_run": "https://github.com/turbo-sim/jaxprop/actions/runs/44811955497",
+    "example_tag_run": "https://github.com/turbo-sim/jaxprop/actions/runs/44811955777"
   },
-  "phase_6_complete": false
+  "phase_6_complete": false,
+  "release_commit": "5939b3aa7e1fd8d91ce34dac6442860430f3ab58",
+  "pypi_url": "https://pypi.org/project/jaxprop/0.6.1/",
+  "publication_workflow": "https://github.com/turbo-sim/jaxprop/actions/runs/44811955497",
+  "published_artifacts": {
+    "jaxprop-0.6.1-py3-none-any.whl": {
+      "sha256": "9195aab3df0b258c2197ba1dcd6a1cc417e896e545e9a625e209fb0ccd1e6bf0",
+      "uploaded": "2026-11-20T20:53:04.865551Z"
+    },
+    "jaxprop-0.6.1.tar.gz": {
+      "sha256": "e010f3f964e907491f6effec3bb7eb8881c23fa28f2864c4cc30b35d0cf7ab9c",
+      "uploaded": "2026-11-20T20:53:04.036410Z"
+    }
+  },
+  "published_code_equivalent_to_tested_wheel": {
+    "equivalent": true,
+    "package_files": 44,
+    "byte_differences": [
+      "jaxprop/__init__.py",
+      "jaxprop/bicubic/__init__.py",
+      "jaxprop/bicubic/cache_metadata.py",
+      "jaxprop/bicubic/numerics.py",
+      "jaxprop/bicubic/phase_envelope.py",
+      "jaxprop/bicubic/request_policy.py",
+      "jaxprop/bicubic/thermal_stability.py",
+      "jaxprop/binary_mixture/__init__.py",
+      "jaxprop/binary_mixture/compat.py",
+      "jaxprop/binary_mixture/components.py",
+      "jaxprop/binary_mixture/fluid.py",
+      "jaxprop/binary_mixture/host.py",
+      "jaxprop/binary_mixture/inverses.py",
+      "jaxprop/binary_mixture/physics.py",
+      "jaxprop/configuration.py",
+      "jaxprop/coolprop/__init__.py",
+      "jaxprop/coolprop/core_calculations.py",
+      "jaxprop/coolprop/fluid_properties.py",
+      "jaxprop/coolprop/jax_wrapper.py",
+      "jaxprop/coolprop/source_context.py",
+      "jaxprop/coolprop/source_lifecycle.py",
+      "jaxprop/errors.py",
+      "jaxprop/fluid.py",
+      "jaxprop/fluid_api.py",
+      "jaxprop/fluid_state.py",
+      "jaxprop/graphics.py",
+      "jaxprop/helpers_jax.py",
+      "jaxprop/helpers_props.py",
+      "jaxprop/math.py",
+      "jaxprop/perfect_gas/__init__.py",
+      "jaxprop/perfect_gas/perfect_gas.py",
+      "jaxprop/perfect_gas/request_policy.py",
+      "jaxprop/plotting.py",
+      "jaxprop/property_derivatives.py",
+      "jaxprop/property_schema.py",
+      "jaxprop/source_references.py",
+      "jaxprop/two_component/__init__.py",
+      "jaxprop/two_component/mixture_calculations.py",
+      "jaxprop/utils.py"
+    ],
+    "explanation": "Python ASTs are identical; package non-Python assets are byte-identical. Source line endings/cache fingerprints can differ.",
+    "local_sha256": "2f2c2720ab017a2e782a2b2e8c4ed09395cfca142a996c90e58af38e11328323",
+    "published_sha256": "9195aab3df0b258c2197ba1dcd6a1cc417e896e545e9a625e209fb0ccd1e6bf0"
+  },
+  "original_working_tree": "Main advanced to the release; four pre-existing tracked performance files and 16 untracked local files restored byte-for-byte. Backup stash retained.",
+  "github_release": "https://github.com/turbo-sim/jaxprop/releases/tag/v0.6.1"
 }

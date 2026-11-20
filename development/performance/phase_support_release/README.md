@@ -49,4 +49,16 @@ hashes. Receipts are retained under `results/`; ThermOpt receipts are under its
 `development/jax_development/results/phase_06/` tree. The first hosted attempts
 exposed a missing IPython test dependency and Poetry argument forwarding in the
 new wheel check. Both workflow fixes retain the original tests and thresholds.
-Hosted qualification and PyPI publication are pending their corrected checks.
+The corrected Linux/Windows release checks and both hosted example workflows
+pass. The tag-triggered release run also passes and publishes
+[JaxProp 0.6.1 to PyPI](https://pypi.org/project/jaxprop/0.6.1/)
+on 20 November 2026. The published wheel is independently downloaded and hash
+verified. All 44 package files match the tested wheel's Python ASTs or unchanged
+non-Python payloads; source line-ending differences retain distinct byte hashes
+and cache fingerprints. The verification record distinguishes local and published
+artifacts instead of relabeling their test receipts.
+
+The original checkout is advanced to the release. Its four earlier tracked
+performance/boundary files and 16 untracked local files remain byte-identical
+to their pre-sync state, with a named backup stash retained. They were not
+included in the release.
