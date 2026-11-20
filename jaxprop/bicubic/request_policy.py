@@ -16,7 +16,7 @@ from ..errors import (
     UnsupportedExecutionModeError,
     UnsupportedOperationError,
 )
-from ..fluid_api import PAIR_NAMES, StatusCode, validate_request
+from ..fluid_api import PAIR_NAMES, StatusCode, validate_request, DIAGNOSTIC_PROPERTIES
 from ..fluid_state import FluidState
 from .numerics import _cell_basis, interpolate_properties, solve_inverse
 
@@ -41,7 +41,7 @@ def outside(value, lower, upper):
     return (value < lower - tolerance) | (value > upper + tolerance)
 
 
-def _metadata(fluid, errors):
+def _metadata(fluid, errors, supersaturation=False):
     return dict(
         fluid_name=fluid.name,
         identifier=fluid.identifier,
@@ -49,12 +49,12 @@ def _metadata(fluid, errors):
         providers=frozenset((fluid.provider,)),
         model=fluid.model,
         reference_id=fluid.reference_id,
-        available_properties=fluid.capabilities.properties,
+        available_properties=fluid.capabilities.properties if supersaturation else fluid.capabilities.properties - DIAGNOSTIC_PROPERTIES,
         error_policy=errors,
     )
 
 
-def _evaluate_coordinates(fluid, input_type, first, second, *, errors):
+def _evaluate_coordinates(fluid, input_type, first, second, *, errors, supersaturation=False):
     """Apply pointwise policy to a scalar or a direct natural-coordinate batch.
 
     Inverse solves remain scalar and are vectorized by ``evaluate_state``.
@@ -157,7 +157,9 @@ def _evaluate_coordinates(fluid, input_type, first, second, *, errors):
         status,
     ).astype(jnp.int32)
     clipped = (natural_outside | projected | invalid) if errors == "clip" else None
-    metadata = _metadata(fluid, errors)
+    if getattr(fluid, "phase_support", False) and not supersaturation:
+        properties = {name: value for name, value in properties.items() if name not in DIAGNOSTIC_PROPERTIES}
+    metadata = _metadata(fluid, errors, supersaturation)
     if native_batch:
         # Keep natural-coordinate batches pointwise. The generic all-success
         # batch conditional can force tuple-branch copies of every field; a
@@ -182,22 +184,22 @@ def _evaluate_coordinates(fluid, input_type, first, second, *, errors):
     )
 
 
-def evaluate_scalar(fluid, input_type, first, second, *, errors):
+def evaluate_scalar(fluid, input_type, first, second, *, errors, supersaturation=False):
     """Evaluate one scalar request through the shared coordinate policy."""
-    return _evaluate_coordinates(fluid, input_type, first, second, errors=errors)
+    return _evaluate_coordinates(fluid, input_type, first, second, errors=errors, supersaturation=supersaturation)
 
 
-def evaluate_state(fluid, input_type, first, second, *, errors):
+def evaluate_state(fluid, input_type, first, second, *, errors, supersaturation=False):
     dtype = jnp.result_type(first, second, fluid.h_vals, fluid.logP_vals, 0.0)
     first, second = jnp.broadcast_arrays(
         jnp.asarray(first, dtype=dtype), jnp.asarray(second, dtype=dtype)
     )
     if first.ndim == 0:
-        return fluid._get_state_scalar(input_type, first, second, errors=errors)
+        return fluid._get_state_scalar(input_type, first, second, errors=errors, supersaturation=supersaturation)
     if input_type == pairs.HmassP_INPUTS:
-        return _evaluate_coordinates(fluid, input_type, first, second, errors=errors)
+        return _evaluate_coordinates(fluid, input_type, first, second, errors=errors, supersaturation=supersaturation)
     result = jax.vmap(
-        lambda a, b: fluid._get_state_scalar(input_type, a, b, errors=errors)
+        lambda a, b: fluid._get_state_scalar(input_type, a, b, errors=errors, supersaturation=supersaturation)
     )(first.ravel(), second.ravel())
     return jax.tree_util.tree_map(lambda value: value.reshape(first.shape), result)
 
@@ -234,7 +236,10 @@ def _saturation_scalar(fluid, pressure, quality, *, errors):
     )
 
 
-def evaluate_saturation(fluid, pressure, quality, *, errors):
+def evaluate_saturation(fluid, pressure, quality, *, errors, supersaturation=False):
+    if getattr(fluid, "phase_support", False):
+        from .phase_support import evaluate_endpoints
+        return evaluate_endpoints(fluid, pressure, quality, errors=errors, supersaturation=supersaturation)
     dtype = jnp.result_type(pressure, quality, fluid.h_vals, 0.0)
     pressure, quality = jnp.broadcast_arrays(
         jnp.asarray(pressure, dtype=dtype), jnp.asarray(quality, dtype=dtype)
@@ -301,7 +306,7 @@ class _BicubicStateCall:
                     provider=fluid.provider,
                     model=fluid.model,
                     request="saturation",
-                    reason="Endpoint tables support PQ_INPUTS at their declared liquid/vapor quality only.",
+                    reason="Saturation evaluation requires PQ_INPUTS at the declared endpoint qualities.",
                     supported=("PQ_INPUTS",),
                 )
         context = _SaturationRequest(fluid) if self.saturation else fluid
@@ -363,7 +368,9 @@ class _BicubicStateCall:
                 }.get(
                     code, "The table produced nonfinite or nonphysical core properties."
                 )
-                if self.saturation and code == StatusCode.OUT_OF_DOMAIN:
+                if (self.saturation or input_type == pairs.PQ_INPUTS) and getattr(fluid, "phase_support", False) and code == StatusCode.OUT_OF_DOMAIN:
+                    reason = f"Phase-support saturation accepts Q=0 or Q=1, with pressure from {fluid._saturation_p_min:g} to {fluid._saturation_p_max:g} Pa."
+                elif self.saturation and code == StatusCode.OUT_OF_DOMAIN:
                     endpoint = 0 if fluid.metastable_phase == "liquid" else 1
                     reason = (
                         f"This saturation table contains only Q={endpoint}, "

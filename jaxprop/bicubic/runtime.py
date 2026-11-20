@@ -116,7 +116,14 @@ def inspection_view(fluid):
             result[name] = entry
             continue
         if name == "saturation_props":
-            result[name] = {key: dict(value) for key, value in entry.items()}
+            result[name] = (
+                {
+                    side: {key: dict(value) for key, value in fields.items()}
+                    for side, fields in entry.items()
+                }
+                if set(entry) == {"liquid", "vapor"}
+                else {key: dict(value) for key, value in entry.items()}
+            )
             continue
         current = dict(entry)
         if name in fluid._table:
@@ -134,6 +141,15 @@ def inspection_view(fluid):
 
 
 def prepare_saturation(table, properties):
+    payload = table["saturation_props"]
+    if set(payload) == {"liquid", "vapor"}:
+        prepared = {
+            side: prepare_saturation({"saturation_props": entry}, properties)
+            for side, entry in payload.items()
+        }
+        return {side: entry[0] for side, entry in prepared.items()}, {
+            side: entry[1] for side, entry in prepared.items()
+        }
     numerical, availability = {}, {}
     for name, entry in table["saturation_props"].items():
         if name not in properties:

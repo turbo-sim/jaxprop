@@ -14,7 +14,7 @@ from .cache_metadata import metadata_fingerprint
 from .thermal_stability import metastable_table_error
 
 CACHE_FORMAT_VERSION = 2
-GENERATOR_REVISION = 3
+GENERATOR_REVISION = 4
 TABLE_ARRAYS = (
     "value",
     "grad_h",
@@ -108,7 +108,13 @@ def table_validation_error(table, metadata):
     if not isinstance(saturation, dict):
         return "saturation payload is not a dictionary"
     if metadata["table_mode"] in ("equilibrium", "mixture"):
-        if saturation:
+        if metadata.get("phase_support", False):
+            from .phase_support import validation_error
+
+            reason = validation_error(saturation, metadata, CORE_PROPERTIES)
+            if reason is not None:
+                return reason
+        elif saturation:
             return "ordinary tables must not contain an undeclared saturation mode"
     else:
         if set(saturation) != set(PROPERTIES_CANONICAL):
@@ -180,7 +186,13 @@ def normalize_generated_arrays(table, metadata):
                 if key in table[name]:
                     table[name][key] = normalized(table[name][key])
     if isinstance(table.get("saturation_props"), dict):
-        for entry in table["saturation_props"].values():
+        saturation = table["saturation_props"]
+        groups = (
+            saturation.values()
+            if set(saturation) == {"liquid", "vapor"}
+            else (saturation,)
+        )
+        for entry in (item for group in groups for item in group.values()):
             if isinstance(entry, dict):
                 for key in ("value", "grad_p"):
                     if key in entry:

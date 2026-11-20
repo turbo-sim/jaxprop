@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "version": "0.6.1",
+  "status": "Local release artifact qualified; hosted checks/publication pending",
+  "published": false,
+  "base_commit": "52c98b8",
+  "separate_uncommitted_nozzle_and_boundary_work_excluded": true,
+  "artifacts": {
+    "jaxprop-0.6.1-py3-none-any.whl": "2f2c2720ab017a2e782a2b2e8c4ed09395cfca142a996c90e58af38e11328323",
+    "jaxprop-0.6.1.tar.gz": "7897e1f9d438bb794c7553d83b45fba306205206b215a13799645f29a426d0e0"
+  },
+  "installed": {
+    "version": "0.6.1",
+    "imported_package": "C:\\Users\\roagr\\git_projects\\jaxprop-release-061\\.venv\\Lib\\site-packages\\jaxprop",
+    "wheel_sha256": "2f2c2720ab017a2e782a2b2e8c4ed09395cfca142a996c90e58af38e11328323",
+    "installed_files": {
+      "jaxprop/__init__.py": "ae9e69be015f6218d0aae0ae8fae9fb47805b52d93a32648c1183fae104d7b7d",
+      "jaxprop/bicubic/__init__.py": "86d7c29d9069761803c19e8220b265df186c14b15771f2923733f9b215d2a429",
+      "jaxprop/bicubic/bicubic_interpolation.py": "76630a2b39de8316d10cb767aaa8dad64901eb4bbf10216464e2351400204c7d",
+      "jaxprop/bicubic/cache_metadata.py": "0695f567930a628bcd67aec0a82798669a6e0827e37b0ec9b0550fe07a2b22af",
+      "jaxprop/bicubic/numerics.py": "323ffc77a6e919b54096aa16c13a4a6f03ec35e5b63bb0d4e8fe96a1d70969d9",
+      "jaxprop/bicubic/phase_envelope.py": "917acfc6aa319e7ba0c8e7480f80f49cc8248319168fb795008087731367f4b7",
+      "jaxprop/bicubic/phase_support.py": "1a3819f2d27161be691aa6fe8569a59599fa70966b9a9a733853dbcac00a03d5",
+      "jaxprop/bicubic/request_policy.py": "c6b11ff7b1aa134488640a78ef59ad871d345fdfeec9b17a0b843e189116a4af",
+      "jaxprop/bicubic/runtime.py": "37b56bf4c6201cef565aaaf43cc9a158aa9dd654095a72b227d2000d06e6fc36",
+      "jaxprop/bicubic/table_cache.py": "2711405d92e1b849eaef9860b20e53eb8965e24675cbf853add2aea4b1d2f089",
+      "jaxprop/bicubic/thermal_stability.py": "37733a630701e4f8e022070d2538643443649c8d3727ada02156dadafe05ea88",
+      "jaxprop/binary_mixture/__init__.py": "6e2f4b9386c760adf1ddd5c9602e87d5767d26d08fe3c610b89fc3c5f24d349a",
+      "jaxprop/binary_mixture/compat.py": "35739eac61fa08cde35ea7a85c0fe9e49d86193ce7331d0eb5ae41261c2292d6",
+      "jaxprop/binary_mixture/components.py": "32246b4d115bb230701f1bbaea30f6b44b5515a3643755297973b955efe5027c",
+      "jaxprop/binary_mixture/fluid.py": "4d88c22077825db39843c3bb7984677e45ff6c71e47771d98fcad67c44425479",
+      "jaxprop/binary_mixture/host.py": "7e0fb02d38020cd9f2a77326d9b8fcb407d1455213716544fc099982b31d951d",
+      "jaxprop/binary_mixture/inverses.py": "a517d9cb6ee33d35d6c94bb86cb75d4f7b57241251fd482e04583266af2bf8c7",
+      "jaxprop/binary_mixture/physics.py": "701483d039eeed5878e6fc1a316f8b8d5c272d5d34d92323a82dc431ce4d8ab0",
+      "jaxprop/configuration.py": "52ca63bb057d9eadda07f64ac8a52d94279b72d07b2cabbfaf1bc2848c7d742b",
+      "jaxprop/coolprop/__init__.py": "1286cfa2f5ee601a26f125047ab90625de35737b083fb5cb68af34e06eb62bb0",
+      "jaxprop/coolprop/core_calculations.py": "b76a089161d56949276071825bbf594cfff7c4d7a98960f35e5f6f6b33f08091",
+      "jaxprop/coolprop/fluid_properties.py": "9653f347f400de97b00c049ad69451c7dc284e9185c80ae0000ad90dca366e33",
+      "jaxprop/coolprop/jax_wrapper.py": "4650f6c6094722036819843b4fd07b326f72f95ee3caa9f83df3acbd56cf2119",
+      "jaxprop/coolprop/source_context.py": "fa20c2c4e89ccb4c815c05309eb82439358ebcbcaf0cbc53b6bd8769c714ef53",
+      "jaxprop/coolprop/source_lifecycle.py": "7bc8aebb0b72972823191499e5a42f8f986310bb939e1d74fd58b584d5b7abbc",
+      "jaxprop/errors.py": "fb3a708704586d375a7145e3f67b37e974f5bb2f2e5de36064b70a7a49b04861",
+      "jaxprop/factory.py": "94909183837e836c9f9432275e39baae5b4fde8506da9b5b1937ef4a896c24c4",
+      "jaxprop/fluid.py": "687c8cb1f83cada8ee8bf9858a1dc82e6ea19cf02d59861b5d1d769e1d217ba0",
+      "jaxprop/fluid_api.py": "ff7e0303e72943504c42743270cc0e92719675311cb3a306452b33482cdb7e98",
+      "jaxprop/fluid_state.py": "a838da472cee1e2140c9a67d1ffdc4edd2ddc46e5646c33bd2eb7332da38cc08",
+      "jaxprop/graphics.py": "58fc2a59248dd7b233d40ca71d2def860c5bc1ced9542ba40483ce6ce42ccf2f",
+      "jaxprop/helpers_jax.py": "0447472ad139532486b6601db3f55414fe964e2549069539486adc2183a298ff",
+      "jaxprop/helpers_props.py": "e94b50f9476974da0080bb9c623204210d6402f596804feb9ded54d207641bff",
+      "jaxprop/math.py": "3787b55b6a1e9ec2b8e29cb7e3fd445169f884b69cb5b874056ef9687ede5f43",
+      "jaxprop/perfect_gas/__init__.py": "885acc00ef116f657a8614c1ff097c9e6f0e0e409bcb48661b3231e3d177d8cb",
+      "jaxprop/perfect_gas/perfect_gas.py": "5f5dea49507aa95ec2b3520291bb5ded5f8d7e7521423a0f9cb0f66a8c5b2e9b",
+      "jaxprop/perfect_gas/request_policy.py": "3c0995a6c39fd511ce1558d0b61ae8c0c1b609fa161e60ded16a412f64778c02",
+      "jaxprop/plotting.py": "c60e0eeb9f029872777b6a73458b11c8a51ed862d3bfc4a2006f1ff47fc7a62e",
+      "jaxprop/property_derivatives.py": "60fcadc613f939d356c00ab48336d1ca60fc2360cc2bf4b81a1f4d8bff5dcde1",
+      "jaxprop/property_schema.py": "79c76d870779b22c65b47d8fdfc00e263eeff8072057d52f6e15125bd605bfbb",
+      "jaxprop/source_references.py": "6e6255e17cf37a3ae668d863dc3ed08e628285115d4120ea29d1e5f9f816dd03",
+      "jaxprop/two_component/__init__.py": "b56d615ade904215045fddaff3469dab17394a5ef2e7ea0de312c906a20c4493",
+      "jaxprop/two_component/mixture_calculations.py": "e1fedad06b43933f8532e97bddbc354f2880e1b45a01dbcbaa874cd38cbd0783",
+      "jaxprop/utils.py": "8e9b7b36c80a3f6f8d3826a2cda96e5dd8231d989ef0aa3350a18e9909d5fd5f"
+    }
+  },
+  "full_heos_refprop": {
+    "tests": 3066,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2,
+    "passed": 3064
+  },
+  "import_probe_after_ci_fix": {
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 7
+  },
+  "thermopt_consumer": {
+    "tests": 237,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "passed": 236
+  },
+  "thermopt_property_cohort": {
+    "path": "C:\\Users\\roagr\\git_projects\\thermopt\\development\\jax_development\\results\\phase_06\\runs\\release_wheel_properties\\records.json",
+    "sha256": "ef6499314d974374fe45d82a825c81502bc41bd6865426f9a27123c14ec46198",
+    "passed": true,
+    "fluids": [
+      "water",
+      "butane",
+      "R134a",
+      "CO2"
+    ]
+  },
+  "ci": {
+    "pull_request": "https://github.com/turbo-sim/jaxprop/pull/1",
+    "status": "Pending corrected workflow checks",
+    "prior_failures": [
+      "Example workflow omitted its IPython test dependency",
+      "Poetry command needed an explicit argument separator for --wheel"
+    ]
+  },
+  "phase_6_complete": false
+}

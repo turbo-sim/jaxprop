@@ -30,7 +30,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install scientific/test dependencies
-        run: python -m pip install . pytest black pandas openpyxl
+        run: python -m pip install . pytest black pandas openpyxl "ipython>=8.13,<8.17"
       - name: Verify the library and scientific example checks
         run: python -m pytest tests -c tests/pytest.ini -q --junitxml=development/example_audit/results/ci_library.xml
       - name: Run bounded example smoke profiles

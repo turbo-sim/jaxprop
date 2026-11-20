@@ -1,3 +1,33 @@
+# JaxProp 0.6.1
+
+Release candidate prepared on 20 November 2026; publication is verified separately.
+
+- Add opt-in `table_options.phase_support=True` for ordinary single-source
+  equilibrium bicubic models. Native JIT/AD requests expose source-defined
+  diagnostics, including subcooling and superheating, and both PQ saturation
+  endpoints at Q=0 and Q=1. Existing configurations keep their default
+  capabilities; diagnostics still require `supersaturation=True` per request.
+- Validate/cache both endpoint payloads with their generation provenance.
+  Existing HP phase-boundary guards remain active. This release does not
+  establish arbitrary wet-cycle domain accuracy or complete ThermOpt Phase 6.
+  See [phase support](phase_support.md) for the interface and limitations.
+
+- Reduce equivalent-model JIT-cache overhead with a direct immutable metadata
+  equality fast path. Preserve reordered/foreign mapping semantics, hashing,
+  model validation and all numerical equations. See the
+  [downstream verification](../development/performance/metadata_equality/REPORT.md).
+  Earlier local 0.6.0 test wheels remain identified by SHA256 in that report.
+
+The release excludes the separate, unfinished bicubic nozzle/shared-core and
+boundary-derivative working-tree changes. See the
+[release qualification record](../development/performance/phase_support_release/README.md)
+for the exact artifact, tests and downstream checks.
+
+The prepared installed wheel passes 3,064 local HEOS/REFPROP library tests with
+two optional C compiler skips, plus 236 targeted ThermOpt consumer tests and
+one existing expected failure. Four-fluid property/component checks pass.
+Hosted qualification and publication remain pending their release gates.
+
 # JaxProp 0.6.0
 
 **Released on 15 November 2026.** Hosted Linux and Windows HEOS tests passed,

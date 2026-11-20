@@ -22,7 +22,11 @@ from ..configuration import (
     FluidDomain,
     FrozenMapping,
 )
-from ..fluid_api import SOURCE_PROPERTIES, LEGACY_MIXTURE_PROPERTIES
+from ..fluid_api import (
+    SOURCE_PROPERTIES,
+    LEGACY_MIXTURE_PROPERTIES,
+    DIAGNOSTIC_PROPERTIES,
+)
 from ..source_references import (
     SourceReferencesMixin,
     initialize_source_references,
@@ -138,6 +142,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
     _saturation_validity: dict = eqx.field(static=False)
     _saturation_capabilities: object = eqx.field(static=True)
     _saturation_p_max: float = eqx.field(static=True)
+    _saturation_p_min: float = eqx.field(static=True)
     identifier: str = eqx.field(static=True)
     provider: str = eqx.field(static=True)
     model: str = eqx.field(static=True)
@@ -149,6 +154,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
     metastable_phase: str = eqx.field(static=True)
     metastable_domain: str = eqx.field(static=True)
     _references: object = eqx.field(static=True)
+    phase_support: bool = eqx.field(static=True, default=False)
     _configuration: object = eqx.field(static=True, default=None)
     _capabilities: object = eqx.field(static=True, default=None)
 
@@ -175,6 +181,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         inverse_max_steps: int = 64,
         inverse_tolerance: float = 1e-10,
         metastable_domain: str = "physical",
+        phase_support: bool = False,
     ):
         if name is not None:
             if fluid_name is not None and fluid_name != name:
@@ -322,6 +329,14 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         self.identifier = identifier
         self.provider = "bicubic"
         self.model = "binary_mixture" if mixture_ratio is not None else "real_fluid"
+        if not isinstance(phase_support, (bool, np.bool_)):
+            invalid("phase_support", "Choose a static boolean.")
+        if phase_support and (is_mixture or metastable_phase is not None):
+            invalid(
+                "phase_support",
+                "Phase support applies to ordinary single-source equilibrium tables.",
+            )
+        self.phase_support = bool(phase_support)
         self.metastable_phase = metastable_phase
         self.metastable_domain = metastable_domain
         self.N_p_sat = N_p_sat
@@ -362,11 +377,21 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 mixture_ratio=mixture_ratio,
                 metastable_phase=metastable_phase,
                 metastable_domain=metastable_domain,
+                **({"phase_support": True} if self.phase_support else {}),
             ),
         )
         self._capabilities = FluidCapabilities(
             input_pairs=frozenset(self.PROPERTY_CALCULATORS),
-            properties=LEGACY_MIXTURE_PROPERTIES if is_mixture else SOURCE_PROPERTIES,
+            properties=(
+                LEGACY_MIXTURE_PROPERTIES
+                if is_mixture
+                else (
+                    SOURCE_PROPERTIES | DIAGNOSTIC_PROPERTIES
+                    if self.phase_support
+                    else SOURCE_PROPERTIES
+                )
+            ),
+            options={"supersaturation"} if self.phase_support else (),
             jax_modes={"eager", "jit", "vmap", "jvp", "grad"},
             derivative_order=1,
             derivative_method="autodiff",
@@ -423,16 +448,49 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 reason="The selected source must provide temperature and pressure validity limits for table generation.",
             ) from error
         critical = self._references["critical_point"]
-        if critical.available and self.p_min < 0.98 * critical.properties["pressure"]:
+        sat_lower = self.p_min
+        sat_upper = (
+            0.98 * critical.properties["pressure"] if critical.available else None
+        )
+        if self.phase_support:
+            if (
+                not critical.available
+                or not self._references["triple_point_liquid"].available
+                or not self._references["triple_point_vapor"].available
+            ):
+                invalid(
+                    "phase_support",
+                    "Phase diagnostics require source critical/triple references.",
+                )
+            sat_lower = max(
+                sat_lower,
+                self._references["triple_point_liquid"].properties["pressure"],
+                self._references["triple_point_vapor"].properties["pressure"],
+            )
+            sat_upper = min(sat_upper, self.p_max)
+        if sat_upper is not None and sat_lower < sat_upper:
             self.logP_sat_vals = jnp.linspace(
-                np.log(self.p_min),
-                np.log(critical.properties["pressure"] * 0.98),
+                np.log(sat_lower),
+                np.log(sat_upper),
                 self.N_p_sat,
             )
             self.delta_logP_sat = float(self.logP_sat_vals[1] - self.logP_sat_vals[0])
         else:
             self.logP_sat_vals = None
             self.delta_logP_sat = None
+
+        if self.phase_support and self.logP_sat_vals is not None:
+            self._capabilities = FluidCapabilities(
+                input_pairs=self.capabilities.input_pairs | {jxp.PQ_INPUTS},
+                properties=self.capabilities.properties,
+                options={"supersaturation"},
+                jax_modes=self.capabilities.jax_modes,
+                derivative_order=1,
+                derivative_method="autodiff",
+                phase_operations={"saturation"},
+                domain=self.capabilities.domain,
+                error_modes=self.capabilities.error_modes,
+            )
 
         if metastable_phase is not None and self.logP_sat_vals is None:
             invalid(
@@ -452,6 +510,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             Path(__file__).with_name("table_cache.py"),
             Path(__file__).with_name("phase_envelope.py"),
             Path(__file__).with_name("thermal_stability.py"),
+            Path(__file__).with_name("phase_support.py"),
             Path(__file__).parents[1] / "coolprop" / "core_calculations.py",
             Path(__file__).parents[1] / "coolprop" / "source_context.py",
             Path(__file__).parents[1] / "coolprop" / "fluid_properties.py",
@@ -489,6 +548,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             mixture_ratio=self.mixture_ratio,
             metastable_phase=self.metastable_phase,
             metastable_domain=self.metastable_domain,
+            phase_support=self.phase_support,
             gradient_method=self.grad_method,
             N_p_sat=int(self.N_p_sat),
             h_min=float(self.h_min),
@@ -590,10 +650,23 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             if self.logP_sat_vals is not None
             else self.p_max
         )
+        self._saturation_p_min = (
+            float(jnp.exp(self.logP_sat_vals[0]))
+            if self.logP_sat_vals is not None
+            else self.p_min
+        )
         self._saturation_capabilities = FluidCapabilities(
             input_pairs={jxp.PQ_INPUTS},
             properties=self.capabilities.properties,
-            phase_operations={"saturation"} if metastable_phase is not None else (),
+            phase_operations=(
+                {"saturation"}
+                if (
+                    metastable_phase is not None
+                    or (self.phase_support and self.logP_sat_vals is not None)
+                )
+                else ()
+            ),
+            options={"supersaturation"} if self.phase_support else (),
             jax_modes={"eager", "jit", "vmap", "jvp", "grad"},
             error_modes={"raise", "mask", "clip"},
             derivative_order=1,
@@ -844,10 +917,15 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                     eps_p = 1e-5 * max(abs(p), 1.0)
 
                     try:
+                        extra = {"supersaturation": True} if self.phase_support else {}
                         if self.grad_method == "forward":
-                            grads = self._gradients_forward(fluid, h, p, eps_h, eps_p)
+                            grads = self._gradients_forward(
+                                fluid, h, p, eps_h, eps_p, **extra
+                            )
                         elif self.grad_method == "central":
-                            grads = self._gradients_central(fluid, h, p, eps_h, eps_p)
+                            grads = self._gradients_central(
+                                fluid, h, p, eps_h, eps_p, **extra
+                            )
                         else:
                             raise ValueError(
                                 f"Unknown gradient scheme: {self.grad_method}"
@@ -930,7 +1008,12 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
                 # some entries (like coeffs) might already be jnp arrays but this is safe
                 table[k][sub] = jnp.array(table[k][sub], dtype=jnp.float64)
 
-        table["saturation_props"] = {}
+        if self.phase_support:
+            from .phase_support import generate_endpoints
+
+            table["saturation_props"] = generate_endpoints(self)
+        else:
+            table["saturation_props"] = {}
 
         # save
         return table
@@ -1516,13 +1599,16 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         return float(state.rho), float(state.T)
 
     @staticmethod
-    def _gradients_forward(fluid, h, p, eps_h, eps_p):
+    def _gradients_forward(fluid, h, p, eps_h, eps_p, *, supersaturation=False):
         # Export raw values once per sample. Optional NaNs remain available to
         # table generation without repeated bound-method lookups per property.
-        f0 = fluid.get_state(jxp.HmassP_INPUTS, h, p).to_dict()
-        fh = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p).to_dict()
-        fp = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p).to_dict()
-        fhp = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p + eps_p).to_dict()
+        options = {"supersaturation": True} if supersaturation else {}
+        f0 = fluid.get_state(jxp.HmassP_INPUTS, h, p, **options).to_dict()
+        fh = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p, **options).to_dict()
+        fp = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p, **options).to_dict()
+        fhp = fluid.get_state(
+            jxp.HmassP_INPUTS, h + eps_h, p + eps_p, **options
+        ).to_dict()
 
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
@@ -1539,16 +1625,25 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         return grads
 
     @staticmethod
-    def _gradients_central(fluid, h, p, eps_h, eps_p):
-        f0 = fluid.get_state(jxp.HmassP_INPUTS, h, p).to_dict()
-        fhp = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p).to_dict()
-        fhm = fluid.get_state(jxp.HmassP_INPUTS, h - eps_h, p).to_dict()
-        fph = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p).to_dict()
-        fpm = fluid.get_state(jxp.HmassP_INPUTS, h, p - eps_p).to_dict()
-        fh_p = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p + eps_p).to_dict()
-        fh_m = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p - eps_p).to_dict()
-        fm_p = fluid.get_state(jxp.HmassP_INPUTS, h - eps_h, p + eps_p).to_dict()
-        fm_m = fluid.get_state(jxp.HmassP_INPUTS, h - eps_h, p - eps_p).to_dict()
+    def _gradients_central(fluid, h, p, eps_h, eps_p, *, supersaturation=False):
+        options = {"supersaturation": True} if supersaturation else {}
+        f0 = fluid.get_state(jxp.HmassP_INPUTS, h, p, **options).to_dict()
+        fhp = fluid.get_state(jxp.HmassP_INPUTS, h + eps_h, p, **options).to_dict()
+        fhm = fluid.get_state(jxp.HmassP_INPUTS, h - eps_h, p, **options).to_dict()
+        fph = fluid.get_state(jxp.HmassP_INPUTS, h, p + eps_p, **options).to_dict()
+        fpm = fluid.get_state(jxp.HmassP_INPUTS, h, p - eps_p, **options).to_dict()
+        fh_p = fluid.get_state(
+            jxp.HmassP_INPUTS, h + eps_h, p + eps_p, **options
+        ).to_dict()
+        fh_m = fluid.get_state(
+            jxp.HmassP_INPUTS, h + eps_h, p - eps_p, **options
+        ).to_dict()
+        fm_p = fluid.get_state(
+            jxp.HmassP_INPUTS, h - eps_h, p + eps_p, **options
+        ).to_dict()
+        fm_m = fluid.get_state(
+            jxp.HmassP_INPUTS, h - eps_h, p - eps_p, **options
+        ).to_dict()
 
         grads = {}
         for k in jxp.PROPERTIES_CANONICAL:
@@ -1802,7 +1897,18 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         Eager calls default to indexed raising. Within JAX transformations,
         explicitly select ``errors='mask'`` or ``errors='clip'``.
         """
-        return evaluate_state(self, input_type, prop_1, prop_2, errors=errors)
+        if input_type == jxp.PQ_INPUTS and self.phase_support:
+            return evaluate_saturation(
+                self, prop_1, prop_2, errors=errors, supersaturation=supersaturation
+            )
+        return evaluate_state(
+            self,
+            input_type,
+            prop_1,
+            prop_2,
+            errors=errors,
+            supersaturation=supersaturation,
+        )
 
     @checked_saturation_jit
     def get_state_saturation(
@@ -1816,10 +1922,16 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         errors="raise",
     ):
         """Evaluate the stored PQ saturation endpoint; other tables reject it."""
-        return evaluate_saturation(self, prop_1, prop_2, errors=errors)
+        return evaluate_saturation(
+            self, prop_1, prop_2, errors=errors, supersaturation=supersaturation
+        )
 
-    def _get_state_scalar(self, input_type, val1, val2, *, errors="raise"):
-        return evaluate_scalar(self, input_type, val1, val2, errors=errors)
+    def _get_state_scalar(
+        self, input_type, val1, val2, *, errors="raise", supersaturation=False
+    ):
+        return evaluate_scalar(
+            self, input_type, val1, val2, errors=errors, supersaturation=supersaturation
+        )
 
     def _interp_h_p(self, h, p):
         return interpolate_properties(self, h, p)
