@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 project = "jaxprop"
 copyright = "2025, Roberto Agromayor"
 author = ""
-release = "v0.6.1"
+release = "v0.6.2"
 
 # Define extensions
 extensions = [

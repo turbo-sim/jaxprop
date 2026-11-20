@@ -127,15 +127,17 @@ def _evaluate_coordinates(fluid, input_type, first, second, *, errors, supersatu
             0,
             fluid.N_p - 2,
         )
-    status = jnp.where(
-        (status == StatusCode.SUCCESS) & ~fluid._cell_validity[i, j],
-        StatusCode.OUT_OF_DOMAIN,
-        status,
-    )
     properties = (
         interpolate_properties(fluid, h, p, cell_basis=cell_basis)
         if native_batch
         else fluid._interp_h_p(h, p)
+    )
+    from .phase_boundary import point_valid
+    boundary_valid = point_valid(fluid, h, p)
+    status = jnp.where(
+        (status == StatusCode.SUCCESS) & ~(fluid._cell_validity[i, j] | boundary_valid),
+        StatusCode.OUT_OF_DOMAIN,
+        status,
     )
     if input_type == pairs.PT_INPUTS and "is_two_phase" in properties:
         # At saturation T depends on p, not on quality/enthalpy. Numerical

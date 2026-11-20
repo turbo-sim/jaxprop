@@ -87,7 +87,8 @@ def interpolate_properties(fluid, h, p, names=None, *, cell_basis=None):
             else:
                 value = jnp.sum(coefficients * basis, axis=-1)
             values[name] = jnp.where(available & jnp.isfinite(value), value, jnp.nan)
-    return values
+    from .phase_boundary import evaluate
+    return evaluate(fluid, h, p, values)[0]
 
 
 def interpolate_property(fluid, h, p, name):
@@ -317,8 +318,12 @@ def solve_inverse(
         else:
             outside = fixed_outside | target_outside
         i = jnp.argmin(jnp.abs(values - target))
+        guess_h = fluid.h_vals[i]
+        if input_type == pairs.PT_INPUTS:
+            from .phase_boundary import temperature_seed
+            guess_h = temperature_seed(fluid, fixed, target, guess_h)
         initial = jnp.reshape(
-            (fluid.h_vals[i] - fluid.h_min) / (fluid.h_max - fluid.h_min), (1,)
+            (guess_h - fluid.h_min) / (fluid.h_max - fluid.h_min), (1,)
         )
         names, targets, scales = (
             (name,),

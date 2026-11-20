@@ -136,6 +136,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
     _table: dict = eqx.field(static=False)
     _coefficient_validity: dict = eqx.field(static=False)
     _cell_validity: jax.Array = eqx.field(static=False)
+    _phase_boundary: object = eqx.field(static=False)
     _inspection: object = eqx.field(static=True)
     _input_fallbacks: object = eqx.field(static=True)
     _saturation_table: dict = eqx.field(static=False)
@@ -655,6 +656,8 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
             if self.logP_sat_vals is not None
             else self.p_min
         )
+        from .phase_boundary import prepare as prepare_phase_boundary
+        self._phase_boundary = prepare_phase_boundary(self, table)
         self._saturation_capabilities = FluidCapabilities(
             input_pairs={jxp.PQ_INPUTS},
             properties=self.capabilities.properties,

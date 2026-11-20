@@ -67,15 +67,37 @@ endpoint quality; the halfway tie selects liquid. Eager raising remains indexed.
 
 ## Accuracy, domains and caches
 
-Phase support does **not** remove the existing phase-boundary cell guards or
-make an ambiguous two-phase PT inverse unique. HP cells intersecting a phase
-boundary remain rejected. A valid PQ endpoint is not permission to interpolate
-through a rejected HP cell. Full wet-cycle/domain qualification is separate
-from exposing diagnostics and endpoint calls.
+The published **0.6.1** package retains phase-boundary cell guards. Its HP cells
+intersecting a phase boundary remain rejected, even when the requested state is
+valid. The guard prevents a tensor polynomial from smoothing over the
+thermodynamic derivative discontinuity or interpolating a discrete phase flag.
+
+JaxProp **0.6.2** corrects
+pure-fluid boundary evaluation with `phase_support=True`. The uniform
+$h$–$\log(p)$ nodes, grid dimensions, original property arrays and coefficients
+remain unchanged. One-sided Hermite bridges connect existing homogeneous cells
+to the existing saturation endpoints. A smooth pressure partition preserves
+continuity when the selected homogeneous cell changes. Pure-fluid wet states
+use equilibrium endpoint lever rules and the PQ-map response Jacobians already
+defined by the source provider. Runtime remains native JAX without EOS callbacks.
+
+This correction is limited to the declared endpoint pressure interval and
+pure fluids. Pseudo-pure temperature glide retains the existing cell guard;
+it needs its actual quality-dependent map. Missing homogeneous anchors retain
+the guard. Out-of-range/invalid inputs and locally unavailable optional fields
+retain their existing policies. Singular pure-fluid wet responses remain
+unavailable, exact endpoints expose single-phase responses, and saturation PT
+remains ambiguous. A phase-aware PT seed avoids initializing single-phase
+near-boundary flashes on the flat wet plateau.
+
+Full wet-cycle/domain qualification is separate from property-level checks.
+Release qualification is recorded separately from whole-cycle qualification.
 
 Diagnostic accuracy and sensitivities depend on the two-dimensional table;
-endpoint accuracy depends on its own pressure grid. Refine and compare with
-the source EOS over the intended region before optimization qualification.
+endpoint accuracy depends on its own pressure grid. Compare values and
+sensitivities with the source EOS over the intended region before optimization
+qualification. The ThermOpt development correction preserves the existing
+uniform mesh and resolution; it does not use mesh refinement.
 
 The opt-in setting, endpoint pressure grid, generator revision and relevant
 source-code identities participate in cache provenance. The loader validates
