@@ -23,6 +23,11 @@ boundary-derivative working-tree changes. See the
 [release qualification record](../development/performance/phase_support_release/README.md)
 for the exact artifact, tests and downstream checks.
 
+The prepared installed wheel passes 3,064 local HEOS/REFPROP library tests with
+two optional C compiler skips, plus 236 targeted ThermOpt consumer tests and
+one existing expected failure. Four-fluid property/component checks pass.
+Hosted qualification and publication remain pending their release gates.
+
 # JaxProp 0.6.0
 
 **Released on 15 November 2026.** Hosted Linux and Windows HEOS tests passed,

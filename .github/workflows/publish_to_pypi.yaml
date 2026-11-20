@@ -35,14 +35,14 @@ jobs:
         poetry install
         poetry run python -m pip install pandas openpyxl
 
-    - name: Run tests
-      run: poetry run python -m pytest tests -c tests/pytest.ini -q
-
     - name: Verify installed release wheel
       run: |
         poetry build
-        poetry run python -c "import glob, subprocess, sys; wheels = glob.glob('dist/jaxprop-*.whl'); assert len(wheels) == 1; subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--no-deps', '--force-reinstall', wheels[0]])"
-        poetry run python development/performance/phase_support_release/wheel_checks.py --wheel dist --receipt development/performance/phase_support_release/results/wheel.json -- tests/test_bicubic_phase_support.py -c tests/pytest.ini -q
+        poetry run -- python -c "import glob, subprocess, sys; wheels = glob.glob('dist/jaxprop-*.whl'); assert len(wheels) == 1; subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--no-deps', '--force-reinstall', wheels[0]])"
+        poetry run -- python development/performance/phase_support_release/wheel_checks.py --wheel dist --receipt development/performance/phase_support_release/results/wheel.json -- tests/test_bicubic_phase_support.py -c tests/pytest.ini -q
+
+    - name: Run tests
+      run: poetry run -- python -m pytest tests -c tests/pytest.ini -q
 
 
   test_windows:
@@ -70,14 +70,14 @@ jobs:
           poetry install
           poetry run python -m pip install pandas openpyxl
         
-      - name: Run tests
-        run: poetry run python -m pytest tests -c tests/pytest.ini -q
-
       - name: Verify installed release wheel
         run: |
           poetry build
-          poetry run python -c "import glob, subprocess, sys; wheels = glob.glob('dist/jaxprop-*.whl'); assert len(wheels) == 1; subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--no-deps', '--force-reinstall', wheels[0]])"
-          poetry run python development/performance/phase_support_release/wheel_checks.py --wheel dist --receipt development/performance/phase_support_release/results/wheel.json -- tests/test_bicubic_phase_support.py -c tests/pytest.ini -q
+          poetry run -- python -c "import glob, subprocess, sys; wheels = glob.glob('dist/jaxprop-*.whl'); assert len(wheels) == 1; subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--no-deps', '--force-reinstall', wheels[0]])"
+          poetry run -- python development/performance/phase_support_release/wheel_checks.py --wheel dist --receipt development/performance/phase_support_release/results/wheel.json -- tests/test_bicubic_phase_support.py -c tests/pytest.ini -q
+
+      - name: Run tests
+        run: poetry run -- python -m pytest tests -c tests/pytest.ini -q
 
   publish_to_pypi:
 

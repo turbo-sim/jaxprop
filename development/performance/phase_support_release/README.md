@@ -29,3 +29,24 @@ Generated build/test logs, JUnit receipts, wheels and JSON evidence go under
 the ignored `results/` directory. The checked `verification.json` records final
 results and artifact hashes when qualification completes. No unmeasured speedup
 is claimed for this release.
+
+## Local outcome
+
+The exact installed release wheel passes **3,064 HEOS/REFPROP library tests**,
+with two optional C interoperability skips because no compiler is configured.
+The seven import-policy tests separately pass after improving failure output.
+The full suite intentionally retains source/subprocess checks alongside the
+installed package tests, as described above.
+
+ThermOpt's selected component/state/configuration, pilot and Phase 6A suite
+passes **236 tests**, with one unchanged expected co-current accounting failure.
+The installed-wheel property runner separately passes water, butane, R134a and
+CO2 diagnostics, native endpoints and eight component/derivative comparisons.
+Full wet-cycle domain and warm optimization gates remain open.
+
+[verification.json](verification.json) records counts, package-file and artifact
+hashes. Receipts are retained under `results/`; ThermOpt receipts are under its
+`development/jax_development/results/phase_06/` tree. The first hosted attempts
+exposed a missing IPython test dependency and Poetry argument forwarding in the
+new wheel check. Both workflow fixes retain the original tests and thresholds.
+Hosted qualification and PyPI publication are pending their corrected checks.
