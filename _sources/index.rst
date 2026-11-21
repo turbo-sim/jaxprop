@@ -32,5 +32,6 @@ Use the panel to the left or the table of contents below to navigate the documen
    release_notes
    migration
    fluid_lifecycle
+   phase_support
    source/bibliography
    source/api/jaxprop

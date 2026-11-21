@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; jaxprop v0.6.0 documentation</title>
+    <title>Installation &#8212; jaxprop v0.6.2 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=4fe0b1e1"></script>
+    <script src="../_static/documentation_options.js?v=e368b39a"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -55,7 +55,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'source/installation';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="JaxProp 0.6.0" href="../release_notes.html" />
+    <link rel="next" title="JaxProp 0.6.2" href="../release_notes.html" />
     <link rel="prev" title="Welcome to jaxprop’s documentation!" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -134,7 +134,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
+    <p class="title logo__title">jaxprop v0.6.2 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -149,9 +149,12 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">JaxProp 0.6.2</a></li>
+
+
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating to the consistent fluid interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phase_support.html">Opt-in bicubic phase diagnostics and saturation endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -357,10 +360,9 @@ installing the package:</p>
 python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import jaxprop; print(jaxprop.__version__)&quot;</span>
 </pre></div>
 </div>
-<p>Version 0.6.0 is prepared locally and awaits ThermOpt and Barotropy verification
-before publication. To test the prepared artifact before that release, install
-its wheel explicitly from the JaxProp checkout:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>dist/jaxprop-0.6.0-py3-none-any.whl
+<p>To test a locally built release candidate before publication, install its wheel
+explicitly from the JaxProp checkout:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>dist/jaxprop-0.6.1-py3-none-any.whl
 </pre></div>
 </div>
 <p>Run import checks outside the source checkout and inspect <code class="docutils literal notranslate"><span class="pre">jaxprop.__file__</span></code>
@@ -421,7 +423,7 @@ profiles, see the repository’s <code class="docutils literal notranslate"><spa
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">JaxProp 0.6.0</p>
+        <p class="prev-next-title">JaxProp 0.6.2</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

@@ -1,3 +1,63 @@
+# JaxProp 0.6.2
+
+Prepared on 21 November 2026. Publication and artifact identities are recorded
+in the [patch qualification record](https://github.com/turbo-sim/jaxprop/blob/main/development/performance/uniform_saturation_release/README.md).
+
+- Correct opt-in pure-fluid HP evaluation near saturation while retaining the
+  original uniform enthalpy/log-pressure mesh, dimensions, bounds and base
+  property coefficients. One-sided bridges use the existing saturation data
+  and homogeneous cells; pure-fluid wet states follow source equilibrium
+  relations. A smooth pressure partition preserves continuity when anchors
+  change. No mesh refinement or runtime EOS callbacks are introduced.
+- Return binary phase flags from the saturation boundary instead of smoothing
+  discrete flags with a polynomial. Seed near-saturation PT inverses on the
+  appropriate single-phase side; a saturated pure-fluid PT flash remains
+  ambiguous.
+- Preserve typed input/domain failures and optional-property availability.
+  The correction requires `phase_support=True`, a pure fluid, existing endpoint
+  pressure coverage (up to 98% of critical pressure), and safe homogeneous
+  anchors. Other guarded cells retain their previous policy.
+
+The local prototype passes all 20 previously rejected ThermOpt path points,
+eight initial native eager/JAX cycle comparisons and 20 native snapping checks.
+Those development receipts motivate the release; installed-wheel and hosted
+release checks remain separately identified. Full thermodynamic optimization,
+critical-region coverage and warm benchmarks are not established by this patch.
+The earlier uncommitted nozzle/shared-core experiments remain excluded.
+
+# JaxProp 0.6.1
+
+**Released on 20 November 2026.** [PyPI 0.6.1](https://pypi.org/project/jaxprop/0.6.1/)
+is verified after passing Linux/Windows and installed-wheel release checks.
+
+- Add opt-in `table_options.phase_support=True` for ordinary single-source
+  equilibrium bicubic models. Native JIT/AD requests expose source-defined
+  diagnostics, including subcooling and superheating, and both PQ saturation
+  endpoints at Q=0 and Q=1. Existing configurations keep their default
+  capabilities; diagnostics still require `supersaturation=True` per request.
+- Validate/cache both endpoint payloads with their generation provenance.
+  Generator/source identities change, so previous table caches regenerate.
+  Existing HP phase-boundary guards remain active. This release does not
+  establish arbitrary wet-cycle domain accuracy or complete ThermOpt Phase 6.
+  See [phase support](phase_support.md) for the interface and limitations.
+
+- Reduce equivalent-model JIT-cache overhead with a direct immutable metadata
+  equality fast path. Preserve reordered/foreign mapping semantics, hashing,
+  model validation and all numerical equations. See the
+  [downstream verification](https://github.com/turbo-sim/jaxprop/blob/main/development/performance/metadata_equality/REPORT.md).
+  Earlier local 0.6.0 test wheels remain identified by SHA256 in that report.
+
+The release excludes the separate, unfinished bicubic nozzle/shared-core and
+boundary-derivative working-tree changes. See the
+[release qualification record](https://github.com/turbo-sim/jaxprop/blob/main/development/performance/phase_support_release/README.md)
+for the exact artifact, tests and downstream checks.
+
+The local installed wheel passes 3,064 HEOS/REFPROP library tests with
+two optional C compiler skips, plus 236 targeted ThermOpt consumer tests and
+one existing expected failure. Four-fluid property/component checks pass.
+The published wheel's Python ASTs match the tested wheel; their different byte
+identities and exact PyPI artifact hashes remain recorded separately.
+
 # JaxProp 0.6.0
 
 **Released on 15 November 2026.** Hosted Linux and Windows HEOS tests passed,

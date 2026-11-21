@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jaxprop.bicubic.bicubic_interpolation &#8212; jaxprop v0.6.0 documentation</title>
+    <title>jaxprop.bicubic.bicubic_interpolation &#8212; jaxprop v0.6.2 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=4fe0b1e1"></script>
+    <script src="../../../_static/documentation_options.js?v=e368b39a"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -133,7 +133,7 @@
   
   
   
-    <p class="title logo__title">jaxprop v0.6.0 documentation</p>
+    <p class="title logo__title">jaxprop v0.6.2 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -148,9 +148,12 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">JaxProp 0.6.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">JaxProp 0.6.2</a></li>
+
+
 <li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating to the consistent fluid interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../fluid_lifecycle.html">Reusing fluid models in applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../phase_support.html">Opt-in bicubic phase diagnostics and saturation endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/api/jaxprop.html">jaxprop package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/jaxprop.bicubic.html">jaxprop.bicubic package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -309,7 +312,11 @@
     <span class="n">FluidDomain</span><span class="p">,</span>
     <span class="n">FrozenMapping</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..fluid_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">SOURCE_PROPERTIES</span><span class="p">,</span> <span class="n">LEGACY_MIXTURE_PROPERTIES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..fluid_api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SOURCE_PROPERTIES</span><span class="p">,</span>
+    <span class="n">LEGACY_MIXTURE_PROPERTIES</span><span class="p">,</span>
+    <span class="n">DIAGNOSTIC_PROPERTIES</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..source_references</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">SourceReferencesMixin</span><span class="p">,</span>
     <span class="n">initialize_source_references</span><span class="p">,</span>
@@ -421,12 +428,14 @@
     <span class="n">_table</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">_coefficient_validity</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">_cell_validity</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">_phase_boundary</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">_inspection</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">_input_fallbacks</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">_saturation_table</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">_saturation_validity</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">_saturation_capabilities</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">_saturation_p_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_saturation_p_min</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -438,6 +447,7 @@
     <span class="n">metastable_phase</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">metastable_domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">_references</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">phase_support</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">_configuration</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_capabilities</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
@@ -464,6 +474,7 @@
         <span class="n">inverse_max_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
         <span class="n">inverse_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
         <span class="n">metastable_domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;physical&quot;</span><span class="p">,</span>
+        <span class="n">phase_support</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fluid_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">fluid_name</span> <span class="o">!=</span> <span class="n">name</span><span class="p">:</span>
@@ -611,6 +622,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">provider</span> <span class="o">=</span> <span class="s2">&quot;bicubic&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="s2">&quot;binary_mixture&quot;</span> <span class="k">if</span> <span class="n">mixture_ratio</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;real_fluid&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phase_support</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)):</span>
+            <span class="n">invalid</span><span class="p">(</span><span class="s2">&quot;phase_support&quot;</span><span class="p">,</span> <span class="s2">&quot;Choose a static boolean.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">phase_support</span> <span class="ow">and</span> <span class="p">(</span><span class="n">is_mixture</span> <span class="ow">or</span> <span class="n">metastable_phase</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">invalid</span><span class="p">(</span>
+                <span class="s2">&quot;phase_support&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Phase support applies to ordinary single-source equilibrium tables.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phase_support</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">phase_support</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metastable_phase</span> <span class="o">=</span> <span class="n">metastable_phase</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metastable_domain</span> <span class="o">=</span> <span class="n">metastable_domain</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">N_p_sat</span> <span class="o">=</span> <span class="n">N_p_sat</span>
@@ -651,11 +670,21 @@
                 <span class="n">mixture_ratio</span><span class="o">=</span><span class="n">mixture_ratio</span><span class="p">,</span>
                 <span class="n">metastable_phase</span><span class="o">=</span><span class="n">metastable_phase</span><span class="p">,</span>
                 <span class="n">metastable_domain</span><span class="o">=</span><span class="n">metastable_domain</span><span class="p">,</span>
+                <span class="o">**</span><span class="p">({</span><span class="s2">&quot;phase_support&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase_support</span> <span class="k">else</span> <span class="p">{}),</span>
             <span class="p">),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_capabilities</span> <span class="o">=</span> <span class="n">FluidCapabilities</span><span class="p">(</span>
             <span class="n">input_pairs</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PROPERTY_CALCULATORS</span><span class="p">),</span>
-            <span class="n">properties</span><span class="o">=</span><span class="n">LEGACY_MIXTURE_PROPERTIES</span> <span class="k">if</span> <span class="n">is_mixture</span> <span class="k">else</span> <span class="n">SOURCE_PROPERTIES</span><span class="p">,</span>
+            <span class="n">properties</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">LEGACY_MIXTURE_PROPERTIES</span>
+                <span class="k">if</span> <span class="n">is_mixture</span>
+                <span class="k">else</span> <span class="p">(</span>
+                    <span class="n">SOURCE_PROPERTIES</span> <span class="o">|</span> <span class="n">DIAGNOSTIC_PROPERTIES</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase_support</span>
+                    <span class="k">else</span> <span class="n">SOURCE_PROPERTIES</span>
+                <span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;supersaturation&quot;</span><span class="p">}</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase_support</span> <span class="k">else</span> <span class="p">(),</span>
             <span class="n">jax_modes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;eager&quot;</span><span class="p">,</span> <span class="s2">&quot;jit&quot;</span><span class="p">,</span> <span class="s2">&quot;vmap&quot;</span><span class="p">,</span> <span class="s2">&quot;jvp&quot;</span><span class="p">,</span> <span class="s2">&quot;grad&quot;</span><span class="p">},</span>
             <span class="n">derivative_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">derivative_method</span><span class="o">=</span><span class="s2">&quot;autodiff&quot;</span><span class="p">,</span>
@@ -712,16 +741,49 @@
                 <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;The selected source must provide temperature and pressure validity limits for table generation.&quot;</span><span class="p">,</span>
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
         <span class="n">critical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_references</span><span class="p">[</span><span class="s2">&quot;critical_point&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">critical</span><span class="o">.</span><span class="n">available</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_min</span> <span class="o">&lt;</span> <span class="mf">0.98</span> <span class="o">*</span> <span class="n">critical</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;pressure&quot;</span><span class="p">]:</span>
+        <span class="n">sat_lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_min</span>
+        <span class="n">sat_upper</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mf">0.98</span> <span class="o">*</span> <span class="n">critical</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;pressure&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">critical</span><span class="o">.</span><span class="n">available</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase_support</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="ow">not</span> <span class="n">critical</span><span class="o">.</span><span class="n">available</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_references</span><span class="p">[</span><span class="s2">&quot;triple_point_liquid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">available</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_references</span><span class="p">[</span><span class="s2">&quot;triple_point_vapor&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">available</span>
+            <span class="p">):</span>
+                <span class="n">invalid</span><span class="p">(</span>
+                    <span class="s2">&quot;phase_support&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Phase diagnostics require source critical/triple references.&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">sat_lower</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                <span class="n">sat_lower</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_references</span><span class="p">[</span><span class="s2">&quot;triple_point_liquid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;pressure&quot;</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_references</span><span class="p">[</span><span class="s2">&quot;triple_point_vapor&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;pressure&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">sat_upper</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sat_upper</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_max</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sat_upper</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sat_lower</span> <span class="o">&lt;</span> <span class="n">sat_upper</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logP_sat_vals</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_min</span><span class="p">),</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">critical</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;pressure&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.98</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">sat_lower</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">sat_upper</span><span class="p">),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">N_p_sat</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">delta_logP_sat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logP_sat_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">logP_sat_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logP_sat_vals</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">delta_logP_sat</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase_support</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">logP_sat_vals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_capabilities</span> <span class="o">=</span> <span class="n">FluidCapabilities</span><span class="p">(</span>
+                <span class="n">input_pairs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">input_pairs</span> <span class="o">|</span> <span class="p">{</span><span class="n">jxp</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">},</span>
+                <span class="n">properties</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">properties</span><span class="p">,</span>
+                <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;supersaturation&quot;</span><span class="p">},</span>
+                <span class="n">jax_modes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">jax_modes</span><span class="p">,</span>
+                <span class="n">derivative_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">derivative_method</span><span class="o">=</span><span class="s2">&quot;autodiff&quot;</span><span class="p">,</span>
+                <span class="n">phase_operations</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;saturation&quot;</span><span class="p">},</span>
+                <span class="n">domain</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span>
+                <span class="n">error_modes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">error_modes</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">metastable_phase</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">logP_sat_vals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">invalid</span><span class="p">(</span>
@@ -741,6 +803,7 @@
             <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="s2">&quot;table_cache.py&quot;</span><span class="p">),</span>
             <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="s2">&quot;phase_envelope.py&quot;</span><span class="p">),</span>
             <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="s2">&quot;thermal_stability.py&quot;</span><span class="p">),</span>
+            <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="s2">&quot;phase_support.py&quot;</span><span class="p">),</span>
             <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="s2">&quot;coolprop&quot;</span> <span class="o">/</span> <span class="s2">&quot;core_calculations.py&quot;</span><span class="p">,</span>
             <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="s2">&quot;coolprop&quot;</span> <span class="o">/</span> <span class="s2">&quot;source_context.py&quot;</span><span class="p">,</span>
             <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="s2">&quot;coolprop&quot;</span> <span class="o">/</span> <span class="s2">&quot;fluid_properties.py&quot;</span><span class="p">,</span>
@@ -778,6 +841,7 @@
             <span class="n">mixture_ratio</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mixture_ratio</span><span class="p">,</span>
             <span class="n">metastable_phase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metastable_phase</span><span class="p">,</span>
             <span class="n">metastable_domain</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metastable_domain</span><span class="p">,</span>
+            <span class="n">phase_support</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">phase_support</span><span class="p">,</span>
             <span class="n">gradient_method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grad_method</span><span class="p">,</span>
             <span class="n">N_p_sat</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_p_sat</span><span class="p">),</span>
             <span class="n">h_min</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h_min</span><span class="p">),</span>
@@ -879,10 +943,25 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logP_sat_vals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_max</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saturation_p_min</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logP_sat_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logP_sat_vals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_min</span>
+        <span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.phase_boundary</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare</span> <span class="k">as</span> <span class="n">prepare_phase_boundary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phase_boundary</span> <span class="o">=</span> <span class="n">prepare_phase_boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_saturation_capabilities</span> <span class="o">=</span> <span class="n">FluidCapabilities</span><span class="p">(</span>
             <span class="n">input_pairs</span><span class="o">=</span><span class="p">{</span><span class="n">jxp</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">},</span>
             <span class="n">properties</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">properties</span><span class="p">,</span>
-            <span class="n">phase_operations</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;saturation&quot;</span><span class="p">}</span> <span class="k">if</span> <span class="n">metastable_phase</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(),</span>
+            <span class="n">phase_operations</span><span class="o">=</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;saturation&quot;</span><span class="p">}</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">metastable_phase</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phase_support</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">logP_sat_vals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">else</span> <span class="p">()</span>
+            <span class="p">),</span>
+            <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;supersaturation&quot;</span><span class="p">}</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase_support</span> <span class="k">else</span> <span class="p">(),</span>
             <span class="n">jax_modes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;eager&quot;</span><span class="p">,</span> <span class="s2">&quot;jit&quot;</span><span class="p">,</span> <span class="s2">&quot;vmap&quot;</span><span class="p">,</span> <span class="s2">&quot;jvp&quot;</span><span class="p">,</span> <span class="s2">&quot;grad&quot;</span><span class="p">},</span>
             <span class="n">error_modes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">,</span> <span class="s2">&quot;clip&quot;</span><span class="p">},</span>
             <span class="n">derivative_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -1133,10 +1212,15 @@
                     <span class="n">eps_p</span> <span class="o">=</span> <span class="mf">1e-5</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span>
 
                     <span class="k">try</span><span class="p">:</span>
+                        <span class="n">extra</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;supersaturation&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase_support</span> <span class="k">else</span> <span class="p">{}</span>
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grad_method</span> <span class="o">==</span> <span class="s2">&quot;forward&quot;</span><span class="p">:</span>
-                            <span class="n">grads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gradients_forward</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">eps_p</span><span class="p">)</span>
+                            <span class="n">grads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gradients_forward</span><span class="p">(</span>
+                                <span class="n">fluid</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">eps_p</span><span class="p">,</span> <span class="o">**</span><span class="n">extra</span>
+                            <span class="p">)</span>
                         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">grad_method</span> <span class="o">==</span> <span class="s2">&quot;central&quot;</span><span class="p">:</span>
-                            <span class="n">grads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gradients_central</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">eps_p</span><span class="p">)</span>
+                            <span class="n">grads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gradients_central</span><span class="p">(</span>
+                                <span class="n">fluid</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">eps_p</span><span class="p">,</span> <span class="o">**</span><span class="n">extra</span>
+                            <span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                                 <span class="sa">f</span><span class="s2">&quot;Unknown gradient scheme: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">grad_method</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -1219,7 +1303,12 @@
                 <span class="c1"># some entries (like coeffs) might already be jnp arrays but this is safe</span>
                 <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">sub</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
-        <span class="n">table</span><span class="p">[</span><span class="s2">&quot;saturation_props&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase_support</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.phase_support</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_endpoints</span>
+
+            <span class="n">table</span><span class="p">[</span><span class="s2">&quot;saturation_props&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">generate_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">table</span><span class="p">[</span><span class="s2">&quot;saturation_props&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="c1"># save</span>
         <span class="k">return</span> <span class="n">table</span>
@@ -1805,13 +1894,16 @@
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">rho</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_gradients_forward</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">eps_p</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_gradients_forward</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">eps_p</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="c1"># Export raw values once per sample. Optional NaNs remain available to</span>
         <span class="c1"># table generation without repeated bound-method lookups per property.</span>
-        <span class="n">f0</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-        <span class="n">fh</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-        <span class="n">fp</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-        <span class="n">fhp</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;supersaturation&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span> <span class="k">if</span> <span class="n">supersaturation</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">f0</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">fhp</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
+            <span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
         <span class="n">grads</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">:</span>
@@ -1828,16 +1920,25 @@
         <span class="k">return</span> <span class="n">grads</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_gradients_central</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">eps_p</span><span class="p">):</span>
-        <span class="n">f0</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-        <span class="n">fhp</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-        <span class="n">fhm</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-        <span class="n">fph</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-        <span class="n">fpm</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span> <span class="o">-</span> <span class="n">eps_p</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-        <span class="n">fh_p</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-        <span class="n">fh_m</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span> <span class="o">-</span> <span class="n">eps_p</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-        <span class="n">fm_p</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-        <span class="n">fm_m</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span> <span class="o">-</span> <span class="n">eps_p</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_gradients_central</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">eps_p</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;supersaturation&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span> <span class="k">if</span> <span class="n">supersaturation</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">f0</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">fhp</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">fhm</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">fph</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">fpm</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span> <span class="o">-</span> <span class="n">eps_p</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">fh_p</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
+            <span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">fh_m</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
+            <span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span> <span class="o">-</span> <span class="n">eps_p</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">fm_p</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
+            <span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">eps_p</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">fm_m</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
+            <span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="n">eps_h</span><span class="p">,</span> <span class="n">p</span> <span class="o">-</span> <span class="n">eps_p</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
         <span class="n">grads</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PROPERTIES_CANONICAL</span><span class="p">:</span>
@@ -2093,7 +2194,18 @@
 <span class="sd">        Eager calls default to indexed raising. Within JAX transformations,</span>
 <span class="sd">        explicitly select ``errors=&#39;mask&#39;`` or ``errors=&#39;clip&#39;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">evaluate_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_type</span><span class="p">,</span> <span class="n">prop_1</span><span class="p">,</span> <span class="n">prop_2</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">input_type</span> <span class="o">==</span> <span class="n">jxp</span><span class="o">.</span><span class="n">PQ_INPUTS</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase_support</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">evaluate_saturation</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">prop_1</span><span class="p">,</span> <span class="n">prop_2</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">evaluate_state</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">input_type</span><span class="p">,</span>
+            <span class="n">prop_1</span><span class="p">,</span>
+            <span class="n">prop_2</span><span class="p">,</span>
+            <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span>
+            <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FluidBicubic.get_state_saturation">
@@ -2110,11 +2222,17 @@
         <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate the stored PQ saturation endpoint; other tables reject it.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">evaluate_saturation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_1</span><span class="p">,</span> <span class="n">prop_2</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">evaluate_saturation</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">prop_1</span><span class="p">,</span> <span class="n">prop_2</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span>
+        <span class="p">)</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_state_scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_type</span><span class="p">,</span> <span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">evaluate_scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_type</span><span class="p">,</span> <span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_state_scalar</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">input_type</span><span class="p">,</span> <span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="n">evaluate_scalar</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">input_type</span><span class="p">,</span> <span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="n">supersaturation</span>
+        <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_interp_h_p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">interpolate_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
