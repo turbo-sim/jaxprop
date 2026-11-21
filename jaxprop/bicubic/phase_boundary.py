@@ -319,7 +319,9 @@ def evaluate(fluid, h, p, raw):
         "viscosity",
         "conductivity",
     }
-    required &= fluid.capabilities.properties
+    # Set iteration changes the traced operation order between Python hash
+    # seeds, preventing reuse of otherwise identical persistent executables.
+    required = tuple(sorted(required & fluid.capabilities.properties))
     # The public PQ interval is unchanged. Only the critical HP transition
     # continues these endpoint tangents before fading to the original tensor
     # polynomial; it never advertises extrapolated PQ states as source data.

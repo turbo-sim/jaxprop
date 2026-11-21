@@ -130,3 +130,12 @@ thermodynamics. Independent EOS value checks and native AD/FD checks have
 separate acceptance policies. Almost-critical reference flashes are checked
 for input closure and source phase conventions before being used as accuracy
 references. The published 0.6.2 installation does not contain this candidate.
+
+## Unreleased deterministic tracing
+
+Property iteration during phase-boundary and legacy saturation evaluation is
+now canonical. This preserves the equations and arrays while removing Python
+hash-seed differences from traced operation order. Identical native requests
+in separate processes can therefore reuse the same persistent compilation
+cache entry. Regression coverage compares StableHLO across two hash seeds;
+the ThermOpt consumer also records an actual second-process cache hit.
