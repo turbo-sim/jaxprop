@@ -1,0 +1,2 @@
+# Match published-wheel Python bytes for reproducible source fingerprints.
+/jaxprop/**/*.py text eol=lf
