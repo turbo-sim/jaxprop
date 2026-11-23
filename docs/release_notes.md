@@ -1,3 +1,25 @@
+# JaxProp 0.6.3
+
+Prepared on 23 November 2026. Publication is pending release qualification.
+
+- Extend the opt-in fixed-grid phase-boundary correction with bounded HP
+  continuation in critical-region cells that lack homogeneous anchors. Retain
+  the uniform enthalpy/log-pressure mesh, native JAX evaluation, status/domain
+  checks and existing coefficients. This is the local patch used in ThermOpt's
+  completed numerical migration studies.
+- Make bicubic property evaluation and state stacking/concatenation trace order
+  deterministic across Python hash seeds. Equivalent native value/Jacobian
+  programs can reuse persistent compiled executables across processes without
+  dropping validity checks or properties.
+- Keep Python source line endings stable in built artifacts, preserving source
+  fingerprints between checkout and wheel. Existing source/reference and table
+  provenance checks remain active.
+
+The release is assembled from the qualified isolated development commits; the
+original checkout's unrelated experiments are excluded. Local Windows,
+installed-wheel and hosted release results are recorded separately from the
+earlier ThermOpt benchmark evidence.
+
 # JaxProp 0.6.2
 
 Prepared on 21 November 2026. Publication and artifact identities are recorded

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jaxprop"
-version = "0.6.2"
+version = "0.6.3"
 description = "JAX-compatible Python package for real-fluid thermodynamic properties, phase equilibria and metastable states, with automatic differentiation."
 authors = ["Roberto Agromayor", "Srinivas Prakash Diwanji", "Alberto Bergamin", "Andrea Cioffi"]
 license = "MIT"
