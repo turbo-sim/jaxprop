@@ -1,6 +1,7 @@
 # JaxProp 0.6.3
 
-Prepared on 23 November 2026. Publication is pending release qualification.
+Prepared on 23 November 2026. Publication details and artifact identities are
+recorded with the [0.6.3 release](https://github.com/turbo-sim/jaxprop/releases/tag/v0.6.3).
 
 - Extend the opt-in fixed-grid phase-boundary correction with bounded HP
   continuation in critical-region cells that lack homogeneous anchors. Retain
