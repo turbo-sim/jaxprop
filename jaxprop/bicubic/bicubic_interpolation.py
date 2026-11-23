@@ -1948,7 +1948,7 @@ class FluidBicubic(SourceReferencesMixin, eqx.Module):
         position = (p - left) / width
         one_minus = 1 - position
         properties = {}
-        for name in self.capabilities.properties:
+        for name in sorted(self.capabilities.properties):
             entry = self._saturation_table[name]
             a, b = entry["value"][index], entry["value"][index + 1]
             ga, gb = entry["grad_p"][index], entry["grad_p"][index + 1]

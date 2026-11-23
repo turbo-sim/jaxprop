@@ -47,6 +47,20 @@ def prepare(model, table):
             if len(found):
                 indices[k] = found[-1] if side == "liquid" else found[0]
         result[side] = {"index": jnp.asarray(indices), "column": jnp.asarray(columns)}
+    critical = model._references["critical_point"]
+    pc = critical.properties["pressure"]
+    if model._saturation_p_max >= 0.98 * pc * (1 - 1e-12):
+        # These source anchors already exist in immutable setup metadata. No
+        # table node, source sample, saturation grid or coefficient is changed.
+        column = np.searchsorted(ps, np.log(pc), side="left")
+        upper = float(np.exp(ps[min(column, len(ps) - 1)]))
+        result["critical"] = {
+            name: jnp.asarray(critical.properties[name], dtype=model.h_vals.dtype)
+            for name in ("pressure", "enthalpy", "entropy", "density")
+        }
+        result["critical"]["upper_pressure"] = jnp.asarray(
+            upper, dtype=model.h_vals.dtype
+        )
     return result
 
 
@@ -78,6 +92,57 @@ def _endpoint(fluid, p, side, names):
         slopes[name] = jnp.where(ok, (c1 + x * (2 * c2 + 3 * x * c3)) / width, jnp.nan)
     values["pressure"], slopes["pressure"] = p, jnp.ones_like(p)
     return values, slopes
+
+
+def _critical_band(fluid, p):
+    critical = fluid._phase_boundary.get("critical")
+    if critical is None:
+        return jnp.zeros_like(p, dtype=bool)
+    return (p >= fluid._saturation_p_max) & (p <= critical["upper_pressure"])
+
+
+def _critical_phase(fluid, h, p, entropy):
+    """Approximate phase envelope from existing cap and critical anchors.
+
+    A quadratic in the cube root of reduced pressure matches each cap value,
+    its pressure slope, and the critical value. This is an interpolation
+    coordinate, not a claim to reproduce exact critical exponents. It provides
+    bounded quality and binary labels while core values remain bicubic.
+    """
+    critical = fluid._phase_boundary["critical"]
+    pc, p0 = critical["pressure"], fluid._saturation_p_max
+    subcritical = p < pc
+    # The inactive supercritical branch must not differentiate cbrt(0), or a
+    # collapsed latent-heat interval, under reverse AD.
+    reduced = jnp.where(
+        subcritical & (p >= p0), jnp.maximum((pc - p) / (pc - p0), 1e-12), 1.0
+    )
+    x = jnp.cbrt(reduced)
+    endpoints = {}
+    for side in ("liquid", "vapor"):
+        values, slopes = _endpoint(
+            fluid, jnp.full_like(p, p0), side, ("enthalpy", "density")
+        )
+        endpoints[side] = {}
+        for name in values:
+            delta = values[name] - critical[name]
+            tangent = -3 * (pc - p0) * slopes[name]
+            value = (
+                critical[name] + (2 * delta - tangent) * x + (tangent - delta) * x * x
+            )
+            endpoints[side][name] = jnp.where(subcritical, value, critical[name])
+    liquid, vapor = endpoints["liquid"], endpoints["vapor"]
+    gap = vapor["enthalpy"] - liquid["enthalpy"]
+    usable = subcritical & (gap > 0)
+    q = jnp.clip((h - liquid["enthalpy"]) / jnp.where(usable, gap, 1.0), 0.0, 1.0)
+    wet = usable & (h >= liquid["enthalpy"]) & (h <= vapor["enthalpy"])
+    label = (entropy > critical["entropy"]).astype(h.dtype)
+    quality = jnp.where(wet, q, label)
+    # The source's one-phase 0/1 extension is an entropy label, not a vapor
+    # fraction. Actual two-phase volume quality uses positive endpoint volumes.
+    rl, rv = liquid["density"], vapor["density"]
+    volume = (q / rv) / ((1 - q) / rl + q / rv)
+    return wet, quality, jnp.where(wet, jnp.clip(volume, 0.0, 1.0), label)
 
 
 def _polynomial(fluid, h, p, i, j, name):
@@ -254,12 +319,27 @@ def evaluate(fluid, h, p, raw):
         "viscosity",
         "conductivity",
     }
-    required &= fluid.capabilities.properties
-    # Protect out-of-range branches before evaluating, and preserve the existing
-    # explicit saturation pressure cap rather than extrapolating critical data.
-    ep = jnp.clip(p, fluid._saturation_p_min, fluid._saturation_p_max)
+    # Set iteration changes the traced operation order between Python hash
+    # seeds, preventing reuse of otherwise identical persistent executables.
+    required = tuple(sorted(required & fluid.capabilities.properties))
+    # The public PQ interval is unchanged. Only the critical HP transition
+    # continues these endpoint tangents before fading to the original tensor
+    # polynomial; it never advertises extrapolated PQ states as source data.
+    ep = jnp.where(
+        p <= fluid._saturation_p_max,
+        jnp.maximum(p, fluid._saturation_p_min),
+        fluid._saturation_p_max,
+    )
     liquid, lp = _endpoint(fluid, ep, "liquid", required)
     vapor, vp = _endpoint(fluid, ep, "vapor", required)
+    critical = fluid._phase_boundary.get("critical")
+    if critical is not None:
+        extension = jnp.where(
+            p > fluid._saturation_p_max, p - fluid._saturation_p_max, 0.0
+        )
+        for values, slopes in ((liquid, lp), (vapor, vp)):
+            for name in values:
+                values[name] = values[name] + extension * slopes[name]
     wet = _wet(h, p, liquid, vapor, lp, vp)
     coordinate = (jnp.log(p) - jnp.log(fluid.p_min)) / fluid.delta_logP
     j = jnp.clip(jnp.floor(coordinate).astype(jnp.int32), 0, fluid.N_p - 2)
@@ -286,6 +366,8 @@ def evaluate(fluid, h, p, raw):
     repaired &= jnp.where(
         is_liquid, validity["liquid"], jnp.where(is_vapor, validity["vapor"], True)
     )
+    if critical is not None:
+        repaired |= _critical_band(fluid, p)
     output = {}
     for name in names:
         value = jnp.where(
@@ -337,6 +419,61 @@ def evaluate(fluid, h, p, raw):
         ):
             if name in output:
                 output[name] = jnp.where(repaired, value, raw[name])
+    if critical is not None:
+        band = _critical_band(fluid, p)
+        fraction = jnp.clip(
+            (p - fluid._saturation_p_max)
+            / (critical["pressure"] - fluid._saturation_p_max),
+            0.0,
+            1.0,
+        )
+        blend = fraction * fraction * (3 - 2 * fraction)
+        for name in names:
+            # Keep unavailable optional fields unavailable. A missing ordinary
+            # bridge does not invalidate finite raw critical-region core data.
+            value = jnp.where(jnp.isfinite(output[name]), output[name], raw[name])
+            value = (1 - blend) * jnp.where(
+                jnp.isfinite(value), value, 0.0
+            ) + blend * jnp.where(jnp.isfinite(raw[name]), raw[name], 0.0)
+            available = (
+                (blend == 1) | jnp.isfinite(output[name]) | jnp.isfinite(raw[name])
+            ) & ((blend == 0) | jnp.isfinite(raw[name]))
+            output[name] = jnp.where(
+                band, jnp.where(available, value, jnp.nan), output[name]
+            )
+        entropy = raw.get("entropy")
+        if entropy is None:
+            hi = jnp.clip(
+                jnp.floor((h - fluid.h_min) / fluid.delta_h).astype(jnp.int32),
+                0,
+                fluid.N_h - 2,
+            )
+            entropy = _polynomial(fluid, h, p, hi, j, "entropy")[0]
+        wet_critical, quality, volume = _critical_phase(fluid, h, p, entropy)
+        for name, value in (
+            ("is_two_phase", wet_critical.astype(h.dtype)),
+            ("quality_mass", quality),
+            ("quality_volume", volume),
+        ):
+            if name in output:
+                output[name] = jnp.where(
+                    band | (p >= critical["pressure"]), value, output[name]
+                )
+        for name in (
+            "isobaric_heat_capacity",
+            "heat_capacity_ratio",
+            "isothermal_bulk_modulus",
+            "isothermal_compressibility",
+            "isobaric_expansion_coefficient",
+            "isothermal_joule_thomson",
+        ):
+            if name in output:
+                output[name] = jnp.where(
+                    band & wet_critical & (quality > 0) & (quality < 1),
+                    jnp.nan,
+                    output[name],
+                )
+        repaired |= band
     return output, repaired
 
 
@@ -362,7 +499,7 @@ def point_valid(fluid, h, p):
         for k, active in ((j, y < 1), (j + 1, y > 0)):
             i = fluid._phase_boundary[side]["index"][k]
             valid &= ~(selected & active & (i < 0) & ~raw_valid)
-    return (
+    return _critical_band(fluid, p) | (
         valid
         & (p >= fluid._saturation_p_min)
         & (p <= fluid._saturation_p_max)

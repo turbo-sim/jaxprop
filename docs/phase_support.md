@@ -107,3 +107,35 @@ No published timing/reference artifacts are rebaselined by enabling this option.
 
 Release qualification is indexed in
 [the package validation note](https://github.com/turbo-sim/jaxprop/blob/main/development/performance/phase_support_release/README.md).
+
+## Unreleased critical-region HP continuation
+
+The isolated ThermOpt Phase 6 candidate extends pure-fluid HP evaluation
+through the critical pressure strip. It retains the existing uniform mesh,
+saturation grid and coefficients. Existing endpoint tangents continue beyond
+the endpoint cap and fade smoothly to the original tensor polynomial at
+critical pressure. The additional numerical payload uses critical anchors
+already captured during setup; runtime introduces no source callbacks.
+
+Phase/quality fields use a bounded approximate envelope anchored at the cap
+and critical point, rather than fractional bicubic phase flags. The envelope
+is quadratic in a cube-root reduced-pressure coordinate, matching cap values
+and pressure slopes. One-phase quality follows the critical-entropy label.
+Pure-fluid wet singular responses remain unavailable. The public PQ domain
+is unchanged; near-critical HX snapping above its cap is not qualified by
+this HP change. Pseudo-pure glide retains its existing guard.
+
+This is an accuracy-qualified development approximation, not exact critical
+thermodynamics. Independent EOS value checks and native AD/FD checks have
+separate acceptance policies. Almost-critical reference flashes are checked
+for input closure and source phase conventions before being used as accuracy
+references. The published 0.6.2 installation does not contain this candidate.
+
+## Unreleased deterministic tracing
+
+Property iteration during phase-boundary and legacy saturation evaluation is
+now canonical. This preserves the equations and arrays while removing Python
+hash-seed differences from traced operation order. Identical native requests
+in separate processes can therefore reuse the same persistent compilation
+cache entry. Regression coverage compares StableHLO across two hash seeds;
+the ThermOpt consumer also records an actual second-process cache hit.

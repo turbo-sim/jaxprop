@@ -750,7 +750,9 @@ class FluidState(eqx.Module):
             )
         )
         properties = {
-            name: combine([state._data[name] for state in states]) for name in enabled
+            # Property capabilities are a frozenset. Stable trace order is
+            # necessary for identical cross-process executable-cache keys.
+            name: combine([state._data[name] for state in states]) for name in sorted(enabled)
         }
         metadata = FluidState._metadata(first) | dict(
             provider=provider, providers=providers, available_properties=enabled
