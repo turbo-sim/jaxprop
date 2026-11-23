@@ -2,12 +2,15 @@
 
 import hashlib
 from pathlib import Path
+from types import SimpleNamespace
 
 import jax
 import jax.numpy as jnp
 import numpy as np
 import pytest
 import jaxprop as jp
+from scipy.optimize import brentq
+import CoolProp.CoolProp as CP
 
 
 @pytest.fixture(scope="module")
@@ -50,7 +53,31 @@ def test_critical_hp_values_and_labels_preserve_grid_and_cache(critical_model):
     )
     for ratio in (0.984, 0.99, 1.0, 1.01):
         pressure = ratio * pc
-        expected = source.get_state(jp.HmassP_INPUTS, hc - 2e4, pressure)
+        if ratio == 1.0:
+            # CoolProp's HP flash can select an unusable gas bracket at its
+            # numerically reported critical pressure. Obtain the same (h,p)
+            # reference from explicitly liquid PT states instead. This is only
+            # the independent test oracle: native point, mesh and comparison
+            # tolerances remain unchanged, and runtime never invokes this root.
+            tc = float(source.critical_point.T)
+            target = hc - 2e4
+            reference = CP.AbstractState("HEOS", "Water")
+            # At h < hc and p = pc this is the stable liquid branch. Imposing
+            # it also avoids CoolProp's automatic near-saturation PT guard.
+            reference.specify_phase(CP.iphase_liquid)
+            def residual(temperature):
+                reference.update(CP.PT_INPUTS, pressure, temperature)
+                return reference.hmass() - target
+            temperature = brentq(residual, 0.95 * tc, (1 - 1e-9) * tc, xtol=1e-12)
+            reference.update(CP.PT_INPUTS, pressure, temperature)
+            expected = SimpleNamespace(h=reference.hmass(), T=reference.T(), rho=reference.rhomass())
+            assert abs(float(expected.h) - target) < 0.02
+            # The source PT solver's pressure closure itself has roundoff at
+            # this nearly singular point; check it relatively, independently
+            # of the unchanged native T/density comparison budgets below.
+            np.testing.assert_allclose(reference.p(), pressure, rtol=1e-8, atol=0)
+        else:
+            expected = source.get_state(jp.HmassP_INPUTS, hc - 2e4, pressure)
         actual = model.get_state(jp.HmassP_INPUTS, hc - 2e4, pressure, errors="mask")
         assert int(actual.status) == 0
         assert float(actual.is_two_phase) in (0.0, 1.0)
