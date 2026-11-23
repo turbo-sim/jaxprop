@@ -148,7 +148,8 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">JaxProp 0.6.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">JaxProp 0.6.3</a></li>
+
 
 
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating to the consistent fluid interface</a></li>
@@ -1075,7 +1076,9 @@
             <span class="p">)</span>
         <span class="p">)</span>
         <span class="n">properties</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">name</span><span class="p">:</span> <span class="n">combine</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">enabled</span>
+            <span class="c1"># Property capabilities are a frozenset. Stable trace order is</span>
+            <span class="c1"># necessary for identical cross-process executable-cache keys.</span>
+            <span class="n">name</span><span class="p">:</span> <span class="n">combine</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
         <span class="p">}</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="n">FluidState</span><span class="o">.</span><span class="n">_metadata</span><span class="p">(</span><span class="n">first</span><span class="p">)</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">provider</span><span class="o">=</span><span class="n">provider</span><span class="p">,</span> <span class="n">providers</span><span class="o">=</span><span class="n">providers</span><span class="p">,</span> <span class="n">available_properties</span><span class="o">=</span><span class="n">enabled</span>

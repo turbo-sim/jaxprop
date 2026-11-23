@@ -151,7 +151,8 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="source/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="release_notes.html">JaxProp 0.6.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">JaxProp 0.6.3</a></li>
+
 
 
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating to the consistent fluid interface</a></li>
@@ -339,6 +340,8 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diagnostics">Diagnostics</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#saturation-endpoints">Saturation endpoints</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accuracy-domains-and-caches">Accuracy, domains and caches</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-critical-region-hp-continuation">Unreleased critical-region HP continuation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-deterministic-tracing">Unreleased deterministic tracing</a></li>
 </ul>
             </nav>
         </div>
@@ -448,6 +451,36 @@ No published timing/reference artifacts are rebaselined by enabling this option.
 <p>Release qualification is indexed in
 <a class="reference external" href="https://github.com/turbo-sim/jaxprop/blob/main/development/performance/phase_support_release/README.md">the package validation note</a>.</p>
 </section>
+<section id="unreleased-critical-region-hp-continuation">
+<h2>Unreleased critical-region HP continuation<a class="headerlink" href="#unreleased-critical-region-hp-continuation" title="Link to this heading">#</a></h2>
+<p>The isolated ThermOpt Phase 6 candidate extends pure-fluid HP evaluation
+through the critical pressure strip. It retains the existing uniform mesh,
+saturation grid and coefficients. Existing endpoint tangents continue beyond
+the endpoint cap and fade smoothly to the original tensor polynomial at
+critical pressure. The additional numerical payload uses critical anchors
+already captured during setup; runtime introduces no source callbacks.</p>
+<p>Phase/quality fields use a bounded approximate envelope anchored at the cap
+and critical point, rather than fractional bicubic phase flags. The envelope
+is quadratic in a cube-root reduced-pressure coordinate, matching cap values
+and pressure slopes. One-phase quality follows the critical-entropy label.
+Pure-fluid wet singular responses remain unavailable. The public PQ domain
+is unchanged; near-critical HX snapping above its cap is not qualified by
+this HP change. Pseudo-pure glide retains its existing guard.</p>
+<p>This is an accuracy-qualified development approximation, not exact critical
+thermodynamics. Independent EOS value checks and native AD/FD checks have
+separate acceptance policies. Almost-critical reference flashes are checked
+for input closure and source phase conventions before being used as accuracy
+references. The published 0.6.2 installation does not contain this candidate.</p>
+</section>
+<section id="unreleased-deterministic-tracing">
+<h2>Unreleased deterministic tracing<a class="headerlink" href="#unreleased-deterministic-tracing" title="Link to this heading">#</a></h2>
+<p>Property iteration during phase-boundary and legacy saturation evaluation is
+now canonical. This preserves the equations and arrays while removing Python
+hash-seed differences from traced operation order. Identical native requests
+in separate processes can therefore reuse the same persistent compilation
+cache entry. Regression coverage compares StableHLO across two hash seeds;
+the ThermOpt consumer also records an actual second-process cache hit.</p>
+</section>
 </section>
 
 
@@ -500,6 +533,8 @@ No published timing/reference artifacts are rebaselined by enabling this option.
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diagnostics">Diagnostics</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#saturation-endpoints">Saturation endpoints</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accuracy-domains-and-caches">Accuracy, domains and caches</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-critical-region-hp-continuation">Unreleased critical-region HP continuation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-deterministic-tracing">Unreleased deterministic tracing</a></li>
 </ul>
   </nav></div>
 

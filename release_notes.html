@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>JaxProp 0.6.2 &#8212; jaxprop v0.6.2 documentation</title>
+    <title>JaxProp 0.6.3 &#8212; jaxprop v0.6.2 documentation</title>
   
   
   
@@ -149,7 +149,8 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="source/installation.html">Installation</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">JaxProp 0.6.2</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">JaxProp 0.6.3</a></li>
+
 
 
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating to the consistent fluid interface</a></li>
@@ -324,7 +325,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>JaxProp 0.6.2</h1>
+    <h1>JaxProp 0.6.3</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -334,7 +335,8 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">JaxProp 0.6.2</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">JaxProp 0.6.3</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop-0-6-2">JaxProp 0.6.2</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop-0-6-1">JaxProp 0.6.1</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop-0-6-0">JaxProp 0.6.0</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interface-and-numerical-behavior">Interface and numerical behavior</a></li>
@@ -353,7 +355,30 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="jaxprop-0-6-2">
+  <section class="tex2jax_ignore mathjax_ignore" id="jaxprop-0-6-3">
+<h1>JaxProp 0.6.3<a class="headerlink" href="#jaxprop-0-6-3" title="Link to this heading">#</a></h1>
+<p>Prepared on 23 November 2026. Publication details and artifact identities are
+recorded with the <a class="reference external" href="https://github.com/turbo-sim/jaxprop/releases/tag/v0.6.3">0.6.3 release</a>.</p>
+<ul class="simple">
+<li><p>Extend the opt-in fixed-grid phase-boundary correction with bounded HP
+continuation in critical-region cells that lack homogeneous anchors. Retain
+the uniform enthalpy/log-pressure mesh, native JAX evaluation, status/domain
+checks and existing coefficients. This is the local patch used in ThermOpt’s
+completed numerical migration studies.</p></li>
+<li><p>Make bicubic property evaluation and state stacking/concatenation trace order
+deterministic across Python hash seeds. Equivalent native value/Jacobian
+programs can reuse persistent compiled executables across processes without
+dropping validity checks or properties.</p></li>
+<li><p>Keep Python source line endings stable in built artifacts, preserving source
+fingerprints between checkout and wheel. Existing source/reference and table
+provenance checks remain active.</p></li>
+</ul>
+<p>The release is assembled from the qualified isolated development commits; the
+original checkout’s unrelated experiments are excluded. Local Windows,
+installed-wheel and hosted release results are recorded separately from the
+earlier ThermOpt benchmark evidence.</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="jaxprop-0-6-2">
 <h1>JaxProp 0.6.2<a class="headerlink" href="#jaxprop-0-6-2" title="Link to this heading">#</a></h1>
 <p>Prepared on 21 November 2026. Publication and artifact identities are recorded
 in the <a class="reference external" href="https://github.com/turbo-sim/jaxprop/blob/main/development/performance/uniform_saturation_release/README.md">patch qualification record</a>.</p>
@@ -527,7 +552,8 @@ promise universal performance parity across models, shapes or devices.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">JaxProp 0.6.2</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">JaxProp 0.6.3</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop-0-6-2">JaxProp 0.6.2</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop-0-6-1">JaxProp 0.6.1</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#jaxprop-0-6-0">JaxProp 0.6.0</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interface-and-numerical-behavior">Interface and numerical behavior</a></li>
